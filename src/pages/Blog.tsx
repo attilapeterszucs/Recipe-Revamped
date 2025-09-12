@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Calendar, User, Clock, ArrowRight, Tag, ChefHat, ArrowLeft } from 'lucide-react';
+import { Calendar, User, Clock, ArrowRight, Tag, ChefHat, ArrowLeft, Heart } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';

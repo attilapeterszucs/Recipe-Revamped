@@ -337,7 +337,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       }
       
       showSuccess('Restore Complete', message, 'restore');
-      setShowRecovery(false);
     } catch (error) {
       console.error('Failed to restore backup:', error);
       if (error.message && error.message.includes('net::ERR_BLOCKED_BY_CLIENT')) {

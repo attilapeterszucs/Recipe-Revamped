@@ -70,7 +70,7 @@ class AnalyticsService {
     if (typeof window === 'undefined') return;
 
     // Initialize Google Analytics if consent is given
-    if (!window.gtag?.loaded) {
+    if (!(window as any).gtag?.loaded) {
       const script = document.createElement('script');
       script.async = true;
       script.src = 'https://www.googletagmanager.com/gtag/js?id=G-CR787RJ2VK';

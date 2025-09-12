@@ -135,7 +135,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
       
       const userInfos = await Promise.all(userInfoPromises);
       // Filter out null values (fake users) and sort
-      const validUsers = userInfos.filter((user): user is UserInfo => user !== null);
+      const validUsers = userInfos.filter(user => user !== null) as UserInfo[];
       
       setUsers(validUsers.sort((a, b) => {
         // Sort admins first, then by email

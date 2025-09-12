@@ -162,7 +162,8 @@ export const createNotificationForAllUsers = async (
         userCount: userIds.length,
         successCount,
         timestamp: new Date().toISOString()
-      }
+      },
+      timestamp: new Date()
     });
     
     return successCount;

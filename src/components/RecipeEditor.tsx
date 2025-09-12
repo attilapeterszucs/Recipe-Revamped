@@ -525,7 +525,7 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
         title: title.trim(),
         convertedRecipe: rebuiltContent,
         dietaryFilters,
-        category,
+        category: category as "appetizer" | "main-dish" | "side-dish" | "dessert",
         imageUrl: finalImageUrl,
         updatedAt: new Date() // This will be set by Firestore, but we set it here for immediate UI update
       };

@@ -121,7 +121,8 @@ export const addAdminUser = async (
         action: 'REACTIVATE_ADMIN',
         targetUid: uid,
         targetEmail: email,
-        details: { role, displayName }
+        details: { role, displayName },
+      timestamp: new Date()
       });
       
       return true;
@@ -147,7 +148,8 @@ export const addAdminUser = async (
       action: 'ADD_ADMIN',
       targetUid: uid,
       targetEmail: email,
-      details: { role, displayName }
+      details: { role, displayName },
+      timestamp: new Date()
     });
     
     return true;
@@ -192,7 +194,8 @@ export const removeAdminUser = async (
       action: 'REMOVE_ADMIN',
       targetUid,
       targetEmail,
-      details: { reason: 'Admin privileges revoked' }
+      details: { reason: 'Admin privileges revoked' },
+      timestamp: new Date()
     });
     
     return true;
@@ -271,7 +274,8 @@ export const initializeFirstAdmin = async (
         action: 'REACTIVATE_DESIGNATED_ADMIN',
         targetUid: uid,
         targetEmail: email,
-        details: { role: 'super_admin', displayName }
+        details: { role: 'super_admin', displayName },
+        timestamp: new Date()
       });
       
       return true;
@@ -301,7 +305,8 @@ export const initializeFirstAdmin = async (
         action: existingAdmins.length > 0 ? 'ADD_DESIGNATED_ADMIN' : 'INITIALIZE_FIRST_ADMIN',
         targetUid: uid,
         targetEmail: email,
-        details: { role: 'super_admin', displayName }
+        details: { role: 'super_admin', displayName },
+        timestamp: new Date()
       });
       
       return true;
@@ -332,7 +337,8 @@ export const initializeFirstAdmin = async (
       action: 'INITIALIZE_FIRST_ADMIN',
       targetUid: uid,
       targetEmail: email,
-      details: { role: 'super_admin', displayName }
+      details: { role: 'super_admin', displayName },
+      timestamp: new Date()
     });
     
     return true;

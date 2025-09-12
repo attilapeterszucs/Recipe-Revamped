@@ -218,14 +218,14 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       const updated = { ...prev };
       if (updated[dateStr]) {
         // All meal types now support arrays
-        const currentMeals = [...(updated[dateStr][mealType as keyof typeof updated[dateStr]] as SavedRecipe[] || [])];
+        const currentMeals = [...(updated[dateStr][mealType as keyof typeof updated[typeof dateStr]] as SavedRecipe[] || [])];
         
         if (recipeIndex !== undefined && recipeIndex < currentMeals.length) {
           // Remove specific recipe by index
           currentMeals.splice(recipeIndex, 1);
           
           if (currentMeals.length === 0) {
-            const { [mealType]: removed, ...restOfDay } = updated[dateStr];
+            const { [mealType]: removed, ...restOfDay } = updated[dateStr] as any;
             if (Object.keys(restOfDay).length === 0) {
               delete updated[dateStr];
             } else {
@@ -239,7 +239,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           }
         } else {
           // Remove entire meal type if no index specified
-          const { [mealType]: removed, ...restOfDay } = updated[dateStr];
+          const { [mealType]: removed, ...restOfDay } = updated[dateStr] as any;
           if (Object.keys(restOfDay).length === 0) {
             delete updated[dateStr];
           } else {

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Check, X, AlertCircle, Info, Trash2, Save, Upload, Download } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
-export type ToastAction = 'save' | 'delete' | 'backup' | 'restore' | 'auto-save' | 'settings' | 'general';
+export type ToastAction = 'save' | 'delete' | 'backup' | 'restore' | 'auto-save' | 'settings' | 'general' | 'upload' | 'copy' | 'limit-reached';
 
 interface ToastProps {
   id: string;
