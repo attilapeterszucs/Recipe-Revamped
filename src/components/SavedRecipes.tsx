@@ -230,14 +230,12 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   };
 
   const handleRecipeUpdate = (updatedRecipe: SavedRecipe) => {
-    console.log('handleRecipeUpdate called with:', updatedRecipe);
     
     // Update the recipes array immediately
     setRecipes(prev => {
       const updated = prev.map(recipe => 
         recipe.id === updatedRecipe.id ? updatedRecipe : recipe
       );
-      console.log('Updated recipes array:', updated);
       return updated;
     });
     

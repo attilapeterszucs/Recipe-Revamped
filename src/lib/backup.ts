@@ -183,7 +183,6 @@ export const restoreFromBackup = async (
               console.error('Failed to restore recipe:', recipe.title, error);
             }
           } else {
-            console.log('Skipping duplicate recipe:', recipe.title);
             skippedDuplicates++;
           }
         }
@@ -255,7 +254,6 @@ export const scheduleAutoBackup = async (userId: string): Promise<void> => {
 
     if (!hasRecentBackup) {
       await createBackup(userId);
-      console.log('Automatic backup created for user:', userId);
     }
   } catch (error) {
     console.error('Failed to schedule auto backup:', error);

@@ -52,7 +52,6 @@ export const initializeAdminSystem = async (user: User | null): Promise<boolean>
     // Run cleanup if admin is initializing for the first time
     if (!isAlreadyAdmin) {
       try {
-        console.log('Running userSettings duplicate cleanup...');
         await cleanupDuplicateUserSettings();
       } catch (error) {
         console.error('Failed to cleanup duplicate userSettings:', error);

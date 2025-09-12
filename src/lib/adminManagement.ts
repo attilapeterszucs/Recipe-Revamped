@@ -100,7 +100,6 @@ export const addAdminUser = async (
       // Check if there's an active admin record
       const activeAdmin = snapshot.docs.find(doc => doc.data().isActive === true);
       if (activeAdmin) {
-        console.log('User is already an active admin');
         return false;
       }
       

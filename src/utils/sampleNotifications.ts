@@ -31,7 +31,6 @@ export const createSampleNotifications = async (userId: string) => {
     for (const notification of sampleNotifications) {
       await createNotification(userId, notification);
     }
-    console.log('Sample notifications created successfully');
   } catch (error) {
     console.error('Error creating sample notifications:', error);
   }
@@ -41,7 +40,6 @@ export const createSampleNotifications = async (userId: string) => {
 export const createWelcomeNotification = async (userId: string) => {
   try {
     await createNotification(userId, sampleNotifications[0]);
-    console.log('Welcome notification created');
   } catch (error) {
     console.error('Error creating welcome notification:', error);
   }

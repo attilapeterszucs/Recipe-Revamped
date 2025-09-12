@@ -475,7 +475,6 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
       const rebuiltContent = buildRecipeOutput(updatedParsedRecipe, dietaryFilters);
       
       // Debug logging to help identify issues
-      console.log('Saving recipe with data:', {
         title: title.trim(),
         parsedRecipe,
         dietaryFilters,
@@ -516,7 +515,6 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
         imageUrl: finalImageUrl
       };
       
-      console.log('Updating recipe in Firestore with:', updateData);
       await updateRecipe(recipe.id, updateData);
 
       // Create updated recipe object for parent component
@@ -530,7 +528,6 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
         updatedAt: new Date() // This will be set by Firestore, but we set it here for immediate UI update
       };
 
-      console.log('Calling onUpdate with:', updatedRecipe);
       onUpdate(updatedRecipe);
       showSuccess('Recipe Updated', 'Your recipe has been successfully updated', 'save');
       onClose();

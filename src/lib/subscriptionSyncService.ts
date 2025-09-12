@@ -27,7 +27,6 @@ export class SubscriptionSyncService {
    * Monitor for new subscription records from Stripe webhooks and sync to user accounts
    */
   static startSyncService() {
-    console.log('🔄 Starting subscription sync service...');
     
     // Listen for temporary subscription records created by webhook
     const tempQuery = query(
@@ -42,7 +41,6 @@ export class SubscriptionSyncService {
           const tempData = tempDoc.data();
           
           if (tempDoc.id.startsWith(TEMP_SUBSCRIPTIONS_PREFIX) && tempData.customerEmail) {
-            console.log('🔗 Found new subscription to sync:', tempDoc.id);
             await this.syncTempSubscriptionToUser(tempDoc.id, tempData);
           }
         }
@@ -61,7 +59,6 @@ export class SubscriptionSyncService {
       const currentUser = auth.currentUser;
       
       if (currentUser && currentUser.email === customerEmail) {
-        console.log(`✅ Syncing subscription for user: ${currentUser.uid}`);
         
         // Create proper subscription record
         const subscription: UserSubscription = {
@@ -89,13 +86,11 @@ export class SubscriptionSyncService {
         // Clean up temporary record
         await this.cleanupTempSubscription(tempDocId);
         
-        console.log(`✅ Subscription synced successfully for user: ${currentUser.uid}`);
         
         // Trigger subscription status refresh
         window.location.reload(); // Simple refresh - can be improved with state management
         
       } else {
-        console.log(`⏳ Waiting for user authentication for email: ${customerEmail}`);
         // Could implement a queue or retry mechanism here
       }
       
@@ -123,7 +118,6 @@ export class SubscriptionSyncService {
         updatedAt: serverTimestamp()
       });
 
-      console.log(`✅ User profile updated with subscription: ${subscription.plan}`);
     } catch (error) {
       console.error('❌ Error updating user profile:', error);
       // Don't throw - this is non-critical
@@ -137,7 +131,6 @@ export class SubscriptionSyncService {
     try {
       const tempDocRef = doc(db, SUBSCRIPTIONS_COLLECTION, tempDocId);
       await deleteDoc(tempDocRef);
-      console.log(`🗑️  Cleaned up temp subscription: ${tempDocId}`);
     } catch (error) {
       console.error('❌ Error cleaning up temp subscription:', error);
     }
@@ -175,7 +168,6 @@ export class SubscriptionSyncService {
    * Force sync check for current user (after payment completion)
    */
   static async forceSyncCheck(userEmail: string, maxRetries: number = 10): Promise<boolean> {
-    console.log(`🔍 Starting force sync check for: ${userEmail}`);
     
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
@@ -188,13 +180,11 @@ export class SubscriptionSyncService {
         
         const querySnapshot = await getDocs(tempQuery);
         
-        console.log(`🔍 Attempt ${attempt}: Found ${querySnapshot.docs.length} temporary subscription records`);
         
         if (!querySnapshot.empty) {
           const tempDoc = querySnapshot.docs[0];
           const tempData = tempDoc.data();
           
-          console.log(`✅ Found subscription data on attempt ${attempt}:`, {
             docId: tempDoc.id,
             plan: tempData.plan,
             customerEmail: tempData.customerEmail,
@@ -210,7 +200,6 @@ export class SubscriptionSyncService {
         if (currentUser) {
           const existingSubscription = await this.checkUserSubscription(currentUser.uid);
           if (existingSubscription && existingSubscription.plan !== 'free') {
-            console.log(`✅ User already has active subscription:`, existingSubscription.plan);
             return true;
           }
         }
@@ -218,7 +207,6 @@ export class SubscriptionSyncService {
         // Wait before next attempt (exponential backoff)
         if (attempt < maxRetries) {
           const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000); // Max 10 seconds
-          console.log(`⏳ Attempt ${attempt}/${maxRetries} - waiting ${delay}ms before retry...`);
           await new Promise(resolve => setTimeout(resolve, delay));
         }
         
@@ -227,8 +215,6 @@ export class SubscriptionSyncService {
       }
     }
     
-    console.log(`⚠️  Force sync failed after ${maxRetries} attempts`);
-    console.log(`💡 Check: 1) Google Cloud Function logs, 2) Firestore subscriptions collection, 3) Stripe webhook events`);
     return false;
   }
 }
@@ -244,7 +230,6 @@ export const initializeSubscriptionSync = () => {
  * Check for subscription after payment redirect
  */
 export const handlePaymentReturn = async (userEmail: string) => {
-  console.log('🔄 Handling payment return for:', userEmail);
   return await SubscriptionSyncService.forceSyncCheck(userEmail);
 };
 
@@ -252,7 +237,6 @@ export const handlePaymentReturn = async (userEmail: string) => {
  * Handle subscription renewal/update for existing users
  */
 export const handleSubscriptionRenewal = async (userId: string, subscriptionData: any) => {
-  console.log('🔄 Handling subscription renewal for user:', userId);
   
   try {
     // Update subscription document
@@ -280,7 +264,6 @@ export const handleSubscriptionRenewal = async (userId: string, subscriptionData
       updatedAt: serverTimestamp()
     });
 
-    console.log('✅ Subscription renewal processed successfully');
     return true;
   } catch (error) {
     console.error('❌ Error processing subscription renewal:', error);

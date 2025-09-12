@@ -193,12 +193,10 @@ export const saveRecipe = async (
   if (existingImageUrl) {
     // Use the image URL that was already fetched during recipe generation
     recipeImageUrl = existingImageUrl;
-    console.log('Using existing recipe image:', recipeImageUrl);
   } else {
     // Fallback to default image if no existing image provided
     try {
       recipeImageUrl = await getDefaultRecipeImage(convertedRecipe, userId);
-      console.log('Got fallback recipe image:', recipeImageUrl);
     } catch (error) {
       console.error('Failed to get fallback recipe image:', error);
       // Continue without image
@@ -207,7 +205,6 @@ export const saveRecipe = async (
   
   // Auto-detect recipe category
   const category = detectRecipeCategory(convertedRecipe);
-  console.log('Auto-detected recipe category:', category);
   
   const recipeDoc = {
     originalRecipe,

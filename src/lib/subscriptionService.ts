@@ -82,7 +82,6 @@ export class SubscriptionService {
     
     while (attempt < maxRetries) {
       try {
-        console.log(`[setUserSubscription] Attempt ${attempt + 1}/${maxRetries} for user ${userId}`);
         
         const subscriptionRef = doc(db, SUBSCRIPTIONS_COLLECTION, userId);
         
@@ -96,7 +95,6 @@ export class SubscriptionService {
           updatedAt: serverTimestamp()
         };
         
-        console.log('[setUserSubscription] Writing to Firestore:', subscriptionData);
         
         // Create timeout ID holder
         let timeoutId: NodeJS.Timeout | null = null;
@@ -112,9 +110,7 @@ export class SubscriptionService {
         // Wrap setDoc in its own timeout logic
         const writePromise = new Promise<void>(async (resolve, reject) => {
           try {
-            console.log('[setUserSubscription] Starting setDoc operation...');
             await setDoc(subscriptionRef, subscriptionData, { merge: true });
-            console.log('[setUserSubscription] setDoc operation completed successfully');
             resolve();
           } catch (error) {
             console.error('[setUserSubscription] setDoc operation failed:', error);
@@ -142,7 +138,6 @@ export class SubscriptionService {
         await new Promise(resolve => setTimeout(resolve, 500));
         
         // Verify the write actually succeeded by reading it back with timeout
-        console.log('[setUserSubscription] Verifying write...');
         const verifyPromise = getDoc(subscriptionRef);
         const verifyTimeoutPromise = new Promise<never>((_, reject) => 
           setTimeout(() => reject(new Error('Verification timeout')), 5000)
@@ -151,7 +146,6 @@ export class SubscriptionService {
         let verifyDoc;
         try {
           verifyDoc = await Promise.race([verifyPromise, verifyTimeoutPromise]);
-          console.log('[setUserSubscription] Verification read completed');
         } catch (error) {
           console.error('[setUserSubscription] Verification read failed:', error);
           throw error;
@@ -159,7 +153,6 @@ export class SubscriptionService {
         
         if (verifyDoc.exists()) {
           const writtenData = verifyDoc.data();
-          console.log('[setUserSubscription] Write verified, data:', writtenData);
           return true;
         } else {
           console.error('[setUserSubscription] Write failed: Document does not exist after write');
@@ -183,7 +176,6 @@ export class SubscriptionService {
         // If it's a network error and we have retries left, wait and try again
         if (isNetworkError && attempt < maxRetries - 1) {
           const delay = Math.min(1000 * Math.pow(2, attempt), 5000); // Exponential backoff, max 5s
-          console.log(`[setUserSubscription] Network/verification error detected. Retrying in ${delay}ms...`);
           await new Promise(resolve => setTimeout(resolve, delay));
           attempt++;
           continue;
@@ -267,7 +259,6 @@ export class SubscriptionService {
     userEmail: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      console.log('[AdminSetUserPlan] Starting subscription plan update:', {
         adminUserId,
         targetUserId,
         plan,
@@ -282,7 +273,6 @@ export class SubscriptionService {
         throw new Error(error);
       }
 
-      console.log('[AdminSetUserPlan] Admin authorization verified');
 
       const subscription: Partial<UserSubscription> = {
         plan,
@@ -291,12 +281,10 @@ export class SubscriptionService {
         isAdmin: targetUserId === adminUserId // Mark admin's own account
       };
 
-      console.log('[AdminSetUserPlan] Calling setUserSubscription with:', subscription);
 
       const success = await this.setUserSubscription(targetUserId, subscription);
       
       if (success) {
-        console.log('[AdminSetUserPlan] Subscription update successful');
         return { success: true };
       } else {
         const error = 'Failed to update subscription in Firestore';

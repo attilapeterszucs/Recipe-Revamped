@@ -4,7 +4,6 @@ import { db } from '../lib/firebase';
 // Test utility to create sample users and notifications for admin panel testing
 export const createTestData = async () => {
   try {
-    console.log('Creating test data...');
     
     // Create test users
     const testUsers = [
@@ -34,7 +33,6 @@ export const createTestData = async () => {
     // Add users to the users collection
     for (const user of testUsers) {
       await setDoc(doc(db, 'users', user.uid), user);
-      console.log(`Created test user: ${user.email}`);
     }
 
     // Create test notifications
@@ -77,11 +75,8 @@ export const createTestData = async () => {
     // Add notifications
     for (const notification of testNotifications) {
       await addDoc(collection(db, 'notifications'), notification);
-      console.log(`Created test notification for ${notification.userId}`);
     }
 
-    console.log('✅ Test data created successfully!');
-    console.log('🔄 Refresh the admin panel to see the test users and notifications.');
     
     return {
       usersCreated: testUsers.length,
@@ -97,11 +92,9 @@ export const createTestData = async () => {
 // Cleanup function to remove test data
 export const cleanupTestData = async () => {
   try {
-    console.log('Cleaning up test data...');
     
     // Note: In a real app, you'd want to query and delete documents
     // For now, just log that this should be done manually
-    console.log('⚠️ To cleanup test data, manually delete documents with IDs starting with "test-" from your Firebase console');
     
   } catch (error) {
     console.error('Error cleaning up test data:', error);

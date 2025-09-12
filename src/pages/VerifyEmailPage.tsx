@@ -23,8 +23,6 @@ const VerifyEmailPage: React.FC = () => {
       const continueUrl = searchParams.get('continueUrl');
       const lang = searchParams.get('lang');
       
-      console.log('VerifyEmailPage - Full URL:', window.location.href);
-      console.log('VerifyEmailPage - URL params:', { 
         actionCode, 
         mode, 
         apiKey, 
@@ -39,7 +37,6 @@ const VerifyEmailPage: React.FC = () => {
         return;
       }
 
-      console.log('VerifyEmailPage - Processing verification with actionCode:', actionCode);
       
       // Check if this looks like an email verification (if mode is present)
       if (mode && mode !== 'verifyEmail') {
