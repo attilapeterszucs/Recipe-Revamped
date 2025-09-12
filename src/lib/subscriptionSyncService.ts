@@ -185,12 +185,6 @@ export class SubscriptionSyncService {
           const tempDoc = querySnapshot.docs[0];
           const tempData = tempDoc.data();
           
-            docId: tempDoc.id,
-            plan: tempData.plan,
-            customerEmail: tempData.customerEmail,
-            status: tempData.status
-          });
-          
           await this.syncTempSubscriptionToUser(tempDoc.id, tempData);
           return true;
         }

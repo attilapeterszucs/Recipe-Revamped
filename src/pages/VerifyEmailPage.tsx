@@ -23,13 +23,6 @@ const VerifyEmailPage: React.FC = () => {
       const continueUrl = searchParams.get('continueUrl');
       const lang = searchParams.get('lang');
       
-        actionCode, 
-        mode, 
-        apiKey, 
-        continueUrl, 
-        lang,
-        allParams: Object.fromEntries(searchParams.entries()) 
-      });
       
       if (!actionCode) {
         setStatus('error');

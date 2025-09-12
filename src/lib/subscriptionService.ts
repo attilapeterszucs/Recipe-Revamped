@@ -259,12 +259,6 @@ export class SubscriptionService {
     userEmail: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
-        adminUserId,
-        targetUserId,
-        plan,
-        userEmail
-      });
-
       // Verify admin privileges
       const isAdmin = await this.isUserAdmin(userEmail, adminUserId);
       if (!isAdmin) {

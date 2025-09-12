@@ -475,12 +475,6 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
       const rebuiltContent = buildRecipeOutput(updatedParsedRecipe, dietaryFilters);
       
       // Debug logging to help identify issues
-        title: title.trim(),
-        parsedRecipe,
-        dietaryFilters,
-        category,
-        rebuiltContentLength: rebuiltContent.length
-      });
       
       // Handle image upload first if there's a new image
       let finalImageUrl = imageUrl; // Always use the current imageUrl state
