@@ -1,0 +1,90 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow users to read and write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Allow users to read and write their own settings
+    match /userSettings/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Allow users to read and write their own subscriptions
+    match /subscriptions/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Admin collection - allow users to check if they are admin
+    match /admins/{adminId} {
+      // Allow users to read admin documents where they are the subject
+      allow read: if request.auth != null && 
+                  (request.auth.uid == resource.data.uid || 
+                   request.auth.token.email == resource.data.email);
+      
+      // Allow existing admins to create, update, and delete admin records
+      allow write: if request.auth != null && 
+                   exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+                   get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isActive == true;
+    }
+    
+    // Admin actions log - only admins can read/write
+    match /adminActions/{actionId} {
+      allow read, write: if request.auth != null && 
+                         exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+                         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isActive == true;
+    }
+    
+    // Notifications - users can read their own notifications
+    match /notifications/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Only admins can create notifications
+      allow write: if request.auth != null && 
+                   exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+                   get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isActive == true;
+    }
+    
+    // Recipes - users can read and write their own recipes
+    match /recipes/{recipeId} {
+      // Users can read their own recipes
+      allow read: if request.auth != null && request.auth.uid == resource.data.ownerUid;
+      // Users can create recipes if they own them
+      allow create: if request.auth != null && 
+                    request.auth.uid == request.resource.data.ownerUid &&
+                    request.resource.data.ownerUid is string;
+      // Users can update/delete their own recipes
+      allow update, delete: if request.auth != null && 
+                            request.auth.uid == resource.data.ownerUid;
+    }
+    
+    // Meal plans - users can read and write their own meal plans
+    match /mealPlans/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // User profiles - users can read and write their own profiles
+    match /userProfiles/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Usage tracking - users can read and write their own usage data
+    match /usage/{usageId} {
+      // Allow users to access their own usage documents (format: userId_YYYY-MM-DD)
+      allow read, write: if request.auth != null && 
+                         usageId.matches(request.auth.uid + '_[0-9]{4}-[0-9]{2}-[0-9]{2}');
+    }
+    
+    // System collections - read-only for authenticated users
+    match /systemConfig/{document} {
+      allow read: if request.auth != null;
+      // Only admins can write system config
+      allow write: if request.auth != null && 
+                   exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+                   get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isActive == true;
+    }
+    
+    // Deny all other access - IMPORTANT: No catch-all allow rules
+    // This ensures only explicitly defined collections are accessible
+  }
+}

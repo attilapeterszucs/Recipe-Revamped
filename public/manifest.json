@@ -1,0 +1,68 @@
+{
+  "name": "Recipe Revamped - AI Recipe Converter",
+  "short_name": "Recipe Revamped",
+  "description": "Convert any recipe to match your dietary preferences with AI. Support for 16+ diet filters, meal planning, and nutrition analysis.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16a34a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["food", "health", "lifestyle", "productivity"],
+  "icons": [
+    {
+      "src": "/favicons/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Convert Recipe",
+      "short_name": "Convert",
+      "description": "Convert a recipe to match your dietary preferences",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/favicons/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Saved Recipes",
+      "short_name": "Saved",
+      "description": "View your saved recipe collection",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/favicons/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
