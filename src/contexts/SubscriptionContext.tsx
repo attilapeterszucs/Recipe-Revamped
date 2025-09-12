@@ -2,6 +2,14 @@ import React, { createContext, useContext, useState, useEffect, type ReactNode }
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { initializeSubscriptionSync, handlePaymentReturn } from '../lib/subscriptionSyncService';
+import { PaymentNotification } from '../components/PaymentNotification';
+
+interface PaymentNotificationState {
+  show: boolean;
+  type: 'success' | 'pending' | 'error';
+  title: string;
+  message: string;
+}
 
 interface SubscriptionContextType {
   refreshTrigger: number;
@@ -16,9 +24,23 @@ interface SubscriptionProviderProps {
 
 export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ children }) => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [notification, setNotification] = useState<PaymentNotificationState>({
+    show: false,
+    type: 'success',
+    title: '',
+    message: ''
+  });
 
   const refreshSubscription = () => {
     setRefreshTrigger(prev => prev + 1);
+  };
+
+  const showNotification = (type: 'success' | 'pending' | 'error', title: string, message: string) => {
+    setNotification({ show: true, type, title, message });
+  };
+
+  const hideNotification = () => {
+    setNotification(prev => ({ ...prev, show: false }));
   };
 
   useEffect(() => {
@@ -44,8 +66,12 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
             const syncSuccess = await handlePaymentReturn(user.email);
             if (syncSuccess) {
               
-              // Show success message
-              alert('🎉 Payment successful! Your subscription is now active.');
+              // Show success notification
+              showNotification(
+                'success',
+                'Payment Successful! 🎉',
+                'Your subscription is now active and ready to use. Welcome to your new plan!'
+              );
               
               // Trigger subscription refresh in UI
               refreshSubscription();
@@ -54,11 +80,19 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
               const newUrl = window.location.pathname;
               window.history.replaceState({}, '', newUrl);
             } else {
-              alert('⏳ Payment received! Your subscription will be activated shortly.');
+              showNotification(
+                'pending',
+                'Payment Processing ⏳',
+                'Your payment was received successfully. We\'re activating your subscription now - this usually takes just a few seconds.'
+              );
             }
           } catch (error) {
             console.error('❌ Error handling payment return:', error);
-            alert('⚠️ Payment processed, but there was an issue activating your subscription. Please contact support.');
+            showNotification(
+              'error',
+              'Activation Issue ⚠️',
+              'Your payment was processed successfully, but we encountered an issue activating your subscription. Please contact support and we\'ll resolve this immediately.'
+            );
           }
         } else if (sessionId || success) {
         }
@@ -84,6 +118,14 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
   return (
     <SubscriptionContext.Provider value={{ refreshTrigger, refreshSubscription }}>
       {children}
+      {notification.show && (
+        <PaymentNotification
+          type={notification.type}
+          title={notification.title}
+          message={notification.message}
+          onClose={hideNotification}
+        />
+      )}
     </SubscriptionContext.Provider>
   );
 };
