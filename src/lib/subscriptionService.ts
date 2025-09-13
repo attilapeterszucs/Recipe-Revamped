@@ -385,6 +385,22 @@ export class SubscriptionService {
     }
   }
 
+  // Cancel subscription (set to free plan)
+  static async cancelSubscription(userId: string): Promise<boolean> {
+    try {
+      const subscription: Partial<UserSubscription> = {
+        plan: 'free',
+        status: 'active',
+        startDate: new Date()
+      };
+
+      return await this.setUserSubscription(userId, subscription);
+    } catch (error) {
+      console.error('Error canceling subscription:', error);
+      return false;
+    }
+  }
+
   // Secure feature check for specific features
   static async canAccessFeature(feature: string): Promise<boolean> {
     try {
@@ -395,7 +411,7 @@ export class SubscriptionService {
       if (!subscription) return false;
 
       const planDetails = SUBSCRIPTION_PLANS[subscription.plan];
-      
+
       switch (feature) {
         case 'mealPlanning':
           return planDetails.canUseMealPlanning;

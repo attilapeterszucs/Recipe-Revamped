@@ -115,6 +115,15 @@ export const resetPassword = async (email: string) => {
   await sendPasswordResetEmail(auth, email);
 };
 
+export const resendEmailVerification = async (user?: User) => {
+  const currentUser = user || auth.currentUser;
+  if (!currentUser) {
+    throw new Error('No user is currently signed in');
+  }
+  await sendEmailVerification(currentUser);
+  logger.auth('Email verification resent');
+};
+
 export type { User };
 
 // Email change notification function
