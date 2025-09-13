@@ -31,12 +31,12 @@ export const CookiePolicy: React.FC = () => {
       {/* Header */}
       <AuthAwareNavigation />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Sidebar Navigation */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Contents</h2>
+          <div className="lg:col-span-1 order-2 lg:order-1">
+            <div className="sticky top-20 sm:top-24 bg-white rounded-xl shadow-lg p-4 sm:p-6">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Contents</h2>
               <nav className="space-y-2">
                 {[
                   { id: 'overview', title: 'Cookie Overview', icon: Cookie },
@@ -51,10 +51,10 @@ export const CookiePolicy: React.FC = () => {
                   <button
                     key={id}
                     onClick={() => scrollToSection(id)}
-                    className="flex items-center w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                    className="flex items-center w-full text-left px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                   >
-                    <Icon className="w-4 h-4 mr-2" />
-                    {title}
+                    <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0" />
+                    <span className="truncate">{title}</span>
                   </button>
                 ))}
               </nav>
@@ -62,34 +62,34 @@ export const CookiePolicy: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 order-1 lg:order-2">
             <div className="bg-white rounded-xl shadow-xl overflow-hidden">
               {/* Hero Section */}
-              <div className="bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 px-8 py-12 text-white">
-                <div className="flex items-center mb-4">
-                  <Cookie className="w-8 h-8 mr-3" />
-                  <h1 className="text-4xl font-bold">Cookie Policy</h1>
+              <div className="bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12 text-white">
+                <div className="flex items-start sm:items-center mb-3 sm:mb-4">
+                  <Cookie className="w-5 h-5 sm:w-6 sm:h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 mr-2 sm:mr-3 flex-shrink-0" />
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">Cookie Policy</h1>
                 </div>
-                <p className="text-xl text-orange-100 mb-6">
+                <p className="text-base sm:text-lg lg:text-xl text-orange-100 mb-4 sm:mb-6 leading-relaxed">
                   Transparent cookie usage for enhanced user experience
                 </p>
-                <div className="flex items-center space-x-6 text-orange-100">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6 text-orange-100">
                   <div className="flex items-center">
-                    <Calendar className="w-5 h-5 mr-2" />
-                    <span>Effective: January 1, 2025</span>
+                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                    <span className="text-sm sm:text-base">Effective: September 13, 2025</span>
                   </div>
                   <div className="flex items-center">
-                    <FileText className="w-5 h-5 mr-2" />
-                    <span>Last Updated: January 1, 2025</span>
+                    <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                    <span className="text-sm sm:text-base">Last Updated: September 13, 2025</span>
                   </div>
                 </div>
               </div>
 
-              <div className="p-8 space-y-12">
+              <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 lg:space-y-12">
                 {/* Cookie Summary Banner */}
-                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-6 border border-orange-200">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <Cookie className="w-6 h-6 text-orange-600 mr-2" />
+                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-4 sm:p-6 border border-orange-200">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center">
+                    <Cookie className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mr-2" />
                     Our Cookie Approach
                   </h3>
                   <div className="grid md:grid-cols-3 gap-4">
@@ -113,12 +113,12 @@ export const CookiePolicy: React.FC = () => {
 
                 {/* Section 1: Cookie Overview */}
                 <section id="overview" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
-                    <div className="bg-orange-100 rounded-full p-3 mr-4">
-                      <Cookie className="w-6 h-6 text-orange-600" />
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
+                    <div className="bg-orange-100 rounded-full p-2 sm:p-3 mr-3 sm:mr-4 flex-shrink-0">
+                      <Cookie className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">What Are Cookies?</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">What Are Cookies?</h2>
                       <p className="text-gray-500">Understanding cookies and how we use them</p>
                     </div>
                   </div>
@@ -140,12 +140,12 @@ export const CookiePolicy: React.FC = () => {
 
                 {/* Section 2: Essential Cookies */}
                 <section id="essential" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-green-100 rounded-full p-3 mr-4">
-                      <Shield className="w-6 h-6 text-green-600" />
+                      <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">1. Essential Cookies</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">1. Essential Cookies</h2>
                       <p className="text-gray-500">Required for basic website functionality</p>
                     </div>
                   </div>
@@ -215,12 +215,12 @@ export const CookiePolicy: React.FC = () => {
 
                 {/* Section 3: Analytics Cookies */}
                 <section id="analytics" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-purple-100 rounded-full p-3 mr-4">
-                      <Eye className="w-6 h-6 text-purple-600" />
+                      <Eye className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">2. Analytics Cookies</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">2. Analytics Cookies</h2>
                       <p className="text-gray-500">Help us understand how you use our service</p>
                     </div>
                   </div>
@@ -268,12 +268,12 @@ export const CookiePolicy: React.FC = () => {
 
                 {/* Section 4: Preference Cookies */}
                 <section id="preferences" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-blue-100 rounded-full p-3 mr-4">
-                      <Settings className="w-6 h-6 text-blue-600" />
+                      <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">3. Preference Cookies</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">3. Preference Cookies</h2>
                       <p className="text-gray-500">Remember your personal settings</p>
                     </div>
                   </div>
@@ -339,12 +339,12 @@ export const CookiePolicy: React.FC = () => {
 
                 {/* Section 5: Third-Party Cookies */}
                 <section id="third-party" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-red-100 rounded-full p-3 mr-4">
-                      <AlertTriangle className="w-6 h-6 text-red-600" />
+                      <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">4. Third-Party Cookies</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">4. Third-Party Cookies</h2>
                       <p className="text-gray-500">External services we use</p>
                     </div>
                   </div>
@@ -422,12 +422,12 @@ export const CookiePolicy: React.FC = () => {
 
                 {/* Section 6: Cookie Management */}
                 <section id="management" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-indigo-100 rounded-full p-3 mr-4">
-                      <ToggleLeft className="w-6 h-6 text-indigo-600" />
+                      <ToggleLeft className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">5. Managing Your Cookie Preferences</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">5. Managing Your Cookie Preferences</h2>
                       <p className="text-gray-500">You have full control over your cookies</p>
                     </div>
                   </div>
@@ -503,12 +503,12 @@ export const CookiePolicy: React.FC = () => {
 
                 {/* Section 7: Policy Updates */}
                 <section id="updates" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-teal-100 rounded-full p-3 mr-4">
-                      <Calendar className="w-6 h-6 text-teal-600" />
+                      <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">6. Policy Updates</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">6. Policy Updates</h2>
                       <p className="text-gray-500">How we handle changes to this policy</p>
                     </div>
                   </div>
@@ -539,12 +539,12 @@ export const CookiePolicy: React.FC = () => {
 
                 {/* Section 8: Contact Us */}
                 <section id="contact" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-blue-100 rounded-full p-3 mr-4">
-                      <Mail className="w-6 h-6 text-blue-600" />
+                      <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">7. Questions About Cookies?</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">7. Questions About Cookies?</h2>
                       <p className="text-gray-500">We're here to help with any cookie-related questions</p>
                     </div>
                   </div>

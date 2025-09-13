@@ -751,7 +751,7 @@ export const Blog: React.FC = () => {
         <AuthAwareNavigation />
         
         {/* Hero Section with Background Image */}
-        <div className="relative h-[60vh] min-h-[500px] bg-gradient-to-r from-green-600 to-blue-600 overflow-hidden">
+        <div className="relative h-[50vh] sm:h-[60vh] min-h-[400px] sm:min-h-[500px] bg-gradient-to-r from-green-600 to-blue-600 overflow-hidden">
           <img
             src={post.image}
             alt={post.title}
@@ -760,98 +760,98 @@ export const Blog: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10"></div>
           
           {/* Content Container */}
-          <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-end pb-16">
+          <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-end pb-8 sm:pb-12 lg:pb-16">
             {/* Back to blog link */}
-            <div className="mb-8">
+            <div className="mb-4 sm:mb-6 lg:mb-8">
               <Link
                 to="/blog"
-                className="inline-flex items-center text-white/90 hover:text-white font-medium transition-colors bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full"
+                className="inline-flex items-center text-white/90 hover:text-white font-medium transition-colors bg-black/20 backdrop-blur-sm px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-base"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                 Back to Blog
               </Link>
             </div>
             
             {/* Tags */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {post.tags.slice(0, 4).map((tag) => (
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
+              {post.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="px-4 py-2 bg-white/15 backdrop-blur-md text-white text-sm font-medium rounded-full border border-white/20 whitespace-nowrap"
+                  className="px-2 py-1 sm:px-3 sm:py-1.5 lg:px-4 lg:py-2 bg-white/15 backdrop-blur-md text-white text-xs sm:text-sm font-medium rounded-full border border-white/20 whitespace-nowrap"
                 >
                   {tag}
                 </span>
               ))}
-              {post.tags.length > 4 && (
-                <span className="px-4 py-2 bg-white/15 backdrop-blur-md text-white text-sm font-medium rounded-full border border-white/20">
-                  +{post.tags.length - 4} more
+              {post.tags.length > 3 && (
+                <span className="px-2 py-1 sm:px-3 sm:py-1.5 lg:px-4 lg:py-2 bg-white/15 backdrop-blur-md text-white text-xs sm:text-sm font-medium rounded-full border border-white/20">
+                  +{post.tags.length - 3} more
                 </span>
               )}
             </div>
             
             {/* Title */}
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight max-w-4xl">
+            <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-3 sm:mb-4 lg:mb-6 leading-tight max-w-4xl">
               {post.title}
             </h1>
             
-            {/* Excerpt */}
-            <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mb-8 leading-relaxed">
+            {/* Excerpt - Hidden on very small screens */}
+            <p className="hidden sm:block text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 max-w-3xl mb-4 sm:mb-6 lg:mb-8 leading-relaxed">
               {post.excerpt}
             </p>
             
             {/* Metadata */}
-            <div className="flex flex-wrap items-center gap-6 text-white/80">
-              <div className="flex items-center bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Calendar className="w-4 h-4 mr-2" />
-                <span className="font-medium">{formatDate(post.date)}</span>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 lg:gap-6 text-white/80">
+              <div className="flex items-center bg-black/20 backdrop-blur-sm px-2 py-1 sm:px-3 sm:py-1.5 lg:px-4 lg:py-2 rounded-full">
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="font-medium text-xs sm:text-sm">{formatDate(post.date)}</span>
               </div>
-              <div className="flex items-center bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Clock className="w-4 h-4 mr-2" />
-                <span className="font-medium">{post.readTime}</span>
+              <div className="flex items-center bg-black/20 backdrop-blur-sm px-2 py-1 sm:px-3 sm:py-1.5 lg:px-4 lg:py-2 rounded-full">
+                <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="font-medium text-xs sm:text-sm">{post.readTime}</span>
               </div>
             </div>
           </div>
         </div>
 
-        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
+        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 sm:-mt-6 lg:-mt-8 relative z-20">
 
           {/* Blog post content */}
-          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-16">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-8 sm:mb-12 lg:mb-16">
             {/* Content Header */}
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 px-8 lg:px-12 py-8 border-b border-gray-100">
-              <div className="flex items-center justify-between">
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 px-4 sm:px-6 lg:px-8 xl:px-12 py-4 sm:py-6 lg:py-8 border-b border-gray-100">
+              <div className="flex items-start sm:items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Article Content</h2>
-                  <p className="text-gray-600">In-depth insights and expert guidance</p>
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">Article Content</h2>
+                  <p className="text-sm sm:text-base text-gray-600">In-depth insights and expert guidance</p>
                 </div>
                 <div className="hidden sm:flex items-center space-x-4 text-sm text-gray-500">
-                  <div className="flex items-center bg-white px-3 py-1 rounded-full shadow-sm">
+                  <div className="flex items-center bg-white px-2 sm:px-3 py-1 rounded-full shadow-sm">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                    <span>Published</span>
+                    <span className="text-xs sm:text-sm">Published</span>
                   </div>
                 </div>
               </div>
             </div>
             
             {/* Article Content */}
-            <div className="px-8 lg:px-12 py-12">
-              <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-8 prose-h1:leading-tight prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-16 prose-h2:mb-8 prose-h2:text-green-800 prose-h2:border-b prose-h2:border-green-200 prose-h2:pb-3 prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-10 prose-h3:mb-6 prose-h3:text-gray-800 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-p:text-lg prose-strong:text-gray-900 prose-strong:font-semibold prose-ul:my-8 prose-ul:space-y-3 prose-li:text-gray-700 prose-li:leading-relaxed prose-li:pl-2 prose-code:bg-green-100 prose-code:text-green-800 prose-code:px-3 prose-code:py-1 prose-code:rounded-md prose-code:font-medium prose-blockquote:border-l-4 prose-blockquote:border-green-500 prose-blockquote:bg-green-50 prose-blockquote:p-6 prose-blockquote:my-8 prose-blockquote:rounded-r-lg prose-blockquote:shadow-sm prose-a:text-green-600 prose-a:font-medium prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline">
+            <div className="px-4 sm:px-6 lg:px-8 xl:px-12 py-6 sm:py-8 lg:py-12">
+              <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:text-gray-900 prose-h1:text-xl prose-h1:sm:text-2xl prose-h1:lg:text-3xl prose-h1:font-bold prose-h1:mb-4 prose-h1:sm:mb-6 prose-h1:lg:mb-8 prose-h1:leading-tight prose-h2:text-lg prose-h2:sm:text-xl prose-h2:lg:text-2xl prose-h2:font-bold prose-h2:mt-8 prose-h2:sm:mt-12 prose-h2:lg:mt-16 prose-h2:mb-4 prose-h2:sm:mb-6 prose-h2:lg:mb-8 prose-h2:text-green-800 prose-h2:border-b prose-h2:border-green-200 prose-h2:pb-2 prose-h2:sm:pb-3 prose-h3:text-base prose-h3:sm:text-lg prose-h3:lg:text-xl prose-h3:font-semibold prose-h3:mt-6 prose-h3:sm:mt-8 prose-h3:lg:mt-10 prose-h3:mb-3 prose-h3:sm:mb-4 prose-h3:lg:mb-6 prose-h3:text-gray-800 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-3 prose-p:sm:mb-4 prose-p:lg:mb-6 prose-p:text-sm prose-p:sm:text-base prose-p:lg:text-lg prose-strong:text-gray-900 prose-strong:font-semibold prose-ul:my-4 prose-ul:sm:my-6 prose-ul:lg:my-8 prose-ul:space-y-2 prose-ul:sm:space-y-3 prose-li:text-gray-700 prose-li:leading-relaxed prose-li:pl-1 prose-li:sm:pl-2 prose-code:bg-green-100 prose-code:text-green-800 prose-code:px-2 prose-code:sm:px-3 prose-code:py-1 prose-code:rounded-md prose-code:font-medium prose-blockquote:border-l-4 prose-blockquote:border-green-500 prose-blockquote:bg-green-50 prose-blockquote:p-4 prose-blockquote:sm:p-6 prose-blockquote:my-4 prose-blockquote:sm:my-6 prose-blockquote:lg:my-8 prose-blockquote:rounded-r-lg prose-blockquote:shadow-sm prose-a:text-green-600 prose-a:font-medium prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline">
                 <div dangerouslySetInnerHTML={{ __html: formatBlogContent(post.content, post.id) }} />
               </div>
             </div>
             
             {/* Article Footer */}
-            <div className="bg-gray-50 px-8 lg:px-12 py-8 border-t border-gray-100">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="text-sm text-gray-600">
+            <div className="bg-gray-50 px-4 sm:px-6 lg:px-8 xl:px-12 py-4 sm:py-6 lg:py-8 border-t border-gray-100">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <div className="text-xs sm:text-sm text-gray-600">
                   Last updated: {formatDate(post.date)}
                 </div>
-                <div className="flex items-center space-x-4">
-                  <button className="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium">
-                    <Heart className="w-4 h-4 mr-2" />
+                <div className="flex items-center space-x-2 sm:space-x-4">
+                  <button className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-xs sm:text-sm font-medium">
+                    <Heart className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                     Helpful
                   </button>
-                  <button className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium">
+                  <button className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-xs sm:text-sm font-medium">
                     Share Article
                   </button>
                 </div>
@@ -962,24 +962,24 @@ export const Blog: React.FC = () => {
       {/* Header */}
       <AuthAwareNavigation />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl p-12 text-white mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Recipe Revamped Blog</h1>
-            <p className="text-xl md:text-2xl text-green-100 max-w-3xl mx-auto">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+          <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-12 text-white mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 leading-tight">Recipe Revamped Blog</h1>
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-green-100 max-w-3xl mx-auto leading-relaxed">
               Discover the latest insights in AI-powered cooking, nutrition science, and dietary adaptation
             </p>
           </div>
         </div>
 
         {/* Tag Filter */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Filter by topic:</h3>
-          <div className="flex flex-wrap gap-2">
+        <div className="mb-6 sm:mb-8">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Filter by topic:</h3>
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             <button
               onClick={() => setSelectedTag(null)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-colors ${
                 selectedTag === null 
                   ? 'bg-green-600 text-white' 
                   : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
@@ -991,13 +991,13 @@ export const Blog: React.FC = () => {
               <button
                 key={tag}
                 onClick={() => setSelectedTag(tag)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center ${
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-colors flex items-center ${
                   selectedTag === tag
                     ? 'bg-green-600 text-white'
                     : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                <Tag className="w-3 h-3 mr-1" />
+                <Tag className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1" />
                 {tag}
               </button>
             ))}
@@ -1005,11 +1005,11 @@ export const Blog: React.FC = () => {
         </div>
 
         {/* Blog Posts Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
           {filteredPosts.map((post) => (
             <article key={post.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:scale-[1.02] group">
               <Link to={`/blog/${post.id}`} className="block">
-                <div className="h-48 bg-gradient-to-br from-green-100 to-blue-100 relative overflow-hidden">
+                <div className="h-40 sm:h-44 lg:h-48 bg-gradient-to-br from-green-100 to-blue-100 relative overflow-hidden">
                   <img
                     src={post.image}
                     alt={post.title}
@@ -1020,50 +1020,50 @@ export const Blog: React.FC = () => {
                     }}
                   />
                   <div className="hidden absolute inset-0 flex items-center justify-center">
-                    <ChefHat className="w-16 h-16 text-green-600 opacity-50" />
+                    <ChefHat className="w-12 h-12 sm:w-16 sm:h-16 text-green-600 opacity-50" />
                   </div>
                 </div>
                 
-                <div className="p-6">
-                  <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
+                <div className="p-4 sm:p-5 lg:p-6">
+                  <div className="flex justify-between items-center text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">
                     <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
+                      <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                       <span>{formatDate(post.date)}</span>
                     </div>
                     <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-1" />
+                      <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                       <span>{post.readTime}</span>
                     </div>
                   </div>
                   
-                  <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-green-600 transition-colors">
+                  <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-2 group-hover:text-green-600 transition-colors leading-tight">
                     {post.title}
                   </h2>
                   
-                  <p className="text-gray-600 mb-4 line-clamp-3">
+                  <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3 leading-relaxed">
                     {post.excerpt}
                   </p>
                   
-                  <div className="flex flex-wrap gap-2 mb-6">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
                     {post.tags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full whitespace-nowrap"
+                        className="px-2 py-0.5 sm:px-2 sm:py-1 bg-green-100 text-green-700 text-xs rounded-full whitespace-nowrap"
                       >
                         {tag}
                       </span>
                     ))}
                     {post.tags.length > 3 && (
-                      <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                      <span className="px-2 py-0.5 sm:px-2 sm:py-1 bg-green-100 text-green-700 text-xs rounded-full">
                         +{post.tags.length - 3}
                       </span>
                     )}
                   </div>
                   
                   <div className="flex justify-start">
-                    <div className="text-green-600 font-medium group-hover:text-green-700 transition-colors flex items-center">
+                    <div className="text-green-600 font-medium group-hover:text-green-700 transition-colors flex items-center text-sm sm:text-base">
                       Read More
-                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
                 </div>
@@ -1073,18 +1073,18 @@ export const Blog: React.FC = () => {
         </div>
 
         {/* Newsletter Signup */}
-        <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Stay Updated</h2>
-          <p className="text-gray-600 mb-6">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 text-center">
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Stay Updated</h2>
+          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 leading-relaxed">
             Get the latest recipes, nutrition tips, and AI cooking insights delivered to your inbox.
           </p>
-          <div className="max-w-md mx-auto flex gap-4">
+          <div className="max-w-md mx-auto flex flex-col sm:flex-row gap-3 sm:gap-4">
             <input
               type="email"
               placeholder="Enter your email"
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              className="flex-1 px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm sm:text-base"
             />
-            <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+            <button className="bg-green-600 text-white px-4 py-2 sm:px-6 sm:py-2 rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-medium">
               Subscribe
             </button>
           </div>

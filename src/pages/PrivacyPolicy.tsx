@@ -38,12 +38,12 @@ export const PrivacyPolicy: React.FC = () => {
       {/* Header */}
       <AuthAwareNavigation />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Sidebar Navigation */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Contents</h2>
+          <div className="lg:col-span-1 order-2 lg:order-1">
+            <div className="sticky top-20 sm:top-24 bg-white rounded-xl shadow-lg p-4 sm:p-6">
+              <h2 className="text-base sm:text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 sm:mb-4">Contents</h2>
               <nav className="space-y-2">
                 {[
                   { id: 'commitment', title: 'Our Commitment', icon: Shield },
@@ -60,10 +60,10 @@ export const PrivacyPolicy: React.FC = () => {
                   <button
                     key={id}
                     onClick={() => scrollToSection(id)}
-                    className="flex items-center w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                    className="flex items-center w-full text-left px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                   >
-                    <Icon className="w-4 h-4 mr-2" />
-                    {title}
+                    <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+                    <span className="truncate">{title}</span>
                   </button>
                 ))}
               </nav>
@@ -71,34 +71,34 @@ export const PrivacyPolicy: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 order-1 lg:order-2">
             <div className="bg-white rounded-xl shadow-xl overflow-hidden">
               {/* Hero Section */}
-              <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 px-8 py-12 text-white">
-                <div className="flex items-center mb-4">
-                  <Shield className="w-8 h-8 mr-3" />
-                  <h1 className="text-4xl font-bold">Privacy Policy</h1>
+              <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12 text-white">
+                <div className="flex items-start sm:items-center mb-3 sm:mb-4">
+                  <Shield className="w-5 h-5 sm:w-6 sm:h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 mr-2 sm:mr-3 flex-shrink-0" />
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">Privacy Policy</h1>
                 </div>
-                <p className="text-xl text-blue-100 mb-6">
+                <p className="text-base sm:text-lg lg:text-xl text-blue-100 mb-4 sm:mb-6 leading-relaxed">
                   Your privacy is our priority - built into every line of code
                 </p>
-                <div className="flex items-center space-x-6 text-blue-100">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6 text-blue-100">
                   <div className="flex items-center">
-                    <Calendar className="w-5 h-5 mr-2" />
-                    <span>Effective: January 1, 2025</span>
+                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                    <span className="text-sm sm:text-base">Effective: September 13, 2025</span>
                   </div>
                   <div className="flex items-center">
-                    <FileText className="w-5 h-5 mr-2" />
-                    <span>Last Updated: January 1, 2025</span>
+                    <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                    <span className="text-sm sm:text-base">Last Updated: September 13, 2025</span>
                   </div>
                 </div>
               </div>
 
-              <div className="p-8 space-y-12">
+              <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 lg:space-y-12">
                 {/* Privacy Highlights Banner */}
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border border-green-200">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <Shield className="w-6 h-6 text-green-600 mr-2" />
+                <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4 sm:p-6 border border-green-200">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center">
+                    <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mr-2" />
                     Privacy at a Glance
                   </h3>
                   <div className="grid md:grid-cols-3 gap-4">
@@ -122,17 +122,17 @@ export const PrivacyPolicy: React.FC = () => {
 
                 {/* Section 1: Our Commitment */}
                 <section id="commitment" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
-                    <div className="bg-green-100 rounded-full p-3 mr-4">
-                      <Shield className="w-6 h-6 text-green-600" />
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
+                    <div className="bg-green-100 rounded-full p-2 sm:p-3 mr-3 sm:mr-4 flex-shrink-0">
+                      <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">Our Commitment to Privacy</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Our Commitment to Privacy</h2>
                       <p className="text-gray-500">Privacy isn't just a feature - it's our foundation</p>
                     </div>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-6">
-                    <p className="text-gray-700 leading-relaxed mb-4">
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">
                       At Recipe Revamped, privacy is not just a feature—it's the foundation of our service. We've built our entire 
                       architecture around the principle that your recipes and dietary preferences are yours alone.
                     </p>
@@ -145,18 +145,18 @@ export const PrivacyPolicy: React.FC = () => {
 
                 {/* Section 2: Information We Collect */}
                 <section id="information" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-blue-100 rounded-full p-3 mr-4">
-                      <Database className="w-6 h-6 text-blue-600" />
+                      <Database className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">1. Information We Collect</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">1. Information We Collect</h2>
                       <p className="text-gray-500">Only what's necessary to provide our service</p>
                     </div>
                   </div>
                   <div className="space-y-6">
                     <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
                         <Users className="w-5 h-5 text-blue-600 mr-2" />
                         Account Information
                       </h3>
@@ -174,7 +174,7 @@ export const PrivacyPolicy: React.FC = () => {
                     </div>
 
                     <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
                         <Server className="w-5 h-5 text-green-600 mr-2" />
                         Recipe Data
                       </h3>
@@ -198,7 +198,7 @@ export const PrivacyPolicy: React.FC = () => {
                     </div>
 
                     <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
                         <Eye className="w-5 h-5 text-purple-600 mr-2" />
                         Usage Information (Minimal & Anonymous)
                       </h3>
@@ -216,7 +216,7 @@ export const PrivacyPolicy: React.FC = () => {
                     </div>
 
                     <div className="bg-gray-50 rounded-lg p-6">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
                         <Settings className="w-5 h-5 text-gray-600 mr-2" />
                         Technical Information
                       </h3>
@@ -236,17 +236,17 @@ export const PrivacyPolicy: React.FC = () => {
 
                 {/* Section 3: How We Use Information */}
                 <section id="usage" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-purple-100 rounded-full p-3 mr-4">
-                      <Settings className="w-6 h-6 text-purple-600" />
+                      <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">2. How We Use Information</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">2. How We Use Information</h2>
                       <p className="text-gray-500">Solely for providing and improving our service</p>
                     </div>
                   </div>
                   <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-                    <p className="text-gray-700 leading-relaxed mb-4">We use collected information solely for:</p>
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">We use collected information solely for:</p>
                     <div className="grid md:grid-cols-2 gap-4">
                       <ul className="space-y-3 text-gray-700">
                         <li className="flex items-center">
@@ -282,17 +282,17 @@ export const PrivacyPolicy: React.FC = () => {
 
                 {/* Section 4: Local Processing Technology */}
                 <section id="local-processing" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-emerald-100 rounded-full p-3 mr-4">
-                      <Zap className="w-6 h-6 text-emerald-600" />
+                      <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">3. Local Processing Technology</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">3. Local Processing Technology</h2>
                       <p className="text-gray-500">Cutting-edge privacy protection</p>
                     </div>
                   </div>
                   <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg p-6 border border-emerald-200">
-                    <p className="text-gray-700 leading-relaxed mb-4">
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">
                       Recipe Revamped uses cutting-edge technology to ensure your privacy:
                     </p>
                     <div className="grid md:grid-cols-2 gap-6">
@@ -334,18 +334,18 @@ export const PrivacyPolicy: React.FC = () => {
 
                 {/* Section 5: Data Storage and Security */}
                 <section id="security" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-red-100 rounded-full p-3 mr-4">
-                      <Lock className="w-6 h-6 text-red-600" />
+                      <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">4. Data Storage and Security</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">4. Data Storage and Security</h2>
                       <p className="text-gray-500">Bank-level security measures</p>
                     </div>
                   </div>
                   <div className="space-y-6">
                     <div className="bg-red-50 rounded-lg p-6 border border-red-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
                         <Lock className="w-5 h-5 text-red-600 mr-2" />
                         Security Measures
                       </h3>
@@ -382,7 +382,7 @@ export const PrivacyPolicy: React.FC = () => {
                     </div>
 
                     <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
                         <Database className="w-5 h-5 text-blue-600 mr-2" />
                         Data Retention Policy
                       </h3>
@@ -414,12 +414,12 @@ export const PrivacyPolicy: React.FC = () => {
 
                 {/* Section 6: Information Sharing */}
                 <section id="sharing" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-orange-100 rounded-full p-3 mr-4">
-                      <Users className="w-6 h-6 text-orange-600" />
+                      <Users className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">5. Information Sharing</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">5. Information Sharing</h2>
                       <p className="text-gray-500">We NEVER sell your data</p>
                     </div>
                   </div>
@@ -427,7 +427,7 @@ export const PrivacyPolicy: React.FC = () => {
                     <div className="bg-red-100 rounded-lg p-4 mb-4 border border-red-300">
                       <p className="text-red-800 font-bold">🚫 We NEVER sell your personal information.</p>
                     </div>
-                    <p className="text-gray-700 leading-relaxed mb-4">We share information only in these limited circumstances:</p>
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">We share information only in these limited circumstances:</p>
                     <div className="grid md:grid-cols-2 gap-4">
                       <ul className="space-y-3 text-gray-700">
                         <li className="flex items-start">
@@ -469,18 +469,18 @@ export const PrivacyPolicy: React.FC = () => {
 
                 {/* Section 7: Your Rights */}
                 <section id="rights" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-indigo-100 rounded-full p-3 mr-4">
-                      <CheckCircle className="w-6 h-6 text-indigo-600" />
+                      <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">6. Your Rights and Choices</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">6. Your Rights and Choices</h2>
                       <p className="text-gray-500">Complete control over your data</p>
                     </div>
                   </div>
                   <div className="space-y-6">
                     <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
                         <CheckCircle className="w-5 h-5 text-indigo-600 mr-2" />
                         Access and Control
                       </h3>
@@ -524,17 +524,17 @@ export const PrivacyPolicy: React.FC = () => {
 
                 {/* Section 8: Cookies and Tracking */}
                 <section id="cookies" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-yellow-100 rounded-full p-3 mr-4">
-                      <Eye className="w-6 h-6 text-yellow-600" />
+                      <Eye className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">7. Cookies and Tracking</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">7. Cookies and Tracking</h2>
                       <p className="text-gray-500">Minimal cookies, no tracking</p>
                     </div>
                   </div>
                   <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
-                    <p className="text-gray-700 leading-relaxed mb-4">We use minimal cookies for:</p>
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">We use minimal cookies for:</p>
                     <div className="grid md:grid-cols-3 gap-4 mb-4">
                       <div className="bg-white rounded-lg p-4 border border-yellow-200">
                         <h4 className="font-semibold text-gray-900 mb-2">Essential Cookies</h4>
@@ -558,18 +558,18 @@ export const PrivacyPolicy: React.FC = () => {
 
                 {/* Section 9: International Data Transfers */}
                 <section id="international" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-teal-100 rounded-full p-3 mr-4">
-                      <Globe className="w-6 h-6 text-teal-600" />
+                      <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">8. International Compliance</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">8. International Compliance</h2>
                       <p className="text-gray-500">GDPR, CCPA, and global privacy standards</p>
                     </div>
                   </div>
                   <div className="space-y-6">
                     <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
                         <Globe className="w-5 h-5 text-blue-600 mr-2" />
                         GDPR Compliance (EU Users)
                       </h3>
@@ -586,7 +586,7 @@ export const PrivacyPolicy: React.FC = () => {
                     </div>
 
                     <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
                         <Globe className="w-5 h-5 text-purple-600 mr-2" />
                         California Privacy Rights (CCPA)
                       </h3>
@@ -606,17 +606,17 @@ export const PrivacyPolicy: React.FC = () => {
 
                 {/* Section 10: Contact Us */}
                 <section id="contact" className="scroll-mt-24">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
                     <div className="bg-blue-100 rounded-full p-3 mr-4">
-                      <Mail className="w-6 h-6 text-blue-600" />
+                      <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">9. Contact Us</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">9. Contact Us</h2>
                       <p className="text-gray-500">Privacy questions? We're here to help</p>
                     </div>
                   </div>
                   <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                    <p className="text-gray-700 leading-relaxed mb-4">
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">
                       For privacy-related questions or to exercise your rights, contact us at:
                     </p>
                     <div className="grid md:grid-cols-2 gap-6">
