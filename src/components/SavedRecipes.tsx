@@ -313,15 +313,15 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-lg p-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+      <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
-          <div className="flex items-center space-x-3">
-            <ChefHat className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
-            <h2 className="text-xl sm:text-3xl font-bold text-gray-900">My Saved Recipes</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <ChefHat className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 text-green-600 flex-shrink-0" />
+            <h2 className="text-lg sm:text-xl lg:text-3xl font-bold text-gray-900">My Saved Recipes</h2>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             {featureAccess && (
               <span className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full ${
                 featureAccess.canSaveRecipes 
@@ -333,24 +333,24 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             )}
             <button
               onClick={loadRecipes}
-              className="inline-flex items-center justify-center px-3 sm:px-4 py-2 text-sm text-green-600 bg-white border border-green-200 rounded-lg hover:bg-green-50 transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-green-600 bg-white border border-green-200 rounded-lg hover:bg-green-50 transition-colors"
             >
-              <RefreshCcw className="w-4 h-4 mr-2" />
-              Refresh
+              <RefreshCcw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Refresh</span>
             </button>
           </div>
         </div>
 
         {/* Recipe Limit Warning */}
         {featureAccess && !featureAccess.canSaveRecipes && (
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center">
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+            <div className="flex items-start sm:items-center">
               <div className="flex-shrink-0">
-                <ChefHat className="h-5 w-5 text-orange-400" />
+                <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-orange-400 mt-0.5 sm:mt-0" />
               </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-orange-800">Recipe Limit Reached</h3>
-                <p className="text-sm text-orange-700 mt-1">
+              <div className="ml-2 sm:ml-3">
+                <h3 className="text-xs sm:text-sm font-medium text-orange-800">Recipe Limit Reached</h3>
+                <p className="text-xs sm:text-sm text-orange-700 mt-1">
                   You've reached your {featureAccess.currentPlan.toUpperCase()} plan limit of {featureAccess.recipeLimit} recipes. 
                   Upgrade your plan to save more recipes.
                 </p>
@@ -360,14 +360,14 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         )}
         
         {featureAccess && featureAccess.canSaveRecipes && featureAccess.currentRecipeCount >= featureAccess.recipeLimit * 0.8 && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+            <div className="flex items-start sm:items-center">
               <div className="flex-shrink-0">
-                <ChefHat className="h-5 w-5 text-yellow-400" />
+                <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400 mt-0.5 sm:mt-0" />
               </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-yellow-800">Nearly at Recipe Limit</h3>
-                <p className="text-sm text-yellow-700 mt-1">
+              <div className="ml-2 sm:ml-3">
+                <h3 className="text-xs sm:text-sm font-medium text-yellow-800">Nearly at Recipe Limit</h3>
+                <p className="text-xs sm:text-sm text-yellow-700 mt-1">
                   You're using {featureAccess.currentRecipeCount} of {featureAccess.recipeLimit} recipes on your {featureAccess.currentPlan.toUpperCase()} plan. 
                   Consider upgrading to avoid reaching your limit.
                 </p>
@@ -377,18 +377,18 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         )}
 
         {/* Search and Filter Bar */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 mb-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 mb-4 sm:mb-6">
           {/* First Row: Search and Sort */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-3 sm:mb-4">
             {/* Search Input - 2/3 width on desktop */}
             <div className="relative flex-1 sm:flex-[2]">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search recipes..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent h-11"
+                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm h-10 sm:h-11"
               />
             </div>
             
@@ -401,7 +401,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                   setSortBy(newSortBy as 'date' | 'name' | 'rating');
                   setSortOrder(newSortOrder as 'asc' | 'desc');
                 }}
-                className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-sm h-11"
+                className="w-full px-2.5 sm:px-3 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-xs sm:text-sm h-10 sm:h-11"
               >
                 <option value="date-desc">📅 Newest First</option>
                 <option value="date-asc">📅 Oldest First</option>
@@ -414,17 +414,17 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
           </div>
 
           {/* Second Row: Filters - Each takes 1/3 width on desktop */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             {/* Dietary Filter - 1/3 width for free users, full width for others when no locked filters */}
             {availableFilters.length > 0 && (
               <div className={`relative ${
                 featureAccess?.currentPlan === 'free' ? 'sm:flex-[1]' : 'sm:flex-1'
               }`}>
-                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Filter className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" />
                 <select
                   value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white text-sm h-11"
+                  className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white text-xs sm:text-sm h-10 sm:h-11"
                 >
                   <option value="">All Dietary Filters</option>
                   {availableFilters.map(filter => (
@@ -437,11 +437,11 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             {/* Health Condition Filter - 1/3 width - Only for Master Chef+ plans */}
             {userSettings?.healthConditions && userSettings.healthConditions.length > 0 && featureAccess?.canUseHealthConditions && (
               <div className="relative sm:flex-1">
-                <Heart className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Heart className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" />
                 <select
                   value={selectedHealthCondition}
                   onChange={(e) => setSelectedHealthCondition(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white text-sm h-11"
+                  className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white text-xs sm:text-sm h-10 sm:h-11"
                 >
                   <option value="">All Health Conditions</option>
                   {userSettings.healthConditions.map(condition => (
@@ -454,11 +454,11 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             {/* Advanced Category Filter - 1/3 width - Only for Chef+ plans */}
             {featureAccess?.canUseAdvancedFilters && (
               <div className="relative sm:flex-1">
-                <ChefHat className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <ChefHat className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white text-sm h-11"
+                  className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white text-xs sm:text-sm h-10 sm:h-11"
                 >
                   {categoryFilters.map(category => (
                     <option key={category.value} value={category.value}>{category.label}</option>
@@ -469,11 +469,11 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
 
             {/* Pro Filter Notice for Free Users - 2/3 width */}
             {!featureAccess?.canUseAdvancedFilters && (
-              <div className={`bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-3 flex items-center ${
+              <div className={`bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-2.5 sm:p-3 flex items-center ${
                 featureAccess?.currentPlan === 'free' ? 'sm:flex-[2]' : 'sm:flex-1'
               }`}>
-                <Crown className="h-4 w-4 text-yellow-500 mr-2 flex-shrink-0" />
-                <span className="text-sm text-yellow-700">
+                <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-yellow-500 mr-1.5 sm:mr-2 flex-shrink-0" />
+                <span className="text-xs sm:text-sm text-yellow-700">
                   <strong>Chef+ Filters:</strong> Health conditions, advanced categories & more
                 </span>
               </div>

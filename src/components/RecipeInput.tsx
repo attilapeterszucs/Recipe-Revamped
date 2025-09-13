@@ -118,7 +118,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Mode Toggle */}
       <div className="flex bg-gray-100 rounded-lg p-1">
         <button
@@ -127,15 +127,16 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             setMode('convert');
             setErrors({});
           }}
-          className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+          className={`flex-1 py-1.5 sm:py-2 px-2 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-colors ${
             mode === 'convert'
               ? 'bg-white text-blue-600 shadow-sm'
               : 'text-gray-600 hover:text-gray-900'
           }`}
           disabled={disabled}
         >
-          <Wand2 className="w-4 h-4 inline mr-2" />
-          Convert Recipe
+          <Wand2 className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
+          <span className="hidden sm:inline">Convert Recipe</span>
+          <span className="sm:hidden">Convert</span>
         </button>
         <button
           type="button"
@@ -144,21 +145,22 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             setRecipe('');
             setErrors({});
           }}
-          className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+          className={`flex-1 py-1.5 sm:py-2 px-2 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-colors ${
             mode === 'create'
               ? 'bg-white text-blue-600 shadow-sm'
               : 'text-gray-600 hover:text-gray-900'
           }`}
           disabled={disabled}
         >
-          <Shuffle className="w-4 h-4 inline mr-2" />
-          Create Recipe
+          <Shuffle className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
+          <span className="hidden sm:inline">Create Recipe</span>
+          <span className="sm:hidden">Create</span>
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
       <div>
-        <label htmlFor="recipe" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="recipe" className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
           {mode === 'convert' ? 'Paste Your Recipe' : 'Enter Food Name or Dish Type'}
         </label>
         {mode === 'convert' ? (
@@ -170,7 +172,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
               setErrors(prev => ({ ...prev, recipe: '' }));
             }}
             placeholder="Paste your recipe here..."
-            className="w-full h-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full h-48 sm:h-64 px-2.5 sm:px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
             disabled={disabled}
           />
         ) : (
@@ -183,12 +185,12 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
               setErrors(prev => ({ ...prev, recipe: '' }));
             }}
             placeholder="e.g., Pasta Carbonara, Chicken Tacos, Chocolate Cake"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-2.5 sm:px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             disabled={disabled}
           />
         )}
         {errors.recipe && (
-          <p className="mt-1 text-sm text-red-600">{errors.recipe}</p>
+          <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.recipe}</p>
         )}
         {mode === 'convert' && (
           <p className="mt-1 text-xs text-gray-500">
@@ -203,27 +205,27 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
           Select Dietary Filters
           {userSettings?.defaultDietaryFilters && userSettings.defaultDietaryFilters.length > 0 && (
-            <span className="text-xs text-blue-600 ml-2 font-normal">
+            <span className="text-xs text-blue-600 ml-2 font-normal block sm:inline mt-1 sm:mt-0">
               (Default preferences pre-selected)
             </span>
           )}
           {availableFilters.length < allFilters.length && (
-            <span className="text-xs text-orange-600 ml-2 font-normal">
+            <span className="text-xs text-orange-600 ml-2 font-normal block sm:inline mt-1 sm:mt-0">
               ({allFilters.length - availableFilters.length} more filters require plan upgrade)
             </span>
           )}
         </label>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
           {availableFilters.map(filter => (
             <button
               key={filter}
               type="button"
               onClick={() => handleFilterToggle(filter)}
               disabled={disabled}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                 selectedFilters.includes(filter)
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -234,7 +236,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
           ))}
         </div>
         {errors.filters && (
-          <p className="mt-2 text-sm text-red-600">{errors.filters}</p>
+          <p className="mt-2 text-xs sm:text-sm text-red-600">{errors.filters}</p>
         )}
         
         {/* Show locked advanced filters for users with restricted access */}
@@ -500,11 +502,11 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
         </div>
       )}
 
-        <div className="flex space-x-3">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
           <button
             type="submit"
             disabled={disabled}
-            className="flex-1 py-3 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
           >
             {mode === 'convert' ? 'Convert Recipe' : 'Create Recipe'}
           </button>
@@ -513,11 +515,12 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             type="button"
             onClick={handleSurpriseMe}
             disabled={disabled}
-            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium rounded-md hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105"
+            className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium rounded-md hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 text-sm sm:text-base"
             title="Generate a random recipe with selected dietary preferences"
           >
-            <Shuffle className="w-5 h-5 inline mr-2" />
-            Surprise Me!
+            <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 inline mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Surprise Me!</span>
+            <span className="sm:hidden">Surprise!</span>
           </button>
         </div>
       </form>
