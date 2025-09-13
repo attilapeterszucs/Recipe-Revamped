@@ -17,7 +17,10 @@ import {
   Clock,
   Heart,
   Trash2,
-  Lock
+  Lock,
+  CreditCard,
+  AlertTriangle,
+  UserX
 } from 'lucide-react';
 import { getUserSettings, updateUserSettings, updateUserProfile, uploadProfilePicture, deleteProfilePicture } from '../lib/userSettings';
 import { createBackup, getUserBackups, restoreFromBackup, scheduleAutoBackup, deleteBackup } from '../lib/backup';
@@ -69,6 +72,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     newPassword: '',
     confirmPassword: ''
   });
+  const [showCancelPlanModal, setShowCancelPlanModal] = useState(false);
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [cancelingPlan, setCancelingPlan] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const { showSuccess, showError, showInfo } = useToast();
   
   // Use subscription status hook for consistent admin checking
@@ -157,6 +164,134 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     if (!/\d/.test(password)) errors.push('At least one number');
     if (!/[^A-Za-z0-9]/.test(password)) errors.push('At least one special character');
     return errors;
+  };
+
+  // Handle cancel plan
+  const handleCancelPlan = async () => {
+    try {
+      setCancelingPlan(true);
+      
+      // Import subscription service to cancel subscription
+      const { SubscriptionService } = await import('../lib/subscriptionService');
+      
+      // Cancel subscription
+      await SubscriptionService.cancelSubscription(user.uid);
+      
+      // Refresh subscription status
+      refreshSubscriptionStatus();
+      
+      showSuccess('Plan Canceled', 'Your subscription has been canceled successfully. You can continue using the service until the end of your billing period.');
+      setShowCancelPlanModal(false);
+    } catch (error) {
+      console.error('Failed to cancel plan:', error);
+      showError('Cancellation Failed', 'Could not cancel your subscription. Please try again or contact support.');
+    } finally {
+      setCancelingPlan(false);
+    }
+  };
+
+  // Handle account deletion/deactivation
+  const handleDeleteAccount = async (action: 'deactivate' | 'delete') => {
+    try {
+      setDeletingAccount(true);
+      
+      // Import necessary services
+      const { SubscriptionService } = await import('../lib/subscriptionService');
+      const { updateProfile, deleteUser } = await import('firebase/auth');
+      const { doc, updateDoc, deleteDoc, collection, query, where, getDocs, writeBatch } = await import('firebase/firestore');
+      const { db } = await import('../lib/firebase');
+      
+      // First cancel any active subscription
+      const currentPlan = featureAccess?.currentPlan;
+      if (currentPlan && currentPlan !== 'free') {
+        try {
+          await SubscriptionService.cancelSubscription(user.uid);
+        } catch (error) {
+          console.warn('Could not cancel subscription:', error);
+        }
+      }
+      
+      if (action === 'deactivate') {
+        // Set account as deactivated in Firestore
+        const userDoc = doc(db, 'users', user.uid);
+        await updateDoc(userDoc, {
+          accountStatus: 'deactivated',
+          deactivatedAt: new Date(),
+          updatedAt: new Date()
+        });
+        
+        // Update display name to indicate deactivation (optional visual cue)
+        await updateProfile(user, {
+          displayName: `${user.displayName || 'User'} (Deactivated)`
+        });
+        
+        showSuccess('Account Deactivated', 'Your account has been deactivated. You can reactivate it on your next login.');
+        
+        setShowDeleteAccountModal(false);
+        
+        // Sign out user after a delay
+        setTimeout(() => {
+          import('firebase/auth').then(({ signOut, getAuth }) => {
+            signOut(getAuth());
+          });
+        }, 2000);
+        
+      } else {
+        // Complete account deletion - remove from Firebase Auth and all Firestore data
+        showInfo('Deleting Account', 'Removing all your data from our servers. This may take a moment...');
+        
+        // Delete all user's recipes
+        const recipesQuery = query(collection(db, 'recipes'), where('userId', '==', user.uid));
+        const recipesSnapshot = await getDocs(recipesQuery);
+        
+        // Use batch delete for better performance
+        const batch = writeBatch(db);
+        recipesSnapshot.docs.forEach((doc) => {
+          batch.delete(doc.ref);
+        });
+        
+        // Delete user's settings and profile
+        batch.delete(doc(db, 'users', user.uid));
+        batch.delete(doc(db, 'userSettings', user.uid));
+        
+        // Delete any user backups
+        const backupsQuery = query(collection(db, 'backups'), where('userId', '==', user.uid));
+        const backupsSnapshot = await getDocs(backupsQuery);
+        backupsSnapshot.docs.forEach((doc) => {
+          batch.delete(doc.ref);
+        });
+        
+        // Delete any user notifications
+        const notificationsQuery = query(collection(db, 'notifications'), where('userId', '==', user.uid));
+        const notificationsSnapshot = await getDocs(notificationsQuery);
+        notificationsSnapshot.docs.forEach((doc) => {
+          batch.delete(doc.ref);
+        });
+        
+        // Execute all Firestore deletions
+        await batch.commit();
+        
+        // Finally, delete the Firebase Auth user account
+        await deleteUser(user);
+        
+        showSuccess('Account Deleted', 'Your account and all associated data have been permanently deleted from our servers.');
+        
+        setShowDeleteAccountModal(false);
+        
+        // No need to manually sign out as the user is deleted
+      }
+      
+    } catch (error) {
+      console.error('Failed to delete/deactivate account:', error);
+      
+      if (error.code === 'auth/requires-recent-login') {
+        showError('Authentication Required', 'For security reasons, you need to sign in again before deleting your account. Please sign out, sign back in, and try again.');
+      } else {
+        showError('Operation Failed', 'Could not complete the account operation. Please try again or contact support.');
+      }
+    } finally {
+      setDeletingAccount(false);
+    }
   };
 
   // Handle password change
@@ -906,6 +1041,59 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 </div>
               </div>
             )}
+            
+            {/* Account Management Section */}
+            <div className="border-t pt-6 mt-6">
+              <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Account Management</h4>
+              
+              <div className="space-y-4">
+                {/* Cancel Plan Button - Only show if user has an active subscription */}
+                {featureAccess?.currentPlan && featureAccess.currentPlan !== 'free' && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 sm:p-6">
+                    <div className="flex items-start space-x-3">
+                      <CreditCard className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h5 className="text-sm sm:text-base font-medium text-yellow-800 mb-2">
+                          Cancel Subscription
+                        </h5>
+                        <p className="text-xs sm:text-sm text-yellow-700 mb-4 leading-relaxed">
+                          Cancel your {featureAccess.currentPlan.replace('-', ' ')} plan. You'll continue to have access until the end of your billing period.
+                        </p>
+                        <button
+                          onClick={() => setShowCancelPlanModal(true)}
+                          className="inline-flex items-center px-3 sm:px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium touch-friendly"
+                        >
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          Cancel Plan
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Delete Account Section */}
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 sm:p-6">
+                  <div className="flex items-start space-x-3">
+                    <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <h5 className="text-sm sm:text-base font-medium text-red-800 mb-2">
+                        Delete Account
+                      </h5>
+                      <p className="text-xs sm:text-sm text-red-700 mb-4 leading-relaxed">
+                        Permanently delete your account and all associated data. This action cannot be undone. Any active subscription will be automatically canceled.
+                      </p>
+                      <button
+                        onClick={() => setShowDeleteAccountModal(true)}
+                        className="inline-flex items-center px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium touch-friendly"
+                      >
+                        <UserX className="w-4 h-4 mr-2" />
+                        Delete Account
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         );
 
@@ -1916,6 +2104,94 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         onConfirm={handleRestoreConfirm}
         backup={backupToRestore}
       />
+
+      {/* Cancel Plan Modal */}
+      {showCancelPlanModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center mb-4">
+              <CreditCard className="w-6 h-6 text-yellow-600 mr-3" />
+              <h3 className="text-lg font-semibold text-gray-900">Cancel Subscription</h3>
+            </div>
+            
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              Are you sure you want to cancel your {featureAccess?.currentPlan?.replace('-', ' ')} subscription? 
+              You'll continue to have access to all features until the end of your billing period.
+            </p>
+            
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowCancelPlanModal(false)}
+                disabled={cancelingPlan}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+              >
+                Keep Plan
+              </button>
+              <button
+                onClick={handleCancelPlan}
+                disabled={cancelingPlan}
+                className="flex-1 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 transition-colors"
+              >
+                {cancelingPlan ? 'Canceling...' : 'Cancel Plan'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Account Modal */}
+      {showDeleteAccountModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center mb-4">
+              <AlertTriangle className="w-6 h-6 text-red-600 mr-3" />
+              <h3 className="text-lg font-semibold text-gray-900">Delete Account</h3>
+            </div>
+            
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              Choose how you want to handle your account. Both options will automatically cancel any active subscription.
+            </p>
+            
+            <div className="space-y-3 mb-6">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <h4 className="font-medium text-yellow-800 mb-2">Deactivate Account</h4>
+                <p className="text-sm text-yellow-700 mb-3">
+                  Temporarily disable your account. You can reactivate it by logging in again. All your data will be preserved.
+                </p>
+                <button
+                  onClick={() => handleDeleteAccount('deactivate')}
+                  disabled={deletingAccount}
+                  className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 transition-colors text-sm"
+                >
+                  {deletingAccount ? 'Deactivating...' : 'Deactivate Account'}
+                </button>
+              </div>
+              
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <h4 className="font-medium text-red-800 mb-2">Permanently Delete</h4>
+                <p className="text-sm text-red-700 mb-3">
+                  Permanently delete your account and all data. This action cannot be undone and all data will be lost.
+                </p>
+                <button
+                  onClick={() => handleDeleteAccount('delete')}
+                  disabled={deletingAccount}
+                  className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors text-sm"
+                >
+                  {deletingAccount ? 'Deleting Account...' : 'Delete Account & All Data'}
+                </button>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => setShowDeleteAccountModal(false)}
+              disabled={deletingAccount}
+              className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,9 +1,70 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, CheckCircle, Mail, RefreshCw } from 'lucide-react';
-import { signUpWithEmail, signInWithGoogle, resendEmailVerification } from '../../lib/firebase';
+import { Eye, EyeOff, ArrowRight, CheckCircle, Mail } from 'lucide-react';
+import { signUpWithEmail, signInWithGoogle } from '../../lib/firebase';
 import { SignUpSchema, type SignUpInput } from '../../lib/validation';
 import { z } from 'zod';
+
+// Function to convert Firebase error codes to user-friendly messages for signup
+const getSignUpErrorMessage = (error: any): string => {
+  const errorCode = error?.code || '';
+  const errorMessage = error?.message || '';
+
+  switch (errorCode) {
+    case 'auth/email-already-in-use':
+      return 'An account with this email already exists. Please sign in or use a different email address.';
+    
+    case 'auth/invalid-email':
+      return 'Please enter a valid email address.';
+    
+    case 'auth/operation-not-allowed':
+      return 'Email sign-up is not enabled. Please contact support.';
+    
+    case 'auth/weak-password':
+      return 'Password is too weak. Please choose a stronger password with at least 8 characters.';
+    
+    case 'auth/too-many-requests':
+      return 'Too many attempts. Please wait a few minutes before trying again.';
+    
+    case 'auth/network-request-failed':
+      return 'Network connection error. Please check your internet connection and try again.';
+    
+    case 'auth/popup-closed-by-user':
+      return 'Sign-up was cancelled. Please try again.';
+    
+    case 'auth/popup-blocked':
+      return 'Pop-up was blocked by your browser. Please allow pop-ups and try again.';
+    
+    case 'auth/cancelled-popup-request':
+      return 'Sign-up was interrupted. Please try again.';
+    
+    case 'auth/invalid-api-key':
+      return 'Configuration error. Please contact support.';
+    
+    case 'auth/app-deleted':
+      return 'Service temporarily unavailable. Please try again later.';
+    
+    case 'auth/user-disabled':
+      return 'This account has been disabled. Please contact support for assistance.';
+    
+    case 'auth/requires-recent-login':
+      return 'Please sign in again to continue.';
+    
+    default:
+      // Check for password-related errors
+      if (errorMessage.toLowerCase().includes('password')) {
+        return 'Password does not meet requirements. Please ensure it has at least 8 characters with uppercase, lowercase, number, and special character.';
+      }
+      
+      // Check for email-related errors
+      if (errorMessage.toLowerCase().includes('email')) {
+        return 'There was an issue with the email address. Please check and try again.';
+      }
+      
+      // Generic fallback
+      return 'An error occurred during sign-up. Please try again or contact support if the problem continues.';
+  }
+};
 
 interface SignUpProps {
   onSignUp: () => void;
@@ -21,10 +82,7 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
   const [authError, setAuthError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [emailVerificationSent, setEmailVerificationSent] = useState(false);
-  const [resendingVerification, setResendingVerification] = useState(false);
-  const [resendCooldown, setResendCooldown] = useState(0);
-  const [lastResendTime, setLastResendTime] = useState(0);
+  const [emailSent, setEmailSent] = useState(false);
 
   const passwordRequirements = [
     { test: (p: string) => p.length >= 8, text: 'At least 8 characters' },
@@ -50,10 +108,7 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
       setLoading(true);
 
       await signUpWithEmail(validatedData.email, validatedData.password);
-      setEmailVerificationSent(true);
-      setLastResendTime(Date.now());
-      setResendCooldown(60); // Start cooldown immediately after signup
-      // Don't call onSignUp() immediately - user needs to verify email first
+      setEmailSent(true);
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Partial<SignUpInput> = {};
@@ -63,135 +118,15 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
           }
         });
         setErrors(fieldErrors);
-      } else if (error instanceof Error) {
-        setAuthError(error.message);
+      } else {
+        const friendlyMessage = getSignUpErrorMessage(error);
+        setAuthError(friendlyMessage);
       }
     } finally {
       setLoading(false);
     }
   };
 
-  // Cooldown timer effect
-  React.useEffect(() => {
-    let interval: NodeJS.Timeout;
-    
-    if (resendCooldown > 0) {
-      interval = setInterval(() => {
-        setResendCooldown((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [resendCooldown]);
-
-  const handleResendVerification = async () => {
-    // Check if still in cooldown
-    const now = Date.now();
-    const timeSinceLastResend = now - lastResendTime;
-    const cooldownPeriod = 60000; // 60 seconds in milliseconds
-    
-    if (timeSinceLastResend < cooldownPeriod) {
-      const remainingTime = Math.ceil((cooldownPeriod - timeSinceLastResend) / 1000);
-      setResendCooldown(remainingTime);
-      setAuthError(`Please wait ${remainingTime} seconds before requesting another verification email.`);
-      return;
-    }
-
-    try {
-      setResendingVerification(true);
-      await resendEmailVerification();
-      setAuthError('Verification email sent successfully! Please check your inbox.');
-      setLastResendTime(now);
-      setResendCooldown(60); // Start 60-second cooldown
-    } catch (error) {
-      if (error instanceof Error) {
-        setAuthError(error.message);
-      }
-    } finally {
-      setResendingVerification(false);
-    }
-  };
-
-  // Show email verification success screen
-  if (emailVerificationSent) {
-    return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 w-full max-w-lg">
-        <div className="text-center">
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
-            <Mail className="h-8 w-8 text-green-600" />
-          </div>
-          
-          <h2 className="text-xl font-medium text-gray-900 mb-4">
-            Verify Your Email
-          </h2>
-          
-          <p className="text-sm text-gray-600 mb-6">
-            We've sent a verification email to <strong>{formData.email}</strong>. 
-            Please check your inbox and click the verification link to activate your account.
-          </p>
-          
-          <div className="space-y-4">
-            <button
-              onClick={handleResendVerification}
-              disabled={resendingVerification || resendCooldown > 0}
-              className={`w-full flex items-center justify-center px-4 py-2.5 rounded-md transition-colors text-sm font-medium ${
-                resendCooldown > 0 
-                  ? 'bg-gray-400 text-white cursor-not-allowed' 
-                  : 'bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-400'
-              }`}
-            >
-              {resendingVerification ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : resendCooldown > 0 ? (
-                <>
-                  <div className="w-4 h-4 mr-2 rounded-full border-2 border-white relative">
-                    <div 
-                      className="absolute top-0 left-0 w-full h-full rounded-full border-2 border-white border-t-transparent animate-spin"
-                      style={{ animationDuration: '60s', animationTimingFunction: 'linear' }}
-                    />
-                  </div>
-                  Wait {resendCooldown}s to resend
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Resend Verification Email
-                </>
-              )}
-            </button>
-            
-            <button
-              onClick={onSwitchToSignIn}
-              className="w-full px-4 py-2.5 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium"
-            >
-              Back to Sign In
-            </button>
-          </div>
-          
-          {authError && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-600">{authError}</p>
-            </div>
-          )}
-          
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-            <p className="text-sm text-blue-600">
-              <strong>Can't find the email?</strong> Check your spam folder. 
-              The email comes from Recipe Revamped and may take a few minutes to arrive.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const handleGoogleSignUp = async () => {
     try {
@@ -200,16 +135,48 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
       await signInWithGoogle();
       onSignUp();
     } catch (error) {
-      if (error instanceof Error) {
-        setAuthError(error.message);
-      }
+      const friendlyMessage = getSignUpErrorMessage(error);
+      setAuthError(friendlyMessage);
     } finally {
       setLoading(false);
     }
   };
 
-
-
+  // Show email verification sent screen
+  if (emailSent) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 w-full max-w-lg">
+        <div className="text-center">
+          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+            <Mail className="h-8 w-8 text-green-600" />
+          </div>
+          
+          <h2 className="text-xl font-medium text-gray-900 mb-4">
+            Check Your Email
+          </h2>
+          
+          <p className="text-sm text-gray-600 mb-6">
+            We've sent a verification email to <strong>{formData.email}</strong>. 
+            Please check your inbox and click the verification link to activate your account.
+          </p>
+          
+          <button
+            onClick={onSwitchToSignIn}
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-2.5 px-4 rounded-md font-medium text-sm transition-colors"
+          >
+            Back to Sign In
+          </button>
+          
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <p className="text-sm text-blue-600">
+              <strong>Can't find the email?</strong> Check your spam folder. 
+              The email may take a few minutes to arrive.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 w-full max-w-lg">
@@ -262,27 +229,6 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
           {errors.password && (
             <p className="mt-1 text-sm text-red-500">{errors.password}</p>
           )}
-          
-          {/* Password Requirements Visual */}
-          <div className="mt-3 p-4 bg-gray-50 rounded-md border border-gray-200">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">Password Requirements</h4>
-            <div className="space-y-2">
-              {passwordRequirements.map((req, index) => (
-                <div key={index} className="flex items-center text-sm">
-                  <CheckCircle
-                    className={`w-4 h-4 mr-2 transition-colors ${
-                      req.test(formData.password) ? 'text-green-500' : 'text-gray-300'
-                    }`}
-                  />
-                  <span className={`transition-colors ${
-                    req.test(formData.password) ? 'text-green-700 font-medium' : 'text-gray-500'
-                  }`}>
-                    {req.text}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         <div>
@@ -313,6 +259,27 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
           {errors.confirmPassword && (
             <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>
           )}
+        </div>
+
+        {/* Password Requirements Visual */}
+        <div className="p-4 bg-gray-50 rounded-md border border-gray-200">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Password Requirements</h4>
+          <div className="space-y-2">
+            {passwordRequirements.map((req, index) => (
+              <div key={index} className="flex items-center text-sm">
+                <CheckCircle
+                  className={`w-4 h-4 mr-2 transition-colors ${
+                    req.test(formData.password) ? 'text-green-500' : 'text-gray-300'
+                  }`}
+                />
+                <span className={`transition-colors ${
+                  req.test(formData.password) ? 'text-green-700 font-medium' : 'text-gray-500'
+                }`}>
+                  {req.text}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {authError && (

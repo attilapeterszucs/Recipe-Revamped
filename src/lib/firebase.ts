@@ -72,15 +72,6 @@ if (typeof window !== 'undefined' && import.meta.env.VITE_FIREBASE_MEASUREMENT_I
 // Auth providers
 export const googleProvider = new GoogleAuthProvider();
 
-// Email configuration for email verification
-const emailVerificationSettings: ActionCodeSettings = {
-  url: `${window.location.origin}/auth/action`, // Continue URL for Firebase auth actions
-  handleCodeInApp: false // Handle the verification link in the browser, not in the app
-};
-
-// Alternative: Let Firebase handle verification with default settings
-const defaultEmailVerificationSettings = undefined; // Use Firebase default settings
-
 // Email configuration for password reset
 const passwordResetSettings: ActionCodeSettings = {
   url: `${window.location.origin}/password-recovery`, // Continue URL for password reset
@@ -91,12 +82,10 @@ const passwordResetSettings: ActionCodeSettings = {
 export const signUpWithEmail = async (email: string, password: string) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
   
-  // Send email verification using Firebase default behavior
-  logger.auth('Email verification sent', userCredential.user.uid);
-  
-  // Use Firebase's default email verification (sends to Firebase hosted domain)
+  // Send Firebase's built-in email verification
   await sendEmailVerification(userCredential.user);
   
+  logger.auth('User account created and verification email sent', userCredential.user.uid);
   return userCredential;
 };
 
@@ -105,9 +94,7 @@ export const signInWithEmail = async (email: string, password: string) => {
   
   // Check if email is verified for email/password users
   if (!userCredential.user.emailVerified) {
-    // Sign out the user immediately since they haven't verified
-    await signOut(auth);
-    throw new Error('Please verify your email address before signing in. Check your inbox for a verification email, or sign up again if needed.');
+    throw new Error('Please verify your email address before signing in. Check your inbox for a verification email.');
   }
   
   return userCredential;
@@ -121,16 +108,6 @@ export const logOut = async () => {
   return await signOut(auth);
 };
 
-// Resend email verification
-export const resendEmailVerification = async () => {
-  const user = auth.currentUser;
-  if (user && !user.emailVerified) {
-    logger.auth('Resending email verification', user.uid);
-    await sendEmailVerification(user);
-    return true;
-  }
-  return false;
-};
 
 // Password reset function
 export const resetPassword = async (email: string) => {

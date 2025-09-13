@@ -5,6 +5,66 @@ import { signInWithEmail, signInWithGoogle, resendEmailVerification, resetPasswo
 import { SignInSchema, type SignInInput } from '../../lib/validation';
 import { z } from 'zod';
 
+// Function to convert Firebase error codes to user-friendly messages
+const getAuthErrorMessage = (error: any): string => {
+  const errorCode = error?.code || '';
+  const errorMessage = error?.message || '';
+
+  switch (errorCode) {
+    case 'auth/invalid-credential':
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+      return 'Invalid email or password. Please check your credentials and try again.';
+    
+    case 'auth/invalid-email':
+      return 'Please enter a valid email address.';
+    
+    case 'auth/user-disabled':
+      return 'This account has been disabled. Please contact support for assistance.';
+    
+    case 'auth/too-many-requests':
+      return 'Too many failed attempts. Please wait a few minutes before trying again.';
+    
+    case 'auth/network-request-failed':
+      return 'Network connection error. Please check your internet connection and try again.';
+    
+    case 'auth/popup-closed-by-user':
+      return 'Sign-in was cancelled. Please try again.';
+    
+    case 'auth/popup-blocked':
+      return 'Pop-up was blocked by your browser. Please allow pop-ups and try again.';
+    
+    case 'auth/cancelled-popup-request':
+      return 'Sign-in was interrupted. Please try again.';
+    
+    case 'auth/operation-not-allowed':
+      return 'This sign-in method is not enabled. Please contact support.';
+    
+    case 'auth/invalid-api-key':
+      return 'Configuration error. Please contact support.';
+    
+    case 'auth/app-deleted':
+      return 'Service temporarily unavailable. Please try again later.';
+    
+    case 'auth/requires-recent-login':
+      return 'Please sign in again to continue.';
+    
+    default:
+      // Check for email verification errors in the message
+      if (errorMessage.toLowerCase().includes('verify') || errorMessage.toLowerCase().includes('verification')) {
+        return 'Please verify your email address before signing in. Check your inbox for a verification link.';
+      }
+      
+      // Check for other common error patterns
+      if (errorMessage.toLowerCase().includes('password')) {
+        return 'Invalid password. Please check your password and try again.';
+      }
+      
+      // Generic fallback
+      return 'An error occurred during sign-in. Please try again or contact support if the problem continues.';
+  }
+};
+
 interface SignInProps {
   onSignIn: () => void;
   onSwitchToSignUp: () => void;
@@ -53,10 +113,11 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
           }
         });
         setErrors(fieldErrors);
-      } else if (error instanceof Error) {
-        setAuthError(error.message);
+      } else {
+        const friendlyMessage = getAuthErrorMessage(error);
+        setAuthError(friendlyMessage);
         // Show verification helper if error message mentions email verification
-        if (error.message.toLowerCase().includes('verify') || error.message.toLowerCase().includes('verification')) {
+        if (friendlyMessage.toLowerCase().includes('verify') || friendlyMessage.toLowerCase().includes('verification')) {
           setShowVerificationHelper(true);
         }
       }
@@ -117,9 +178,8 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
       await signInWithGoogle();
       onSignIn();
     } catch (error) {
-      if (error instanceof Error) {
-        setAuthError(error.message);
-      }
+      const friendlyMessage = getAuthErrorMessage(error);
+      setAuthError(friendlyMessage);
     } finally {
       setLoading(false);
     }
@@ -135,9 +195,8 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
       setResetSuccess(true);
       setAuthError('');
     } catch (error) {
-      if (error instanceof Error) {
-        setAuthError(error.message);
-      }
+      const friendlyMessage = getAuthErrorMessage(error);
+      setAuthError(friendlyMessage);
     } finally {
       setResetLoading(false);
     }

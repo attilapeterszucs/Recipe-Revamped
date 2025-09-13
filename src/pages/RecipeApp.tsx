@@ -29,6 +29,7 @@ import { AppFooter } from '../components/AppFooter';
 import { DailyConversionService } from '../lib/dailyConversionService';
 import { trackRecipeConversion, trackPageView } from '../lib/analytics';
 import { consentStorage } from '../lib/consentStorage';
+import { ReactivationModal } from '../components/ReactivationModal';
 
 export function RecipeApp() {
   const navigate = useNavigate();
@@ -54,6 +55,8 @@ export function RecipeApp() {
     plan: string;
     canSave: boolean;
   } | null>(null);
+  const [showReactivationModal, setShowReactivationModal] = useState(false);
+  const [isCheckingAccountStatus, setIsCheckingAccountStatus] = useState(false);
   const { showSuccess, showError, showInfo } = useToast();
   
   // OpenAI consent management
@@ -91,9 +94,71 @@ export function RecipeApp() {
     }
   }, [featureAccess.canUseMealPlanning, showMealPlanner]);
 
+  // Check account status for deactivated accounts
+  const checkAccountStatus = async (user: User) => {
+    try {
+      setIsCheckingAccountStatus(true);
+      
+      // Import Firestore functions
+      const { doc, getDoc } = await import('firebase/firestore');
+      const { db } = await import('../lib/firebase');
+      
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        
+        // Check if account is deactivated
+        if (userData.accountStatus === 'deactivated') {
+          setShowReactivationModal(true);
+          return false; // Don't proceed with normal login
+        }
+      }
+      
+      return true; // Normal login can proceed
+    } catch (error) {
+      console.error('Failed to check account status:', error);
+      return true; // On error, allow normal login
+    } finally {
+      setIsCheckingAccountStatus(false);
+    }
+  };
+
+  // Handle reactivation success
+  const handleReactivationSuccess = () => {
+    setShowReactivationModal(false);
+    // Set the user after successful reactivation
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      setUser(currentUser);
+    }
+    showSuccess('Account Reactivated', 'Welcome back! Your account has been successfully reactivated.');
+  };
+
+  // Handle reactivation decline
+  const handleReactivationDecline = async () => {
+    setShowReactivationModal(false);
+    // Sign out the user
+    try {
+      await logOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Check if account is deactivated before proceeding
+        const canProceed = await checkAccountStatus(user);
+        if (canProceed) {
+          setUser(user);
+        }
+        // If account is deactivated, reactivation modal will be shown
+        // and user will only be set after reactivation
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
 
@@ -739,6 +804,14 @@ export function RecipeApp() {
 
       {/* Footer - Only show for logged-in users */}
       {user && <AppFooter />}
+
+      {/* Reactivation Modal */}
+      <ReactivationModal
+        isOpen={showReactivationModal}
+        user={auth.currentUser}
+        onReactivate={handleReactivationSuccess}
+        onDecline={handleReactivationDecline}
+      />
 
     </div>
     </SubscriptionProvider>
