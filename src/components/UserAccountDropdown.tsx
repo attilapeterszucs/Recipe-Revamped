@@ -353,6 +353,14 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                       </p>
                     </div>
                   </div>
+                  {/* Close Button */}
+                  <button
+                    onClick={() => setShowUpgradeModal(false)}
+                    className="text-white/80 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
+                    aria-label="Close modal"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
                 </div>
                 
                 {/* Billing Toggle */}

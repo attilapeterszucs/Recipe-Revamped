@@ -16,7 +16,8 @@ import {
   Upload,
   Clock,
   Heart,
-  Trash2
+  Trash2,
+  Lock
 } from 'lucide-react';
 import { getUserSettings, updateUserSettings, updateUserProfile, uploadProfilePicture, deleteProfilePicture } from '../lib/userSettings';
 import { createBackup, getUserBackups, restoreFromBackup, scheduleAutoBackup, deleteBackup } from '../lib/backup';
@@ -909,21 +910,26 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         );
 
       case 'preferences':
-        // Filter dietary options based on user's plan
+        // Show all dietary options but mark locked ones for Chef users
         const availableFilters = featureAccess?.availableDietaryFilters || [];
-        const filteredDietaryOptions = dietaryOptions.filter(opt => 
-          availableFilters.includes(opt.name)
-        );
+        const currentPlan = featureAccess?.currentPlan || 'free';
+        
+        // Add isLocked property to each dietary option
+        const dietaryOptionsWithLockStatus = dietaryOptions.map(opt => ({
+          ...opt,
+          isLocked: !availableFilters.includes(opt.name),
+          isUpgradeNeeded: currentPlan === 'chef' && !availableFilters.includes(opt.name)
+        }));
         
         const categorizedDietaryOptions = {
-          'plant-based': filteredDietaryOptions.filter(opt => opt.category === 'plant-based'),
-          'allergen-free': filteredDietaryOptions.filter(opt => opt.category === 'allergen-free'),
-          'low-carb': filteredDietaryOptions.filter(opt => opt.category === 'low-carb'),
-          'fitness': filteredDietaryOptions.filter(opt => opt.category === 'fitness'),
-          'whole-foods': filteredDietaryOptions.filter(opt => opt.category === 'whole-foods'),
-          'health': filteredDietaryOptions.filter(opt => opt.category === 'health'),
-          'regional': filteredDietaryOptions.filter(opt => opt.category === 'regional'),
-          'religious': filteredDietaryOptions.filter(opt => opt.category === 'religious')
+          'plant-based': dietaryOptionsWithLockStatus.filter(opt => opt.category === 'plant-based'),
+          'allergen-free': dietaryOptionsWithLockStatus.filter(opt => opt.category === 'allergen-free'),
+          'low-carb': dietaryOptionsWithLockStatus.filter(opt => opt.category === 'low-carb'),
+          'fitness': dietaryOptionsWithLockStatus.filter(opt => opt.category === 'fitness'),
+          'whole-foods': dietaryOptionsWithLockStatus.filter(opt => opt.category === 'whole-foods'),
+          'health': dietaryOptionsWithLockStatus.filter(opt => opt.category === 'health'),
+          'regional': dietaryOptionsWithLockStatus.filter(opt => opt.category === 'regional'),
+          'religious': dietaryOptionsWithLockStatus.filter(opt => opt.category === 'religious')
         };
 
         return (
@@ -937,8 +943,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               <div className="space-y-8">
                 {/* Auto-save Recipes - Premium Feature */}
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-6">Recipe Management</h4>
-                  <div className="bg-white border-2 border-gray-200 rounded-xl p-6">
+                  <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Recipe Management</h4>
+                  <div className="bg-white border-2 border-gray-200 rounded-xl p-4 sm:p-6">
                     <Toggle
                       enabled={settings.autoSaveRecipes}
                       onChange={(enabled) => updateSetting('autoSaveRecipes', enabled)}
@@ -949,17 +955,66 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   </div>
                 </div>
                 
+                {/* Recipe Conversion Defaults Section */}
+                <div className="bg-gray-50 rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+                  <div className="flex items-center mb-2">
+                    <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 mr-2 sm:mr-3 flex-shrink-0" />
+                    <h4 className="text-base sm:text-lg font-semibold text-gray-900">Recipe Conversion Defaults</h4>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">
+                        🍽️ Default Serving Size
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          min="1"
+                          max="20"
+                          value={settings.defaultServingSize}
+                          onChange={(e) => updateSetting('defaultServingSize', parseInt(e.target.value))}
+                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base touch-friendly"
+                        />
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          <span className="text-gray-400 text-xs sm:text-sm">people</span>
+                        </div>
+                      </div>
+                      <p className="mt-2 text-xs sm:text-sm text-gray-500">
+                        How many servings should recipes default to?
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">
+                        📏 Preferred Measurement Units
+                      </label>
+                      <select
+                        value={settings.preferredUnits}
+                        onChange={(e) => updateSetting('preferredUnits', e.target.value as 'metric' | 'imperial')}
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base touch-friendly"
+                      >
+                        <option value="metric">🌍 Metric (grams, milliliters, celsius)</option>
+                        <option value="imperial">🇺🇸 Imperial (cups, ounces, fahrenheit)</option>
+                      </select>
+                      <p className="mt-2 text-xs sm:text-sm text-gray-500">
+                        Your preferred measurement system for ingredients
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
                 {/* Dietary Preferences Section */}
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-6">Default Dietary Filters</h4>
-                  <p className="text-gray-600 mb-6">
+                  <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Default Dietary Filters</h4>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 leading-relaxed">
                     Select dietary preferences to automatically filter recipes. These will be applied to all recipe searches and suggestions.
                   </p>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {Object.entries(categorizedDietaryOptions).map(([category, options]) => (
-                      <div key={category} className="space-y-3">
-                        <h5 className="text-md font-medium text-gray-800 capitalize border-b pb-2">
+                      <div key={category} className="space-y-3 sm:space-y-4">
+                        <h5 className="text-sm sm:text-base font-medium text-gray-800 capitalize border-b border-gray-200 pb-2">
                           {category === 'plant-based' && '🌱 Plant-Based Diets'}
                           {category === 'allergen-free' && '⚠️ Allergen-Free Options'}
                           {category === 'low-carb' && '🥩 Low-Carb Diets'}
@@ -969,24 +1024,38 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                           {category === 'regional' && '🌍 Regional Cuisines'}
                           {category === 'religious' && '🕊️ Religious Requirements'}
                         </h5>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                           {options.map((option) => {
                             const isSelected = settings.defaultDietaryFilters.includes(option.name);
+                            const isLocked = option.isLocked;
+                            const isUpgradeNeeded = option.isUpgradeNeeded;
+                            
                             return (
                               <label
                                 key={option.name}
-                                className={`relative flex items-start p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
-                                  isSelected 
-                                    ? 'border-green-500 bg-green-50 shadow-md' 
-                                    : `${option.color} border-dashed`
+                                className={`relative flex items-start p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 touch-friendly ${
+                                  isLocked 
+                                    ? 'cursor-pointer opacity-60 bg-gray-50 border-gray-200 border-dashed hover:bg-gray-100'
+                                    : isSelected 
+                                    ? 'border-green-500 bg-green-50 shadow-md cursor-pointer' 
+                                    : `${option.color} border-dashed cursor-pointer hover:shadow-sm`
                                 }`}
+                                onClick={isLocked && isUpgradeNeeded ? () => {
+                                  showError(
+                                    'Premium Feature Required', 
+                                    `${option.name} dietary filtering is available with Master Chef+ plan. Upgrade to access all advanced dietary preferences.`, 
+                                    'dietary-preference'
+                                  );
+                                } : undefined}
                               >
                                 <div className="flex items-center h-5">
                                   <div className="relative">
                                     <input
                                       type="checkbox"
                                       checked={isSelected}
+                                      disabled={isLocked}
                                       onChange={(e) => {
+                                        if (isLocked) return;
                                         const filters = e.target.checked
                                           ? [...settings.defaultDietaryFilters, option.name]
                                           : settings.defaultDietaryFilters.filter(f => f !== option.name);
@@ -994,27 +1063,43 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                                       }}
                                       className="sr-only"
                                     />
-                                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                                      isSelected 
-                                        ? 'bg-green-500 border-green-500 shadow-md' 
-                                        : 'bg-white border-gray-300 hover:border-green-400'
+                                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${
+                                      isLocked
+                                        ? 'bg-gray-100 border-gray-300 cursor-not-allowed'
+                                        : isSelected 
+                                        ? 'bg-green-500 border-green-500 shadow-md cursor-pointer' 
+                                        : 'bg-white border-gray-300 hover:border-green-400 cursor-pointer'
                                     }`}>
-                                      {isSelected && (
+                                      {isLocked ? (
+                                        <Lock className="w-3 h-3 text-gray-400" />
+                                      ) : isSelected ? (
                                         <Check className="w-3 h-3 text-white stroke-[3]" />
-                                      )}
+                                      ) : null}
                                     </div>
                                   </div>
                                 </div>
                                 <div className="ml-3 flex-1">
-                                  <div className="flex items-center mb-1">
-                                    <span className="text-lg mr-2">{option.icon}</span>
-                                    <span className="font-medium text-gray-900">{option.name}</span>
+                                  <div className="flex items-center mb-1 flex-wrap gap-2">
+                                    <span className={`text-base sm:text-lg mr-2 ${isLocked ? 'grayscale' : ''} flex-shrink-0`}>{option.icon}</span>
+                                    <span className={`font-medium text-sm sm:text-base ${isLocked ? 'text-gray-500' : 'text-gray-900'} flex-1`}>{option.name}</span>
+                                    {isUpgradeNeeded && (
+                                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 flex-shrink-0">
+                                        Master Chef+
+                                      </span>
+                                    )}
                                   </div>
-                                  <p className="text-sm text-gray-600">{option.description}</p>
+                                  <p className={`text-xs sm:text-sm leading-relaxed ${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
+                                    {option.description}
+                                  </p>
                                 </div>
-                                {isSelected && (
+                                {!isLocked && isSelected && (
                                   <div className="absolute top-2 right-2">
                                     <Check className="w-5 h-5 text-green-600" />
+                                  </div>
+                                )}
+                                {isLocked && (
+                                  <div className="absolute top-2 right-2">
+                                    <Lock className="w-4 h-4 text-gray-400" />
                                   </div>
                                 )}
                               </label>
@@ -1037,7 +1122,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {settings.defaultDietaryFilters.map((filter) => {
-                          const filterData = filteredDietaryOptions.find(opt => opt.name === filter);
+                          const filterData = dietaryOptionsWithLockStatus.find(opt => opt.name === filter);
                           return (
                             <span
                               key={filter}
@@ -1062,54 +1147,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   )}
                 </div>
 
-                {/* Recipe Defaults Section */}
-                <div className="bg-gray-50 rounded-xl p-6 space-y-6">
-                  <div className="flex items-center mb-2">
-                    <Bot className="w-6 h-6 text-blue-600 mr-3" />
-                    <h4 className="text-lg font-semibold text-gray-900">Recipe Conversion Defaults</h4>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-3">
-                        🍽️ Default Serving Size
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="number"
-                          min="1"
-                          max="20"
-                          value={settings.defaultServingSize}
-                          onChange={(e) => updateSetting('defaultServingSize', parseInt(e.target.value))}
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
-                        />
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                          <span className="text-gray-400 text-sm">people</span>
-                        </div>
-                      </div>
-                      <p className="mt-1 text-xs text-gray-500">
-                        How many servings should recipes default to?
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-3">
-                        📏 Preferred Measurement Units
-                      </label>
-                      <select
-                        value={settings.preferredUnits}
-                        onChange={(e) => updateSetting('preferredUnits', e.target.value as 'metric' | 'imperial')}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
-                      >
-                        <option value="metric">🌍 Metric (grams, milliliters, celsius)</option>
-                        <option value="imperial">🇺🇸 Imperial (cups, ounces, fahrenheit)</option>
-                      </select>
-                      <p className="mt-1 text-xs text-gray-500">
-                        Your preferred measurement system for ingredients
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
             ) : (
               <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-8 text-center">
@@ -1743,20 +1780,20 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
+      <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <button
                 onClick={onBack}
-                className="mr-2 sm:mr-4 p-2 sm:p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="mr-3 sm:mr-4 p-1.5 sm:p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors touch-friendly"
               >
                 <span className="text-xl sm:text-2xl font-bold">←</span>
               </button>
-              <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Settings</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">Settings</h1>
             </div>
             
-            <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               {saveStatus === 'saved' && (
                 <div className="flex items-center text-green-600">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
@@ -1774,11 +1811,11 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 <button
                   onClick={handleSaveSettings}
                   disabled={saving}
-                  className="flex items-center px-3 sm:px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 text-sm"
+                  className="flex items-center px-3 sm:px-4 py-2 sm:py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm font-medium shadow-sm touch-friendly min-h-[40px]"
                 >
-                  <Save className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <Save className="w-4 h-4 mr-1 sm:mr-2 flex-shrink-0" />
                   <span className="hidden sm:inline">{saving ? 'Saving...' : 'Save Changes'}</span>
-                  <span className="sm:hidden">{saving ? 'Save' : 'Save'}</span>
+                  <span className="sm:hidden truncate">{saving ? 'Saving' : 'Save'}</span>
                 </button>
               )}
             </div>
@@ -1787,12 +1824,12 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
           {/* Mobile Navigation Tabs */}
           <div className="lg:hidden">
-            <div className="flex overflow-x-auto pb-2 -mx-3 px-3">
-              <div className="flex space-x-2 min-w-max">
+            <div className="flex overflow-x-auto pb-3 -mx-4 px-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+              <div className="flex space-x-3 min-w-max">
                 {sections.map((section) => {
                   const Icon = section.icon;
                   const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications'));
@@ -1800,14 +1837,14 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     <button
                       key={section.id}
                       onClick={() => setActiveSection(section.id)}
-                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                      className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-xl transition-all whitespace-nowrap touch-friendly min-h-[44px] shadow-sm ${
                         isActive
-                          ? 'bg-green-100 text-green-700 border border-green-200'
-                          : 'text-gray-700 hover:bg-gray-100 border border-gray-200 bg-white'
+                          ? 'bg-green-600 text-white shadow-md transform scale-105'
+                          : 'text-gray-700 hover:bg-gray-100 border border-gray-200 bg-white hover:shadow-md'
                       }`}
                     >
-                      <Icon className="w-4 h-4 mr-2" />
-                      {section.label}
+                      <Icon className="w-4 h-4 mr-2 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm truncate">{section.label}</span>
                     </button>
                   );
                 })}
@@ -1841,8 +1878,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-              {renderSectionContent()}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
+              <div className="space-y-6 lg:space-y-8">
+                {renderSectionContent()}
+              </div>
             </div>
           </div>
         </div>

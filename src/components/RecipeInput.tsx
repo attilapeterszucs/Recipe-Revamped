@@ -11,9 +11,13 @@ interface RecipeInputProps {
   userSettings?: UserSettings;
   availableDietaryFilters?: string[];
   currentPlan?: string;
+  dailyUsage?: {
+    used: number;
+    limit: number;
+  };
 }
 
-export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe, disabled, userSettings, availableDietaryFilters, currentPlan }) => {
+export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe, disabled, userSettings, availableDietaryFilters, currentPlan, dailyUsage }) => {
   const [recipe, setRecipe] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [mustUseIngredients, setMustUseIngredients] = useState<string[]>([]);
@@ -160,9 +164,16 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
 
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
       <div>
-        <label htmlFor="recipe" className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-          {mode === 'convert' ? 'Paste Your Recipe' : 'Enter Food Name or Dish Type'}
-        </label>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 space-y-1 sm:space-y-0">
+          <label htmlFor="recipe" className="block text-xs sm:text-sm font-medium text-gray-700">
+            {mode === 'convert' ? 'Paste Your Recipe' : 'Enter Food Name or Dish Type'}
+          </label>
+          {dailyUsage && (
+            <div className="text-xs sm:text-sm text-gray-600 font-medium bg-gray-100 px-2 py-1 rounded-full">
+              {dailyUsage.used}/{dailyUsage.limit === -1 ? '∞' : dailyUsage.limit} today
+            </div>
+          )}
+        </div>
         {mode === 'convert' ? (
           <textarea
             id="recipe"
@@ -237,107 +248,6 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
         </div>
         {errors.filters && (
           <p className="mt-2 text-xs sm:text-sm text-red-600">{errors.filters}</p>
-        )}
-        
-        {/* Show locked advanced filters for users with restricted access */}
-        {availableFilters.length < allFilters.length && (
-          <div className="mt-4 p-4 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-dashed border-blue-300 rounded-xl relative overflow-hidden">
-            {/* Premium Badge */}
-            <div className="absolute top-3 right-3">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-sm">
-                ⭐ PREMIUM
-              </span>
-            </div>
-            
-            {/* Header */}
-            <div className="mb-3">
-              <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                🚀 Advanced Dietary Filters
-              </h3>
-              <p className="text-sm text-gray-600">
-                Unlock specialized dietary options and health condition support
-              </p>
-            </div>
-            
-            {/* Filters Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-4">
-              {allFilters.filter(filter => !availableFilters.includes(filter)).map(filter => (
-                <div
-                  key={filter}
-                  className="relative px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-500 opacity-75 cursor-not-allowed shadow-sm hover:shadow-md transition-shadow"
-                  title="Requires premium subscription"
-                >
-                  <div className="flex items-center justify-between">
-                    <span>{filter}</span>
-                    <span className="text-xs text-blue-500">🔒</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Custom Ingredient Preferences - Only show for Free plan users */}
-            {availableFilters.length <= basicFilters.length && (
-              <div className="mt-6 p-4 bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
-                <h4 className="text-lg font-semibold text-purple-800 mb-3 flex items-center">
-                  🥘 Custom Ingredient Preferences
-                </h4>
-                <p className="text-sm text-purple-600 mb-4">
-                  Specify must-use and avoid ingredients for more precise recipe customization
-                </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">Must-Use Ingredients</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., chicken, tomatoes, basil"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm opacity-50 cursor-not-allowed bg-gray-50"
-                      disabled
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">Avoid Ingredients</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., nuts, shellfish, dairy"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm opacity-50 cursor-not-allowed bg-gray-50"
-                      disabled
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* CTA Button */}
-            <div className="text-center mt-4">
-              <button 
-                type="button"
-                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg font-semibold text-sm"
-                onClick={() => {
-                  // Try direct global function first
-                  if ((window as any).showUpgradeModal) {
-                    (window as any).showUpgradeModal();
-                    return;
-                  }
-                  
-                  // Fallback to clicking the upgrade button
-                  const upgradeButton = document.querySelector('[data-upgrade-plan]') as HTMLButtonElement;
-                  if (upgradeButton) {
-                    upgradeButton.click();
-                  }
-                }}
-              >
-                <span className="mr-2">✨</span>
-                Upgrade to Access All Features
-                <span className="ml-2">→</span>
-              </button>
-              {currentPlan !== 'chef' && (
-                <p className="text-xs text-gray-500 mt-2">
-                  Starting at $14.99/month • Cancel anytime
-                </p>
-              )}
-            </div>
-          </div>
         )}
         
         {/* Custom Ingredient Preferences for Chef+ Users */}
@@ -524,6 +434,108 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
           </button>
         </div>
       </form>
+      
+      {/* Premium Features Section - Moved after action buttons */}
+      {availableFilters.length < allFilters.length && (
+        <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-dashed border-blue-300 rounded-xl relative overflow-hidden">
+          {/* Premium Badge */}
+          <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+            <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-sm">
+              ⭐ PREMIUM
+            </span>
+          </div>
+          
+          {/* Header */}
+          <div className="mb-3 pr-16 sm:pr-20">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-1">
+              🚀 Advanced Dietary Filters
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-600">
+              Unlock specialized dietary options and health condition support
+            </p>
+          </div>
+          
+          {/* Filters Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+            {allFilters.filter(filter => !availableFilters.includes(filter)).map(filter => (
+              <div
+                key={filter}
+                className="relative px-2 sm:px-3 py-1.5 sm:py-2 bg-white border border-gray-200 rounded-lg text-xs sm:text-sm font-medium text-gray-500 opacity-75 cursor-not-allowed shadow-sm hover:shadow-md transition-shadow"
+                title="Requires premium subscription"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="truncate pr-1">{filter}</span>
+                  <span className="text-xs text-blue-500 flex-shrink-0">🔒</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Custom Ingredient Preferences - Only show for Free plan users */}
+          {availableFilters.length <= allFilters.slice(0, 4).length && (
+            <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
+              <h4 className="text-base sm:text-lg font-semibold text-purple-800 mb-2 sm:mb-3 flex items-center">
+                🥘 Custom Ingredient Preferences
+              </h4>
+              <p className="text-xs sm:text-sm text-purple-600 mb-3 sm:mb-4">
+                Specify must-use and avoid ingredients for more precise recipe customization
+              </p>
+              
+              <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-600 mb-1 sm:mb-2">Must-Use Ingredients</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., chicken, tomatoes, basil"
+                    className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm opacity-50 cursor-not-allowed bg-gray-50"
+                    disabled
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-600 mb-1 sm:mb-2">Avoid Ingredients</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., nuts, shellfish, dairy"
+                    className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm opacity-50 cursor-not-allowed bg-gray-50"
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* CTA Button */}
+          <div className="text-center mt-3 sm:mt-4">
+            <button 
+              type="button"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg font-semibold text-xs sm:text-sm"
+              onClick={() => {
+                // Try direct global function first
+                if ((window as any).showUpgradeModal) {
+                  (window as any).showUpgradeModal();
+                  return;
+                }
+                
+                // Fallback to clicking the upgrade button
+                const upgradeButton = document.querySelector('[data-upgrade-plan]') as HTMLButtonElement;
+                if (upgradeButton) {
+                  upgradeButton.click();
+                }
+              }}
+            >
+              <span className="mr-1 sm:mr-2">✨</span>
+              <span className="hidden sm:inline">Upgrade to Access All Features</span>
+              <span className="sm:hidden">Upgrade for More Features</span>
+              <span className="ml-1 sm:ml-2">→</span>
+            </button>
+            {currentPlan !== 'chef' && (
+              <p className="text-xs text-gray-500 mt-2">
+                Starting at $14.99/month • Cancel anytime
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

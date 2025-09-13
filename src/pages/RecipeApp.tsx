@@ -678,14 +678,6 @@ export function RecipeApp() {
               <div className="space-y-4 sm:space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start">
                   <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 sm:mb-4 space-y-2 sm:space-y-0">
-                      <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
-                        Enter Your Recipe
-                      </h2>
-                      <div className="text-xs sm:text-sm text-gray-600 font-medium">
-                        {featureAccess.conversionsUsedToday}/{featureAccess.conversionLimit === -1 ? '∞' : featureAccess.conversionLimit}
-                      </div>
-                    </div>
                     <RecipeInput 
                       onSubmit={handleRecipeSubmit}
                       onSurpriseMe={handleSurpriseMe}
@@ -693,6 +685,10 @@ export function RecipeApp() {
                       userSettings={userSettings || undefined}
                       availableDietaryFilters={featureAccess.availableDietaryFilters}
                       currentPlan={featureAccess.currentPlan}
+                      dailyUsage={{
+                        used: featureAccess.conversionsUsedToday,
+                        limit: featureAccess.conversionLimit
+                      }}
                     />
                   </div>
 
