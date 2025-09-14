@@ -1,13 +1,14 @@
-import { 
-  collection, 
-  doc, 
-  getDoc, 
-  setDoc, 
-  query, 
-  where, 
+import {
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  query,
+  where,
   getDocs,
   serverTimestamp,
-  Timestamp 
+  Timestamp
 } from 'firebase/firestore';
 import { auth } from './firebase';
 import { db } from './firebase';
@@ -458,6 +459,25 @@ export class SubscriptionService {
       console.error('Error getting subscription with expiry check:', error);
       // Fallback to regular subscription check
       return await this.getUserSubscription(userId, true);
+    }
+  }
+
+  /**
+   * Delete a user's subscription document from Firestore
+   * Use this for test/admin subscriptions that should be completely removed
+   */
+  static async deleteSubscription(userId: string): Promise<boolean> {
+    try {
+      console.log(`🗑️ Deleting subscription document for user: ${userId}`);
+
+      const subscriptionRef = doc(db, SUBSCRIPTIONS_COLLECTION, userId);
+      await deleteDoc(subscriptionRef);
+
+      console.log('✅ Subscription document deleted successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ Error deleting subscription:', error);
+      return false;
     }
   }
 }

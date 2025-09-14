@@ -54,14 +54,9 @@ export class SubscriptionCancellationService {
       const stripeCustomerId = currentSubscription.stripeCustomerId;
 
       if (!stripeSubscriptionId && !stripeCustomerId) {
-        console.warn('No Stripe IDs found in subscription data, attempting local cancellation only');
-        // For subscriptions without Stripe IDs (like admin-set subscriptions), just update locally
-        const success = await SubscriptionService.setUserSubscription(currentUser.uid, {
-          plan: 'free',
-          status: 'cancelled',
-          startDate: new Date(),
-          endDate: null
-        });
+        console.warn('No Stripe IDs found in subscription data, deleting test/admin subscription');
+        // For subscriptions without Stripe IDs (like admin-set/test subscriptions), delete completely
+        const success = await SubscriptionService.deleteSubscription(currentUser.uid);
 
         if (success) {
           // Trigger UI refresh
@@ -71,7 +66,7 @@ export class SubscriptionCancellationService {
               currentPlan: 'free',
               willDowngradeTo: 'free',
               cancelledAt: new Date().toISOString(),
-              note: 'Local cancellation - no Stripe subscription found'
+              note: 'Test/admin subscription deleted - no Stripe subscription found'
             }
           }));
 
@@ -82,12 +77,12 @@ export class SubscriptionCancellationService {
             currentPlan: 'free',
             willDowngradeTo: 'free',
             cancelledAt: new Date().toISOString(),
-            note: 'Cancelled locally - no Stripe subscription to cancel'
+            note: 'Test/admin subscription deleted - immediately reverted to free plan'
           };
         } else {
           return {
             success: false,
-            error: 'Failed to cancel subscription locally'
+            error: 'Failed to delete test/admin subscription'
           };
         }
       }
