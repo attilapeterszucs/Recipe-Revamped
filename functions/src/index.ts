@@ -551,6 +551,109 @@ export const securityDashboardV2 = onRequest(async (request, response) => {
     }
   });
 
+// Subscription Cancellation Endpoint (temporary workaround)
+export const cancelSubscriptionV2 = onRequest(
+  {
+    timeoutSeconds: 60,
+    memory: "512MiB",
+  },
+  async (request, response) => {
+    // Set CORS headers for specific origins only
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'https://reciperevamped.web.app',
+      'https://reciperevamped.firebaseapp.com',
+      'https://reciperevamped.com',
+      'https://www.reciperevamped.com'
+    ];
+
+    const origin = request.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+      response.set("Access-Control-Allow-Origin", origin);
+    }
+    response.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    response.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    response.set("Access-Control-Allow-Credentials", "true");
+
+    if (request.method === "OPTIONS") {
+      response.status(204).send("");
+      return;
+    }
+
+    try {
+      // Verify authentication
+      const authHeader = request.headers.authorization;
+      if (!authHeader?.startsWith("Bearer ")) {
+        response.status(401).json({ error: "Unauthorized: Missing or invalid authorization header" });
+        return;
+      }
+
+      const idToken = authHeader.split("Bearer ")[1];
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      const userId = decodedToken.uid;
+
+      // Validate request method
+      if (request.method !== "POST") {
+        response.status(405).json({ error: "Method not allowed" });
+        return;
+      }
+
+      // Parse request body
+      const { stripeSubscriptionId, stripeCustomerId, reason } = request.body;
+
+      console.log(`🚫 Processing subscription cancellation for user: ${userId}`);
+
+      // Get current subscription from Firestore
+      const subscriptionRef = admin.firestore().collection('subscriptions').doc(userId);
+      const subscriptionDoc = await subscriptionRef.get();
+
+      if (!subscriptionDoc.exists) {
+        response.status(404).json({ error: 'Subscription not found' });
+        return;
+      }
+
+      const subscriptionData = subscriptionDoc.data();
+
+      // For now, just mark as cancelled in Firestore (temporary workaround)
+      // Full Stripe integration will be handled by the standalone webhook
+      const updateData = {
+        status: 'cancelled',
+        cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
+        cancellationReason: reason || 'User requested',
+        downgradeToPlan: 'free',
+        autoRenewal: false,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      };
+
+      await subscriptionRef.update(updateData);
+
+      console.log(`✅ Subscription marked as cancelled for user: ${userId}`);
+
+      response.status(200).json({
+        success: true,
+        message: 'Subscription cancelled successfully',
+        userId,
+        currentPlan: 'free', // Immediate downgrade for this workaround
+        willDowngradeTo: 'free',
+        cancelledAt: new Date().toISOString(),
+        note: 'This is a temporary cancellation. Please contact support for full Stripe cancellation.'
+      });
+
+    } catch (error: any) {
+      console.error("Subscription cancellation error:", error);
+
+      if (error.message?.includes("auth")) {
+        response.status(401).json({ error: "Authentication failed" });
+      } else {
+        response.status(500).json({
+          error: "Cancellation failed",
+          message: error.message
+        });
+      }
+    }
+  });
+
 // Note: Stripe webhook handling has been moved to a standalone Google Cloud Function
 // See: /stripe-webhook-service/ for the webhook implementation
 // This keeps Firebase Functions lean and separates payment processing concerns

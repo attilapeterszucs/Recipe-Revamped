@@ -37,6 +37,7 @@ import { AdminUserManagement } from '../components/AdminUserManagement';
 import { checkAdminAccess, initializeAdminSystem } from '../utils/adminUtils';
 import { useSubscriptionRefresh } from '../contexts/SubscriptionContext';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
+import { CancelSubscriptionButton } from '../components/SubscriptionCancellation/CancelSubscriptionButton';
 
 interface SettingsProps {
   user: User;
@@ -73,9 +74,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     newPassword: '',
     confirmPassword: ''
   });
-  const [showCancelPlanModal, setShowCancelPlanModal] = useState(false);
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
-  const [cancelingPlan, setCancelingPlan] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
   const { showSuccess, showError, showInfo } = useToast();
   
@@ -167,29 +166,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     return errors;
   };
 
-  // Handle cancel plan
-  const handleCancelPlan = async () => {
-    try {
-      setCancelingPlan(true);
-      
-      // Import subscription service to cancel subscription
-      const { SubscriptionService } = await import('../lib/subscriptionService');
-      
-      // Cancel subscription
-      await SubscriptionService.cancelSubscription(user.uid);
-      
-      // Refresh subscription status
-      refreshSubscriptionStatus();
-      
-      showSuccess('Plan Canceled', 'Your subscription has been canceled successfully. You can continue using the service until the end of your billing period.');
-      setShowCancelPlanModal(false);
-    } catch (error) {
-      console.error('Failed to cancel plan:', error);
-      showError('Cancellation Failed', 'Could not cancel your subscription. Please try again or contact support.');
-    } finally {
-      setCancelingPlan(false);
-    }
-  };
 
   // Handle account deletion/deactivation
   const handleDeleteAccount = async (action: 'deactivate' | 'delete') => {
@@ -1075,15 +1051,12 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                           Cancel Subscription
                         </h5>
                         <p className="text-sm text-yellow-700 mb-4 leading-relaxed">
-                          Cancel your {featureAccess.currentPlan.replace('-', ' ')} plan. You'll continue to have access until the end of your billing period.
+                          Cancel your {featureAccess.currentPlan.replace('-', ' ')} plan and return to the free plan. This will immediately cancel your subscription in both our system and Stripe.
                         </p>
-                        <button
-                          onClick={() => setShowCancelPlanModal(true)}
-                          className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium touch-friendly min-h-[44px]"
-                        >
-                          <CreditCard className="w-4 h-4 mr-2" />
-                          Cancel Plan
-                        </button>
+                        <CancelSubscriptionButton
+                          className="w-full sm:w-auto"
+                          onCancellationComplete={refreshSubscriptionStatus}
+                        />
                       </div>
                     </div>
                   </div>
@@ -2125,39 +2098,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         backup={backupToRestore}
       />
 
-      {/* Cancel Plan Modal */}
-      {showCancelPlanModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-            <div className="flex items-center mb-4">
-              <CreditCard className="w-6 h-6 text-yellow-600 mr-3" />
-              <h3 className="text-lg font-semibold text-gray-900">Cancel Subscription</h3>
-            </div>
-            
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Are you sure you want to cancel your {featureAccess?.currentPlan?.replace('-', ' ')} subscription? 
-              You'll continue to have access to all features until the end of your billing period.
-            </p>
-            
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowCancelPlanModal(false)}
-                disabled={cancelingPlan}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
-              >
-                Keep Plan
-              </button>
-              <button
-                onClick={handleCancelPlan}
-                disabled={cancelingPlan}
-                className="flex-1 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 transition-colors"
-              >
-                {cancelingPlan ? 'Canceling...' : 'Cancel Plan'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Delete Account Modal */}
       {showDeleteAccountModal && (

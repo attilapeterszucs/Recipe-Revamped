@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, type ReactNode }
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { initializeSubscriptionSync, handlePaymentReturn } from '../lib/subscriptionSyncService';
+import { SubscriptionExpiryService, setupExpiryEventListeners } from '../lib/subscriptionExpiryService';
 import { PaymentNotification } from '../components/PaymentNotification';
 
 interface PaymentNotificationState {
@@ -45,13 +46,46 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
 
   useEffect(() => {
     let unsubscribeSync: (() => void) | null = null;
+    let expiryCheckInterval: NodeJS.Timeout | null = null;
+
+    // Set up subscription event listeners
+    setupExpiryEventListeners();
+
+    // Listen for subscription events
+    const handleSubscriptionCancelled = () => {
+      console.log('🔔 Subscription cancelled event received');
+      refreshSubscription();
+      showNotification(
+        'info',
+        'Subscription Cancelled',
+        'Your subscription has been cancelled. You now have access to the free plan features.'
+      );
+    };
+
+    const handleSubscriptionDowngraded = () => {
+      console.log('🔔 Subscription downgraded event received');
+      refreshSubscription();
+    };
+
+    const handleRefreshSubscription = () => {
+      console.log('🔔 Manual subscription refresh requested');
+      refreshSubscription();
+    };
+
+    // Add event listeners
+    window.addEventListener('subscription-cancelled', handleSubscriptionCancelled);
+    window.addEventListener('subscription-downgraded', handleSubscriptionDowngraded);
+    window.addEventListener('refresh-subscription', handleRefreshSubscription);
 
     // Monitor authentication state and initialize subscription sync
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        
+
         // Initialize subscription sync service for authenticated user
         unsubscribeSync = initializeSubscriptionSync();
+
+        // Initialize expiry checking for the authenticated user
+        expiryCheckInterval = SubscriptionExpiryService.initializeExpiryCheck(user.uid);
         
         // Check for payment return (success redirect from Stripe)
         const urlParams = new URLSearchParams(window.location.search);
@@ -98,10 +132,14 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
         }
       } else {
         
-        // Clean up subscription sync when user signs out
+        // Clean up subscription sync and expiry checking when user signs out
         if (unsubscribeSync) {
           unsubscribeSync();
           unsubscribeSync = null;
+        }
+        if (expiryCheckInterval) {
+          clearInterval(expiryCheckInterval);
+          expiryCheckInterval = null;
         }
       }
     });
@@ -112,6 +150,13 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
       if (unsubscribeSync) {
         unsubscribeSync();
       }
+      if (expiryCheckInterval) {
+        clearInterval(expiryCheckInterval);
+      }
+      // Remove event listeners
+      window.removeEventListener('subscription-cancelled', handleSubscriptionCancelled);
+      window.removeEventListener('subscription-downgraded', handleSubscriptionDowngraded);
+      window.removeEventListener('refresh-subscription', handleRefreshSubscription);
     };
   }, []);
 

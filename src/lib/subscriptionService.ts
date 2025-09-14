@@ -22,8 +22,8 @@ import { isUserAdmin } from './adminManagement';
 const SUBSCRIPTIONS_COLLECTION = 'subscriptions';
 
 export class SubscriptionService {
-  // Get user's current subscription
-  static async getUserSubscription(userId: string): Promise<UserSubscription | null> {
+  // Get user's current subscription (without expiry checking to prevent recursion)
+  static async getUserSubscription(userId: string, skipExpiryCheck: boolean = false): Promise<UserSubscription | null> {
     try {
       const subscriptionRef = doc(db, SUBSCRIPTIONS_COLLECTION, userId);
       const subscriptionSnap = await getDoc(subscriptionRef);
@@ -221,7 +221,7 @@ export class SubscriptionService {
     plan: SubscriptionPlan;
   }> {
     try {
-      const subscription = await this.getUserSubscription(userId);
+      const subscription = await this.getUserSubscriptionWithExpiryCheck(userId);
       const plan = subscription?.plan || 'free';
       const planDetails = this.getPlanDetails(plan);
       
@@ -377,21 +377,22 @@ export class SubscriptionService {
         return null;
       }
 
-      // Now get subscription data
-      return await this.getUserSubscription(userId);
+      // Now get subscription data with expiry checking
+      return await this.getUserSubscriptionWithExpiryCheck(userId);
     } catch (error) {
       console.error('Error getting secure subscription:', error);
       return null;
     }
   }
 
-  // Cancel subscription (set to free plan)
+  // Cancel subscription (local Firestore only - use SubscriptionCancellationService for full cancellation)
   static async cancelSubscription(userId: string): Promise<boolean> {
     try {
       const subscription: Partial<UserSubscription> = {
         plan: 'free',
-        status: 'active',
-        startDate: new Date()
+        status: 'cancelled',
+        startDate: new Date(),
+        endDate: null
       };
 
       return await this.setUserSubscription(userId, subscription);
@@ -439,6 +440,24 @@ export class SubscriptionService {
     } catch (error) {
       console.error('Error checking feature access:', error);
       return false;
+    }
+  }
+
+  // Get user's current subscription with expiry checking
+  static async getUserSubscriptionWithExpiryCheck(userId: string): Promise<UserSubscription | null> {
+    try {
+      // Import here to avoid circular dependency
+      const { SubscriptionExpiryService } = await import('./subscriptionExpiryService');
+
+      // First check if subscription has expired and handle downgrade
+      await SubscriptionExpiryService.checkAndHandleExpiredSubscription(userId);
+
+      // Then get the updated subscription
+      return await this.getUserSubscription(userId, true);
+    } catch (error) {
+      console.error('Error getting subscription with expiry check:', error);
+      // Fallback to regular subscription check
+      return await this.getUserSubscription(userId, true);
     }
   }
 }
