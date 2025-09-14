@@ -472,22 +472,61 @@ export class SubscriptionService {
     try {
       console.log(`🗑️ Deleting subscription for user: ${userId}`);
 
+      // Get user's email for webhook cleanup
+      const userRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userRef);
+      const userEmail = userDoc.exists() ? userDoc.data()?.email : null;
+
       // Delete from subscriptions collection
       const subscriptionRef = doc(db, SUBSCRIPTIONS_COLLECTION, userId);
       await deleteDoc(subscriptionRef);
       console.log('✅ Subscription document deleted from subscriptions collection');
 
       // Delete subscription field from user document
-      const userRef = doc(db, 'users', userId);
       await updateDoc(userRef, {
         subscription: deleteField()
       });
       console.log('✅ Subscription field deleted from user document');
 
+      // Clean up any webhook/temp subscription records for this user
+      if (userEmail) {
+        await this.cleanupWebhookSubscriptions(userEmail);
+      }
+
       return true;
     } catch (error) {
       console.error('❌ Error deleting subscription:', error);
       return false;
+    }
+  }
+
+  /**
+   * Clean up webhook/temp subscription records that could trigger auto-restoration
+   */
+  private static async cleanupWebhookSubscriptions(userEmail: string): Promise<void> {
+    try {
+      console.log(`🧹 Cleaning up webhook subscription records for: ${userEmail}`);
+
+      // Query for all subscription records with this email
+      const emailQuery = query(
+        collection(db, SUBSCRIPTIONS_COLLECTION),
+        where('customerEmail', '==', userEmail)
+      );
+
+      const querySnapshot = await getDocs(emailQuery);
+
+      // Delete all webhook/temp records with this email
+      const deletePromises = querySnapshot.docs
+        .filter(doc => doc.id.startsWith('cus_') || doc.id.startsWith('temp_'))
+        .map(async (doc) => {
+          console.log(`🗑️ Deleting webhook record: ${doc.id}`);
+          await deleteDoc(doc.ref);
+        });
+
+      await Promise.all(deletePromises);
+      console.log(`✅ Cleaned up ${deletePromises.length} webhook subscription records`);
+    } catch (error) {
+      console.error('❌ Error cleaning up webhook subscriptions:', error);
     }
   }
 }
