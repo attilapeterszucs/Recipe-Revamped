@@ -56,7 +56,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
       console.log('🔔 Subscription cancelled event received');
       refreshSubscription();
       showNotification(
-        'info',
+        'success',
         'Subscription Cancelled',
         'Your subscription has been cancelled. You now have access to the free plan features.'
       );

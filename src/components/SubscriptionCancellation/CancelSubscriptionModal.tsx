@@ -34,7 +34,7 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
   const [error, setError] = useState<string>('');
   const [isVisible, setIsVisible] = useState(false);
 
-  const { addToast } = useToast();
+  const { showSuccess, showError } = useToast();
 
   useEffect(() => {
     if (isOpen) {
@@ -112,14 +112,14 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
           const daysUntilExpiry = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
           if (daysUntilExpiry > 0) {
-            addToast('success', 'Subscription Cancelled',
+            showSuccess('Subscription Cancelled',
               `Your subscription has been cancelled. You'll keep full access for ${daysUntilExpiry} more days until ${expiryDate.toLocaleDateString()}.`);
           } else {
-            addToast('success', 'Subscription Cancelled',
+            showSuccess('Subscription Cancelled',
               'Your subscription has been cancelled and you now have access to the free plan.');
           }
         } else {
-          addToast('success', 'Subscription Cancelled',
+          showSuccess('Subscription Cancelled',
             'Your subscription has been cancelled successfully.');
         }
 
