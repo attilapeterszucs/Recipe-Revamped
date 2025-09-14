@@ -104,7 +104,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
               showNotification(
                 'success',
                 'Payment Successful! 🎉',
-                'Your subscription is now active and ready to use. Welcome to your new plan!'
+                'Your subscription is now active and ready to use.'
               );
               
               // Trigger subscription refresh in UI

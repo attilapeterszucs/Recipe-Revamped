@@ -174,17 +174,28 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       
       // Import necessary services
       const { SubscriptionService } = await import('../lib/subscriptionService');
+      const { SubscriptionCancellationService } = await import('../lib/subscriptionCancellationService');
       const { updateProfile, deleteUser } = await import('firebase/auth');
       const { doc, updateDoc, deleteDoc, collection, query, where, getDocs, writeBatch } = await import('firebase/firestore');
       const { db } = await import('../lib/firebase');
-      
+
       // First cancel any active subscription
       const currentPlan = featureAccess?.currentPlan;
       if (currentPlan && currentPlan !== 'free') {
         try {
-          await SubscriptionService.cancelSubscription(user.uid);
+          console.log(`🚫 Auto-cancelling subscription due to account ${action}`);
+          const cancellationResult = await SubscriptionCancellationService.cancelSubscription(
+            `Account ${action === 'deactivate' ? 'deactivation' : 'deletion'} - automatic cancellation`
+          );
+
+          if (cancellationResult.success) {
+            console.log('✅ Subscription automatically cancelled due to account action');
+          } else {
+            console.warn('⚠️ Could not automatically cancel subscription:', cancellationResult.error);
+          }
         } catch (error) {
-          console.warn('Could not cancel subscription:', error);
+          console.warn('⚠️ Could not cancel subscription during account action:', error);
+          // Continue with account action even if subscription cancellation fails
         }
       }
       
@@ -227,9 +238,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           batch.delete(doc.ref);
         });
         
-        // Delete user's settings and profile
+        // Delete user's settings, profile, and subscription
         batch.delete(doc(db, 'users', user.uid));
         batch.delete(doc(db, 'userSettings', user.uid));
+        batch.delete(doc(db, 'subscriptions', user.uid));
         
         // Delete any user backups
         const backupsQuery = query(collection(db, 'backups'), where('userId', '==', user.uid));

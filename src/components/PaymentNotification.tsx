@@ -132,14 +132,6 @@ export const PaymentNotification: React.FC<PaymentNotificationProps> = ({
                   </div>
                 )}
 
-                {/* Success celebration */}
-                {type === 'success' && (
-                  <div className="mt-4 p-3 bg-white/50 rounded-lg border border-green-100">
-                    <p className="text-xs text-green-600 font-medium">
-                      🎉 Welcome to your new plan! Enjoy all the premium features.
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
           </div>
