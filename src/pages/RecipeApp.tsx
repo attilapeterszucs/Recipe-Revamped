@@ -5,6 +5,7 @@ import { Home, Zap, BookOpen, Calendar, Menu, X } from 'lucide-react';
 import { auth, logOut } from '../lib/firebase';
 import { SignIn } from '../components/Auth/SignIn';
 import { SignUp } from '../components/Auth/SignUp';
+import { EmailVerificationPrompt } from '../components/Auth/EmailVerificationPrompt';
 import { RecipeInput } from '../components/RecipeInput';
 import { StructuredRecipeDisplay } from '../components/StructuredRecipeDisplay';
 import { SavedRecipes } from '../components/SavedRecipes';
@@ -30,6 +31,9 @@ import { DailyConversionService } from '../lib/dailyConversionService';
 import { trackRecipeConversion, trackPageView } from '../lib/analytics';
 import { consentStorage } from '../lib/consentStorage';
 import { ReactivationModal } from '../components/ReactivationModal';
+import { PaymentSuccessPopup } from '../components/PaymentSuccessPopup';
+import { usePaymentSuccess } from '../hooks/usePaymentSuccess';
+import { SEOHead } from '../components/SEOHead';
 
 export function RecipeApp() {
   const navigate = useNavigate();
@@ -58,7 +62,10 @@ export function RecipeApp() {
   const [showReactivationModal, setShowReactivationModal] = useState(false);
   const [isCheckingAccountStatus, setIsCheckingAccountStatus] = useState(false);
   const { showSuccess, showError, showInfo } = useToast();
-  
+
+  // Payment success popup management
+  const { showSuccessPopup, closeSuccessPopup } = usePaymentSuccess();
+
   // OpenAI consent management
   const {
     checkConsentBeforeAI,
@@ -151,8 +158,18 @@ export function RecipeApp() {
       if (user) {
         // Check if account is deactivated before proceeding
         const canProceed = await checkAccountStatus(user);
+
         if (canProceed) {
-          setUser(user);
+          // Only set user if email is verified OR they're a Google user
+          const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
+          const shouldAllowAccess = user.emailVerified || isGoogleUser;
+
+          if (shouldAllowAccess) {
+            setUser(user);
+          } else {
+            // User exists but email is not verified - keep them in verification state
+            setUser(user); // We need to set the user so we can show the verification prompt
+          }
         }
         // If account is deactivated, reactivation modal will be shown
         // and user will only be set after reactivation
@@ -169,35 +186,36 @@ export function RecipeApp() {
   useEffect(() => {
     const loadUserData = async () => {
       if (user) {
-        try {
-          // Create/update user profile in Firestore for all users (both email and Google)
-          await createOrUpdateUserProfile(
-            user.uid,
-            user.email || '',
-            user.displayName || undefined,
-            user.photoURL || undefined
-          );
-          
-          // Initialize admin system if this is the designated admin
-          await initializeAdminSystem(user);
-          
-          // Only load full app settings if email is verified OR if they signed up via Google
-          const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
-          const shouldLoadFullApp = user.emailVerified || isGoogleUser;
-          
-          if (shouldLoadFullApp) {
+        // Only proceed with data loading if email is verified OR they're a Google user
+        const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
+        const shouldLoadFullApp = user.emailVerified || isGoogleUser;
+
+        if (shouldLoadFullApp) {
+          try {
+            // Create/update user profile in Firestore for verified users only
+            await createOrUpdateUserProfile(
+              user.uid,
+              user.email || '',
+              user.displayName || undefined,
+              user.photoURL || undefined
+            );
+
+            // Initialize admin system if this is the designated admin
+            await initializeAdminSystem(user);
+
             const [settings, limitInfo] = await Promise.all([
               getUserSettings(user.uid),
               getUserRecipeLimitInfo(user.uid)
             ]);
             setUserSettings(settings);
             setRecipeLimitInfo(limitInfo);
-          } else {
-            // User exists but hasn't verified email - don't load app data
-            setUserSettings(null);
-            setRecipeLimitInfo(null);
+          } catch (error) {
+            console.error('Error loading user data:', error);
           }
-        } catch (error) {
+        } else {
+          // User exists but hasn't verified email - clear all app data
+          setUserSettings(null);
+          setRecipeLimitInfo(null);
         }
       } else {
         setUserSettings(null);
@@ -447,6 +465,7 @@ export function RecipeApp() {
   return (
     <SubscriptionProvider>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <SEOHead pageKey="app" />
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
@@ -658,7 +677,7 @@ export function RecipeApp() {
         {!user ? (
           <div className="flex justify-center py-6 sm:py-8 lg:py-12">
             {authMode === 'signin' ? (
-              <SignIn 
+              <SignIn
                 onSignIn={() => setUser(auth.currentUser)}
                 onSwitchToSignUp={() => setAuthMode('signup')}
               />
@@ -668,6 +687,13 @@ export function RecipeApp() {
                 onSwitchToSignIn={() => setAuthMode('signin')}
               />
             )}
+          </div>
+        ) : !user.emailVerified && !user.providerData.some(provider => provider.providerId === 'google.com') ? (
+          <div className="flex justify-center py-6 sm:py-8 lg:py-12">
+            <EmailVerificationPrompt
+              user={user}
+              onBackToSignIn={() => setAuthMode('signin')}
+            />
           </div>
         ) : (
           <>
@@ -811,6 +837,12 @@ export function RecipeApp() {
         user={auth.currentUser}
         onReactivate={handleReactivationSuccess}
         onDecline={handleReactivationDecline}
+      />
+
+      {/* Payment Success Popup */}
+      <PaymentSuccessPopup
+        isOpen={showSuccessPopup}
+        onClose={closeSuccessPopup}
       />
 
     </div>

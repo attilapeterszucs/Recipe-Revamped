@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, MessageSquare, MapPin, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
+import { SEOHead } from '../components/SEOHead';
 
 interface ContactForm {
   name: string;
@@ -173,6 +174,7 @@ export const Contact: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+      <SEOHead pageKey="contact" />
       {/* Header */}
       <AuthAwareNavigation />
 

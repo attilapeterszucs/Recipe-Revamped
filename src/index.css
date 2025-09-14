@@ -16,8 +16,91 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  overscroll-behavior-y: contain; /* Prevent bounce scrolling */
 }
 
 #root {
   min-height: 100vh;
+}
+
+/* Mobile-first touch-friendly interactions */
+.touch-friendly {
+  /* Minimum touch target size for accessibility */
+  min-height: 44px;
+  min-width: 44px;
+
+  /* Better touch response on mobile devices */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  /* Prevent text selection on touch */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Improved focus states for mobile accessibility */
+.touch-friendly:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
+
+/* Better button press states on mobile */
+.touch-friendly:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease-in-out;
+}
+
+/* Prevent zoom on form inputs on iOS */
+@media screen and (max-width: 767px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Improved mobile scrolling for containers */
+.mobile-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Better touch interaction for cards */
+.mobile-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.mobile-card:active {
+  transform: scale(0.995);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure proper spacing on mobile devices */
+@media screen and (max-width: 640px) {
+  .mobile-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Better mobile modal positioning */
+@media screen and (max-width: 768px) {
+  .mobile-modal {
+    margin: 0;
+    min-height: 100vh;
+    border-radius: 0;
+  }
+}
+
+/* Improved mobile typography */
+@media screen and (max-width: 640px) {
+  .mobile-text {
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
 }

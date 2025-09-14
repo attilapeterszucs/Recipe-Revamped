@@ -1,0 +1,55 @@
+# Recipe Revamped - Robots.txt for SEO Optimization
+
+User-agent: *
+Allow: /
+
+# High-priority pages for indexing
+Allow: /
+Allow: /app
+Allow: /about
+Allow: /contact
+Allow: /blog
+Allow: /signin
+Allow: /signup
+
+# Policy pages - allow but lower priority
+Allow: /privacy
+Allow: /terms
+Allow: /cookies
+
+# Block admin and internal pages
+Disallow: /admin
+Disallow: /api/
+Disallow: /_next/
+Disallow: /src/
+Disallow: /node_modules/
+
+# Block sensitive or duplicate content
+Disallow: /password-reset
+Disallow: /email-verification
+Disallow: /*?success=*
+Disallow: /*?canceled=*
+Disallow: /*?error=*
+
+# Allow search engines to crawl CSS and JS for better rendering
+Allow: /*.css$
+Allow: /*.js$
+
+# Sitemap location
+Sitemap: https://reciperevamped.com/sitemap.xml
+
+# Crawl delay (optional - be respectful to smaller bots)
+Crawl-delay: 1
+
+# Specific instructions for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2

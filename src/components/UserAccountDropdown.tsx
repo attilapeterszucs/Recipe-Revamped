@@ -25,11 +25,11 @@ const PLAN_COLORS = {
 const STRIPE_PAYMENT_LINKS = {
   chef: {
     monthly: 'https://buy.stripe.com/test_9B6fZj1IFeMTgZg2KueEo04',
-    yearly: 'https://buy.stripe.com/test_4gM9AVafb207fVc2KueEo03'
+    yearly: 'https://buy.stripe.com/4gM3cw3ohajob3q0C6awo05'
   },
   'master-chef': {
-    monthly: 'https://buy.stripe.com/test_9B6dRb4UR0W310i70KeEo00',
-    yearly: 'https://buy.stripe.com/test_bJebJ3bjfcELcJ0dp8eEo02'
+    monthly: 'https://buy.stripe.com/bJe7sM7Ex4Z47Re0C6awo07',
+    yearly: 'https://buy.stripe.com/28E7sM3ohajob3qbgKawo06'
   }
 };
 

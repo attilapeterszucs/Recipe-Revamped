@@ -81,10 +81,14 @@ const passwordResetSettings: ActionCodeSettings = {
 // Auth functions
 export const signUpWithEmail = async (email: string, password: string) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  
+
   // Send Firebase's built-in email verification
   await sendEmailVerification(userCredential.user);
-  
+
+  // Sign out the user immediately after account creation
+  // They must verify their email before they can access the app
+  await signOut(auth);
+
   logger.auth('User account created and verification email sent', userCredential.user.uid);
   return userCredential;
 };

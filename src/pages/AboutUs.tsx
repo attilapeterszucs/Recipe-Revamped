@@ -1,90 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Target, Heart, Lightbulb, Globe, Award, Zap, Shield } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
+import { SEOHead } from '../components/SEOHead';
 
 export const AboutUs: React.FC = () => {
-  // SEO optimization
-  useEffect(() => {
-    document.title = 'About Recipe Revamped | AI-Powered Recipe Conversion Platform';
-    
-    const metaDescription = document.querySelector('meta[name="description"]') || document.createElement('meta');
-    if (!metaDescription.getAttribute('name')) {
-      metaDescription.setAttribute('name', 'description');
-      document.head.appendChild(metaDescription);
-    }
-    metaDescription.setAttribute('content', 'Learn about Recipe Revamped, the revolutionary AI-powered platform that transforms recipes to meet your dietary needs. Discover our mission to make healthy, personalized cooking accessible to everyone.');
-    
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    if (!metaKeywords.getAttribute('name')) {
-      metaKeywords.setAttribute('name', 'keywords');
-      document.head.appendChild(metaKeywords);
-    }
-    metaKeywords.setAttribute('content', 'Recipe Revamped, AI recipe conversion, dietary adaptation, healthy cooking, recipe transformation, food allergies, keto recipes, nutrition technology, personalized meals');
-    
-    // Open Graph tags
-    const ogTags = [
-      { property: 'og:title', content: 'About Recipe Revamped | AI-Powered Recipe Conversion Platform' },
-      { property: 'og:description', content: 'Revolutionary AI-powered platform that transforms recipes to meet your dietary needs. Making healthy, personalized cooking accessible to everyone.' },
-      { property: 'og:type', content: 'website' },
-      { property: 'og:url', content: 'https://reciperevamped.com/about' },
-      { property: 'og:site_name', content: 'Recipe Revamped' }
-    ];
-    
-    ogTags.forEach(tag => {
-      let meta = document.querySelector(`meta[property="${tag.property}"]`);
-      if (!meta) {
-        meta = document.createElement('meta');
-        meta.setAttribute('property', tag.property);
-        document.head.appendChild(meta);
-      }
-      meta.setAttribute('content', tag.content);
-    });
-    
-    // Structured data
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Recipe Revamped",
-      "description": "AI-powered recipe conversion platform that transforms recipes to meet dietary needs and restrictions",
-      "url": "https://reciperevamped.com",
-      "logo": "https://reciperevamped.com/logo.png",
-      "foundingDate": "2024",
-      "sameAs": [
-        "https://facebook.com/reciperevamped",
-        "https://twitter.com/reciperevamped",
-        "https://instagram.com/reciperevamped"
-      ],
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+1-555-RECIPE",
-        "contactType": "customer service",
-        "email": "support@reciperevamped.com"
-      },
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "US"
-      },
-      "makesOffer": {
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": "AI Recipe Conversion Service",
-          "description": "Transform any recipe to meet your dietary needs using artificial intelligence"
-        }
-      }
-    };
-    
-    const existingScript = document.querySelector('script[type="application/ld+json"]');
-    if (existingScript) existingScript.remove();
-    
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.textContent = JSON.stringify(structuredData);
-    document.head.appendChild(script);
-  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+      <SEOHead pageKey="about" />
       {/* Header */}
       <AuthAwareNavigation />
 

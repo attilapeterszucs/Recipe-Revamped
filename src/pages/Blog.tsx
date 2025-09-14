@@ -3,6 +3,7 @@ import { Calendar, User, Clock, ArrowRight, Tag, ChefHat, ArrowLeft, Heart } fro
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import { SEOHead } from '../components/SEOHead';
 
 interface BlogPost {
   id: string;

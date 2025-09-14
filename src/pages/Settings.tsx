@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { type User } from 'firebase/auth';
-import { 
-  Save, 
-  User as UserIcon, 
-  Palette, 
-  Bell, 
-  Shield, 
-  Bot, 
+import {
+  Save,
+  User as UserIcon,
+  Palette,
+  Bell,
+  Shield,
+  Bot,
   Database,
   UserCog,
   ChevronRight,
@@ -20,7 +20,8 @@ import {
   Lock,
   CreditCard,
   AlertTriangle,
-  UserX
+  UserX,
+  Info
 } from 'lucide-react';
 import { getUserSettings, updateUserSettings, updateUserProfile, uploadProfilePicture, deleteProfilePicture } from '../lib/userSettings';
 import { createBackup, getUserBackups, restoreFromBackup, scheduleAutoBackup, deleteBackup } from '../lib/backup';
@@ -827,40 +828,40 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         const canUploadProfilePicture = featureAccess?.canUploadProfilePicture || false;
         
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">Profile Information</h3>
-            
+          <div className="space-y-4 sm:space-y-6">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Profile Information</h3>
+
             {/* Profile Picture Section */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-4">
+            <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+              <label className="block text-sm sm:text-base font-semibold text-gray-800 mb-4">
                 Profile Picture
               </label>
-              
+
               {canUploadProfilePicture ? (
-                <div className="flex items-center space-x-6">
+                <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
                   {/* Current Profile Picture */}
-                  <div className="relative">
+                  <div className="relative flex-shrink-0">
                     {currentProfilePicture ? (
                       <img
                         src={currentProfilePicture}
                         alt="Profile"
-                        className="w-24 h-24 rounded-full object-cover border-4 border-gray-200"
+                        className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-gray-200 shadow-md"
                       />
                     ) : (
-                      <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center border-4 border-gray-200">
-                        <UserIcon className="w-12 h-12 text-gray-400" />
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-200 flex items-center justify-center border-4 border-gray-200 shadow-md">
+                        <UserIcon className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400" />
                       </div>
                     )}
-                    
+
                     {uploadingProfilePicture && (
                       <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
                         <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       </div>
                     )}
                   </div>
-                  
+
                   {/* Upload Controls */}
-                  <div className="space-y-2">
+                  <div className="flex-1 w-full sm:w-auto">
                     <input
                       type="file"
                       id="profile-picture-upload"
@@ -876,67 +877,65 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       disabled={uploadingProfilePicture}
                       className="hidden"
                     />
-                    
-                    <div className="flex space-x-2">
+
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 mb-3">
                       <label
                         htmlFor="profile-picture-upload"
-                        className={`cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors ${
+                        className={`cursor-pointer inline-flex items-center justify-center px-4 py-3 sm:py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors touch-friendly min-h-[44px] ${
                           uploadingProfilePicture ? 'opacity-50 cursor-not-allowed' : ''
                         }`}
                       >
                         <Upload className="w-4 h-4 mr-2" />
                         {uploadingProfilePicture ? 'Uploading...' : 'Change Picture'}
                       </label>
-                      
+
                       {currentProfilePicture && !uploadingProfilePicture && (
                         <button
                           onClick={handleProfilePictureDelete}
-                          className="inline-flex items-center px-4 py-2 border border-red-300 rounded-md text-sm font-medium text-red-700 bg-white hover:bg-red-50 transition-colors"
+                          className="inline-flex items-center justify-center px-4 py-3 sm:py-2 border border-red-300 rounded-lg text-sm font-medium text-red-700 bg-white hover:bg-red-50 transition-colors touch-friendly min-h-[44px]"
                         >
                           <X className="w-4 h-4 mr-2" />
                           Remove
                         </button>
                       )}
                     </div>
-                    
-                    <div className="space-y-1">
-                      <p className="text-xs text-gray-500">
-                        JPG, PNG, or WebP. Max file size 5MB.
-                      </p>
-                    </div>
+
+                    <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
+                      JPG, PNG, or WebP. Max file size 5MB.
+                    </p>
                   </div>
                 </div>
               ) : (
-                <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-6">
-                  <div className="flex items-center space-x-4">
+                <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
                     {/* Current Profile Picture (Read-only) */}
-                    <div className="relative">
+                    <div className="relative flex-shrink-0">
                       {currentProfilePicture ? (
                         <img
                           src={currentProfilePicture}
                           alt="Profile"
-                          className="w-20 h-20 rounded-full object-cover border-4 border-orange-200"
+                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-orange-200"
                         />
                       ) : (
-                        <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center border-4 border-orange-200">
-                          <UserIcon className="w-10 w-10 text-orange-400" />
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-orange-100 flex items-center justify-center border-4 border-orange-200">
+                          <UserIcon className="w-8 h-8 sm:w-10 sm:h-10 text-orange-400" />
                         </div>
                       )}
                     </div>
-                    
-                    <div className="flex-1">
-                      <h4 className="text-lg font-semibold text-orange-800 mb-1">
+
+                    <div className="flex-1 text-center sm:text-left">
+                      <h4 className="text-base sm:text-lg font-semibold text-orange-800 mb-2">
                         Premium Profile Pictures
                       </h4>
-                      <p className="text-orange-700 text-sm mb-3">
+                      <p className="text-orange-700 text-sm mb-3 leading-relaxed">
                         Upload custom profile pictures with Chef plan or higher. Stand out with a personalized profile image.
                       </p>
-                      <div className="text-xs text-orange-600 mb-4">
+                      <div className="text-xs text-orange-600 mb-4 leading-relaxed">
                         ✓ Custom profile pictures • ✓ 5MB file size limit • ✓ Multiple formats supported
                       </div>
                       <button
                         data-upgrade-plan
-                        className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-4 py-2 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 text-sm"
+                        className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-4 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 text-sm touch-friendly min-h-[44px] w-full sm:w-auto"
                       >
                         Upgrade to Upload Pictures
                       </button>
@@ -946,122 +945,141 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               )}
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Display Name
-              </label>
-              <input
-                type="text"
-                value={settings.displayName || ''}
-                onChange={(e) => updateSetting('displayName', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  value={settings.email || ''}
-                  onChange={(e) => updateSetting('email', e.target.value)}
-                  disabled={user.providerData.some(provider => provider.providerId === 'google.com')}
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                    user.providerData.some(provider => provider.providerId === 'google.com') 
-                      ? 'bg-gray-100 text-gray-500 cursor-not-allowed' 
-                      : ''
-                  }`}
-                />
-                {user.providerData.some(provider => provider.providerId === 'google.com') && (
-                  <p className="mt-1 text-xs text-gray-500">
-                    Email cannot be changed for Google accounts
-                  </p>
-                )}
+            {/* Basic Information Section */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+              <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">Basic Information</h4>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                    Display Name
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.displayName || ''}
+                    onChange={(e) => updateSetting('displayName', e.target.value)}
+                    placeholder="Enter your display name"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base touch-friendly min-h-[44px] transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={settings.email || ''}
+                      onChange={(e) => updateSetting('email', e.target.value)}
+                      disabled={user.providerData.some(provider => provider.providerId === 'google.com')}
+                      placeholder="Enter your email address"
+                      className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base touch-friendly min-h-[44px] transition-colors ${
+                        user.providerData.some(provider => provider.providerId === 'google.com')
+                          ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                          : ''
+                      }`}
+                    />
+                    {user.providerData.some(provider => provider.providerId === 'google.com') && (
+                      <div className="flex items-center mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <Info className="w-4 h-4 text-blue-600 mr-2 flex-shrink-0" />
+                        <p className="text-xs sm:text-sm text-blue-700">
+                          Email cannot be changed for Google accounts
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
             
             {/* Password Change Section - Only for email/password users */}
             {!isGoogleUser && (
-              <div className="border-t pt-6 mt-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Change Password</h4>
-                
+              <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+                <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">Change Password</h4>
+
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                       Current Password
                     </label>
                     <input
                       type="password"
                       value={passwordForm.currentPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base touch-friendly min-h-[44px] transition-colors"
                       placeholder="Enter your current password"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                       New Password
                     </label>
                     <input
                       type="password"
                       value={passwordForm.newPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base touch-friendly min-h-[44px] transition-colors"
                       placeholder="Enter your new password"
                     />
-                    <p className="mt-1 text-xs text-gray-500">
-                      Password must be at least 8 characters with uppercase, lowercase, number, and special character
-                    </p>
+                    <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                      <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                        Password must be at least 8 characters with uppercase, lowercase, number, and special character
+                      </p>
+                    </div>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                       Confirm New Password
                     </label>
                     <input
                       type="password"
                       value={passwordForm.confirmPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base touch-friendly min-h-[44px] transition-colors"
                       placeholder="Confirm your new password"
                     />
                   </div>
-                  
-                  <button
-                    type="button"
-                    onClick={handlePasswordChange}
-                    disabled={changingPassword || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
-                    className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {changingPassword ? 'Updating Password...' : 'Update Password'}
-                  </button>
+
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={handlePasswordChange}
+                      disabled={changingPassword || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
+                      className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium touch-friendly min-h-[44px]"
+                    >
+                      <Lock className="w-4 h-4 mr-2" />
+                      {changingPassword ? 'Updating Password...' : 'Update Password'}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
             
             {/* Account Management Section */}
-            <div className="border-t pt-6 mt-6">
-              <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Account Management</h4>
-              
+            <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+              <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">Account Management</h4>
+
               <div className="space-y-4">
                 {/* Cancel Plan Button - Only show if user has an active subscription */}
                 {featureAccess?.currentPlan && featureAccess.currentPlan !== 'free' && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 sm:p-6">
-                    <div className="flex items-start space-x-3">
-                      <CreditCard className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4">
+                      <div className="flex items-center sm:items-start">
+                        <CreditCard className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0 mr-3 sm:mr-0" />
+                      </div>
                       <div className="flex-1">
-                        <h5 className="text-sm sm:text-base font-medium text-yellow-800 mb-2">
+                        <h5 className="text-base sm:text-lg font-semibold text-yellow-800 mb-2">
                           Cancel Subscription
                         </h5>
-                        <p className="text-xs sm:text-sm text-yellow-700 mb-4 leading-relaxed">
+                        <p className="text-sm text-yellow-700 mb-4 leading-relaxed">
                           Cancel your {featureAccess.currentPlan.replace('-', ' ')} plan. You'll continue to have access until the end of your billing period.
                         </p>
                         <button
                           onClick={() => setShowCancelPlanModal(true)}
-                          className="inline-flex items-center px-3 sm:px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium touch-friendly"
+                          className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium touch-friendly min-h-[44px]"
                         >
                           <CreditCard className="w-4 h-4 mr-2" />
                           Cancel Plan
@@ -1070,21 +1088,23 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     </div>
                   </div>
                 )}
-                
+
                 {/* Delete Account Section */}
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4 sm:p-6">
-                  <div className="flex items-start space-x-3">
-                    <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4">
+                    <div className="flex items-center sm:items-start">
+                      <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0 mr-3 sm:mr-0" />
+                    </div>
                     <div className="flex-1">
-                      <h5 className="text-sm sm:text-base font-medium text-red-800 mb-2">
+                      <h5 className="text-base sm:text-lg font-semibold text-red-800 mb-2">
                         Delete Account
                       </h5>
-                      <p className="text-xs sm:text-sm text-red-700 mb-4 leading-relaxed">
+                      <p className="text-sm text-red-700 mb-4 leading-relaxed">
                         Permanently delete your account and all associated data. This action cannot be undone. Any active subscription will be automatically canceled.
                       </p>
                       <button
                         onClick={() => setShowDeleteAccountModal(true)}
-                        className="inline-flex items-center px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium touch-friendly"
+                        className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium touch-friendly min-h-[44px]"
                       >
                         <UserX className="w-4 h-4 mr-2" />
                         Delete Account
