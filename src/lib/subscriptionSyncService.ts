@@ -27,24 +27,33 @@ export class SubscriptionSyncService {
    * Monitor for new subscription records from Stripe webhooks and sync to user accounts
    */
   static startSyncService() {
-    
+
     // Listen for temporary subscription records created by webhook
     const tempQuery = query(
       collection(db, SUBSCRIPTIONS_COLLECTION),
       where('source', '==', 'stripe_checkout')
     );
-    
+
     return onSnapshot(tempQuery, async (snapshot) => {
-      snapshot.docChanges().forEach(async (change) => {
-        if (change.type === 'added') {
-          const tempDoc = change.doc;
-          const tempData = tempDoc.data();
-          
-          if (tempDoc.id.startsWith(TEMP_SUBSCRIPTIONS_PREFIX) && tempData.customerEmail) {
-            await this.syncTempSubscriptionToUser(tempDoc.id, tempData);
+      // Only process new documents, not initial snapshot load
+      if (!snapshot.metadata.fromCache && !snapshot.metadata.hasPendingWrites) {
+        snapshot.docChanges().forEach(async (change) => {
+          if (change.type === 'added') {
+            const tempDoc = change.doc;
+            const tempData = tempDoc.data();
+
+            // Only process if it's a temp subscription and matches current user
+            const currentUser = auth.currentUser;
+            if (tempDoc.id.startsWith(TEMP_SUBSCRIPTIONS_PREFIX) &&
+                tempData.customerEmail &&
+                currentUser &&
+                currentUser.email === tempData.customerEmail) {
+              console.log(`Processing subscription sync for document: ${tempDoc.id}`);
+              await this.syncTempSubscriptionToUser(tempDoc.id, tempData);
+            }
           }
-        }
-      });
+        });
+      }
     });
   }
   
@@ -89,8 +98,7 @@ export class SubscriptionSyncService {
 
         console.log(`✅ Subscription synced from webhook: ${subscription.plan} for ${customerEmail}`);
 
-        // Trigger subscription status refresh
-        window.location.reload(); // Simple refresh - can be improved with state management
+        // Note: UI will refresh via React state management instead of full page reload
 
       } else {
         console.log(`⚠️ No matching user found for email: ${customerEmail}`);
@@ -138,10 +146,8 @@ export class SubscriptionSyncService {
         
         // Clean up temporary record
         await this.cleanupTempSubscription(tempDocId);
-        
-        
-        // Trigger subscription status refresh
-        window.location.reload(); // Simple refresh - can be improved with state management
+
+        // Note: UI will refresh via React state management instead of full page reload
         
       } else {
         // Could implement a queue or retry mechanism here
@@ -221,9 +227,21 @@ export class SubscriptionSyncService {
    * Force sync check for current user (after payment completion)
    */
   static async forceSyncCheck(userEmail: string, maxRetries: number = 10): Promise<boolean> {
+    console.log(`Starting forceSyncCheck for ${userEmail} (max ${maxRetries} retries)`);
+
+    // First check if user already has an active paid subscription
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const existingSubscription = await this.checkUserSubscription(currentUser.uid);
+      if (existingSubscription && existingSubscription.plan !== 'free') {
+        console.log(`User already has active subscription: ${existingSubscription.plan}`);
+        return true;
+      }
+    }
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
+        console.log(`Sync attempt ${attempt}/${maxRetries} for ${userEmail}`);
         // Look for subscription records with this email (from webhook)
         const webhookQuery = query(
           collection(db, SUBSCRIPTIONS_COLLECTION),
@@ -288,11 +306,12 @@ export class SubscriptionSyncService {
           }
         }
         
-        // Also check if user already has an active subscription
+        // Double-check if user now has an active subscription
         const currentUser = auth.currentUser;
         if (currentUser) {
           const existingSubscription = await this.checkUserSubscription(currentUser.uid);
           if (existingSubscription && existingSubscription.plan !== 'free') {
+            console.log(`Subscription found during retry: ${existingSubscription.plan}`);
             return true;
           }
         }

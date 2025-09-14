@@ -6,6 +6,7 @@ import { SubscriptionSyncService } from '../lib/subscriptionSyncService';
 export const usePaymentSuccess = () => {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [syncingSubscription, setSyncingSubscription] = useState(false);
+  const [syncAttempted, setSyncAttempted] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -13,8 +14,9 @@ export const usePaymentSuccess = () => {
     const urlParams = new URLSearchParams(location.search);
     const isSuccess = urlParams.get('success') === 'true';
 
-    if (isSuccess) {
+    if (isSuccess && !syncAttempted) {
       setShowSuccessPopup(true);
+      setSyncAttempted(true); // Prevent multiple sync attempts
 
       // Trigger subscription sync immediately
       const syncSubscription = async () => {
@@ -31,9 +33,6 @@ export const usePaymentSuccess = () => {
               console.log('✅ Subscription synced successfully!');
             } else {
               console.warn('⚠️ Could not find subscription to sync - webhook may still be processing');
-
-              // Continue showing popup and let user manually refresh if needed
-              // The subscription should be available soon via webhook
             }
           } catch (error) {
             console.error('❌ Subscription sync error:', error);
@@ -63,7 +62,8 @@ export const usePaymentSuccess = () => {
   return {
     showSuccessPopup,
     closeSuccessPopup,
-    syncingSubscription
+    syncingSubscription,
+    syncAttempted
   };
 };
 
