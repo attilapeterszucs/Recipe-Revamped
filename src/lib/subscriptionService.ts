@@ -4,6 +4,8 @@ import {
   getDoc,
   setDoc,
   deleteDoc,
+  updateDoc,
+  deleteField,
   query,
   where,
   getDocs,
@@ -463,17 +465,25 @@ export class SubscriptionService {
   }
 
   /**
-   * Delete a user's subscription document from Firestore
+   * Delete a user's subscription from both storage locations
    * Use this for test/admin subscriptions that should be completely removed
    */
   static async deleteSubscription(userId: string): Promise<boolean> {
     try {
-      console.log(`🗑️ Deleting subscription document for user: ${userId}`);
+      console.log(`🗑️ Deleting subscription for user: ${userId}`);
 
+      // Delete from subscriptions collection
       const subscriptionRef = doc(db, SUBSCRIPTIONS_COLLECTION, userId);
       await deleteDoc(subscriptionRef);
+      console.log('✅ Subscription document deleted from subscriptions collection');
 
-      console.log('✅ Subscription document deleted successfully');
+      // Delete subscription field from user document
+      const userRef = doc(db, 'users', userId);
+      await updateDoc(userRef, {
+        subscription: deleteField()
+      });
+      console.log('✅ Subscription field deleted from user document');
+
       return true;
     } catch (error) {
       console.error('❌ Error deleting subscription:', error);
