@@ -3,8 +3,8 @@ import { SubscriptionService } from './subscriptionService';
 import { SubscriptionExpiryService } from './subscriptionExpiryService';
 import type { UserSubscription } from '../types/subscription';
 
-// Temporary workaround: Use Firebase Functions instead of standalone webhook
-const CLOUD_FUNCTION_URL = import.meta.env.VITE_STRIPE_WEBHOOK_URL ||'https://us-central1-reciperevamped.cloudfunctions.net/stripe-webhook';
+// Use the correct Cloud Run service URL for stripe webhook
+const STRIPE_WEBHOOK_URL = import.meta.env.VITE_STRIPE_WEBHOOK_URL || 'https://stripe-webhook-428797186446.us-central1.run.app';
 
 export interface CancellationRequest {
   userId: string;
@@ -61,8 +61,8 @@ export class SubscriptionCancellationService {
       // Get auth token for authenticated request
       const idToken = await currentUser.getIdToken();
 
-      // Call Cloud Function to cancel subscription
-      const response = await fetch(`${CLOUD_FUNCTION_URL}/cancel-subscription`, {
+      // Call Cloud Run webhook service to cancel subscription
+      const response = await fetch(`${STRIPE_WEBHOOK_URL}/cancel-subscription`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
