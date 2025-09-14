@@ -92,7 +92,7 @@ export const PaymentSuccessPopup: React.FC<PaymentSuccessPopupProps> = ({ isOpen
                 </h3>
                 <p className="text-green-700 text-sm leading-relaxed">
                   We've received your payment successfully! Your subscription plan will be activated
-                  for your account as soon as we process the payment. This usually takes just a few minutes.
+                  for your account as soon as we process the payment. This usually takes up to 5 minutes.
                 </p>
               </div>
             </div>
@@ -111,7 +111,7 @@ export const PaymentSuccessPopup: React.FC<PaymentSuccessPopupProps> = ({ isOpen
                 <ul className="text-blue-700 text-xs sm:text-sm space-y-1">
                   <li className="flex items-center">
                     <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
-                    Payment processing (1-2 minutes)
+                    Payment processing (up to 5 minutes)
                   </li>
                   <li className="flex items-center">
                     <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>

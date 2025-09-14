@@ -34,6 +34,7 @@ import { ReactivationModal } from '../components/ReactivationModal';
 import { PaymentSuccessPopup } from '../components/PaymentSuccessPopup';
 import { usePaymentSuccess } from '../hooks/usePaymentSuccess';
 import { SEOHead } from '../components/SEOHead';
+import { SubscriptionSyncService } from '../lib/subscriptionSyncService';
 
 export function RecipeApp() {
   const navigate = useNavigate();
@@ -202,6 +203,14 @@ export function RecipeApp() {
 
             // Initialize admin system if this is the designated admin
             await initializeAdminSystem(user);
+
+            // Check for pending subscription sync (for users who paid and then signed in later)
+            if (user.email) {
+              SubscriptionSyncService.forceSyncCheck(user.email, 3).catch(error => {
+                // Don't block app loading if sync fails
+                console.log('Background subscription sync check completed');
+              });
+            }
 
             const [settings, limitInfo] = await Promise.all([
               getUserSettings(user.uid),

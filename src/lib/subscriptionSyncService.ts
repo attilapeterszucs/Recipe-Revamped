@@ -49,6 +49,59 @@ export class SubscriptionSyncService {
   }
   
   /**
+   * Sync webhook subscription record to actual Firebase user
+   */
+  private static async syncWebhookSubscriptionToUser(webhookDocId: string, webhookData: any) {
+    try {
+      const customerEmail = webhookData.customerEmail;
+
+      // Find Firebase user by email
+      const currentUser = auth.currentUser;
+
+      if (currentUser && currentUser.email === customerEmail) {
+
+        // Create proper subscription record
+        const subscription: UserSubscription = {
+          userId: currentUser.uid,
+          plan: webhookData.plan,
+          status: webhookData.status,
+          startDate: webhookData.startDate?.toDate() || new Date(),
+          endDate: webhookData.endDate?.toDate() || null,
+          stripeCustomerId: webhookData.stripeCustomerId,
+          stripeSubscriptionId: webhookData.stripeSubscriptionId
+        };
+
+        // Save to user's subscription document
+        await setDoc(doc(db, SUBSCRIPTIONS_COLLECTION, currentUser.uid), {
+          ...subscription,
+          billingPeriod: webhookData.billingPeriod,
+          amount: webhookData.amount,
+          currency: webhookData.currency || 'usd',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          syncedFromWebhook: true,
+          webhookSourceId: webhookDocId,
+          source: 'webhook_sync'
+        });
+
+        // Also update user's profile with subscription info
+        await this.updateUserProfile(currentUser.uid, subscription);
+
+        console.log(`✅ Subscription synced from webhook: ${subscription.plan} for ${customerEmail}`);
+
+        // Trigger subscription status refresh
+        window.location.reload(); // Simple refresh - can be improved with state management
+
+      } else {
+        console.log(`⚠️ No matching user found for email: ${customerEmail}`);
+      }
+
+    } catch (error) {
+      console.error('❌ Error syncing webhook subscription:', error);
+    }
+  }
+
+  /**
    * Sync temporary subscription record to actual Firebase user
    */
   private static async syncTempSubscriptionToUser(tempDocId: string, tempData: any) {
@@ -168,34 +221,44 @@ export class SubscriptionSyncService {
    * Force sync check for current user (after payment completion)
    */
   static async forceSyncCheck(userEmail: string, maxRetries: number = 10): Promise<boolean> {
-    
+
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        // Look for temporary subscription with this email
-        const tempQuery = query(
+        // Look for subscription records with this email (from webhook)
+        const webhookQuery = query(
           collection(db, SUBSCRIPTIONS_COLLECTION),
-          where('customerEmail', '==', userEmail),
-          where('source', '==', 'stripe_checkout')
+          where('customerEmail', '==', userEmail)
         );
         
-        const querySnapshot = await getDocs(tempQuery);
-        
-        // Check if we found any temporary subscription records
+        const querySnapshot = await getDocs(webhookQuery);
+
+        // Check if we found any webhook subscription records
         if (!querySnapshot.empty) {
-          const tempDoc = querySnapshot.docs[0];
-          const tempData = tempDoc.data();
-          
-          await this.syncTempSubscriptionToUser(tempDoc.id, tempData);
-          return true;
+          const webhookDoc = querySnapshot.docs[0];
+          const webhookData = webhookDoc.data();
+
+          // Check if this is a Stripe customer ID (starts with 'cus_') or temp record
+          if (webhookDoc.id.startsWith('cus_') || webhookDoc.id.startsWith('temp_')) {
+            await this.syncWebhookSubscriptionToUser(webhookDoc.id, webhookData);
+            return true;
+          }
         } else {
-          // Check if we have any temp records at all for debugging
-          const allTempQuery = query(
+          // Also check for temp records with checkout source
+          const tempQuery = query(
             collection(db, SUBSCRIPTIONS_COLLECTION),
+            where('customerEmail', '==', userEmail),
             where('source', '==', 'stripe_checkout')
           );
-          const allTempDocs = await getDocs(allTempQuery);
-          
-          // Diagnostic query - check all documents in subscriptions collection
+          const tempSnapshot = await getDocs(tempQuery);
+
+          if (!tempSnapshot.empty) {
+            const tempDoc = tempSnapshot.docs[0];
+            const tempData = tempDoc.data();
+            await this.syncTempSubscriptionToUser(tempDoc.id, tempData);
+            return true;
+          }
+
+          // Check if we have any records at all for debugging
           const allDocsQuery = query(collection(db, SUBSCRIPTIONS_COLLECTION));
           const allDocs = await getDocs(allDocsQuery);
           
@@ -206,7 +269,7 @@ export class SubscriptionSyncService {
               debugInfo: {
                 userEmail,
                 attempt,
-                allTempDocsCount: allTempDocs.size,
+                allDocsFound: allDocs.size,
                 allDocsCount: allDocs.size,
                 currentUserId: currentUser?.uid,
                 currentUserEmail: currentUser?.email,
