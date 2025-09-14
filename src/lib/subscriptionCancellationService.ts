@@ -23,6 +23,7 @@ export interface CancellationResponse {
   cancelledAt?: string;
   error?: string;
   processing_time?: number;
+  note?: string;
 }
 
 export class SubscriptionCancellationService {
@@ -48,11 +49,54 @@ export class SubscriptionCancellationService {
         };
       }
 
-      // Prepare cancellation request
+      // Check if we have Stripe IDs
+      const stripeSubscriptionId = currentSubscription.stripeSubscriptionId;
+      const stripeCustomerId = currentSubscription.stripeCustomerId;
+
+      if (!stripeSubscriptionId && !stripeCustomerId) {
+        console.warn('No Stripe IDs found in subscription data, attempting local cancellation only');
+        // For subscriptions without Stripe IDs (like admin-set subscriptions), just update locally
+        const success = await SubscriptionService.setUserSubscription(currentUser.uid, {
+          plan: 'free',
+          status: 'cancelled',
+          startDate: new Date(),
+          endDate: null
+        });
+
+        if (success) {
+          // Trigger UI refresh
+          window.dispatchEvent(new CustomEvent('subscription-cancelled', {
+            detail: {
+              userId: currentUser.uid,
+              currentPlan: 'free',
+              willDowngradeTo: 'free',
+              cancelledAt: new Date().toISOString(),
+              note: 'Local cancellation - no Stripe subscription found'
+            }
+          }));
+
+          return {
+            success: true,
+            message: 'Subscription cancelled successfully',
+            userId: currentUser.uid,
+            currentPlan: 'free',
+            willDowngradeTo: 'free',
+            cancelledAt: new Date().toISOString(),
+            note: 'Cancelled locally - no Stripe subscription to cancel'
+          };
+        } else {
+          return {
+            success: false,
+            error: 'Failed to cancel subscription locally'
+          };
+        }
+      }
+
+      // Prepare cancellation request with Stripe IDs
       const cancellationRequest: CancellationRequest = {
         userId: currentUser.uid,
-        stripeSubscriptionId: currentSubscription.stripeSubscriptionId || undefined,
-        stripeCustomerId: currentSubscription.stripeCustomerId || undefined,
+        stripeSubscriptionId: stripeSubscriptionId || undefined,
+        stripeCustomerId: stripeCustomerId || undefined,
         reason: reason || 'User requested cancellation'
       };
 
