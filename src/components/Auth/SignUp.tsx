@@ -109,6 +109,8 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
 
       await signUpWithEmail(validatedData.email, validatedData.password);
       setEmailSent(true);
+      // Note: We do NOT call onSignUp() for email signups
+      // The user must verify their email first
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Partial<SignUpInput> = {};

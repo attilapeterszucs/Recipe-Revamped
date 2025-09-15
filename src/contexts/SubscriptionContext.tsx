@@ -53,22 +53,14 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
 
     // Listen for subscription events
     const handleSubscriptionCancelled = () => {
-      console.log('🔔 Subscription cancelled event received');
       refreshSubscription();
-      showNotification(
-        'success',
-        'Subscription Cancelled',
-        'Your subscription has been cancelled. You now have access to the free plan features.'
-      );
     };
 
     const handleSubscriptionDowngraded = () => {
-      console.log('🔔 Subscription downgraded event received');
       refreshSubscription();
     };
 
     const handleRefreshSubscription = () => {
-      console.log('🔔 Manual subscription refresh requested');
       refreshSubscription();
     };
 
@@ -121,7 +113,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
               );
             }
           } catch (error) {
-            console.error('❌ Error handling payment return:', error);
             showNotification(
               'error',
               'Activation Issue ⚠️',

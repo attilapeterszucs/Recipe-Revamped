@@ -38,7 +38,6 @@ export class SubscriptionCancellationService {
         throw new Error('User not authenticated');
       }
 
-      console.log(`🚫 Starting subscription cancellation for user: ${currentUser.uid}`);
 
       // Get current subscription details
       const currentSubscription = await SubscriptionService.getUserSubscription(currentUser.uid);
@@ -54,7 +53,6 @@ export class SubscriptionCancellationService {
       const stripeCustomerId = currentSubscription.stripeCustomerId;
 
       if (!stripeSubscriptionId && !stripeCustomerId) {
-        console.warn('No Stripe IDs found in subscription data, deleting test/admin subscription');
         // For subscriptions without Stripe IDs (like admin-set/test subscriptions), delete completely
         const success = await SubscriptionService.deleteSubscription(currentUser.uid);
 
@@ -95,7 +93,6 @@ export class SubscriptionCancellationService {
         reason: reason || 'User requested cancellation'
       };
 
-      console.log('📋 Cancellation request:', cancellationRequest);
 
       // Get auth token for authenticated request
       const idToken = await currentUser.getIdToken();
@@ -118,7 +115,6 @@ export class SubscriptionCancellationService {
       }
 
       if (result.success) {
-        console.log('✅ Subscription cancelled successfully:', result);
 
         // Force refresh subscription status in UI
         // This will trigger a re-fetch of user subscription data
@@ -132,7 +128,6 @@ export class SubscriptionCancellationService {
       }
 
     } catch (error) {
-      console.error('❌ Subscription cancellation error:', error);
 
       return {
         success: false,
@@ -148,7 +143,6 @@ export class SubscriptionCancellationService {
    */
   static async downgradeToFree(userId: string, reason?: string): Promise<boolean> {
     try {
-      console.log(`⬇️ Downgrading user to free plan: ${userId}`);
 
       const success = await SubscriptionService.setUserSubscription(userId, {
         plan: 'free',
@@ -158,7 +152,6 @@ export class SubscriptionCancellationService {
       });
 
       if (success) {
-        console.log('✅ User downgraded to free plan locally');
 
         // Trigger UI refresh
         window.dispatchEvent(new CustomEvent('subscription-downgraded', {
@@ -168,7 +161,6 @@ export class SubscriptionCancellationService {
 
       return success;
     } catch (error) {
-      console.error('❌ Local downgrade failed:', error);
       return false;
     }
   }
@@ -213,7 +205,6 @@ export class SubscriptionCancellationService {
       };
 
     } catch (error) {
-      console.error('❌ Error checking cancellation eligibility:', error);
       return {
         canCancel: false,
         reason: 'Error checking subscription status'
@@ -274,7 +265,6 @@ export class SubscriptionCancellationService {
       };
 
     } catch (error) {
-      console.error('❌ Error getting cancellation preview:', error);
       return null;
     }
   }
@@ -286,13 +276,10 @@ export class SubscriptionCancellationService {
     try {
       const fullReason = feedback ? `${reason}: ${feedback}` : reason;
 
-      // Log cancellation reason for analytics
-      console.log('📊 Cancellation reason:', fullReason);
 
       return await this.cancelSubscription(fullReason);
 
     } catch (error) {
-      console.error('❌ Cancellation confirmation error:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
