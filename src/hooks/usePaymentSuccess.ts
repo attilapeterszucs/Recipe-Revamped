@@ -47,11 +47,12 @@ export const usePaymentSuccess = () => {
       // Clean up the URL by removing the success parameter
       // This prevents the popup from showing again if the user refreshes
       urlParams.delete('success');
-      const newSearch = urlParams.toString();
-      const newUrl = `${location.pathname}${newSearch ? `?${newSearch}` : ''}`;
 
-      // Replace the current URL without adding to browser history
-      navigate(newUrl, { replace: true });
+      // Redirect to convert page after successful subscription
+      // Add a short delay to allow user to see the success popup
+      setTimeout(() => {
+        navigate('/app', { replace: true });
+      }, 3000); // 3 second delay
     }
   }, [location, navigate]);
 

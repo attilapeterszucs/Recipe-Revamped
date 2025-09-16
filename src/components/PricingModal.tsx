@@ -14,19 +14,19 @@ interface PricingModalProps {
   source?: string;
 }
 
-// Stripe Price IDs - Update these with your actual Stripe price IDs
+// Stripe Price IDs - Live Production Prices
 const STRIPE_PRICE_IDS = {
   chef: {
-    monthly: 'price_1S6TCHR3nZAHhPf6niHHuORJ',
-    yearly: 'price_1S6TDpR3nZAHhPf6lAVzxDxE'
+    monthly: 'price_1S72MwJqTrCMANHgFwwcwtnG',
+    yearly: 'price_1S72MwJqTrCMANHgYg1hLd5W'
   },
   'master-chef': {
-    monthly: 'price_1S6TEgR3nZAHhPf69J3O2DiK',
-    yearly: 'price_1S6TFYR3nZAHhPf6HBzp3JSn'
+    monthly: 'price_1S72MwJqTrCMANHgYsTjUAtS',
+    yearly: 'price_1S72MwJqTrCMANHgmG64NQcW'
   },
   enterprise: {
-    monthly: 'price_1S72MwJqTrCMANHgenterprise_monthly', // Add your enterprise monthly price ID
-    yearly: 'price_1S72MwJqTrCMANHgenterprise_yearly'   // Add your enterprise yearly price ID
+    monthly: 'price_1S72MwJqTrCMANHgenterprise_monthly', // Enterprise requires custom setup
+    yearly: 'price_1S72MwJqTrCMANHgenterprise_yearly'   // Enterprise requires custom setup
   }
 };
 

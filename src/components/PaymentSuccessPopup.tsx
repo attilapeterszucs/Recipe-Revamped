@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, X, CreditCard, Sparkles, Clock } from 'lucide-react';
+import { CheckCircle, X, CreditCard, Sparkles, Clock, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface PaymentSuccessPopupProps {
   isOpen: boolean;
@@ -8,12 +9,28 @@ interface PaymentSuccessPopupProps {
 
 export const PaymentSuccessPopup: React.FC<PaymentSuccessPopupProps> = ({ isOpen, onClose }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
+
+      // Start countdown for redirect
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            navigate('/app');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
     }
-  }, [isOpen]);
+  }, [isOpen, navigate]);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -121,7 +138,26 @@ export const PaymentSuccessPopup: React.FC<PaymentSuccessPopupProps> = ({ isOpen
                     <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
                     Welcome email with details
                   </li>
+                  <li className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
+                    Redirect to recipe converter
+                  </li>
                 </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Redirect Countdown */}
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-4 mb-6">
+            <div className="flex items-center justify-center space-x-3">
+              <ArrowRight className="w-5 h-5 text-green-600" />
+              <div className="text-center">
+                <h4 className="font-semibold text-green-800 mb-1">
+                  Redirecting to Recipe Converter
+                </h4>
+                <p className="text-green-700 text-sm">
+                  Automatically redirecting in <span className="font-bold">{countdown}</span> seconds...
+                </p>
               </div>
             </div>
           </div>
@@ -129,10 +165,11 @@ export const PaymentSuccessPopup: React.FC<PaymentSuccessPopupProps> = ({ isOpen
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <button
-              onClick={handleClose}
-              className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-[1.02] touch-friendly min-h-[44px]"
+              onClick={() => navigate('/app')}
+              className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-[1.02] touch-friendly min-h-[44px] flex items-center justify-center space-x-2"
             >
-              Continue to App
+              <span>Start Converting Recipes</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={handleClose}

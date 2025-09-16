@@ -98,6 +98,11 @@ export class SubscriptionSyncService {
 
         console.log(`✅ Subscription synced from webhook: ${subscription.plan} for ${customerEmail}`);
 
+        // Trigger subscription status refresh for UI components
+        window.dispatchEvent(new CustomEvent('subscription-updated', {
+          detail: { subscription }
+        }));
+
         // Note: UI will refresh via React state management instead of full page reload
 
       } else {
@@ -146,6 +151,11 @@ export class SubscriptionSyncService {
         
         // Clean up temporary record
         await this.cleanupTempSubscription(tempDocId);
+
+        // Trigger subscription status refresh for UI components
+        window.dispatchEvent(new CustomEvent('subscription-updated', {
+          detail: { subscription }
+        }));
 
         // Note: UI will refresh via React state management instead of full page reload
         
