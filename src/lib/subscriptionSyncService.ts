@@ -224,6 +224,44 @@ export class SubscriptionSyncService {
   }
   
   /**
+   * Manually fix subscription sync issues (debugging/admin function)
+   */
+  static async manuallyFixSubscriptionSync(userEmail: string, plan: string, stripeCustomerId?: string): Promise<boolean> {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser || currentUser.email !== userEmail) {
+        console.error('User not authenticated or email mismatch');
+        return false;
+      }
+
+      const subscription: UserSubscription = {
+        userId: currentUser.uid,
+        plan: plan as any,
+        status: 'active',
+        startDate: new Date(),
+        endDate: null,
+        stripeCustomerId: stripeCustomerId || null,
+        stripeSubscriptionId: null
+      };
+
+      await setDoc(doc(db, SUBSCRIPTIONS_COLLECTION, currentUser.uid), {
+        ...subscription,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        manuallyFixed: true
+      });
+
+      await this.updateUserProfile(currentUser.uid, subscription);
+
+      console.log(`✅ Manually fixed subscription sync for ${userEmail}: ${plan}`);
+      return true;
+    } catch (error) {
+      console.error('❌ Error in manual subscription sync fix:', error);
+      return false;
+    }
+  }
+
+  /**
    * Force sync check for current user (after payment completion)
    */
   static async forceSyncCheck(userEmail: string, maxRetries: number = 10): Promise<boolean> {

@@ -4,6 +4,7 @@ export interface SubscriptionPlanDetails {
   id: SubscriptionPlan;
   name: string;
   basePrice: number;
+  price: number;
   yearlyDiscount: number;
   recipeLimit: number;
   features: string[];
@@ -32,11 +33,20 @@ export interface UserSubscription {
   isAdmin?: boolean;
 }
 
+export interface PlanChangePreview {
+  fromPlan: SubscriptionPlan;
+  toPlan: SubscriptionPlan;
+  proration: number;
+  effectiveDate: Date;
+  nextBillingDate: Date;
+}
+
 export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetails> = {
   free: {
     id: 'free',
     name: 'Free',
     basePrice: 0,
+    price: 0,
     yearlyDiscount: 0,
     recipeLimit: 5,
     conversionLimit: 3,
@@ -64,6 +74,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     id: 'chef',
     name: 'Chef',
     basePrice: 14.99,
+    price: 14.99,
     yearlyDiscount: 20,
     recipeLimit: 100,
     conversionLimit: 100,
@@ -94,6 +105,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     id: 'master-chef',
     name: 'Master Chef',
     basePrice: 19.99,
+    price: 19.99,
     yearlyDiscount: 20,
     recipeLimit: 1000,
     conversionLimit: 200,
@@ -122,6 +134,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     id: 'enterprise',
     name: 'Enterprise',
     basePrice: 39.95,
+    price: 39.95,
     yearlyDiscount: 25,
     recipeLimit: 2500,
     conversionLimit: 500,
