@@ -56,6 +56,89 @@ export class SubscriptionSyncService {
       }
     });
   }
+
+  /**
+   * Monitor for subscription updates from customer portal changes
+   */
+  static startUpdateSyncService() {
+    const currentUser = auth.currentUser;
+    if (!currentUser?.email) {
+      console.warn('No authenticated user for update sync service');
+      return;
+    }
+
+    // Listen for subscription updates from webhooks (customer portal changes)
+    const updateQuery = query(
+      collection(db, SUBSCRIPTIONS_COLLECTION),
+      where('customerEmail', '==', currentUser.email),
+      where('source', '==', 'subscription_updated')
+    );
+
+    return onSnapshot(updateQuery, async (snapshot) => {
+      if (!snapshot.metadata.fromCache && !snapshot.metadata.hasPendingWrites) {
+        snapshot.docChanges().forEach(async (change) => {
+          if (change.type === 'added') {
+            const updateDoc = change.doc;
+            const updateData = updateDoc.data();
+
+            console.log(`Processing subscription update for user: ${currentUser.email}`);
+            await this.processSubscriptionUpdate(updateDoc.id, updateData);
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * Process subscription updates from customer portal
+   */
+  private static async processSubscriptionUpdate(updateDocId: string, updateData: any) {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser || currentUser.email !== updateData.customerEmail) {
+        console.warn('User email mismatch for subscription update');
+        return;
+      }
+
+      // Update user's subscription with new plan data
+      const subscription: UserSubscription = {
+        userId: currentUser.uid,
+        plan: updateData.plan,
+        status: updateData.status,
+        startDate: updateData.startDate?.toDate() || new Date(),
+        endDate: updateData.endDate?.toDate() || null,
+        stripeCustomerId: updateData.stripeCustomerId,
+        stripeSubscriptionId: updateData.stripeSubscriptionId
+      };
+
+      // Update subscription document
+      await setDoc(doc(db, SUBSCRIPTIONS_COLLECTION, currentUser.uid), {
+        ...subscription,
+        billingPeriod: updateData.billingPeriod || 'monthly',
+        amount: updateData.amount,
+        currency: updateData.currency || 'usd',
+        updatedAt: serverTimestamp(),
+        updatedFromPortal: true,
+        portalUpdateId: updateDocId
+      });
+
+      // Update user profile
+      await this.updateUserProfile(currentUser.uid, subscription);
+
+      // Trigger UI refresh
+      window.dispatchEvent(new CustomEvent('subscription-updated', {
+        detail: { subscription, source: 'customer_portal' }
+      }));
+
+      console.log(`✅ Subscription updated from portal: ${subscription.plan} for ${currentUser.email}`);
+
+      // Clean up the update record
+      await deleteDoc(doc(db, SUBSCRIPTIONS_COLLECTION, updateDocId));
+
+    } catch (error) {
+      console.error('❌ Error processing subscription update:', error);
+    }
+  }
   
   /**
    * Sync webhook subscription record to actual Firebase user
@@ -383,7 +466,15 @@ export class SubscriptionSyncService {
  * Initialize subscription sync service when user signs in
  */
 export const initializeSubscriptionSync = () => {
-  return SubscriptionSyncService.startSyncService();
+  // Start both new subscription sync and update sync services
+  const newSubscriptionUnsubscribe = SubscriptionSyncService.startSyncService();
+  const updateSubscriptionUnsubscribe = SubscriptionSyncService.startUpdateSyncService();
+
+  // Return combined unsubscribe function
+  return () => {
+    if (newSubscriptionUnsubscribe) newSubscriptionUnsubscribe();
+    if (updateSubscriptionUnsubscribe) updateSubscriptionUnsubscribe();
+  };
 };
 
 /**

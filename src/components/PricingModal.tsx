@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, Star, Zap, Crown, Building } from 'lucide-react';
+import { X, Check, Star, Zap, Crown, Building, ExternalLink } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useStripeCheckout } from '../hooks/useStripeCheckout';
+import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
 import { calculateLocalizedPrice } from '../lib/pricing';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan } from '../types/subscription';
@@ -14,21 +15,20 @@ interface PricingModalProps {
   source?: string;
 }
 
-// Stripe Price IDs - Live Production Prices
-const STRIPE_PRICE_IDS = {
+// Stripe Payment Links - Live Production
+const STRIPE_PAYMENT_LINKS = {
   chef: {
-    monthly: 'price_1S72MwJqTrCMANHgFwwcwtnG',
-    yearly: 'price_1S72MwJqTrCMANHgYg1hLd5W'
+    monthly: 'https://buy.stripe.com/28E00k5wp0IOdby84yawo08',
+    yearly: 'https://buy.stripe.com/eVq00k7Ex0IO8VigB4awo09'
   },
   'master-chef': {
-    monthly: 'price_1S72MwJqTrCMANHgYsTjUAtS',
-    yearly: 'price_1S72MwJqTrCMANHgmG64NQcW'
-  },
-  enterprise: {
-    monthly: 'price_1S72MwJqTrCMANHgenterprise_monthly', // Enterprise requires custom setup
-    yearly: 'price_1S72MwJqTrCMANHgenterprise_yearly'   // Enterprise requires custom setup
+    monthly: 'https://buy.stripe.com/8x26oI1g9ajognK1Gaawo0a',
+    yearly: 'https://buy.stripe.com/9B6bJ26At2QWdby84yawo0b'
   }
 };
+
+// Stripe Customer Portal for existing subscribers
+const STRIPE_CUSTOMER_PORTAL = 'https://billing.stripe.com/p/login/7sY3cw2kdezE4F2acGawo00';
 
 export const PricingModal: React.FC<PricingModalProps> = ({
   isOpen,
@@ -37,11 +37,15 @@ export const PricingModal: React.FC<PricingModalProps> = ({
   source = 'modal'
 }) => {
   const { user } = useAuth();
+  const { subscription } = useSubscriptionStatus();
   const { location, loading: locationLoading } = useGeolocation();
-  const { createCheckoutSession, loading: checkoutLoading } = useStripeCheckout();
+  const { createPortalSession, loading: portalLoading } = useStripeCheckout();
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(defaultPlan);
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
   const [localizedPrices, setLocalizedPrices] = useState<Record<string, any>>({});
+
+  // Check if user has an existing subscription
+  const hasActiveSubscription = subscription && subscription.plan !== 'free' && subscription.status === 'active';
 
   // Calculate localized prices
   useEffect(() => {
@@ -96,27 +100,33 @@ export const PricingModal: React.FC<PricingModalProps> = ({
       return;
     }
 
-    const priceId = STRIPE_PRICE_IDS[plan as keyof typeof STRIPE_PRICE_IDS]?.[period];
-    if (!priceId) {
-      console.error('Price ID not found for plan:', plan, period);
+    // If user has active subscription, open customer portal for upgrades
+    if (hasActiveSubscription) {
+      try {
+        const portalUrl = await createPortalSession();
+        window.open(portalUrl, '_blank');
+      } catch (error) {
+        console.error('Failed to open customer portal:', error);
+        alert('Failed to open billing portal. Please try again.');
+      }
       return;
     }
 
-    try {
-      await createCheckoutSession(priceId, {
-        customerEmail: user.email || '',
-        successUrl: `${window.location.origin}/app?success=true&session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${window.location.origin}/app`,
-        metadata: {
-          plan,
-          period,
-          source
-        }
-      });
-    } catch (error) {
-      console.error('Failed to create checkout session:', error);
-      alert('Failed to start checkout process. Please try again.');
+    // For new subscriptions, use payment links
+    const paymentLink = STRIPE_PAYMENT_LINKS[plan as keyof typeof STRIPE_PAYMENT_LINKS]?.[period];
+    if (!paymentLink) {
+      console.error('Payment link not found for plan:', plan, period);
+      return;
     }
+
+    // Add user email as prefill parameter
+    const url = new URL(paymentLink);
+    if (user.email) {
+      url.searchParams.set('prefilled_email', user.email);
+    }
+
+    // Open payment link in same window
+    window.location.href = url.toString();
   };
 
   const getPlanIcon = (plan: SubscriptionPlan) => {
@@ -269,14 +279,23 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                     {/* Subscribe Button */}
                     <button
                       onClick={() => handleSubscribe(plan, billingPeriod)}
-                      disabled={checkoutLoading}
-                      className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
+                      disabled={portalLoading}
+                      className={`w-full py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 ${
                         isPopular
                           ? 'bg-blue-600 text-white hover:bg-blue-700'
                           : 'bg-gray-900 text-white hover:bg-gray-800'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
-                      {checkoutLoading ? 'Loading...' : `Start ${planDetails.name} Plan`}
+                      {portalLoading ? (
+                        <span>Loading...</span>
+                      ) : hasActiveSubscription ? (
+                        <>
+                          <span>Manage Plan</span>
+                          <ExternalLink className="w-4 h-4" />
+                        </>
+                      ) : (
+                        <span>Start {planDetails.name} Plan</span>
+                      )}
                     </button>
                   </div>
 

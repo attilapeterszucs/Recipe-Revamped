@@ -64,10 +64,25 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
       refreshSubscription();
     };
 
+    const handleSubscriptionUpdated = (event: CustomEvent) => {
+      refreshSubscription();
+
+      // Show notification if update came from customer portal
+      if (event.detail?.source === 'customer_portal') {
+        const subscription = event.detail.subscription;
+        showNotification(
+          'success',
+          'Plan Updated! ✅',
+          `Your subscription has been updated to ${subscription.plan} plan.`
+        );
+      }
+    };
+
     // Add event listeners
     window.addEventListener('subscription-cancelled', handleSubscriptionCancelled);
     window.addEventListener('subscription-downgraded', handleSubscriptionDowngraded);
     window.addEventListener('refresh-subscription', handleRefreshSubscription);
+    window.addEventListener('subscription-updated', handleSubscriptionUpdated as EventListener);
 
     // Monitor authentication state and initialize subscription sync
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
@@ -148,6 +163,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
       window.removeEventListener('subscription-cancelled', handleSubscriptionCancelled);
       window.removeEventListener('subscription-downgraded', handleSubscriptionDowngraded);
       window.removeEventListener('refresh-subscription', handleRefreshSubscription);
+      window.removeEventListener('subscription-updated', handleSubscriptionUpdated as EventListener);
     };
   }, []);
 
