@@ -93,10 +93,14 @@ export const generateRecipeV2 = onRequest(
   async (request, response) => {
     // Set CORS headers for specific origins only
     const allowedOrigins = [
-      'http://localhost:5173',
-      'http://localhost:3000', 
+      'https://reciperevamped.com',
+      'https://www.reciperevamped.com',
       'https://reciperevamped.web.app',
-      'https://reciperevamped.firebaseapp.com'
+      'https://reciperevamped.firebaseapp.com',
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173'
     ];
     
     const origin = request.headers.origin;
@@ -418,10 +422,14 @@ export const getExchangeRatesV2 = onRequest(
   async (request, response) => {
     // Set CORS headers for specific origins only
     const allowedOrigins = [
-      'http://localhost:5173',
-      'http://localhost:3000', 
+      'https://reciperevamped.com',
+      'https://www.reciperevamped.com',
       'https://reciperevamped.web.app',
-      'https://reciperevamped.firebaseapp.com'
+      'https://reciperevamped.firebaseapp.com',
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173'
     ];
     
     const origin = request.headers.origin;

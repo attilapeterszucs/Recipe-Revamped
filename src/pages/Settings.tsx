@@ -264,10 +264,13 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         await deleteUser(user);
         
         showSuccess('Account Deleted', 'Your account and all associated data have been permanently deleted from our servers.');
-        
+
         setShowDeleteAccountModal(false);
-        
-        // No need to manually sign out as the user is deleted
+
+        // Redirect to signin page after account deletion
+        setTimeout(() => {
+          window.location.href = '/signin';
+        }, 2000); // 2 second delay to show success message
       }
       
     } catch (error) {
