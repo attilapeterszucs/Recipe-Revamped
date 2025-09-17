@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { applyActionCode, checkActionCode, getAuth } from 'firebase/auth';
+import { applyActionCode, checkActionCode } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { createOrUpdateUserProfile } from '../lib/userService';
 import { getUserSettings } from '../lib/userSettings';
@@ -19,9 +19,6 @@ const VerifyEmailPage: React.FC = () => {
       // Check for various possible parameter names Firebase might use
       const actionCode = searchParams.get('oobCode') || searchParams.get('actionCode');
       const mode = searchParams.get('mode') || searchParams.get('action');
-      const apiKey = searchParams.get('apiKey');
-      const continueUrl = searchParams.get('continueUrl');
-      const lang = searchParams.get('lang');
       
       
       if (!actionCode) {
@@ -63,7 +60,7 @@ const VerifyEmailPage: React.FC = () => {
             
             setStatus('success');
             setMessage('Your email has been successfully verified and your account is now fully activated! You can now sign in.');
-          } catch (profileError) {
+          } catch {
             // Even if profile creation fails, the email is verified
             setStatus('success');
             setMessage('Your email has been successfully verified! You can now sign in to your account.');
@@ -76,26 +73,38 @@ const VerifyEmailPage: React.FC = () => {
         // Start countdown timer
         setCountdown(5);
         
-      } catch (error: any) {
+      } catch (error: unknown) {
         setStatus('error');
         console.error('Email verification error:', error);
-        
-        if (error.code === 'auth/expired-action-code') {
+
+        const errorCode = error && typeof error === 'object' && 'code' in error ? (error as { code: string }).code : '';
+
+        if (errorCode === 'auth/expired-action-code') {
           setMessage('This verification link has expired. Please sign up again to receive a new verification email.');
-        } else if (error.code === 'auth/invalid-action-code') {
+        } else if (errorCode === 'auth/invalid-action-code') {
           setMessage('This verification link is invalid. Please sign up again to receive a new verification email.');
-        } else if (error.code === 'auth/user-disabled') {
+        } else if (errorCode === 'auth/user-disabled') {
           setMessage('This account has been disabled. Please contact support for assistance.');
-        } else if (error.code === 'auth/user-not-found') {
+        } else if (errorCode === 'auth/user-not-found') {
           setMessage('User account not found. Please sign up again.');
         } else {
-          setMessage(`There was an error verifying your email: ${error.message || 'Unknown error'}. Please try again or contact support.`);
+          const errorMessage = error && typeof error === 'object' && 'message' in error ? (error as { message: string }).message : 'Unknown error';
+          setMessage(`There was an error verifying your email: ${errorMessage}. Please try again or contact support.`);
         }
       }
     };
 
     verifyEmail();
   }, [searchParams, navigate]);
+
+  const handleClose = useCallback(() => {
+    setIsClosing(true);
+    setTimeout(() => {
+      window.close();
+      // Fallback: if window.close() doesn't work, redirect to signin
+      navigate('/signin');
+    }, 300);
+  }, [navigate]);
 
   // Countdown timer effect for success state
   useEffect(() => {
@@ -107,16 +116,7 @@ const VerifyEmailPage: React.FC = () => {
     } else if (status === 'success' && countdown === 0) {
       handleClose();
     }
-  }, [status, countdown]);
-
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      window.close();
-      // Fallback: if window.close() doesn't work, redirect to signin
-      navigate('/signin');
-    }, 300);
-  };
+  }, [status, countdown, handleClose]);
 
   const handleReturnToSignIn = () => {
     navigate('/signin');

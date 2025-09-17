@@ -134,6 +134,7 @@ export const PreferenceGate: React.FC<{children: React.ReactNode; fallback?: Rea
 /**
  * Hook to check consent before performing actions
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const useConsentGuard = () => {
   const { isAllowed, showConsentPopup } = useCookieContext();
   
@@ -141,7 +142,7 @@ export const useConsentGuard = () => {
     /**
      * Execute function only if required consent is given
      */
-    withConsent: <T extends any[], R>(
+    withConsent: <T extends unknown[], R>(
       requiredConsent: keyof CookiePreferences,
       fn: (...args: T) => R,
       onBlocked?: () => void

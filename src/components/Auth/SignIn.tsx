@@ -6,9 +6,9 @@ import { SignInSchema, type SignInInput } from '../../lib/validation';
 import { z } from 'zod';
 
 // Function to convert Firebase error codes to user-friendly messages
-const getAuthErrorMessage = (error: any): string => {
-  const errorCode = error?.code || '';
-  const errorMessage = error?.message || '';
+const getAuthErrorMessage = (error: unknown): string => {
+  const errorCode = (error as any)?.code || '';
+  const errorMessage = (error as any)?.message || '';
 
   switch (errorCode) {
     case 'auth/invalid-credential':
@@ -166,7 +166,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
       setShowVerificationHelper(false);
       setLastResendTime(now);
       setResendCooldown(60); // Start 60-second cooldown
-    } catch (error) {
+    } catch {
       setAuthError('Unable to resend verification email. Please sign up again if needed.');
     }
   };

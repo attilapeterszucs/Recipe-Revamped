@@ -10,14 +10,15 @@ export const setupConsoleFilter = () => {
       originalConsoleError = console.error;
     }
 
-    console.error = (...args: any[]) => {
+    console.error = (...args: unknown[]) => {
       // Convert all arguments to strings for checking
       const message = args.map(arg => String(arg)).join(' ').toLowerCase();
       
       // Check if error contains Firebase-related stack traces
       const hasFirebaseStackTrace = args.some(arg => {
-        if (typeof arg === 'object' && arg?.stack) {
-          return arg.stack.toLowerCase().includes('firebase_firestore.js');
+        if (typeof arg === 'object' && arg !== null && 'stack' in arg) {
+          const stack = (arg as any).stack;
+          return typeof stack === 'string' && stack.toLowerCase().includes('firebase_firestore.js');
         }
         return false;
       });

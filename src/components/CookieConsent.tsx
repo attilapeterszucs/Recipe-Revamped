@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Cookie, Shield, Eye, Settings, X, ChevronDown, ChevronUp, CheckCircle, AlertTriangle, Info } from 'lucide-react';
+import { Cookie, Shield, Eye, Settings, X, CheckCircle, AlertTriangle, Info } from 'lucide-react';
 import type { CookiePreferences } from '../types/cookies';
 
 interface CookieConsentProps {
   onAcceptAll: (preferences: CookiePreferences) => void;
   onSavePreferences: (preferences: CookiePreferences) => void;
   onReject: () => void;
-  onManage?: () => void;
 }
 
 export const CookieConsent: React.FC<CookieConsentProps> = ({
   onAcceptAll,
   onSavePreferences,
-  onReject,
-  onManage
+  onReject
 }) => {
-  const [showDetails, setShowDetails] = useState(false);
   const [currentView, setCurrentView] = useState<'banner' | 'detailed'>('banner');
   
   const [preferences, setPreferences] = useState<CookiePreferences>({

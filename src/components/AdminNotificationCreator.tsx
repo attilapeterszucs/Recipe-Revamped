@@ -35,7 +35,7 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
   const [stats, setStats] = useState({ totalUsers: 0, totalNotifications: 0 });
   const [loadingStats, setLoadingStats] = useState(true);
   
-  const { showSuccess, showError, showInfo } = useToast();
+  const { showSuccess, showError } = useToast();
 
   useEffect(() => {
     loadStats();
@@ -193,7 +193,7 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
                 <button
                   key={value}
                   type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, type: value as any }))}
+                  onClick={() => setFormData(prev => ({ ...prev, type: value as NotificationData['type'] }))}
                   className={`p-3 rounded-lg border-2 transition-all ${
                     formData.type === value
                       ? `border-${color}-500 bg-${color}-50`

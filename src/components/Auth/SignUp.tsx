@@ -6,9 +6,9 @@ import { SignUpSchema, type SignUpInput } from '../../lib/validation';
 import { z } from 'zod';
 
 // Function to convert Firebase error codes to user-friendly messages for signup
-const getSignUpErrorMessage = (error: any): string => {
-  const errorCode = error?.code || '';
-  const errorMessage = error?.message || '';
+const getSignUpErrorMessage = (error: unknown): string => {
+  const errorCode = (error as any)?.code || '';
+  const errorMessage = (error as any)?.message || '';
 
   switch (errorCode) {
     case 'auth/email-already-in-use':
@@ -89,7 +89,7 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
     { test: (p: string) => /[A-Z]/.test(p), text: 'One uppercase letter' },
     { test: (p: string) => /[a-z]/.test(p), text: 'One lowercase letter' },
     { test: (p: string) => /[0-9]/.test(p), text: 'One number' },
-    { test: (p: string) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(p), text: 'One special character' }
+    { test: (p: string) => /[!@#$%^&*()_+\-=[\]{};':",.<>/?]/.test(p), text: 'One special character' }
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

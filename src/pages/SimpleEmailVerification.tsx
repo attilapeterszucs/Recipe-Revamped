@@ -119,7 +119,7 @@ const SimpleEmailVerification: React.FC = () => {
       setMessage('Verification email sent successfully! Please check your inbox.');
       setLastResendTime(now);
       setResendCooldown(60);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error resending verification:', error);
       setMessage('Error sending verification email. Please try again or contact support.');
     } finally {

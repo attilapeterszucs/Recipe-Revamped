@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Cookie, Shield, Eye, Settings, Check, X, RotateCcw, Calendar, Info } from 'lucide-react';
+import { Cookie, Shield, Eye, Settings, Check, X, RotateCcw, Info } from 'lucide-react';
 import { useCookieContext } from '../contexts/CookieContext';
 
 export const CookieSettings: React.FC = () => {

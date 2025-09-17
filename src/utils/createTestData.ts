@@ -104,6 +104,6 @@ export const cleanupTestData = async () => {
 
 // Make functions available globally for console testing
 if (typeof window !== 'undefined') {
-  (window as any).createTestData = createTestData;
-  (window as any).cleanupTestData = cleanupTestData;
+  (window as unknown as Record<string, unknown>).createTestData = createTestData;
+  (window as unknown as Record<string, unknown>).cleanupTestData = cleanupTestData;
 }

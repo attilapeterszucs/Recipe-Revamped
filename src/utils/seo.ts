@@ -10,7 +10,7 @@ export interface SEOConfig {
   twitterTitle?: string;
   twitterDescription?: string;
   twitterImage?: string;
-  structuredData?: Record<string, any>;
+  structuredData?: Record<string, unknown>;
   noindex?: boolean;
 }
 
@@ -213,7 +213,7 @@ const updateLinkTag = (rel: string, href: string) => {
   tag.href = href;
 };
 
-const updateStructuredData = (data: Record<string, any>) => {
+const updateStructuredData = (data: Record<string, unknown>) => {
   // Remove existing structured data
   const existingScript = document.querySelector('script[type="application/ld+json"][data-dynamic="true"]');
   if (existingScript) {

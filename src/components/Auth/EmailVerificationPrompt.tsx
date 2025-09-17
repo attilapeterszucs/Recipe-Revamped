@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, ArrowLeft, RotateCcw, RefreshCw } from 'lucide-react';
-import { resendEmailVerification, logOut, auth } from '../../lib/firebase';
+import { resendEmailVerification, logOut } from '../../lib/firebase';
 import { type User } from 'firebase/auth';
 
 interface EmailVerificationPromptProps {
@@ -49,7 +49,7 @@ export const EmailVerificationPrompt: React.FC<EmailVerificationPromptProps> = (
       await resendEmailVerification(user);
       setResendSuccess(true);
       setTimeout(() => setResendSuccess(false), 3000);
-    } catch (error: any) {
+    } catch {
       setError('Failed to resend verification email. Please try again.');
     } finally {
       setLoading(false);
@@ -75,7 +75,7 @@ export const EmailVerificationPrompt: React.FC<EmailVerificationPromptProps> = (
       } else {
         setError('Email is not yet verified. Please check your inbox and click the verification link.');
       }
-    } catch (error) {
+    } catch {
       setError('Failed to check verification status. Please try again.');
     } finally {
       setCheckingVerification(false);

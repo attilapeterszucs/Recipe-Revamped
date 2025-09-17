@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, Filter, ChefHat, Heart } from 'lucide-react';
+import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
 import { getUserRecipes } from '../lib/firestore';
 import { useToast } from './ToastContainer';
-import { parseNutritionFromRecipe, calculateTotalNutrition, extractServingSizeFromRecipe, type NutritionInfo } from '../lib/nutritionParser';
+import { parseNutritionFromRecipe, calculateTotalNutrition, type NutritionInfo } from '../lib/nutritionParser';
 import { MealPlanService, type MealPlan } from '../lib/mealPlanService';
 
 interface MealPlannerCalendarProps {
@@ -114,7 +114,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
         setLoading(true);
         const userRecipes = await getUserRecipes(userId, 100);
         setRecipes(userRecipes);
-      } catch (error) {
+      } catch {
         showError('Failed to Load', 'Could not load your recipes');
       } finally {
         setLoading(false);
@@ -139,7 +139,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           setMealPlan({});
           setHasUnsavedChanges(false);
         }
-      } catch (error) {
+      } catch {
         // Continue with empty meal plan if load fails
         setMealPlan({});
         setHasUnsavedChanges(false);
@@ -164,7 +164,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       } else {
         showError('Save Failed', 'Could not save your meal plan. Please try again.');
       }
-    } catch (error) {
+    } catch {
       showError('Save Failed', 'Could not save your meal plan. Please try again.');
     } finally {
       setSaving(false);
@@ -225,7 +225,8 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           currentMeals.splice(recipeIndex, 1);
           
           if (currentMeals.length === 0) {
-            const { [mealType]: removed, ...restOfDay } = updated[dateStr] as any;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { [mealType]: _, ...restOfDay } = updated[dateStr] as Record<string, unknown>;
             if (Object.keys(restOfDay).length === 0) {
               delete updated[dateStr];
             } else {
@@ -239,11 +240,11 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           }
         } else {
           // Remove entire meal type if no index specified
-          const { [mealType]: removed, ...restOfDay } = updated[dateStr] as any;
+          const { [mealType]: _, ...restOfDay } = updated[dateStr] as Record<string, unknown>;
           if (Object.keys(restOfDay).length === 0) {
             delete updated[dateStr];
           } else {
-            updated[dateStr] = restOfDay as any;
+            updated[dateStr] = restOfDay as Record<string, SavedRecipe[]>;
           }
         }
       }

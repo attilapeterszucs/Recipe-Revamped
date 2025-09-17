@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Users,
   UserPlus,
@@ -10,13 +10,12 @@ import {
   Loader,
   Check,
   X,
-  AlertTriangle,
   Settings,
   RefreshCw
 } from 'lucide-react';
 import { getAllUsers } from '../lib/adminNotifications';
 import { getAllAdmins, addAdminUser, removeAdminUser, type AdminUser } from '../lib/adminManagement';
-import { getAllUserProfiles, type UserProfile } from '../lib/userService';
+import { getAllUserProfiles } from '../lib/userService';
 import { SubscriptionService } from '../lib/subscriptionService';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan } from '../types/subscription';
@@ -42,7 +41,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
   currentAdminEmail
 }) => {
   const [users, setUsers] = useState<UserInfo[]>([]);
-  const [admins, setAdmins] = useState<AdminUser[]>([]);
+  const [, setAdmins] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
@@ -50,14 +49,10 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [currentUserPlan, setCurrentUserPlan] = useState<SubscriptionPlan>('free');
   const [currentAdminData, setCurrentAdminData] = useState<AdminUser | null>(null);
-  const { showSuccess, showError, showInfo } = useToast();
+  const { showSuccess, showError } = useToast();
   const { refreshSubscription } = useSubscriptionRefresh();
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -150,7 +145,11 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentAdminUid, currentAdminEmail, showError]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   // Check if current admin can grant admin privileges (only super admin or designated admin can)
   const canGrantAdmin = (): boolean => {

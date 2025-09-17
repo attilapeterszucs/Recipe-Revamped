@@ -14,7 +14,7 @@ import {
 import { db } from './firebase';
 import { getUserRecipes } from './firestore';
 import { getUserSettings } from './userSettings';
-import type { BackupData, RecoveryOptions } from '../types/backup';
+import type { BackupData, BackupRecipe, RecoveryOptions } from '../types/backup';
 
 const BACKUP_COLLECTION = 'backups';
 const BACKUP_RETENTION_DAYS = 90;

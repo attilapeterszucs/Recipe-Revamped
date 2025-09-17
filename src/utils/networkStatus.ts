@@ -1,5 +1,5 @@
 // Simple utility to detect if Firebase/Firestore is being blocked
-let networkStatus = {
+const networkStatus = {
   firebaseBlocked: false,
   lastCheck: 0
 };
@@ -35,7 +35,7 @@ export const getNetworkStatusMessage = (): string | null => {
   return null;
 };
 
-export const isFirebaseError = (error: any): boolean => {
+export const isFirebaseError = (error: unknown): boolean => {
   if (!error) return false;
   
   const errorMsg = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
