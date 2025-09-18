@@ -18,6 +18,7 @@ import {
 } from 'firebase/auth';
 import { getFirestore, enableNetwork, disableNetwork } from 'firebase/firestore';
 import { getAnalytics, isSupported } from 'firebase/analytics';
+import { getStorage } from 'firebase/storage';
 
 // Firebase configuration from environment variables
 const firebaseConfig = {
@@ -39,6 +40,7 @@ export { app };
 // Initialize services
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const storage = getStorage(app);
 
 // Handle network connectivity for Firestore
 if (typeof window !== 'undefined') {
