@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple } from 'lucide-react';
+import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple, Sparkles } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
 import { getUserRecipes } from '../lib/firestore';
@@ -55,6 +55,11 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
   const [selectedDietaryFilter, setSelectedDietaryFilter] = useState<string>('');
   const [selectedHealthFilter, setSelectedHealthFilter] = useState<string>('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('');
+  const [selectedWeekType, setSelectedWeekType] = useState<string>('balanced');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+  const [alignWithHealthConditions, setAlignWithHealthConditions] = useState(false);
+  const [alignWithDietaryPreferences, setAlignWithDietaryPreferences] = useState(false);
   const { showSuccess, showError } = useToast();
 
   // Get current week dates (Monday to Sunday)
@@ -617,6 +622,337 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
     }, { calories: 0, carbs: 0, protein: 0, fat: 0, sugar: 0, fiber: 0, sodium: 0 });
 
     return weekNutrition;
+  };
+
+  // Clear entire meal plan for the current week
+  const clearWeeklyPlan = async () => {
+    if (Object.keys(mealPlan).length === 0) {
+      showError('Nothing to Clear', 'The calendar is already empty');
+      return;
+    }
+
+    setIsClearing(true);
+
+    try {
+      setMealPlan({});
+      setHasUnsavedChanges(true);
+      showSuccess('Calendar Cleared', 'All meals have been removed from this week');
+    } catch (error) {
+      showError('Clear Failed', 'Could not clear the calendar. Please try again.');
+    } finally {
+      setIsClearing(false);
+    }
+  };
+
+  // Generate weekly meal plan based on selected week type
+  const generateWeeklyPlan = async () => {
+    if (recipes.length === 0) {
+      showError('No Recipes Available', 'You need to save some recipes first before generating a meal plan');
+      return;
+    }
+
+    setIsGenerating(true);
+
+    try {
+      // Get recipes filtered by week type preferences
+      const filteredRecipes = getRecipesByWeekType(selectedWeekType);
+
+      if (filteredRecipes.length < 7) {
+        const filterInfo = [];
+        if (alignWithHealthConditions && userSettings?.healthConditions?.length) {
+          filterInfo.push(`health conditions (${userSettings.healthConditions.join(', ')})`);
+        }
+        if (alignWithDietaryPreferences && userSettings?.defaultDietaryFilters?.length) {
+          filterInfo.push(`dietary preferences (${userSettings.defaultDietaryFilters.join(', ')})`);
+        }
+
+        const filterText = filterInfo.length > 0 ? ` and ${filterInfo.join(' and ')}` : '';
+        showError('Not Enough Recipes', `You need at least 7 recipes that match the ${selectedWeekType} criteria${filterText} to generate a full week. Found ${filteredRecipes.length} matching recipes.`);
+        setIsGenerating(false);
+        return;
+      }
+
+      const newMealPlan: MealPlan = {};
+
+      // Generate meals for each day
+      weekDates.forEach((date, dayIndex) => {
+        const dateStr = formatDate(date);
+        const dayRecipes = selectDayRecipes(filteredRecipes, selectedWeekType, dayIndex);
+
+        newMealPlan[dateStr] = {
+          breakfast: dayRecipes.breakfast ? [dayRecipes.breakfast] : [],
+          lunch: dayRecipes.lunch ? [dayRecipes.lunch] : [],
+          dinner: dayRecipes.dinner ? [dayRecipes.dinner] : [],
+          snacks: dayRecipes.snacks ? [dayRecipes.snacks] : []
+        };
+      });
+
+      setMealPlan(newMealPlan);
+      setHasUnsavedChanges(true);
+      showSuccess('Weekly Plan Generated', `Created a ${selectedWeekType} meal plan for the week`);
+
+    } catch (error) {
+      showError('Generation Failed', 'Could not generate meal plan. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // Filter recipes based on user settings alignment
+  const filterRecipesByUserSettings = (recipeList: SavedRecipe[]): SavedRecipe[] => {
+    let filteredRecipes = recipeList;
+
+    // Filter by health conditions if enabled
+    if (alignWithHealthConditions && userSettings?.healthConditions && userSettings.healthConditions.length > 0) {
+      filteredRecipes = filteredRecipes.filter(recipe => {
+        const recipeContent = recipe.convertedRecipe.toLowerCase();
+
+        return userSettings.healthConditions.every(condition => {
+          switch (condition.toLowerCase()) {
+            case 'diabetes':
+              return recipeContent.includes('low sugar') || recipeContent.includes('sugar-free') ||
+                     recipeContent.includes('diabetic') || recipeContent.includes('low carb') ||
+                     (!recipeContent.includes('high sugar') && !recipeContent.includes('dessert'));
+
+            case 'heart disease':
+              return recipeContent.includes('low sodium') || recipeContent.includes('heart healthy') ||
+                     recipeContent.includes('low cholesterol') || recipeContent.includes('lean') ||
+                     (!recipeContent.includes('fried') && !recipeContent.includes('butter'));
+
+            case 'hypertension':
+              return recipeContent.includes('low sodium') || recipeContent.includes('no salt') ||
+                     recipeContent.includes('dash diet') || !recipeContent.includes('high sodium');
+
+            case 'celiac disease':
+              return recipeContent.includes('gluten-free') || recipeContent.includes('gluten free') ||
+                     recipe.dietaryFilters.includes('Gluten-Free') ||
+                     (!recipeContent.includes('wheat') && !recipeContent.includes('flour') && !recipeContent.includes('bread'));
+
+            case 'kidney disease':
+              return recipeContent.includes('low protein') || recipeContent.includes('kidney friendly') ||
+                     recipeContent.includes('low potassium') || recipeContent.includes('low phosphorus');
+
+            default:
+              return true; // If condition not recognized, don't filter
+          }
+        });
+      });
+    }
+
+    // Filter by dietary preferences if enabled
+    if (alignWithDietaryPreferences && userSettings?.defaultDietaryFilters && userSettings.defaultDietaryFilters.length > 0) {
+      filteredRecipes = filteredRecipes.filter(recipe => {
+        // Recipe must match at least one of the user's dietary preferences
+        return userSettings.defaultDietaryFilters.some(preference =>
+          recipe.dietaryFilters.includes(preference)
+        );
+      });
+    }
+
+    return filteredRecipes;
+  };
+
+  // Filter and sort recipes based on week type for optimal compliance
+  const getRecipesByWeekType = (weekType: string): SavedRecipe[] => {
+    let filteredRecipes: SavedRecipe[] = [];
+
+    switch (weekType) {
+      case 'protein-focused':
+        // Get all recipes and sort by protein content (highest first)
+        filteredRecipes = recipes
+          .map(recipe => ({
+            ...recipe,
+            nutrition: parseNutritionFromRecipe(recipe.convertedRecipe)
+          }))
+          .filter(recipe => {
+            const content = recipe.convertedRecipe.toLowerCase();
+            return recipe.nutrition.protein > 15 || content.includes('protein') || content.includes('chicken') ||
+                   content.includes('beef') || content.includes('fish') || content.includes('eggs') ||
+                   content.includes('meat') || recipe.dietaryFilters.includes('High-Protein');
+          })
+          .sort((a, b) => b.nutrition.protein - a.nutrition.protein); // Highest protein first
+        break;
+
+      case 'low-carb':
+        // Sort by lowest carb content
+        filteredRecipes = recipes
+          .map(recipe => ({
+            ...recipe,
+            nutrition: parseNutritionFromRecipe(recipe.convertedRecipe)
+          }))
+          .filter(recipe => {
+            const content = recipe.convertedRecipe.toLowerCase();
+            return recipe.nutrition.carbs < 35 || content.includes('low carb') || content.includes('keto') ||
+                   recipe.dietaryFilters.includes('Keto') || recipe.dietaryFilters.includes('Low-Carb');
+          })
+          .sort((a, b) => a.nutrition.carbs - b.nutrition.carbs); // Lowest carbs first
+        break;
+
+      case 'vegetarian':
+        // Prioritize vegan, then vegetarian
+        filteredRecipes = recipes
+          .filter(recipe =>
+            recipe.dietaryFilters.includes('Vegetarian') || recipe.dietaryFilters.includes('Vegan')
+          )
+          .sort((a, b) => {
+            if (a.dietaryFilters.includes('Vegan') && !b.dietaryFilters.includes('Vegan')) return -1;
+            if (!a.dietaryFilters.includes('Vegan') && b.dietaryFilters.includes('Vegan')) return 1;
+            return 0;
+          });
+        break;
+
+      case 'comfort-food':
+        // Prioritize by calorie content and comfort food keywords
+        filteredRecipes = recipes
+          .map(recipe => ({
+            ...recipe,
+            nutrition: parseNutritionFromRecipe(recipe.convertedRecipe),
+            comfortScore: getComfortFoodScore(recipe)
+          }))
+          .filter(recipe => recipe.comfortScore > 0)
+          .sort((a, b) => b.comfortScore - a.comfortScore); // Highest comfort score first
+        break;
+
+      case 'quick-easy':
+        // Prioritize by quick cooking indicators
+        filteredRecipes = recipes
+          .map(recipe => ({
+            ...recipe,
+            quickScore: getQuickEasyScore(recipe)
+          }))
+          .filter(recipe => recipe.quickScore > 0)
+          .sort((a, b) => b.quickScore - a.quickScore); // Highest quick score first
+        break;
+
+      case 'balanced':
+      default:
+        // For balanced, ensure variety across nutrition profiles
+        filteredRecipes = [...recipes].sort(() => Math.random() - 0.5);
+        break;
+    }
+
+    // Apply user settings filtering to the final result
+    return filterRecipesByUserSettings(filteredRecipes);
+  };
+
+  // Helper function to score comfort food recipes
+  const getComfortFoodScore = (recipe: SavedRecipe): number => {
+    const content = recipe.convertedRecipe.toLowerCase();
+    let score = 0;
+
+    if (content.includes('comfort')) score += 10;
+    if (content.includes('pasta')) score += 8;
+    if (content.includes('soup')) score += 8;
+    if (content.includes('casserole')) score += 9;
+    if (content.includes('stew')) score += 8;
+    if (content.includes('cheese')) score += 6;
+    if (content.includes('cream')) score += 6;
+    if (content.includes('hearty')) score += 7;
+    if (content.includes('homestyle') || content.includes('home-style')) score += 8;
+    if (recipe.category === 'main-dish') score += 5;
+
+    const nutrition = parseNutritionFromRecipe(recipe.convertedRecipe);
+    if (nutrition.calories > 400) score += 3; // Higher calorie = more comfort
+
+    return score;
+  };
+
+  // Helper function to score quick and easy recipes
+  const getQuickEasyScore = (recipe: SavedRecipe): number => {
+    const content = recipe.convertedRecipe.toLowerCase();
+    let score = 0;
+
+    if (content.includes('quick')) score += 10;
+    if (content.includes('easy')) score += 9;
+    if (content.includes('simple')) score += 8;
+    if (content.includes('15 min') || content.includes('15-min')) score += 15;
+    if (content.includes('20 min') || content.includes('20-min')) score += 12;
+    if (content.includes('30 min') || content.includes('30-min')) score += 8;
+    if (content.includes('one pot') || content.includes('one-pot')) score += 10;
+    if (content.includes('microwave')) score += 12;
+    if (content.includes('no cook') || content.includes('no-cook')) score += 15;
+    if (content.includes('instant')) score += 10;
+    if (content.includes('fast')) score += 8;
+
+    return score;
+  };
+
+  // Select specific recipes for a day based on week type
+  const selectDayRecipes = (availableRecipes: SavedRecipe[], weekType: string, dayIndex: number) => {
+    // For protein-focused and low-carb, take from the top sorted recipes
+    // For others, add some randomness but still favor the better-scoring recipes
+    const shouldPrioritizeBest = ['protein-focused', 'low-carb'].includes(weekType);
+
+    let recipesToUse: SavedRecipe[];
+    if (shouldPrioritizeBest) {
+      // Take the best recipes from the sorted list
+      recipesToUse = availableRecipes;
+    } else {
+      // Take the top 70% of sorted recipes and shuffle them for variety
+      const topCount = Math.ceil(availableRecipes.length * 0.7);
+      const topRecipes = availableRecipes.slice(0, topCount);
+      recipesToUse = [...topRecipes].sort(() => Math.random() - 0.5);
+    }
+
+    // Separate by meal type preferences
+    const breakfastRecipes = recipesToUse.filter(recipe => {
+      const content = recipe.convertedRecipe.toLowerCase();
+      return content.includes('breakfast') || content.includes('morning') ||
+             content.includes('oatmeal') || content.includes('cereal') || content.includes('toast') ||
+             content.includes('pancake') || content.includes('waffle') || content.includes('egg');
+    });
+
+    const lunchRecipes = recipesToUse.filter(recipe => {
+      const content = recipe.convertedRecipe.toLowerCase();
+      return content.includes('lunch') || content.includes('salad') || content.includes('sandwich') ||
+             content.includes('wrap') || recipe.category === 'appetizer' || content.includes('bowl');
+    });
+
+    const dinnerRecipes = recipesToUse.filter(recipe => {
+      const content = recipe.convertedRecipe.toLowerCase();
+      return content.includes('dinner') || content.includes('main') || recipe.category === 'main-dish' ||
+             content.includes('entree') || content.includes('entrée');
+    });
+
+    const snackRecipes = recipesToUse.filter(recipe => {
+      const content = recipe.convertedRecipe.toLowerCase();
+      return content.includes('snack') || content.includes('appetizer') || recipe.category === 'appetizer' ||
+             content.includes('bite') || content.includes('finger food');
+    });
+
+    // Smart selection: for protein-focused, prefer from top of list; others get variety
+    const getRecipeAtIndex = (recipeList: SavedRecipe[], index: number) => {
+      if (recipeList.length === 0) return null;
+
+      if (shouldPrioritizeBest) {
+        // Cycle through the best recipes
+        return recipeList[index % recipeList.length];
+      } else {
+        // Add some randomness but still favor earlier (better) recipes
+        const adjustedIndex = Math.floor(index * 0.7) % recipeList.length;
+        return recipeList[adjustedIndex];
+      }
+    };
+
+    // Use fallback with intelligent distribution
+    const getFallbackRecipe = (offset: number) => {
+      if (recipesToUse.length === 0) return null;
+
+      if (shouldPrioritizeBest) {
+        return recipesToUse[(dayIndex + offset) % recipesToUse.length];
+      } else {
+        // Pick from top recipes with some variety
+        const index = (dayIndex + offset) % Math.min(recipesToUse.length, 20);
+        return recipesToUse[index];
+      }
+    };
+
+    return {
+      breakfast: getRecipeAtIndex(breakfastRecipes, dayIndex) || getFallbackRecipe(0),
+      lunch: getRecipeAtIndex(lunchRecipes, dayIndex) || getFallbackRecipe(1),
+      dinner: getRecipeAtIndex(dinnerRecipes, dayIndex) || getFallbackRecipe(2),
+      snacks: getRecipeAtIndex(snackRecipes, dayIndex) || getFallbackRecipe(3)
+    };
   };
 
   // Enhanced nutrition analysis functions
@@ -1198,7 +1534,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           <ChevronLeft className="w-4 h-4 mr-1" />
           Previous Week
         </button>
-        
+
         <div className="text-center">
           <h2 className="text-lg font-semibold text-gray-900">
             {weekDates[0].toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
@@ -1207,7 +1543,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
             {weekDates[0].toLocaleDateString()} - {weekDates[6].toLocaleDateString()}
           </p>
         </div>
-        
+
         <button
           onClick={() => navigateWeek('next')}
           className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
@@ -1215,6 +1551,130 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           Next Week
           <ChevronRight className="w-4 h-4 ml-1" />
         </button>
+      </div>
+
+      {/* Weekly Recipe Generator */}
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-4 mb-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 sm:space-x-4">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-full">
+              <Sparkles className="w-5 h-5 text-purple-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-purple-900">Generate Weekly Menu</h3>
+              <p className="text-sm text-purple-700">Auto-fill your calendar with recipes based on your preferences</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            {/* Left Side: Week Selector and Settings Toggles */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              {/* Week Type Selector */}
+              <select
+                value={selectedWeekType}
+                onChange={(e) => setSelectedWeekType(e.target.value)}
+                className="px-3 py-2 border border-purple-300 rounded-lg bg-white text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm font-medium min-w-[140px]"
+              >
+                <option value="balanced">🌟 Balanced</option>
+                <option value="protein-focused">💪 Protein</option>
+                <option value="low-carb">🥩 Low Carb</option>
+                <option value="vegetarian">🌱 Vegetarian</option>
+                <option value="comfort-food">🍲 Comfort</option>
+                <option value="quick-easy">⚡ Quick</option>
+              </select>
+
+              {/* User Settings Alignment Toggles - Vertical Stack */}
+              <div className="flex flex-col gap-1">
+                {userSettings?.healthConditions && userSettings.healthConditions.length > 0 && (
+                  <label className="flex items-center text-xs cursor-pointer whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      checked={alignWithHealthConditions}
+                      onChange={(e) => setAlignWithHealthConditions(e.target.checked)}
+                      className="mr-2 h-3 w-3 text-purple-600 focus:ring-purple-500 border-purple-300 rounded"
+                    />
+                    <span className="text-purple-800 font-medium">🩺 Health Conditions</span>
+                    <span className="ml-1 text-xs text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded-full">
+                      {userSettings.healthConditions.length}
+                    </span>
+                  </label>
+                )}
+
+                {userSettings?.defaultDietaryFilters && userSettings.defaultDietaryFilters.length > 0 && (
+                  <label className="flex items-center text-xs cursor-pointer whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      checked={alignWithDietaryPreferences}
+                      onChange={(e) => setAlignWithDietaryPreferences(e.target.checked)}
+                      className="mr-2 h-3 w-3 text-purple-600 focus:ring-purple-500 border-purple-300 rounded"
+                    />
+                    <span className="text-purple-800 font-medium">🌱 Dietary Preferences</span>
+                    <span className="ml-1 text-xs text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded-full">
+                      {userSettings.defaultDietaryFilters.length}
+                    </span>
+                  </label>
+                )}
+              </div>
+            </div>
+
+            {/* Right Side: Action Buttons */}
+            <div className="flex items-center gap-3">
+              {/* Clear Calendar Button */}
+              <button
+                onClick={clearWeeklyPlan}
+                disabled={isClearing || Object.keys(mealPlan).length === 0}
+                className={`flex items-center px-3 py-2 rounded-lg font-medium transition-all text-sm whitespace-nowrap ${
+                  isClearing || Object.keys(mealPlan).length === 0
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-red-600 text-white hover:bg-red-700 hover:shadow-md transform hover:scale-105'
+                }`}
+              >
+                {isClearing ? (
+                  <>
+                    <RefreshCcw className="w-4 h-4 mr-1 animate-spin" />
+                    Clearing...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Clear
+                  </>
+                )}
+              </button>
+
+              {/* Generate Button */}
+              <button
+                onClick={generateWeeklyPlan}
+                disabled={isGenerating || recipes.length === 0}
+                className={`flex items-center px-3 py-2 rounded-lg font-medium transition-all text-sm whitespace-nowrap ${
+                  isGenerating || recipes.length === 0
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-purple-600 text-white hover:bg-purple-700 hover:shadow-md transform hover:scale-105'
+                }`}
+              >
+                {isGenerating ? (
+                  <>
+                    <RefreshCcw className="w-4 h-4 mr-1 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-1" />
+                    Generate
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {recipes.length === 0 && (
+          <div className="mt-3 text-center">
+            <p className="text-sm text-purple-600 bg-purple-100 rounded-lg px-3 py-2 inline-block">
+              💡 Save some recipes first to generate meal plans
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Calendar Grid */}

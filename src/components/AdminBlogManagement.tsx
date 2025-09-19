@@ -11,8 +11,10 @@ import {
   X,
   Upload,
   FileText,
-  Star
+  Star,
+  Type
 } from 'lucide-react';
+import { EnhancedRichTextEditor } from './EnhancedRichTextEditor';
 import { useToast } from './ToastContainer';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -83,6 +85,8 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [postToDelete, setPostToDelete] = useState<BlogPost | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showRichEditor, setShowRichEditor] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const { showSuccess, showError } = useToast();
   const { user } = useAuth();
 
@@ -327,9 +331,18 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
   const handleTagInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
-      const value = e.currentTarget.value.trim();
-      if (value && !postForm.tags.includes(value)) {
-        setPostForm(prev => ({ ...prev, tags: [...prev.tags, value] }));
+      const inputValue = e.currentTarget.value.trim();
+
+      if (inputValue) {
+        // Handle multiple formats: 'text', 'text, text', 'text,text'
+        const tags = inputValue
+          .split(',')
+          .map(tag => tag.trim())
+          .filter(tag => tag.length > 0 && !postForm.tags.includes(tag));
+
+        if (tags.length > 0) {
+          setPostForm(prev => ({ ...prev, tags: [...prev.tags, ...tags] }));
+        }
         e.currentTarget.value = '';
       }
     }
@@ -340,6 +353,10 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
       ...prev,
       tags: prev.tags.filter(tag => tag !== tagToRemove)
     }));
+  };
+
+  const handlePreview = () => {
+    setShowPreview(true);
   };
 
   if (loading) {
@@ -608,15 +625,42 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               {/* Content */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Content * (Markdown supported)
+                  Content * (Rich Text Editor)
                 </label>
-                <textarea
-                  value={postForm.content}
-                  onChange={(e) => setPostForm(prev => ({ ...prev, content: e.target.value }))}
-                  rows={12}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent font-mono text-sm"
-                  placeholder="Write your post content in Markdown..."
-                />
+                <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-2">
+                        {postForm.content ? 'Content added' : 'No content added yet'}
+                      </p>
+                      {postForm.content && (
+                        <p className="text-xs text-gray-500">
+                          {postForm.content.length} characters
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowRichEditor(true)}
+                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      <Type className="w-4 h-4 mr-2" />
+                      Open Rich Text Editor
+                    </button>
+                  </div>
+                  {postForm.content && (
+                    <div className="mt-3 p-3 bg-white border rounded text-xs text-gray-600 max-h-20 overflow-hidden">
+                      <div
+                        className="prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{
+                          __html: postForm.content.length > 200
+                            ? postForm.content.substring(0, 200) + '...'
+                            : postForm.content
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Category and Status */}
@@ -728,7 +772,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                   <input
                     type="text"
                     onKeyDown={handleTagInput}
-                    placeholder="Type a tag and press Enter..."
+                    placeholder="Type tags and press Enter (supports: 'tag' or 'tag1, tag2')..."
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
@@ -852,6 +896,124 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                   )}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rich Text Editor Modal */}
+      {showRichEditor && (
+        <EnhancedRichTextEditor
+          content={postForm.content}
+          onSave={(content) => {
+            setPostForm(prev => ({ ...prev, content }));
+            setShowRichEditor(false);
+          }}
+          onCancel={() => setShowRichEditor(false)}
+          onPreview={handlePreview}
+        />
+      )}
+
+      {/* Post Preview Modal */}
+      {showPreview && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+              <div>
+                <h3 className="text-lg font-medium text-gray-900">Blog Post Preview</h3>
+                <p className="text-sm text-gray-600 mt-1">How your post will appear on the blog</p>
+              </div>
+              <button
+                onClick={() => setShowPreview(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Preview Content */}
+            <div className="flex-1 overflow-y-auto p-8">
+              <article className="max-w-3xl mx-auto">
+                {/* Post Header */}
+                <header className="mb-8">
+                  <div className="mb-4">
+                    <span className="inline-block px-3 py-1 text-sm font-medium text-blue-600 bg-blue-100 rounded-full">
+                      {postForm.category}
+                    </span>
+                    {postForm.featured && (
+                      <span className="inline-block ml-2 px-3 py-1 text-sm font-medium text-yellow-600 bg-yellow-100 rounded-full">
+                        <Star className="w-3 h-3 inline mr-1" />
+                        Featured
+                      </span>
+                    )}
+                  </div>
+
+                  <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    {postForm.title || 'Untitled Post'}
+                  </h1>
+
+                  {postForm.excerpt && (
+                    <p className="text-xl text-gray-600 leading-relaxed mb-6">
+                      {postForm.excerpt}
+                    </p>
+                  )}
+
+                  <div className="flex items-center text-sm text-gray-500 mb-6">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    <time dateTime={new Date().toISOString()}>
+                      {new Date().toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </time>
+                    <span className="mx-2">·</span>
+                    <span>{postForm.status === 'published' ? 'Published' : 'Draft'}</span>
+                  </div>
+
+                  {postForm.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {postForm.tags.map(tag => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {postForm.featuredImage && (
+                    <div className="mb-8">
+                      <img
+                        src={postForm.featuredImage}
+                        alt={postForm.title}
+                        className="w-full h-64 md:h-80 object-cover rounded-lg"
+                      />
+                    </div>
+                  )}
+                </header>
+
+                {/* Post Content */}
+                <div
+                  className="prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{
+                    __html: postForm.content || '<p>No content yet. Start writing in the editor!</p>'
+                  }}
+                />
+              </article>
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 bg-gray-50 px-6 py-4 flex justify-end">
+              <button
+                onClick={() => setShowPreview(false)}
+                className="px-4 py-2 bg-gray-600 text-white hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                Close Preview
+              </button>
             </div>
           </div>
         </div>

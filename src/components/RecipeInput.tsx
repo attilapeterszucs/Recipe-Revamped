@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RecipeSchema } from '../lib/validation';
 import { z } from 'zod';
-import { Shuffle, Wand2 } from 'lucide-react';
+import { Shuffle, Wand2, Search, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import type { UserSettings } from '../types/userSettings';
 
 interface RecipeInputProps {
@@ -17,6 +17,47 @@ interface RecipeInputProps {
   };
 }
 
+// Dietary options data with categories
+const dietaryOptions = [
+  { name: 'Vegetarian', icon: '🥬', category: 'plant-based', color: 'bg-green-50 border-green-200 hover:bg-green-100' },
+  { name: 'Vegan', icon: '🌱', category: 'plant-based', color: 'bg-green-50 border-green-200 hover:bg-green-100' },
+  { name: 'Plant-Based', icon: '🌿', category: 'plant-based', color: 'bg-green-50 border-green-200 hover:bg-green-100' },
+  { name: 'Pescatarian', icon: '🐟', category: 'plant-based', color: 'bg-green-50 border-green-200 hover:bg-green-100' },
+  { name: 'Gluten-Free', icon: '🌾', category: 'allergen-free', color: 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100' },
+  { name: 'Dairy-Free', icon: '🥛', category: 'allergen-free', color: 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100' },
+  { name: 'Nut-Free', icon: '🥜', category: 'allergen-free', color: 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100' },
+  { name: 'Sugar-Free', icon: '🍯', category: 'allergen-free', color: 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100' },
+  { name: 'Keto', icon: '🥑', category: 'low-carb', color: 'bg-purple-50 border-purple-200 hover:bg-purple-100' },
+  { name: 'Low-Carb', icon: '🥩', category: 'low-carb', color: 'bg-purple-50 border-purple-200 hover:bg-purple-100' },
+  { name: 'Paleo', icon: '🍖', category: 'whole-foods', color: 'bg-orange-50 border-orange-200 hover:bg-orange-100' },
+  { name: 'Whole30', icon: '🥕', category: 'whole-foods', color: 'bg-orange-50 border-orange-200 hover:bg-orange-100' },
+  { name: 'Raw-Food', icon: '🥒', category: 'whole-foods', color: 'bg-orange-50 border-orange-200 hover:bg-orange-100' },
+  { name: 'High-Protein', icon: '💪', category: 'fitness', color: 'bg-blue-50 border-blue-200 hover:bg-blue-100' },
+  { name: 'Low-Sodium', icon: '🧂', category: 'fitness', color: 'bg-blue-50 border-blue-200 hover:bg-blue-100' },
+  { name: 'Intermittent-Fasting', icon: '⏰', category: 'fitness', color: 'bg-blue-50 border-blue-200 hover:bg-blue-100' },
+  { name: 'Macro-Friendly', icon: '📊', category: 'fitness', color: 'bg-blue-50 border-blue-200 hover:bg-blue-100' },
+  { name: 'Carnivore', icon: '🥩', category: 'fitness', color: 'bg-blue-50 border-blue-200 hover:bg-blue-100' },
+  { name: 'Mediterranean', icon: '🫒', category: 'regional', color: 'bg-teal-50 border-teal-200 hover:bg-teal-100' },
+  { name: 'Diabetic-Friendly', icon: '🩺', category: 'health', color: 'bg-pink-50 border-pink-200 hover:bg-pink-100' },
+  { name: 'Heart-Healthy', icon: '❤️', category: 'health', color: 'bg-pink-50 border-pink-200 hover:bg-pink-100' },
+  { name: 'Anti-Inflammatory', icon: '🫐', category: 'health', color: 'bg-pink-50 border-pink-200 hover:bg-pink-100' },
+  { name: 'FODMAP-Friendly', icon: '🌸', category: 'health', color: 'bg-pink-50 border-pink-200 hover:bg-pink-100' },
+  { name: 'Alkaline', icon: '🥝', category: 'health', color: 'bg-pink-50 border-pink-200 hover:bg-pink-100' },
+  { name: 'Halal', icon: '☪️', category: 'religious', color: 'bg-indigo-50 border-indigo-200 hover:bg-indigo-100' },
+  { name: 'Kosher', icon: '✡️', category: 'religious', color: 'bg-indigo-50 border-indigo-200 hover:bg-indigo-100' }
+];
+
+const categoryLabels = {
+  'plant-based': { label: '🌱 Plant-Based', color: 'text-green-700' },
+  'allergen-free': { label: '🛡️ Allergen-Free', color: 'text-yellow-700' },
+  'low-carb': { label: '🥑 Low-Carb', color: 'text-purple-700' },
+  'whole-foods': { label: '🥕 Whole Foods', color: 'text-orange-700' },
+  'fitness': { label: '💪 Fitness', color: 'text-blue-700' },
+  'regional': { label: '🌍 Regional', color: 'text-teal-700' },
+  'health': { label: '🩺 Health', color: 'text-pink-700' },
+  'religious': { label: '🙏 Religious', color: 'text-indigo-700' }
+};
+
 export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe, disabled, userSettings, availableDietaryFilters, currentPlan, dailyUsage }) => {
   const [recipe, setRecipe] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -26,6 +67,12 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
   const [avoidInput, setAvoidInput] = useState('');
   const [errors, setErrors] = useState<{ recipe?: string; filters?: string }>({});
   const [mode, setMode] = useState<'convert' | 'create'>('convert');
+
+  // New state for enhanced filters
+  const [currentPage, setCurrentPage] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const filtersPerPage = 8;
 
   // Use provided dietary filters or fall back to basic filters
   const allFilters = (import.meta.env.VITE_ALLOWED_FILTERS as string).split(',');
@@ -52,9 +99,17 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
   };
 
   const addMustUseIngredient = () => {
-    if (mustUseInput.trim() && !mustUseIngredients.includes(mustUseInput.trim())) {
-      setMustUseIngredients(prev => [...prev, mustUseInput.trim()]);
-      setMustUseInput('');
+    if (mustUseInput.trim()) {
+      // Split by comma and process each ingredient
+      const ingredients = mustUseInput
+        .split(',')
+        .map(item => item.trim())
+        .filter(item => item.length > 0 && !mustUseIngredients.includes(item));
+
+      if (ingredients.length > 0) {
+        setMustUseIngredients(prev => [...prev, ...ingredients]);
+        setMustUseInput('');
+      }
     }
   };
 
@@ -63,9 +118,17 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
   };
 
   const addAvoidIngredient = () => {
-    if (avoidInput.trim() && !avoidIngredients.includes(avoidInput.trim())) {
-      setAvoidIngredients(prev => [...prev, avoidInput.trim()]);
-      setAvoidInput('');
+    if (avoidInput.trim()) {
+      // Split by comma and process each ingredient
+      const ingredients = avoidInput
+        .split(',')
+        .map(item => item.trim())
+        .filter(item => item.length > 0 && !avoidIngredients.includes(item));
+
+      if (ingredients.length > 0) {
+        setAvoidIngredients(prev => [...prev, ...ingredients]);
+        setAvoidInput('');
+      }
     }
   };
 
@@ -229,23 +292,146 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             </span>
           )}
         </label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
-          {availableFilters.map(filter => (
-            <button
-              key={filter}
-              type="button"
-              onClick={() => handleFilterToggle(filter)}
-              disabled={disabled}
-              className={`px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-                selectedFilters.includes(filter)
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-              {filter}
-            </button>
-          ))}
+        {/* Enhanced Filter System with Search, Categories, and Pagination */}
+
+        {/* Search Bar and Category Filter Row */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+          {/* Search Bar (2/3 of row) */}
+          <div className="flex-1 sm:w-2/3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Search dietary filters..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(0); // Reset to first page when searching
+                }}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                disabled={disabled}
+              />
+            </div>
+          </div>
+
+          {/* Category Filter (1/3 of row) */}
+          <div className="sm:w-1/3">
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <select
+                value={selectedCategory}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  setCurrentPage(0); // Reset to first page when changing category
+                }}
+                className="w-full pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white appearance-none"
+                disabled={disabled}
+              >
+                <option value="all">All Categories</option>
+                {Object.entries(categoryLabels).map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {value.label}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Filtered and Paginated Filters Grid */}
+        {(() => {
+          // Get available dietary options that match current filters
+          const matchingOptions = dietaryOptions.filter(option =>
+            availableFilters.includes(option.name) &&
+            (selectedCategory === 'all' || option.category === selectedCategory) &&
+            (searchTerm === '' || option.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          );
+
+          // Calculate pagination
+          const totalPages = Math.ceil(matchingOptions.length / filtersPerPage);
+          const startIndex = currentPage * filtersPerPage;
+          const visibleOptions = matchingOptions.slice(startIndex, startIndex + filtersPerPage);
+
+          return (
+            <div>
+              {/* Filters Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                {visibleOptions.map(option => (
+                  <button
+                    key={option.name}
+                    type="button"
+                    onClick={() => handleFilterToggle(option.name)}
+                    disabled={disabled}
+                    className={`flex items-center justify-center px-3 py-3 rounded-lg text-sm font-medium transition-all border-2 ${
+                      selectedFilters.includes(option.name)
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-md transform scale-105'
+                        : `${option.color} border-transparent hover:shadow-md hover:transform hover:scale-102`
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    <span className="text-lg mr-2">{option.icon}</span>
+                    <span className="text-center leading-tight">{option.name}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-600">
+                    Showing {startIndex + 1}-{Math.min(startIndex + filtersPerPage, matchingOptions.length)} of {matchingOptions.length} filters
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                      disabled={disabled || currentPage === 0}
+                      className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <span className="text-sm text-gray-600 px-2">
+                      Page {currentPage + 1} of {totalPages}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+                      disabled={disabled || currentPage === totalPages - 1}
+                      className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* No Results Message */}
+              {matchingOptions.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <Filter className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No filters found matching your search.</p>
+                  {searchTerm && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchTerm('');
+                        setSelectedCategory('all');
+                        setCurrentPage(0);
+                      }}
+                      className="text-blue-600 hover:text-blue-700 text-sm mt-2 underline"
+                    >
+                      Clear search and show all filters
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })()}
         {errors.filters && (
           <p className="mt-2 text-xs sm:text-sm text-red-600">{errors.filters}</p>
         )}
@@ -279,7 +465,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
                         addMustUseIngredient();
                       }
                     }}
-                    placeholder="e.g., chicken, tomatoes, basil"
+                    placeholder="e.g., chicken, tomatoes, basil (separate with commas)"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     disabled={disabled}
                   />
@@ -332,7 +518,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
                         addAvoidIngredient();
                       }
                     }}
-                    placeholder="e.g., nuts, shellfish, dairy"
+                    placeholder="e.g., nuts, shellfish, dairy (separate with commas)"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     disabled={disabled}
                   />

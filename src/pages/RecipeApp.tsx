@@ -289,8 +289,9 @@ export function RecipeApp() {
             }
 
             await saveRecipe(user!.uid, recipe, convertedRecipe, filters, undefined, existingImageUrl);
+            setRecipeSaved(true); // Mark as saved when auto-save succeeds
             showSuccess('Recipe Auto-Saved', 'Your converted recipe has been automatically saved', 'auto-save');
-            
+
             // Refresh recipe limit info
             const limitInfo = await getUserRecipeLimitInfo(user!.uid);
             setRecipeLimitInfo(limitInfo);
@@ -372,8 +373,9 @@ export function RecipeApp() {
             }
 
             await saveRecipe(user!.uid, surprisePrompt, generatedRecipe, filters, undefined, existingImageUrl);
+            setRecipeSaved(true); // Mark as saved when auto-save succeeds
             showSuccess('Surprise Recipe Auto-Saved', 'Your creative recipe has been automatically saved', 'auto-save');
-            
+
             // Refresh recipe limit info
             const limitInfo = await getUserRecipeLimitInfo(user!.uid);
             setRecipeLimitInfo(limitInfo);
