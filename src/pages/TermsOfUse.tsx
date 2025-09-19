@@ -115,25 +115,28 @@ export const TermsOfUse: React.FC = () => {
                   </div>
                   <div className="bg-gray-50 rounded-lg p-6 space-y-4">
                     <p className="text-gray-700 leading-relaxed">
-                      Recipe Revamped is an AI-powered recipe conversion tool that helps users adapt recipes to meet various dietary requirements. 
-                      The Service uses OpenAI's ChatGPT-4o-mini API to generate personalized recipe responses through secure cloud processing.
+                      Recipe Revamped is an AI-powered recipe conversion tool that helps users adapt recipes to meet various dietary requirements.
+                      Free plan users receive local processing only, while paid plan users access cloud-based AI features powered by OpenAI's API for enhanced personalized recipe responses.
                     </p>
                     <div className="grid md:grid-cols-2 gap-4 mt-4">
                       <div className="bg-white rounded-lg p-4 border border-gray-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Core Features</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">Free Plan Features</h4>
                         <ul className="space-y-1 text-gray-600">
-                          <li>• Recipe conversion based on dietary preferences</li>
-                          <li>• Secure cloud-based AI processing</li>
-                          <li>• Recipe creation from food names</li>
-                          <li>• Surprise recipe generation</li>
+                          <li>• 3 recipe conversions per day</li>
+                          <li>• 5 recipes in Recipe Book</li>
+                          <li>• Basic diet filters (4 options)</li>
+                          <li>• Local processing only</li>
                         </ul>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-gray-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Premium Features</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">Paid Plan Features</h4>
                         <ul className="space-y-1 text-gray-600">
-                          <li>• Cloud storage for saved recipes</li>
-                          <li>• Export functionality</li>
-                          <li>• Multi-device synchronization</li>
+                          <li>• Cloud-based AI processing (OpenAI)</li>
+                          <li>• 100+ recipes in Recipe Book</li>
+                          <li>• All diet filters (16+ options)</li>
+                          <li>• Meal planning calendar</li>
+                          <li>• Health conditions support</li>
+                          <li>• Backup & restore recipes</li>
                           <li>• Team collaboration (Enterprise)</li>
                         </ul>
                       </div>
@@ -156,7 +159,7 @@ export const TermsOfUse: React.FC = () => {
                     <div className="bg-white rounded-lg p-6 shadow-sm">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">Automatic Consent to AI Data Sharing</h3>
                       <p className="text-gray-700 leading-relaxed mb-4">
-                        By creating an account or logging into Recipe Revamped, you automatically consent to the sharing of your recipe-related data with OpenAI for AI-powered recipe generation. This consent includes:
+                        By upgrading to a paid plan (Chef, Master Chef, or Enterprise), you automatically consent to the sharing of your recipe-related data with OpenAI for AI-powered recipe generation. Free plan users receive local processing only with no data sharing. This consent includes:
                       </p>
                       <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
                         <li>Recipe input text (ingredients, cooking instructions, dish names)</li>
@@ -239,20 +242,24 @@ export const TermsOfUse: React.FC = () => {
                         <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">$0<span className="text-sm text-gray-500">/month</span></div>
                         <p className="text-gray-600 text-sm mb-4">Perfect for trying out the service</p>
                         <ul className="space-y-2 text-sm text-gray-600">
-                          <li>• 10 conversions per day</li>
-                          <li>• Basic dietary filters</li>
-                          <li>• Local processing only</li>
+                          <li>• 3 recipe conversions per day</li>
+                          <li>• 5 recipes in Recipe Book</li>
+                          <li>• Basic diet filters (4 options)</li>
+                          <li>• No meal planning</li>
+                          <li>• No backup & restore</li>
                         </ul>
                       </div>
                       <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                         <h4 className="text-lg font-bold text-gray-900 mb-2">Chef Plan</h4>
-                        <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">$9.95<span className="text-sm text-gray-500">/month</span></div>
+                        <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">$14.99<span className="text-sm text-gray-500">/month</span></div>
                         <p className="text-gray-600 text-sm mb-4">For home cooking enthusiasts</p>
                         <ul className="space-y-2 text-sm text-gray-600">
-                          <li>• Unlimited conversions</li>
-                          <li>• All diet filters</li>
-                          <li>• Cloud storage (100 recipes)</li>
-                          <li>• Export to PDF</li>
+                          <li>• 100 conversions per day</li>
+                          <li>• 100 recipes in Recipe Book</li>
+                          <li>• All diet filters (16 options)</li>
+                          <li>• Meal planning calendar</li>
+                          <li>• Default recipe preferences</li>
+                          <li>• Custom profile pictures</li>
                         </ul>
                       </div>
                       <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-lg p-6 border-2 border-green-300 relative">
@@ -260,13 +267,16 @@ export const TermsOfUse: React.FC = () => {
                           <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">POPULAR</span>
                         </div>
                         <h4 className="text-lg font-bold text-gray-900 mb-2">Master Chef Plan</h4>
-                        <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">$19.95<span className="text-sm text-gray-500">/month</span></div>
+                        <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">$19.99<span className="text-sm text-gray-500">/month</span></div>
                         <p className="text-gray-600 text-sm mb-4">For passionate home cooks</p>
                         <ul className="space-y-2 text-sm text-gray-600">
-                          <li>• Everything in Chef</li>
-                          <li>• Cloud storage (1000 recipes)</li>
+                          <li>• Everything in Chef plan</li>
+                          <li>• 1,000 recipes in Recipe Book</li>
                           <li>• Advanced nutrition analysis</li>
                           <li>• Recipe collections & tags</li>
+                          <li>• Health Conditions</li>
+                          <li>• Backup & restore recipes</li>
+                          <li>• Priority support</li>
                         </ul>
                       </div>
                       <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
@@ -274,8 +284,12 @@ export const TermsOfUse: React.FC = () => {
                         <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">$39.95<span className="text-sm text-gray-500">/month</span></div>
                         <p className="text-gray-600 text-sm mb-4">For teams and businesses</p>
                         <ul className="space-y-2 text-sm text-gray-600">
+                          <li>• 2,500 recipes per user</li>
                           <li>• Everything in Master Chef</li>
-                          <li>• Unlimited storage</li>
+                          <li>• Team meal planning</li>
+                          <li>• Organization-wide preferences</li>
+                          <li>• Enterprise backup/restore</li>
+                          <li>• Unlimited cloud storage</li>
                           <li>• Team collaboration</li>
                           <li>• API access</li>
                         </ul>
@@ -285,8 +299,8 @@ export const TermsOfUse: React.FC = () => {
                       <h4 className="text-lg font-bold text-gray-900 mb-3">Payment Terms</h4>
                       <ul className="grid md:grid-cols-2 gap-2 text-gray-700">
                         <li>• Subscriptions are billed monthly or yearly in advance</li>
-                        <li>• 7-day free trial for new Chef and Master Chef users</li>
-                        <li>• Yearly plans offer 20-25% savings over monthly pricing</li>
+                        <li>• No free trials - all plans start immediately upon subscription</li>
+                        <li>• Yearly plans offer 20% savings for Chef and Master Chef, 25% for Enterprise</li>
                         <li>• Prices include VAT where applicable based on location</li>
                         <li>• All fees are non-refundable except as required by law</li>
                         <li>• We reserve the right to change pricing with 30 days notice</li>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Zap, Check, Star, Menu, X, Brain, Lock, Utensils, Globe } from 'lucide-react';
 import { basePlans } from '../lib/pricing';
@@ -7,11 +7,22 @@ import { SEOHead } from '../components/SEOHead';
 export const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [isYearly, setIsYearly] = React.useState(false);
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
     setMobileMenuOpen(false);
+  };
+
+  const handleBillingToggle = () => {
+    setIsTransitioning(true);
+    setIsYearly(!isYearly);
+
+    // Reset transition state after animation completes
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 300);
   };
 
   // Helper function to get simple USD price
@@ -32,7 +43,7 @@ export const LandingPage: React.FC = () => {
     if (!isYearly || planIndex === 0) {
       return null; // No savings for free plan or monthly billing
     }
-    
+
     const plan = basePlans[planIndex];
     if (!plan || plan.yearlyDiscount === 0) {
       return null;
@@ -41,11 +52,108 @@ export const LandingPage: React.FC = () => {
     const monthlyTotal = plan.basePrice * 12;
     const yearlyPrice = plan.basePrice * 12 * (1 - plan.yearlyDiscount / 100);
     const savingsAmount = monthlyTotal - yearlyPrice;
-    
+
     return {
       savingsAmount: `$${savingsAmount.toFixed(0)}`,
       savingsPercentage: plan.yearlyDiscount
     };
+  };
+
+  // Animated Price Component with number counting
+  const AnimatedPrice: React.FC<{
+    planIndex: number;
+    className?: string;
+    spanClassName?: string;
+  }> = ({ planIndex, className = "", spanClassName = "" }) => {
+    const plan = basePlans[planIndex];
+    const initialPrice = plan?.basePrice || 0;
+    const [animatedPrice, setAnimatedPrice] = useState(initialPrice);
+    const [displayPeriod, setDisplayPeriod] = useState("/month");
+    const [targetPrice, setTargetPrice] = useState(initialPrice);
+
+    useEffect(() => {
+      const plan = basePlans[planIndex];
+      if (!plan || plan.basePrice === 0) {
+        setTargetPrice(0);
+        setDisplayPeriod("/month");
+        return;
+      }
+
+      let newTargetPrice: number;
+      let newPeriod: string;
+
+      if (isYearly) {
+        newTargetPrice = plan.basePrice * 12 * 0.8;
+        newPeriod = "/year";
+      } else {
+        newTargetPrice = plan.basePrice;
+        newPeriod = "/month";
+      }
+
+      setTargetPrice(newTargetPrice);
+      setDisplayPeriod(newPeriod);
+    }, [isYearly, planIndex]);
+
+    // Animate the number counting
+    useEffect(() => {
+      if (Math.abs(targetPrice - animatedPrice) < 0.01) return; // Use small threshold for floating point comparison
+
+      const duration = 300; // Animation duration in ms
+      const startTime = Date.now();
+      const startPrice = animatedPrice;
+      const priceDiff = targetPrice - startPrice;
+      let animationFrame: number;
+
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Use easeOutCubic for smooth animation
+        const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+        const currentPrice = startPrice + (priceDiff * easeOutCubic);
+
+        setAnimatedPrice(currentPrice);
+
+        if (progress < 1) {
+          animationFrame = requestAnimationFrame(animate);
+        } else {
+          // Ensure we end exactly at target price
+          setAnimatedPrice(targetPrice);
+        }
+      };
+
+      animationFrame = requestAnimationFrame(animate);
+
+      // Cleanup function to cancel animation if component unmounts or effect re-runs
+      return () => {
+        if (animationFrame) {
+          cancelAnimationFrame(animationFrame);
+        }
+      };
+    }, [targetPrice]); // Remove animatedPrice from dependencies to prevent infinite loops
+
+    const formatPrice = (price: number): string => {
+      if (price === 0) return "$0";
+
+      // For larger numbers (yearly prices), use no decimals
+      // For smaller numbers (monthly prices), use 2 decimals
+      if (price >= 100) {
+        return `$${Math.round(price)}`;
+      } else {
+        return `$${price.toFixed(2)}`;
+      }
+    };
+
+    return (
+      <div className={`transition-all duration-300 ${isTransitioning ? 'scale-110 opacity-70' : 'scale-100 opacity-100'} ${className}`}>
+        <span className={`text-3xl font-bold ${spanClassName}`}>
+          {formatPrice(animatedPrice)}
+        </span>
+        <span className={spanClassName.replace('text-gray-900', 'text-gray-600').replace('text-blue-900', 'text-blue-600').replace('text-green-900', 'text-green-600')}>
+          {displayPeriod}
+        </span>
+      </div>
+    );
   };
 
   return (
@@ -267,8 +375,8 @@ export const LandingPage: React.FC = () => {
                 Monthly
               </span>
               <button
-                onClick={() => setIsYearly(!isYearly)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${
+                onClick={handleBillingToggle}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${
                   isYearly ? 'bg-green-600' : 'bg-gray-300'
                 }`}
               >
@@ -331,24 +439,19 @@ export const LandingPage: React.FC = () => {
                 <div className="text-center">
                   <h3 className="text-lg font-semibold text-blue-900">Chef</h3>
                   <div className="mt-4">
-                    <span className="text-3xl font-bold text-blue-900">
-                      ${isYearly 
-                        ? (basePlans[1].basePrice * 12 * 0.8).toFixed(0)
-                        : basePlans[1].basePrice.toFixed(2)
-                      }
-                    </span>
-                    <span className="text-blue-600">
-                      {isYearly ? '/year' : '/month'}
-                    </span>
+                    <AnimatedPrice
+                      planIndex={1}
+                      spanClassName="text-blue-900"
+                    />
                   </div>
-                  {isYearly && (
-                    <div className="mt-2 text-sm">
-                      <span className="text-green-600 font-medium">
-                        Save ${(basePlans[1].basePrice * 12 * 0.2).toFixed(0)}
-                      </span>
-                      <span className="text-gray-500"> (20% off)</span>
-                    </div>
-                  )}
+                  <div className={`mt-2 text-sm transition-all duration-300 overflow-hidden ${
+                    isYearly ? 'max-h-10 opacity-100' : 'max-h-0 opacity-0'
+                  }`}>
+                    <span className="text-green-600 font-medium">
+                      Save ${(basePlans[1].basePrice * 12 * 0.2).toFixed(0)}
+                    </span>
+                    <span className="text-gray-500"> (20% off)</span>
+                  </div>
                 </div>
                 <ul className="mt-6 space-y-3 flex-grow">
                   <li className="flex items-start">
@@ -398,24 +501,19 @@ export const LandingPage: React.FC = () => {
                 <div className="text-center">
                   <h3 className="text-lg font-semibold text-green-900">Master Chef</h3>
                   <div className="mt-4">
-                    <span className="text-3xl font-bold text-green-900">
-                      ${isYearly 
-                        ? (basePlans[2].basePrice * 12 * 0.8).toFixed(0)
-                        : basePlans[2].basePrice.toFixed(2)
-                      }
-                    </span>
-                    <span className="text-green-600">
-                      {isYearly ? '/year' : '/month'}
-                    </span>
+                    <AnimatedPrice
+                      planIndex={2}
+                      spanClassName="text-green-900"
+                    />
                   </div>
-                  {isYearly && (
-                    <div className="mt-2 text-sm">
-                      <span className="text-green-600 font-medium">
-                        Save ${(basePlans[2].basePrice * 12 * 0.2).toFixed(0)}
-                      </span>
-                      <span className="text-gray-500"> (20% off)</span>
-                    </div>
-                  )}
+                  <div className={`mt-2 text-sm transition-all duration-300 overflow-hidden ${
+                    isYearly ? 'max-h-10 opacity-100' : 'max-h-0 opacity-0'
+                  }`}>
+                    <span className="text-green-600 font-medium">
+                      Save ${(basePlans[2].basePrice * 12 * 0.2).toFixed(0)}
+                    </span>
+                    <span className="text-gray-500"> (20% off)</span>
+                  </div>
                 </div>
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg border-2 border-white whitespace-nowrap">Most Popular</span>

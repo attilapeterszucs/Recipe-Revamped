@@ -105,7 +105,7 @@ export const PrivacyPolicy: React.FC = () => {
                     <div className="bg-white rounded-lg p-4">
                       <Server className="w-8 h-8 text-green-600 mb-2" />
                       <h4 className="font-semibold text-gray-900">AI Processing</h4>
-                      <p className="text-sm text-gray-600">Recipe conversion powered by OpenAI with automatic consent</p>
+                      <p className="text-sm text-gray-600">AI-powered recipe conversion with data protection</p>
                     </div>
                     <div className="bg-white rounded-lg p-4">
                       <Lock className="w-8 h-8 text-blue-600 mb-2" />
@@ -179,10 +179,10 @@ export const PrivacyPolicy: React.FC = () => {
                         Recipe Data
                       </h3>
                       <div className="bg-green-100 rounded-lg p-4 mb-4 border border-green-300">
-                        <p className="text-green-800 font-semibold">🔥 Important: AI Data Sharing</p>
-                        <p className="text-green-700 mt-1">Recipe processing is powered by OpenAI's API. When you use our recipe conversion features, your recipe data, dietary preferences, and health conditions are shared with OpenAI to provide personalized recipe suggestions. Personal information like email addresses are never shared.</p>
+                        <p className="text-green-800 font-semibold">🔥 Important: AI Data Processing</p>
+                        <p className="text-green-700 mt-1">Free plan users get local processing only (no data sharing). Paid plan users can access cloud-based AI features powered by OpenAI's API, where recipe data and dietary preferences may be processed externally to provide enhanced recipe suggestions. Personal information like email addresses are never shared with third parties.</p>
                       </div>
-                      <p className="text-gray-700 mb-3">For saved recipes (Chef, Master Chef, and Enterprise plans only), we store:</p>
+                      <p className="text-gray-700 mb-3">For saved recipes (paid plans only), we store:</p>
                       <div className="grid md:grid-cols-2 gap-3">
                         <ul className="space-y-2 text-gray-700">
                           <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Recipe title and ingredients (encrypted)</li>
@@ -205,7 +205,7 @@ export const PrivacyPolicy: React.FC = () => {
                       <p className="text-gray-700 mb-3">We collect limited analytics to improve our service:</p>
                       <div className="grid md:grid-cols-2 gap-3">
                         <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Number of conversions performed (not content)</li>
+                          <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Daily conversion counts (Free: 3/day, Chef: 100/day, others: unlimited)</li>
                           <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Dietary filters usage (aggregate data only)</li>
                         </ul>
                         <ul className="space-y-2 text-gray-700">

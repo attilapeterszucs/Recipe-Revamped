@@ -80,6 +80,9 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [postToDelete, setPostToDelete] = useState<BlogPost | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { showSuccess, showError } = useToast();
   const { user } = useAuth();
 
@@ -234,26 +237,39 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
     }
   };
 
-  const handleDeletePost = async (post: BlogPost) => {
-    if (!confirm(`Are you sure you want to delete "${post.title}"?`)) {
-      return;
-    }
+  const handleDeletePost = (post: BlogPost) => {
+    setPostToDelete(post);
+    setShowDeleteConfirm(true);
+  };
 
+  const confirmDelete = async () => {
+    if (!postToDelete) return;
+
+    setIsDeleting(true);
     try {
       if (!user) {
         showError('Authentication required. Please sign in again.');
         return;
       }
 
-      const postRef = doc(db, 'blog_posts', post.id);
+      const postRef = doc(db, 'blog_posts', postToDelete.id);
       await deleteDoc(postRef);
 
       showSuccess('Post deleted successfully!');
       loadPosts();
+      setShowDeleteConfirm(false);
+      setPostToDelete(null);
     } catch (error) {
       console.error('Error deleting post:', error);
       showError('Failed to delete post');
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setPostToDelete(null);
   };
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -420,24 +436,24 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
             </div>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <div className="inline-block min-w-full align-middle">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-2/5">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-0" style={{ width: '45%' }}>
                     Post
                   </th>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6 hidden sm:table-cell">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell whitespace-nowrap" style={{ width: '15%' }}>
                     Category
                   </th>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap" style={{ width: '12%' }}>
                     Status
                   </th>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6 hidden md:table-cell">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell whitespace-nowrap" style={{ width: '15%' }}>
                     Date
                   </th>
-                  <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">
+                  <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap" style={{ width: '13%' }}>
                     Actions
                   </th>
                 </tr>
@@ -445,8 +461,8 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredPosts.map((post) => (
                   <tr key={post.id} className="hover:bg-gray-50">
-                    <td className="px-3 sm:px-6 py-4">
-                      <div className="flex items-start space-x-3">
+                    <td className="px-3 sm:px-6 py-4" style={{ maxWidth: '0' }}>
+                      <div className="flex items-start space-x-3 min-w-0">
                         {post.featuredImage && (
                           <img
                             src={post.featuredImage}
@@ -454,28 +470,31 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                             className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover flex-shrink-0"
                           />
                         )}
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center space-x-2">
-                            <h3 className="text-sm font-medium text-gray-900 truncate">
+                        <div className="min-w-0 flex-1 overflow-hidden">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <h3 className="text-sm font-medium text-gray-900 truncate min-w-0" title={post.title}>
                               {post.title}
                             </h3>
                             {post.featured && (
                               <Star className="w-4 h-4 text-yellow-400 fill-current flex-shrink-0" />
                             )}
                           </div>
-                          <p className="text-sm text-gray-500 line-clamp-2 mt-1">{post.excerpt}</p>
+                          <p className="text-sm text-gray-500 line-clamp-2 mt-1 break-words" title={post.excerpt}>
+                            {post.excerpt}
+                          </p>
                           {post.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-1">
+                            <div className="flex flex-wrap gap-1 mt-1 max-w-full">
                               {post.tags.slice(0, 2).map(tag => (
                                 <span
                                   key={tag}
-                                  className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800"
+                                  className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 truncate max-w-20"
+                                  title={tag}
                                 >
                                   {tag}
                                 </span>
                               ))}
                               {post.tags.length > 2 && (
-                                <span className="text-xs text-gray-500">+{post.tags.length - 2}</span>
+                                <span className="text-xs text-gray-500 flex-shrink-0">+{post.tags.length - 2}</span>
                               )}
                             </div>
                           )}
@@ -483,7 +502,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                       </div>
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 max-w-full truncate" title={post.category}>
                         {post.category}
                       </span>
                     </td>
@@ -776,6 +795,63 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                 <Save className="w-4 h-4 mr-2" />
                 {saving ? 'Saving...' : editingPost ? 'Update Post' : 'Create Post'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && postToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+            <div className="p-6">
+              <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
+                <Trash2 className="w-6 h-6 text-red-600" />
+              </div>
+
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Delete Blog Post
+                </h3>
+                <p className="text-gray-600 mb-2">
+                  Are you sure you want to delete this blog post? This action cannot be undone.
+                </p>
+                <div className="bg-gray-50 rounded-lg p-3 mb-6">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    "{postToDelete.title}"
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {postToDelete.status === 'published' ? 'Published' : 'Draft'} • {postToDelete.category}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <button
+                  onClick={cancelDelete}
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={isDeleting}
+                  className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isDeleting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete Post
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>

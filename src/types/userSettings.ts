@@ -11,6 +11,9 @@ export interface UserSettings {
   
   // Health conditions
   healthConditions: string[];
+
+  // Religious dietary requirements
+  religiousRequirements: string[];
   
   // UI preferences
   theme: 'light' | 'dark' | 'system';
@@ -44,6 +47,7 @@ export const DEFAULT_USER_SETTINGS: Partial<UserSettings> = {
   defaultServingSize: 4,
   preferredUnits: 'metric',
   healthConditions: [],
+  religiousRequirements: [],
   theme: 'system',
   language: 'en',
   compactView: false,

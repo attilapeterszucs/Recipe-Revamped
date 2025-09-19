@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart } from 'lucide-react';
+import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
 import { getUserRecipes } from '../lib/firestore';
@@ -611,11 +611,71 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
         protein: total.protein + dayNutrition.protein,
         fat: total.fat + dayNutrition.fat,
         sugar: total.sugar + (dayNutrition.sugar || 0),
-        fiber: total.fiber + dayNutrition.fiber
+        fiber: total.fiber + dayNutrition.fiber,
+        sodium: (total.sodium || 0) + (dayNutrition.sodium || 0)
       };
-    }, { calories: 0, carbs: 0, protein: 0, fat: 0, sugar: 0, fiber: 0 });
+    }, { calories: 0, carbs: 0, protein: 0, fat: 0, sugar: 0, fiber: 0, sodium: 0 });
 
     return weekNutrition;
+  };
+
+  // Enhanced nutrition analysis functions
+  const getDailyAverage = (weekNutrition: NutritionInfo) => {
+    const daysWithMeals = weekDates.filter(date => {
+      const dateStr = formatDate(date);
+      const dayMeals = mealPlan[dateStr] || {};
+      return Object.values(dayMeals).some(meals => meals && Array.isArray(meals) && meals.length > 0);
+    }).length;
+
+    if (daysWithMeals === 0) return { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, sodium: 0 };
+
+    return {
+      calories: Math.round(weekNutrition.calories / daysWithMeals),
+      protein: Math.round(weekNutrition.protein / daysWithMeals),
+      carbs: Math.round(weekNutrition.carbs / daysWithMeals),
+      fat: Math.round(weekNutrition.fat / daysWithMeals),
+      fiber: Math.round(weekNutrition.fiber / daysWithMeals),
+      sodium: Math.round((weekNutrition.sodium || 0) / daysWithMeals)
+    };
+  };
+
+  const getMacroPercentages = (nutrition: NutritionInfo) => {
+    const totalCalories = nutrition.calories;
+    if (totalCalories === 0) return { proteinPct: 0, carbsPct: 0, fatPct: 0 };
+
+    const proteinCals = nutrition.protein * 4;
+    const carbsCals = nutrition.carbs * 4;
+    const fatCals = nutrition.fat * 9;
+
+    return {
+      proteinPct: Math.round((proteinCals / totalCalories) * 100),
+      carbsPct: Math.round((carbsCals / totalCalories) * 100),
+      fatPct: Math.round((fatCals / totalCalories) * 100)
+    };
+  };
+
+  const getNutritionRecommendations = (dailyAvg: any) => {
+    const recommendations = [];
+
+    if (dailyAvg.calories < 1200) {
+      recommendations.push({ type: 'warning', text: 'Daily calories may be too low for most adults' });
+    } else if (dailyAvg.calories > 2500) {
+      recommendations.push({ type: 'info', text: 'High calorie intake - ensure adequate activity level' });
+    }
+
+    if (dailyAvg.protein < 50) {
+      recommendations.push({ type: 'suggestion', text: 'Consider adding more protein sources' });
+    }
+
+    if (dailyAvg.fiber < 25) {
+      recommendations.push({ type: 'suggestion', text: 'Increase fiber with more fruits and vegetables' });
+    }
+
+    if ((dailyAvg.sodium || 0) > 2300) {
+      recommendations.push({ type: 'warning', text: 'High sodium intake - consider reducing salt' });
+    }
+
+    return recommendations;
   };
 
   // Print shopping list (only unchecked items)
@@ -774,24 +834,146 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
         </div>
       </div>
 
-      {/* Weekly Nutrition Summary - Only for Master Chef+ plans */}
+      {/* Enhanced Weekly Nutrition Summary - Only for Master Chef+ plans */}
       {canUseNutritionAnalysis ? (
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 sm:p-6 rounded-lg border border-green-200">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Weekly Nutrition</h3>
-          {Object.keys(mealPlan).length > 0 ? (
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
-              {Object.entries(getWeekNutrition()).map(([key, value]) => (
-                <div key={key} className="text-center">
-                  <div className="text-lg sm:text-2xl font-bold text-gray-900">{Math.round(value)}</div>
-                  <div className="text-xs sm:text-sm text-gray-600">
-                    {key === 'calories' ? 'kcal' : key === 'carbs' || key === 'protein' || key === 'fat' || key === 'sugar' || key === 'fiber' ? `${key.charAt(0).toUpperCase() + key.slice(1)} (g)` : key.charAt(0).toUpperCase() + key.slice(1)}
-                  </div>
-                </div>
-              ))}
+        <div className="bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-4 sm:p-6 rounded-xl border border-green-200 shadow-lg">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center">
+              <Activity className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mr-2" />
+              Weekly Nutrition Analytics
+            </h3>
+            <div className="flex items-center text-sm text-gray-600">
+              <TrendingUp className="w-4 h-4 mr-1" />
+              Advanced Analysis
             </div>
+          </div>
+
+          {Object.keys(mealPlan).length > 0 ? (
+            (() => {
+              const weekNutrition = getWeekNutrition();
+              const dailyAvg = getDailyAverage(weekNutrition);
+              const macroPercentages = getMacroPercentages(dailyAvg);
+              const recommendations = getNutritionRecommendations(dailyAvg);
+
+              return (
+                <div className="space-y-6">
+                  {/* Primary Nutrition Cards */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    <div className="bg-white rounded-lg p-3 sm:p-4 border-l-4 border-l-orange-500 shadow-sm">
+                      <div className="flex items-center mb-2">
+                        <Flame className="w-4 h-4 text-orange-500 mr-2" />
+                        <span className="text-xs sm:text-sm font-medium text-gray-600">Daily Avg Calories</span>
+                      </div>
+                      <div className="text-xl sm:text-2xl font-bold text-gray-900">{dailyAvg.calories}</div>
+                      <div className="text-xs text-gray-500">kcal/day</div>
+                    </div>
+
+                    <div className="bg-white rounded-lg p-3 sm:p-4 border-l-4 border-l-blue-500 shadow-sm">
+                      <div className="flex items-center mb-2">
+                        <Zap className="w-4 h-4 text-blue-500 mr-2" />
+                        <span className="text-xs sm:text-sm font-medium text-gray-600">Protein</span>
+                      </div>
+                      <div className="text-xl sm:text-2xl font-bold text-gray-900">{dailyAvg.protein}g</div>
+                      <div className="text-xs text-green-600 font-medium">{macroPercentages.proteinPct}% of calories</div>
+                    </div>
+
+                    <div className="bg-white rounded-lg p-3 sm:p-4 border-l-4 border-l-green-500 shadow-sm">
+                      <div className="flex items-center mb-2">
+                        <Apple className="w-4 h-4 text-green-500 mr-2" />
+                        <span className="text-xs sm:text-sm font-medium text-gray-600">Carbs</span>
+                      </div>
+                      <div className="text-xl sm:text-2xl font-bold text-gray-900">{dailyAvg.carbs}g</div>
+                      <div className="text-xs text-green-600 font-medium">{macroPercentages.carbsPct}% of calories</div>
+                    </div>
+
+                    <div className="bg-white rounded-lg p-3 sm:p-4 border-l-4 border-l-purple-500 shadow-sm">
+                      <div className="flex items-center mb-2">
+                        <Target className="w-4 h-4 text-purple-500 mr-2" />
+                        <span className="text-xs sm:text-sm font-medium text-gray-600">Fat</span>
+                      </div>
+                      <div className="text-xl sm:text-2xl font-bold text-gray-900">{dailyAvg.fat}g</div>
+                      <div className="text-xs text-green-600 font-medium">{macroPercentages.fatPct}% of calories</div>
+                    </div>
+                  </div>
+
+                  {/* Macro Distribution Visualization */}
+                  <div className="bg-white rounded-lg p-4 sm:p-5 shadow-sm">
+                    <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-3">Macronutrient Distribution</h4>
+                    <div className="flex rounded-lg overflow-hidden h-3 mb-3">
+                      <div
+                        className="bg-blue-500"
+                        style={{ width: `${macroPercentages.proteinPct}%` }}
+                        title={`Protein: ${macroPercentages.proteinPct}%`}
+                      />
+                      <div
+                        className="bg-green-500"
+                        style={{ width: `${macroPercentages.carbsPct}%` }}
+                        title={`Carbs: ${macroPercentages.carbsPct}%`}
+                      />
+                      <div
+                        className="bg-purple-500"
+                        style={{ width: `${macroPercentages.fatPct}%` }}
+                        title={`Fat: ${macroPercentages.fatPct}%`}
+                      />
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-600">
+                      <span>Protein {macroPercentages.proteinPct}%</span>
+                      <span>Carbs {macroPercentages.carbsPct}%</span>
+                      <span>Fat {macroPercentages.fatPct}%</span>
+                    </div>
+                  </div>
+
+                  {/* Additional Nutrition Info */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div className="bg-white rounded-lg p-3 text-center shadow-sm">
+                      <div className="text-sm font-medium text-gray-600 mb-1">Fiber</div>
+                      <div className="text-lg font-bold text-gray-900">{dailyAvg.fiber}g</div>
+                      <div className="text-xs text-gray-500">per day</div>
+                    </div>
+
+                    <div className="bg-white rounded-lg p-3 text-center shadow-sm">
+                      <div className="text-sm font-medium text-gray-600 mb-1">Sodium</div>
+                      <div className="text-lg font-bold text-gray-900">{dailyAvg.sodium}mg</div>
+                      <div className="text-xs text-gray-500">per day</div>
+                    </div>
+
+                    <div className="bg-white rounded-lg p-3 text-center shadow-sm col-span-2 sm:col-span-1">
+                      <div className="text-sm font-medium text-gray-600 mb-1">Weekly Total</div>
+                      <div className="text-lg font-bold text-gray-900">{Math.round(weekNutrition.calories)}</div>
+                      <div className="text-xs text-gray-500">calories</div>
+                    </div>
+                  </div>
+
+                  {/* Recommendations */}
+                  {recommendations.length > 0 && (
+                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-200">
+                      <h4 className="text-sm font-semibold text-amber-800 mb-2 flex items-center">
+                        <Target className="w-4 h-4 mr-2" />
+                        Nutrition Insights
+                      </h4>
+                      <div className="space-y-2">
+                        {recommendations.map((rec, index) => (
+                          <div key={index} className={`text-xs sm:text-sm flex items-start ${
+                            rec.type === 'warning' ? 'text-red-700' :
+                            rec.type === 'info' ? 'text-blue-700' : 'text-amber-700'
+                          }`}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-current mt-2 mr-2 flex-shrink-0" />
+                            {rec.text}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()
           ) : (
-            <div className="text-center py-6 sm:py-8 text-gray-500">
-              <p className="text-sm sm:text-base">Add meals to see nutrition summary</p>
+            <div className="text-center py-8 sm:py-12">
+              <Activity className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h4 className="text-lg font-semibold text-gray-600 mb-2">No Nutrition Data Yet</h4>
+              <p className="text-sm text-gray-500 max-w-md mx-auto">
+                Add meals to your weekly plan to see comprehensive nutrition analytics, macro breakdowns, and personalized recommendations.
+              </p>
             </div>
           )}
         </div>
