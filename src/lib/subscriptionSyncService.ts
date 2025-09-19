@@ -358,21 +358,17 @@ export class SubscriptionSyncService {
    * Force sync check for current user (after payment completion)
    */
   static async forceSyncCheck(userEmail: string, maxRetries: number = 10): Promise<boolean> {
-    console.log(`Starting forceSyncCheck for ${userEmail} (max ${maxRetries} retries)`);
-
     // First check if user already has an active paid subscription
     const currentUser = auth.currentUser;
     if (currentUser) {
       const existingSubscription = await this.checkUserSubscription(currentUser.uid);
       if (existingSubscription && existingSubscription.plan !== 'free') {
-        console.log(`User already has active subscription: ${existingSubscription.plan}`);
         return true;
       }
     }
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        console.log(`Sync attempt ${attempt}/${maxRetries} for ${userEmail}`);
         // Look for subscription records with this email (from webhook)
         const webhookQuery = query(
           collection(db, SUBSCRIPTIONS_COLLECTION),
