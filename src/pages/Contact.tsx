@@ -172,6 +172,11 @@ export const Contact: React.FC = () => {
     }
   };
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
       <SEOHead pageKey="contact" />
@@ -229,7 +234,7 @@ export const Contact: React.FC = () => {
 
           {/* Contact Form */}
           <div className="lg:col-span-2 order-1 lg:order-2">
-            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
+            <div id="contact-form" className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
               <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Send us a message</h2>
               
               {submitStatus === 'success' && (
@@ -368,39 +373,146 @@ export const Contact: React.FC = () => {
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-16 bg-white rounded-xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Frequently Asked Questions</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">How does the AI recipe conversion work?</h3>
-              <p className="text-gray-600 mb-4">
-                Our AI analyzes recipe ingredients and instructions, then intelligently substitutes ingredients 
-                based on your dietary requirements while maintaining flavor and texture.
-              </p>
+        <div className="mt-16 bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-gradient-to-r from-green-600 to-blue-600 p-6 sm:p-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white text-center">Frequently Asked Questions</h2>
+            <p className="text-green-100 text-center mt-2">Everything you need to know about Recipe Revamped</p>
+          </div>
+
+          <div className="p-6 sm:p-8 space-y-8">
+            {/* Getting Started */}
+            <div className="border-l-4 border-green-500 pl-6">
+              <h3 className="text-xl font-bold text-green-600 mb-4 flex items-center">
+                <span className="text-2xl mr-2">🚀</span>
+                Getting Started
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">How does the AI recipe conversion work?</h4>
+                  <p className="text-gray-600">
+                    Our AI analyzes recipe ingredients and instructions, then intelligently substitutes ingredients
+                    based on your dietary requirements while maintaining flavor and texture. Simply paste any recipe
+                    on the Convert page and select your dietary filters.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Where do I convert recipes?</h4>
+                  <p className="text-gray-600">
+                    Go to the "Convert" page using the navigation menu. You can paste any recipe text or URL,
+                    select your dietary filters (keto, gluten-free, etc.), and click "Generate Recipe" to get
+                    your personalized version.
+                  </p>
+                </div>
+              </div>
             </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Is my recipe data kept private?</h3>
-              <p className="text-gray-600 mb-4">
-                We use your recipe data only for AI processing and service improvement. See our Privacy Policy 
-                for detailed information about data handling and your rights.
-              </p>
+
+            {/* Settings & Personalization */}
+            <div className="border-l-4 border-blue-500 pl-6">
+              <h3 className="text-xl font-bold text-blue-600 mb-4 flex items-center">
+                <span className="text-2xl mr-2">⚙️</span>
+                Settings & Personalization
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Where can I set my health goals?</h4>
+                  <p className="text-gray-600">
+                    Visit the "Settings" page to configure your health goals, dietary preferences, and personal profile.
+                    You can set weight goals, activity levels, food allergies, and dietary restrictions to get
+                    personalized recipe recommendations.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">How do I save my favorite recipes?</h4>
+                  <p className="text-gray-600">
+                    After converting a recipe, click the "Save Recipe" button. All your saved recipes can be
+                    accessed from the "Saved Recipes" section in the navigation menu for easy reference.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Can I customize dietary filters?</h4>
+                  <p className="text-gray-600">
+                    Yes! On the Convert page, you can select multiple dietary filters like Keto, Gluten-Free,
+                    Vegan, Low-Carb, and many more. The AI will adapt recipes to meet all your selected requirements.
+                  </p>
+                </div>
+              </div>
             </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Can I cancel my subscription anytime?</h3>
-              <p className="text-gray-600 mb-4">
-                Yes, you can cancel your subscription at any time from your account settings. 
-                You'll retain access until the end of your billing period.
-              </p>
+
+            {/* Features & Plans */}
+            <div className="border-l-4 border-purple-500 pl-6">
+              <h3 className="text-xl font-bold text-purple-600 mb-4 flex items-center">
+                <span className="text-2xl mr-2">💎</span>
+                Features & Plans
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">What is the Meal Planner feature?</h4>
+                  <p className="text-gray-600">
+                    The Meal Planner helps you organize your weekly meals using a calendar interface.
+                    You can drag and drop saved recipes to specific days and meals, making meal prep
+                    and grocery shopping much easier.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Do you offer different subscription plans?</h4>
+                  <p className="text-gray-600">
+                    Yes, we offer multiple plans including Free, Pro, and Enterprise options. Each plan provides
+                    different limits on recipe conversions, storage, and advanced features. Check our pricing
+                    page for detailed comparisons.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Can I cancel my subscription anytime?</h4>
+                  <p className="text-gray-600">
+                    Absolutely! You can cancel your subscription at any time from your account settings.
+                    You'll retain access to all features until the end of your current billing period.
+                  </p>
+                </div>
+              </div>
             </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Do you offer enterprise solutions?</h3>
-              <p className="text-gray-600 mb-4">
-                Yes, we offer custom enterprise solutions for restaurants, meal planning services, 
-                and nutrition companies. Contact us to discuss your needs.
-              </p>
+
+            {/* Privacy & Technical */}
+            <div className="border-l-4 border-orange-500 pl-6">
+              <h3 className="text-xl font-bold text-orange-600 mb-4 flex items-center">
+                <span className="text-2xl mr-2">🔒</span>
+                Privacy & Technical
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Is my recipe data kept private?</h4>
+                  <p className="text-gray-600">
+                    We use your recipe data only for AI processing and service improvement. All data is
+                    encrypted and stored securely. See our Privacy Policy for detailed information about
+                    data handling and your rights.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">What browsers are supported?</h4>
+                  <p className="text-gray-600">
+                    Recipe Revamped works on all modern browsers including Chrome, Firefox, Safari, and Edge.
+                    For the best experience, we recommend using the latest version of your preferred browser.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Do you offer enterprise solutions?</h4>
+                  <p className="text-gray-600">
+                    Yes, we offer custom enterprise solutions for restaurants, meal planning services,
+                    and nutrition companies. Enterprise plans include API access, bulk processing,
+                    and dedicated support. Contact us to discuss your needs.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Support Button */}
+            <div className="text-center pt-6 border-t border-gray-200">
+              <p className="text-gray-600 mb-4">Still have questions? We're here to help!</p>
+              <button
+                onClick={() => document.querySelector('#contact-form')?.scrollIntoView({ behavior: 'smooth' })}
+                className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-700 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                Contact Support
+              </button>
             </div>
           </div>
         </div>
