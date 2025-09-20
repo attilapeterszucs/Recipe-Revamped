@@ -20,6 +20,7 @@ interface RecipeData {
     sodium: number;
   };
   tips: string[];
+  profileMatchExplanation?: string;
   imageUrl?: string;
 }
 
@@ -218,6 +219,21 @@ export const StructuredRecipeDisplay: React.FC<StructuredRecipeDisplayProps> = (
             </div>
           </div>
         </div>
+
+        {/* Profile Match Explanation */}
+        {recipeData.profileMatchExplanation && (
+          <div className="bg-blue-50 border border-blue-200 p-4 sm:p-5 rounded-lg mb-4 sm:mb-6">
+            <h3 className="font-semibold text-blue-900 mb-3 flex items-center text-sm sm:text-base">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Why This Recipe Fits Your Profile
+            </h3>
+            <p className="text-blue-800 text-sm sm:text-base leading-relaxed">
+              {recipeData.profileMatchExplanation}
+            </p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Ingredients */}
