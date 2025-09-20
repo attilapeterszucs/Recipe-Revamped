@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { type User } from 'firebase/auth';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Save,
   User as UserIcon,
@@ -60,10 +61,28 @@ interface SettingsProps {
 }
 
 export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpdate, initialActiveSection, featureAccess }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeSection, setActiveSection] = useState(initialActiveSection || 'profile');
+
+  // Debug logging and handle prop changes
+  useEffect(() => {
+    if (initialActiveSection) {
+      console.log('Settings received initialActiveSection:', initialActiveSection);
+      setActiveSection(initialActiveSection);
+
+      // Clean up URL search params after setting the section
+      const searchParams = new URLSearchParams(location.search);
+      if (searchParams.get('section')) {
+        searchParams.delete('section');
+        const newSearch = searchParams.toString();
+        navigate(location.pathname + (newSearch ? `?${newSearch}` : ''), { replace: true });
+      }
+    }
+  }, [initialActiveSection, navigate, location]);
 
   // Scroll to top when component mounts
   useEffect(() => {

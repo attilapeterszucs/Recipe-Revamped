@@ -87,14 +87,17 @@ export function RecipeApp() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Check for navigation state to show settings with specific section
+  // Check for URL search params to show settings with specific section
   useEffect(() => {
-    if (location.state?.activeSection) {
+    const searchParams = new URLSearchParams(location.search);
+    const section = searchParams.get('section');
+    if (section) {
+      console.log('URL section parameter detected:', section);
       setShowSettings(true);
       setShowSaved(false);
       setShowMealPlanner(false);
     }
-  }, [location.state]);
+  }, [location.search]);
 
   // Refresh recipe limit info when subscription changes
   useEffect(() => {
@@ -737,7 +740,7 @@ export function RecipeApp() {
                 user={user}
                 onBack={() => setShowSettings(false)}
                 onSettingsUpdate={(updatedSettings) => setUserSettings(updatedSettings)}
-                initialActiveSection={location.state?.activeSection}
+                initialActiveSection={new URLSearchParams(location.search).get('section') || undefined}
                 featureAccess={{
                   canSetDefaultPreferences: featureAccess.canSetDefaultPreferences,
                   canBackupRestore: featureAccess.canBackupRestore,
