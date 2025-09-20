@@ -686,7 +686,7 @@ export function RecipeApp() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <main className="w-full px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {!user ? (
           <div className="flex justify-center py-6 sm:py-8 lg:py-12">
             {authMode === 'signin' ? (
@@ -780,31 +780,61 @@ export function RecipeApp() {
               )
             ) : (
               <div className="space-y-4 sm:space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-start">
-                  <div className="lg:col-span-4 bg-white rounded-lg shadow-md p-4 sm:p-6">
-                    <RecipeInput
-                      onSubmit={handleRecipeSubmit}
-                      onSurpriseMe={handleSurpriseMe}
-                      disabled={converting}
-                      userSettings={userSettings || undefined}
-                      availableDietaryFilters={featureAccess.availableDietaryFilters}
-                      currentPlan={featureAccess.currentPlan}
-                      dailyUsage={{
-                        used: featureAccess.conversionsUsedToday,
-                        limit: featureAccess.conversionLimit
-                      }}
-                    />
-                  </div>
+                {/* Conditional Layout with Smooth Transition */}
+                <div
+                  className={`transition-all duration-700 ease-in-out ${
+                    !result && !converting
+                      ? 'max-w-2xl mx-auto'
+                      : 'max-w-none'
+                  }`}
+                >
+                  <div
+                    className={`grid gap-4 sm:gap-6 lg:gap-8 items-start transition-all duration-700 ease-in-out ${
+                      !result && !converting
+                        ? 'grid-cols-1'
+                        : 'grid-cols-1 lg:grid-cols-12'
+                    }`}
+                  >
+                    <div
+                      className={`bg-white rounded-lg shadow-md p-4 sm:p-6 transition-all duration-700 ease-in-out ${
+                        !result && !converting
+                          ? ''
+                          : 'lg:col-span-4'
+                      }`}
+                    >
+                      <RecipeInput
+                        onSubmit={handleRecipeSubmit}
+                        onSurpriseMe={handleSurpriseMe}
+                        disabled={converting}
+                        userSettings={userSettings || undefined}
+                        availableDietaryFilters={featureAccess.availableDietaryFilters}
+                        currentPlan={featureAccess.currentPlan}
+                        dailyUsage={{
+                          used: featureAccess.conversionsUsedToday,
+                          limit: featureAccess.conversionLimit
+                        }}
+                      />
+                    </div>
 
-                  <div className="lg:col-span-8 mt-4 lg:mt-0">
-                    <StructuredRecipeDisplay
-                      recipeJson={result}
-                      loading={converting}
-                      saving={saving}
-                      recipeSaved={recipeSaved}
-                      onSave={handleSaveRecipe}
-                      canSave={!!user && !!result && !selectedSavedRecipe && (recipeLimitInfo?.canSave ?? true)}
-                    />
+                    {/* Recipe Display - Only show when there's content or loading */}
+                    {(result || converting) && (
+                      <div
+                        className={`mt-4 lg:mt-0 transition-all duration-700 ease-in-out transform ${
+                          !result && !converting
+                            ? 'opacity-0 scale-95 translate-y-4'
+                            : 'opacity-100 scale-100 translate-y-0 lg:col-span-8'
+                        }`}
+                      >
+                        <StructuredRecipeDisplay
+                          recipeJson={result}
+                          loading={converting}
+                          saving={saving}
+                          recipeSaved={recipeSaved}
+                          onSave={handleSaveRecipe}
+                          canSave={!!user && !!result && !selectedSavedRecipe && (recipeLimitInfo?.canSave ?? true)}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
