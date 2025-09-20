@@ -1563,29 +1563,57 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Default Serving Size */}
                     <div className="bg-white rounded-lg p-5 border border-green-100">
-                      <div className="flex items-center mb-3">
+                      <div className="flex items-center mb-4">
                         <span className="text-2xl mr-3">🍽️</span>
                         <div>
                           <label className="block text-sm font-semibold text-gray-800">Default Serving Size</label>
-                          <p className="text-xs text-gray-500">How many people to cook for</p>
+                          <p className="text-xs text-gray-500">How many people to cook for by default</p>
                         </div>
                       </div>
-                      <div className="relative">
-                        <input
-                          type="number"
-                          min="1"
-                          max="20"
-                          value={settings.defaultServingSize}
-                          onChange={(e) => {
-                            const value = parseInt(e.target.value);
-                            const servingSize = isNaN(value) || value < 1 ? 1 : value;
-                            updateSetting('defaultServingSize', servingSize);
-                          }}
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-lg font-medium text-center"
-                        />
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                          <span className="text-gray-400 text-sm font-medium">people</span>
+
+                      {/* Quick Selection Buttons */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {[1, 2, 4, 6, 8].map((size) => (
+                          <button
+                            key={size}
+                            onClick={() => updateSetting('defaultServingSize', size)}
+                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                              settings.defaultServingSize === size
+                                ? 'bg-green-500 text-white shadow-md transform scale-105'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105'
+                            }`}
+                          >
+                            {size} {size === 1 ? 'person' : 'people'}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Custom Input */}
+                      <div className="space-y-2">
+                        <label className="block text-xs font-medium text-gray-600">Custom size:</label>
+                        <div className="relative">
+                          <input
+                            type="number"
+                            min="1"
+                            max="20"
+                            value={settings.defaultServingSize}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value);
+                              const servingSize = isNaN(value) || value < 1 ? 1 : value;
+                              updateSetting('defaultServingSize', servingSize);
+                            }}
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-lg font-medium text-center"
+                            placeholder="Enter custom size"
+                          />
+                          <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                            <span className="text-gray-400 text-sm font-medium">
+                              {settings.defaultServingSize === 1 ? 'person' : 'people'}
+                            </span>
+                          </div>
                         </div>
+                        <p className="text-xs text-gray-500 text-center">
+                          Range: 1-20 people
+                        </p>
                       </div>
                     </div>
 
