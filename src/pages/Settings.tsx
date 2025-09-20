@@ -21,17 +21,21 @@ import {
   CreditCard,
   AlertTriangle,
   UserX,
-  Info
+  Info,
+  Activity
 } from 'lucide-react';
 import { getUserSettings, updateUserSettings, updateUserProfile, uploadProfilePicture, deleteProfilePicture } from '../lib/userSettings';
 import { createBackup, getUserBackups, restoreFromBackup, scheduleAutoBackup, deleteBackup } from '../lib/backup';
 import { getUserRecipes } from '../lib/firestore';
-import type { UserSettings } from '../types/userSettings';
+import type { UserSettings, PersonalProfile } from '../types/userSettings';
+import { DEFAULT_PERSONAL_PROFILE } from '../types/userSettings';
 import type { BackupData, RecoveryOptions } from '../types/backup';
 import { useToast } from '../components/ToastContainer';
 import { Toggle } from '../components/Toggle';
 import { DeleteConfirmationModal } from '../components/DeleteConfirmationModal';
 import { RestoreConfirmationModal } from '../components/RestoreConfirmationModal';
+import { PersonalProfileEditor } from '../components/PersonalProfileEditor';
+import { HealthGoalsManager } from '../components/HealthGoalsManager';
 import { AdminNotificationCreator } from '../components/AdminNotificationCreator';
 import { AdminUserManagement } from '../components/AdminUserManagement';
 import { AdminBlogManagement } from '../components/AdminBlogManagement';
@@ -620,6 +624,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
   const sections = [
     { id: 'profile', label: 'Profile', icon: UserIcon },
+    { id: 'personal', label: 'Personal Profile & Goals', icon: Activity },
     { id: 'preferences', label: 'Recipe Preferences', icon: Palette },
     { id: 'health', label: 'Health Conditions', icon: Heart },
     { id: 'notifications', label: 'Notifications', icon: Bell },
@@ -1101,6 +1106,75 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'personal':
+        const personalProfile: PersonalProfile = settings?.personalProfile || {
+          ...DEFAULT_PERSONAL_PROFILE,
+          activityLevel: 'moderately_active',
+          heightUnit: 'cm',
+          weightUnit: 'kg',
+          allergies: [],
+          medicalConditions: [],
+          medications: [],
+          cookingSkillLevel: 'intermediate',
+          timeAvailableForCooking: '30_60_min',
+          budgetPreference: 'moderate',
+          healthGoals: [],
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+
+        const handleUpdatePersonalProfile = (updatedProfile: PersonalProfile) => {
+          updateSetting('personalProfile', updatedProfile);
+        };
+
+        return (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Personal Profile & Health Goals</h3>
+              <p className="text-gray-600">
+                Set up your personal profile and health goals to get AI-powered recipe recommendations tailored specifically to your needs and objectives.
+              </p>
+            </div>
+
+            {/* Personal Profile Editor */}
+            <PersonalProfileEditor
+              personalProfile={personalProfile}
+              onUpdateProfile={handleUpdatePersonalProfile}
+              disabled={saving}
+            />
+
+            {/* Health Goals Manager */}
+            <HealthGoalsManager
+              personalProfile={personalProfile}
+              onUpdateProfile={handleUpdatePersonalProfile}
+              disabled={saving}
+            />
+
+            {/* AI Personalization Info */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h4 className="font-semibold text-blue-900 mb-3 flex items-center">
+                <Bot className="w-5 h-5 mr-2" />
+                AI Personalization
+              </h4>
+              <div className="text-blue-800 space-y-2">
+                <p className="text-sm">
+                  Your personal profile and health goals are used to:
+                </p>
+                <ul className="text-sm space-y-1 ml-4">
+                  <li>• Adjust recipe calorie content and portions for your goals</li>
+                  <li>• Recommend ingredients that support your health objectives</li>
+                  <li>• Suggest cooking times and complexity based on your availability</li>
+                  <li>• Avoid ingredients you're allergic to or cannot consume</li>
+                  <li>• Customize meal plans for your activity level and lifestyle</li>
+                </ul>
+                <p className="text-sm mt-3 font-medium">
+                  The more complete your profile, the better our AI can personalize your recipes!
+                </p>
               </div>
             </div>
           </div>

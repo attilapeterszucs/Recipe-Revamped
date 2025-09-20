@@ -3,6 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { app } from './firebase';
 import type { UserSettings } from '../types/userSettings';
 import { ImageService } from './imageService';
+import { buildProfileContext, getGoalSpecificPrompts } from './profileContext';
 
 // Initialize Firebase Functions
 const functions = getFunctions(app);
@@ -27,6 +28,7 @@ interface RecipeResponse {
     sodium: number;
   };
   tips: string[];
+  profileMatchExplanation?: string;
   imageUrl?: string;
 }
 
@@ -55,7 +57,7 @@ const determineMode = (input: string): 'convert' | 'create' | 'surprise' => {
 
 // Convert structured response to markdown format for compatibility with existing UI
 const convertToMarkdown = (recipe: RecipeResponse): string => {
-  const markdown = `**Recipe Name:** ${recipe.recipeName}
+  let markdown = `**Recipe Name:** ${recipe.recipeName}
 **Prep Time:** ${recipe.prepTime} **Cook Time:** ${recipe.cookTime} **Total Time:** ${recipe.totalTime} **Servings:** ${recipe.servings}
 **Dietary Requirements:** ${recipe.dietaryRequirements}
 
@@ -71,7 +73,17 @@ ${recipe.instructions.map((instruction, index) => `${index + 1}. ${instruction}`
 - Carbohydrates: ${recipe.nutrition.carbohydrates}g
 - Fat: ${recipe.nutrition.fat}g
 - Fiber: ${recipe.nutrition.fiber}g
-- Sodium: ${recipe.nutrition.sodium}mg
+- Sodium: ${recipe.nutrition.sodium}mg`;
+
+  // Add profile match explanation if available
+  if (recipe.profileMatchExplanation) {
+    markdown += `
+
+## Why This Recipe Fits Your Profile:
+${recipe.profileMatchExplanation}`;
+  }
+
+  markdown += `
 
 ## Tips:
 ${recipe.tips.map(tip => `- ${tip}`).join('\n')}`;
@@ -107,6 +119,12 @@ export const convertRecipeLocal = async (
 
     const mode = determineMode(originalRecipe);
 
+    // Build profile context for enhanced AI prompts
+    const profileContext = userSettings ? buildProfileContext(userSettings) : null;
+    const goalPrompts = userSettings?.personalProfile?.healthGoals
+      ? getGoalSpecificPrompts(userSettings.personalProfile.healthGoals.filter(g => g.isActive))
+      : [];
+
     // Prepare request data
     const requestData = {
       originalRecipe,
@@ -119,7 +137,9 @@ export const convertRecipeLocal = async (
       },
       mode,
       mustUseIngredients,
-      avoidIngredients
+      avoidIngredients,
+      profileContext,
+      goalPrompts
     };
 
     // Call Firebase Function directly via HTTPS - Updated for Gen2 deployment
