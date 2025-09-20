@@ -435,7 +435,55 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
         {errors.filters && (
           <p className="mt-2 text-xs sm:text-sm text-red-600">{errors.filters}</p>
         )}
-        
+
+        {/* Selected Filters Display */}
+        {selectedFilters.length > 0 && (
+          <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-blue-900 flex items-center">
+                <span className="text-base mr-2">✅</span>
+                Selected Dietary Filters ({selectedFilters.length})
+              </h4>
+              {selectedFilters.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedFilters([])}
+                  className="text-xs text-blue-600 hover:text-blue-800 underline transition-colors"
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {selectedFilters.map(filter => {
+                const option = dietaryOptions.find(opt => opt.name === filter);
+                return (
+                  <div
+                    key={filter}
+                    className="flex items-center bg-white border border-blue-200 rounded-full px-3 py-1.5 shadow-sm hover:shadow-md transition-all duration-200 group"
+                  >
+                    <span className="text-sm mr-1.5">{option?.icon || '🔹'}</span>
+                    <span className="text-xs font-medium text-gray-800">{filter}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleFilterToggle(filter)}
+                      className="ml-2 text-gray-400 hover:text-red-500 transition-colors group-hover:text-gray-600"
+                      title={`Remove ${filter}`}
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-3 text-xs text-blue-600">
+              💡 These filters will be applied to your recipe conversion
+            </div>
+          </div>
+        )}
+
         {/* Custom Ingredient Preferences for Chef+ Users */}
         {availableFilters.length > basicFilters.length && (
           <div className="mt-6 p-4 bg-gradient-to-br from-green-50 to-blue-50 border border-green-200 rounded-lg">
