@@ -17,7 +17,8 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
   preferredUnits = 'metric'
 }) => {
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingGoal, setEditingGoal] = useState<string | null>(null);
+  const [editingGoal, setEditingGoal] = useState<HealthGoal | null>(null);
+  const [deletingGoalId, setDeletingGoalId] = useState<string | null>(null);
 
   // Helper function to get appropriate unit based on goal type and user preferences
   const getDefaultUnit = (goalType: HealthGoal['type']): string | undefined => {
@@ -26,7 +27,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
     }
     return undefined;
   };
-  const [newGoal, setNewGoal] = useState<Partial<HealthGoal>>({
+  const getInitialGoalState = (): Partial<HealthGoal> => ({
     type: 'weight_loss',
     title: '',
     description: '',
@@ -34,6 +35,8 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
     isActive: true,
     unit: getDefaultUnit('weight_loss')
   });
+
+  const [newGoal, setNewGoal] = useState<Partial<HealthGoal>>(getInitialGoalState());
 
   const handleAddGoal = () => {
     if (!newGoal.title || !newGoal.description) return;
@@ -59,14 +62,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
     onUpdateProfile(updatedProfile);
     setShowAddModal(false);
-    setNewGoal({
-      type: 'weight_loss',
-      title: '',
-      description: '',
-      priority: 'medium',
-      isActive: true,
-      unit: getDefaultUnit('weight_loss')
-    });
+    setNewGoal(getInitialGoalState());
   };
 
   const handleUpdateGoal = (goalId: string, updates: Partial<HealthGoal>) => {
@@ -92,6 +88,26 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
     };
 
     onUpdateProfile(updatedProfile);
+    setDeletingGoalId(null);
+  };
+
+  const handleEditGoal = (goal: HealthGoal) => {
+    setEditingGoal(goal);
+  };
+
+  const handleSaveEditGoal = () => {
+    if (!editingGoal || !editingGoal.title || !editingGoal.description) return;
+
+    handleUpdateGoal(editingGoal.id, {
+      type: editingGoal.type,
+      title: editingGoal.title,
+      description: editingGoal.description,
+      targetValue: editingGoal.targetValue,
+      currentValue: editingGoal.currentValue,
+      unit: editingGoal.unit,
+      targetDate: editingGoal.targetDate,
+      priority: editingGoal.priority
+    });
   };
 
   const handleToggleGoal = (goalId: string) => {
@@ -196,23 +212,26 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
                 <div className="flex items-center space-x-2">
                   <button
-                    onClick={() => setEditingGoal(goal.id)}
+                    onClick={() => handleEditGoal(goal)}
                     disabled={disabled}
                     className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                    title="Edit goal"
                   >
                     <Edit3 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleToggleGoal(goal.id)}
                     disabled={disabled}
-                    className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                    className="p-1 text-green-500 hover:text-green-600 disabled:opacity-50"
+                    title="Mark as completed"
                   >
                     <Check className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => handleDeleteGoal(goal.id)}
+                    onClick={() => setDeletingGoalId(goal.id)}
                     disabled={disabled}
                     className="p-1 text-red-400 hover:text-red-600 disabled:opacity-50"
+                    title="Delete goal"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -247,9 +266,10 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                     <Target className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => handleDeleteGoal(goal.id)}
+                    onClick={() => setDeletingGoalId(goal.id)}
                     disabled={disabled}
                     className="p-1 text-red-400 hover:text-red-600 disabled:opacity-50"
+                    title="Delete goal"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -430,6 +450,203 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Add Goal
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Goal Modal */}
+      {editingGoal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Edit Health Goal</h3>
+                <button
+                  onClick={() => setEditingGoal(null)}
+                  className="p-1 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Goal Type
+                  </label>
+                  <select
+                    value={editingGoal.type}
+                    onChange={(e) => {
+                      const goalType = e.target.value as HealthGoal['type'];
+                      const template = HEALTH_GOAL_TEMPLATES[goalType];
+                      setEditingGoal({
+                        ...editingGoal,
+                        type: goalType,
+                        title: template?.title || editingGoal.title,
+                        description: template?.description || editingGoal.description,
+                        unit: getDefaultUnit(goalType) || editingGoal.unit
+                      });
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="weight_loss">Weight Loss</option>
+                    <option value="weight_gain">Weight Gain</option>
+                    <option value="muscle_gain">Muscle Building</option>
+                    <option value="performance">Athletic Performance</option>
+                    <option value="lifestyle">Lifestyle Goal</option>
+                    <option value="custom">Custom Goal</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Goal Title
+                  </label>
+                  <input
+                    type="text"
+                    value={editingGoal.title}
+                    onChange={(e) => setEditingGoal({ ...editingGoal, title: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., Lose 5kg for summer"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    value={editingGoal.description}
+                    onChange={(e) => setEditingGoal({ ...editingGoal, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Describe your goal and motivation..."
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Current Value
+                    </label>
+                    <input
+                      type="number"
+                      value={editingGoal.currentValue || ''}
+                      onChange={(e) => setEditingGoal({ ...editingGoal, currentValue: parseFloat(e.target.value) || undefined })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Current"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Target Value
+                    </label>
+                    <input
+                      type="number"
+                      value={editingGoal.targetValue || ''}
+                      onChange={(e) => setEditingGoal({ ...editingGoal, targetValue: parseFloat(e.target.value) || undefined })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Target"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Unit
+                    </label>
+                    <input
+                      type="text"
+                      value={editingGoal.unit || ''}
+                      onChange={(e) => setEditingGoal({ ...editingGoal, unit: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="kg, lbs, %"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Priority
+                    </label>
+                    <select
+                      value={editingGoal.priority}
+                      onChange={(e) => setEditingGoal({ ...editingGoal, priority: e.target.value as HealthGoal['priority'] })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Target Date (Optional)
+                  </label>
+                  <input
+                    type="date"
+                    value={editingGoal.targetDate ? new Date(editingGoal.targetDate).toISOString().split('T')[0] : ''}
+                    onChange={(e) => setEditingGoal({ ...editingGoal, targetDate: e.target.value ? new Date(e.target.value) : undefined })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => setEditingGoal(null)}
+                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveEditGoal}
+                  disabled={!editingGoal.title || !editingGoal.description}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deletingGoalId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                  <X className="w-5 h-5 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Delete Health Goal</h3>
+                  <p className="text-sm text-gray-600">This action cannot be undone.</p>
+                </div>
+              </div>
+
+              <p className="text-gray-700 mb-6">
+                Are you sure you want to delete this health goal? All progress and data associated with this goal will be permanently removed.
+              </p>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => setDeletingGoalId(null)}
+                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDeleteGoal(deletingGoalId)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Delete Goal
                 </button>
               </div>
             </div>
