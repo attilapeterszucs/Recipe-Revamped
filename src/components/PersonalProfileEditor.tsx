@@ -7,17 +7,33 @@ interface PersonalProfileEditorProps {
   personalProfile: PersonalProfile;
   onUpdateProfile: (profile: PersonalProfile) => void;
   disabled?: boolean;
+  preferredUnits?: 'metric' | 'imperial';
 }
 
 export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
   personalProfile,
   onUpdateProfile,
-  disabled = false
+  disabled = false,
+  preferredUnits = 'metric'
 }) => {
   const [activeSection, setActiveSection] = useState('demographics');
   const [newAllergy, setNewAllergy] = useState('');
   const [newCondition, setNewCondition] = useState('');
   const [newMedication, setNewMedication] = useState('');
+
+  // Sync units with user's preferred measurement system
+  React.useEffect(() => {
+    const shouldUpdateUnits =
+      (preferredUnits === 'metric' && (personalProfile.heightUnit !== 'cm' || personalProfile.weightUnit !== 'kg')) ||
+      (preferredUnits === 'imperial' && (personalProfile.heightUnit !== 'ft_in' || personalProfile.weightUnit !== 'lbs'));
+
+    if (shouldUpdateUnits) {
+      updateProfile({
+        heightUnit: preferredUnits === 'metric' ? 'cm' : 'ft_in',
+        weightUnit: preferredUnits === 'metric' ? 'kg' : 'lbs'
+      });
+    }
+  }, [preferredUnits]);
 
   const updateProfile = (updates: Partial<PersonalProfile>) => {
     onUpdateProfile({

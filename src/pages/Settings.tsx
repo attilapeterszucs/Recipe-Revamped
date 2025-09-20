@@ -1146,6 +1146,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               personalProfile={personalProfile}
               onUpdateProfile={handleUpdatePersonalProfile}
               disabled={saving}
+              preferredUnits={settings?.preferredUnits || 'metric'}
             />
 
             {/* Health Goals Manager */}
@@ -1153,6 +1154,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               personalProfile={personalProfile}
               onUpdateProfile={handleUpdatePersonalProfile}
               disabled={saving}
+              preferredUnits={settings?.preferredUnits || 'metric'}
             />
 
             {/* AI Personalization Info */}

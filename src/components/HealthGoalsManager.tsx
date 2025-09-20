@@ -7,21 +7,32 @@ interface HealthGoalsManagerProps {
   personalProfile: PersonalProfile;
   onUpdateProfile: (profile: PersonalProfile) => void;
   disabled?: boolean;
+  preferredUnits?: 'metric' | 'imperial';
 }
 
 export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
   personalProfile,
   onUpdateProfile,
-  disabled = false
+  disabled = false,
+  preferredUnits = 'metric'
 }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<string | null>(null);
+
+  // Helper function to get appropriate unit based on goal type and user preferences
+  const getDefaultUnit = (goalType: HealthGoal['type']): string | undefined => {
+    if (goalType === 'weight_loss' || goalType === 'weight_gain' || goalType === 'muscle_gain') {
+      return preferredUnits === 'metric' ? 'kg' : 'lbs';
+    }
+    return undefined;
+  };
   const [newGoal, setNewGoal] = useState<Partial<HealthGoal>>({
     type: 'weight_loss',
     title: '',
     description: '',
     priority: 'medium',
-    isActive: true
+    isActive: true,
+    unit: getDefaultUnit('weight_loss')
   });
 
   const handleAddGoal = () => {
@@ -53,7 +64,8 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       title: '',
       description: '',
       priority: 'medium',
-      isActive: true
+      isActive: true,
+      unit: getDefaultUnit('weight_loss')
     });
   };
 
@@ -289,13 +301,14 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                   <select
                     value={newGoal.type}
                     onChange={(e) => {
-                      const template = HEALTH_GOAL_TEMPLATES[e.target.value as keyof typeof HEALTH_GOAL_TEMPLATES];
+                      const goalType = e.target.value as HealthGoal['type'];
+                      const template = HEALTH_GOAL_TEMPLATES[goalType];
                       setNewGoal({
                         ...newGoal,
-                        type: e.target.value as HealthGoal['type'],
+                        type: goalType,
                         title: template?.title || '',
                         description: template?.description || '',
-                        unit: template?.unit
+                        unit: getDefaultUnit(goalType)
                       });
                     }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
