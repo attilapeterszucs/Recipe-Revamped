@@ -1707,22 +1707,37 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 </div>
               </div>
             ) : (
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-6 text-center">
-                <div className="flex justify-center mb-4">
-                  <Bot className="w-12 h-12 text-blue-600" />
+              <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-8 text-center">
+                <div className="mb-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+                    <Bot className="h-8 w-8 text-orange-600" />
+                  </div>
+                  <h4 className="text-xl font-bold text-orange-800 mb-2">
+                    Premium Recipe Settings
+                  </h4>
+                  <p className="text-orange-700 leading-relaxed mb-6">
+                    Access advanced recipe management and conversion defaults with a premium subscription.
+                    Customize your cooking experience with auto-save, preferred units, and default serving sizes.
+                  </p>
                 </div>
-                <h4 className="text-lg font-semibold text-blue-900 mb-2">
-                  Premium Recipe Settings
-                </h4>
-                <p className="text-blue-700 text-sm leading-relaxed mb-4">
-                  Access advanced recipe management and conversion defaults with a premium subscription.
-                  Customize your cooking experience with auto-save, preferred units, and default serving sizes.
-                </p>
-                <div className="space-y-2 text-sm text-blue-600 mb-6">
-                  <p>🤖 Recipe conversion defaults</p>
-                  <p>💾 Auto-save recipes</p>
-                  <p>📏 Preferred measurement units</p>
-                  <p>🍽️ Default serving sizes</p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-lg mx-auto">
+                  <div className="bg-white/50 rounded-lg p-4 text-left">
+                    <div className="text-orange-600 font-semibold mb-2">🤖 Smart Defaults</div>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      <li>✓ Recipe conversion defaults</li>
+                      <li>✓ Auto-save recipes</li>
+                      <li>✓ Preferred measurement units</li>
+                    </ul>
+                  </div>
+                  <div className="bg-white/50 rounded-lg p-4 text-left">
+                    <div className="text-orange-600 font-semibold mb-2">⚡ Personalization</div>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      <li>✓ Default serving sizes</li>
+                      <li>✓ Skip repetitive settings</li>
+                      <li>✓ Consistent preferences</li>
+                    </ul>
+                  </div>
                 </div>
 
                 <button
@@ -1731,7 +1746,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       (window as any).showUpgradeModal('chef', 'recipe-settings');
                     }
                   }}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg"
+                  className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg"
                 >
                   Upgrade Plan
                 </button>
