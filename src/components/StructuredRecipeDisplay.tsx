@@ -22,6 +22,22 @@ interface RecipeData {
   tips: string[];
   profileMatchExplanation?: string;
   imageUrl?: string;
+  // Enhanced profile-based fields from the improved AI service
+  healthGoalsAlignment?: {
+    matchingGoals: string[];
+    nutritionalTargets: string;
+    progressSupport: string;
+  };
+  personalizedFeatures?: {
+    skillLevelAdaptation: string;
+    timeOptimization: string;
+    budgetConsiderations: string;
+  };
+  healthInsights?: {
+    bmiConsiderations: string;
+    medicalConditionSupport: string[];
+    allergyAlternatives: string[];
+  };
 }
 
 interface StructuredRecipeDisplayProps {
@@ -232,6 +248,135 @@ export const StructuredRecipeDisplay: React.FC<StructuredRecipeDisplayProps> = (
             <p className="text-blue-800 text-sm sm:text-base leading-relaxed">
               {recipeData.profileMatchExplanation}
             </p>
+          </div>
+        )}
+
+        {/* Health Goals Alignment */}
+        {recipeData.healthGoalsAlignment && (
+          <div className="bg-green-50 border border-green-200 p-4 sm:p-5 rounded-lg mb-4 sm:mb-6">
+            <h3 className="font-semibold text-green-900 mb-3 flex items-center text-sm sm:text-base">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Health Goals Alignment
+            </h3>
+            <div className="space-y-3">
+              {recipeData.healthGoalsAlignment.matchingGoals.length > 0 && (
+                <div>
+                  <h4 className="font-medium text-green-800 text-sm mb-2">Supporting Your Goals:</h4>
+                  <ul className="space-y-1">
+                    {recipeData.healthGoalsAlignment.matchingGoals.map((goal, index) => (
+                      <li key={index} className="flex items-start text-sm text-green-700">
+                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 mr-2 flex-shrink-0"></div>
+                        {goal}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {recipeData.healthGoalsAlignment.nutritionalTargets && (
+                <div>
+                  <h4 className="font-medium text-green-800 text-sm mb-1">Nutritional Targets:</h4>
+                  <p className="text-sm text-green-700">{recipeData.healthGoalsAlignment.nutritionalTargets}</p>
+                </div>
+              )}
+              {recipeData.healthGoalsAlignment.progressSupport && (
+                <div>
+                  <h4 className="font-medium text-green-800 text-sm mb-1">Progress Support:</h4>
+                  <p className="text-sm text-green-700">{recipeData.healthGoalsAlignment.progressSupport}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Personalized Features */}
+        {recipeData.personalizedFeatures && (
+          <div className="bg-purple-50 border border-purple-200 p-4 sm:p-5 rounded-lg mb-4 sm:mb-6">
+            <h3 className="font-semibold text-purple-900 mb-3 flex items-center text-sm sm:text-base">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Personalized For You
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {recipeData.personalizedFeatures.skillLevelAdaptation && (
+                <div className="bg-white rounded-lg p-3 border border-purple-100">
+                  <h4 className="font-medium text-purple-800 text-sm mb-1 flex items-center">
+                    <ChefHat className="w-3 h-3 mr-1" />
+                    Skill Level
+                  </h4>
+                  <p className="text-xs text-purple-700">{recipeData.personalizedFeatures.skillLevelAdaptation}</p>
+                </div>
+              )}
+              {recipeData.personalizedFeatures.timeOptimization && (
+                <div className="bg-white rounded-lg p-3 border border-purple-100">
+                  <h4 className="font-medium text-purple-800 text-sm mb-1 flex items-center">
+                    <Clock className="w-3 h-3 mr-1" />
+                    Time Optimization
+                  </h4>
+                  <p className="text-xs text-purple-700">{recipeData.personalizedFeatures.timeOptimization}</p>
+                </div>
+              )}
+              {recipeData.personalizedFeatures.budgetConsiderations && (
+                <div className="bg-white rounded-lg p-3 border border-purple-100">
+                  <h4 className="font-medium text-purple-800 text-sm mb-1 flex items-center">
+                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                    Budget
+                  </h4>
+                  <p className="text-xs text-purple-700">{recipeData.personalizedFeatures.budgetConsiderations}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Health Insights */}
+        {recipeData.healthInsights && (
+          <div className="bg-amber-50 border border-amber-200 p-4 sm:p-5 rounded-lg mb-4 sm:mb-6">
+            <h3 className="font-semibold text-amber-900 mb-3 flex items-center text-sm sm:text-base">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Health Insights
+            </h3>
+            <div className="space-y-3">
+              {recipeData.healthInsights.bmiConsiderations && (
+                <div>
+                  <h4 className="font-medium text-amber-800 text-sm mb-1">BMI Considerations:</h4>
+                  <p className="text-sm text-amber-700">{recipeData.healthInsights.bmiConsiderations}</p>
+                </div>
+              )}
+              {recipeData.healthInsights.medicalConditionSupport.length > 0 && (
+                <div>
+                  <h4 className="font-medium text-amber-800 text-sm mb-2">Medical Condition Support:</h4>
+                  <ul className="space-y-1">
+                    {recipeData.healthInsights.medicalConditionSupport.map((support, index) => (
+                      <li key={index} className="flex items-start text-sm text-amber-700">
+                        <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-2 mr-2 flex-shrink-0"></div>
+                        {support}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {recipeData.healthInsights.allergyAlternatives.length > 0 && (
+                <div>
+                  <h4 className="font-medium text-amber-800 text-sm mb-2">Allergy-Safe Alternatives:</h4>
+                  <ul className="space-y-1">
+                    {recipeData.healthInsights.allergyAlternatives.map((alternative, index) => (
+                      <li key={index} className="flex items-start text-sm text-amber-700">
+                        <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-2 mr-2 flex-shrink-0"></div>
+                        {alternative}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
