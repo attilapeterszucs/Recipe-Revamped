@@ -784,27 +784,38 @@ export function RecipeApp() {
               )
             ) : (
               <div className="space-y-4 sm:space-y-6">
-                {/* Conditional Layout with Smooth Transition */}
+                {/* Enhanced Conditional Layout with Smooth Transitions */}
                 <div
-                  className={`transition-all duration-700 ease-in-out ${
+                  className={`transition-all duration-1000 ease-out transform ${
                     !result && !converting
                       ? 'max-w-2xl mx-auto'
                       : 'max-w-none'
                   }`}
+                  style={{
+                    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                  }}
                 >
                   <div
-                    className={`grid gap-4 sm:gap-6 lg:gap-8 items-start transition-all duration-700 ease-in-out ${
+                    className={`grid gap-4 sm:gap-6 lg:gap-8 items-start transition-all duration-1000 ease-out ${
                       !result && !converting
                         ? 'grid-cols-1'
                         : 'grid-cols-1 lg:grid-cols-12'
                     }`}
+                    style={{
+                      transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                      transitionDelay: '50ms',
+                    }}
                   >
                     <div
-                      className={`bg-white rounded-lg shadow-md p-4 sm:p-6 transition-all duration-700 ease-in-out ${
+                      className={`bg-white rounded-lg shadow-md p-4 sm:p-6 transition-all duration-1000 ease-out transform ${
                         !result && !converting
-                          ? ''
-                          : 'lg:col-span-4'
+                          ? 'hover:shadow-lg'
+                          : 'lg:col-span-4 hover:shadow-lg'
                       }`}
+                      style={{
+                        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                        transitionDelay: '100ms',
+                      }}
                     >
                       <RecipeInput
                         onSubmit={handleRecipeSubmit}
@@ -820,15 +831,21 @@ export function RecipeApp() {
                       />
                     </div>
 
-                    {/* Recipe Display - Only show when there's content or loading */}
-                    {(result || converting) && (
-                      <div
-                        className={`mt-4 lg:mt-0 transition-all duration-700 ease-in-out transform ${
-                          !result && !converting
-                            ? 'opacity-0 scale-95 translate-y-4'
-                            : 'opacity-100 scale-100 translate-y-0 lg:col-span-8'
-                        }`}
-                      >
+                    {/* Recipe Display with Enhanced Animations */}
+                    <div
+                      className={`transition-all duration-1000 ease-out transform origin-left ${
+                        (result || converting)
+                          ? 'opacity-100 scale-100 translate-y-0 translate-x-0 lg:col-span-8 mt-4 lg:mt-0'
+                          : 'opacity-0 scale-95 translate-y-8 translate-x-4 pointer-events-none'
+                      }`}
+                      style={{
+                        transitionTimingFunction: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        transitionDelay: (result || converting) ? '200ms' : '0ms',
+                      }}
+                    >
+                      <div className={`transition-all duration-800 ease-out ${
+                        (result || converting) ? 'blur-0' : 'blur-sm'
+                      }`}>
                         <StructuredRecipeDisplay
                           recipeJson={result}
                           loading={converting}
@@ -838,7 +855,7 @@ export function RecipeApp() {
                           canSave={!!user && !!result && !selectedSavedRecipe && (recipeLimitInfo?.canSave ?? true)}
                         />
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
