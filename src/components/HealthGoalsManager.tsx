@@ -199,7 +199,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                             Target: {goal.targetValue}{goal.unit}
                           </span>
                         )}
-                        {goal.targetDate && (
+                        {goal.targetDate && !isNaN(new Date(goal.targetDate).getTime()) && (
                           <span className="text-gray-500 flex items-center">
                             <Calendar className="w-3 h-3 mr-1" />
                             {new Date(goal.targetDate).toLocaleDateString()}
@@ -589,7 +589,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                   </label>
                   <input
                     type="date"
-                    value={editingGoal.targetDate ? new Date(editingGoal.targetDate).toISOString().split('T')[0] : ''}
+                    value={editingGoal.targetDate && !isNaN(new Date(editingGoal.targetDate).getTime()) ? new Date(editingGoal.targetDate).toISOString().split('T')[0] : ''}
                     onChange={(e) => setEditingGoal({ ...editingGoal, targetDate: e.target.value ? new Date(e.target.value) : undefined })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
