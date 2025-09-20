@@ -48,6 +48,7 @@ interface SettingsProps {
   user: User;
   onBack: () => void;
   onSettingsUpdate?: (settings: UserSettings) => void;
+  initialActiveSection?: string;
   featureAccess?: {
     canSetDefaultPreferences: boolean;
     canBackupRestore: boolean;
@@ -58,11 +59,11 @@ interface SettingsProps {
   };
 }
 
-export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpdate, featureAccess }) => {
+export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpdate, initialActiveSection, featureAccess }) => {
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeSection, setActiveSection] = useState('profile');
+  const [activeSection, setActiveSection] = useState(initialActiveSection || 'profile');
 
   // Scroll to top when component mounts
   useEffect(() => {

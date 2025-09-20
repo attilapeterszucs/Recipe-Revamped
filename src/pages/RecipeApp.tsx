@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { type User, onAuthStateChanged } from 'firebase/auth';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Home, Zap, BookOpen, Calendar, Menu, X } from 'lucide-react';
 import { auth, logOut } from '../lib/firebase';
 import { SignIn } from '../components/Auth/SignIn';
@@ -39,6 +39,7 @@ import { CancelledSubscriptionBanner } from '../components/CancelledSubscription
 
 export function RecipeApp() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState<User | null>(null);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [loading, setLoading] = useState(true);
@@ -85,6 +86,15 @@ export function RecipeApp() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Check for navigation state to show settings with specific section
+  useEffect(() => {
+    if (location.state?.activeSection) {
+      setShowSettings(true);
+      setShowSaved(false);
+      setShowMealPlanner(false);
+    }
+  }, [location.state]);
 
   // Refresh recipe limit info when subscription changes
   useEffect(() => {
@@ -723,10 +733,11 @@ export function RecipeApp() {
 
 
             {showSettings ? (
-              <Settings 
-                user={user} 
+              <Settings
+                user={user}
                 onBack={() => setShowSettings(false)}
                 onSettingsUpdate={(updatedSettings) => setUserSettings(updatedSettings)}
+                initialActiveSection={location.state?.activeSection}
                 featureAccess={{
                   canSetDefaultPreferences: featureAccess.canSetDefaultPreferences,
                   canBackupRestore: featureAccess.canBackupRestore,
