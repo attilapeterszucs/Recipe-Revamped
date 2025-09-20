@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { Shield, Zap, Check, Star, Menu, X, Brain, Lock, Utensils, Globe } from 'lucide-react';
 import { basePlans } from '../lib/pricing';
 import { SEOHead } from '../components/SEOHead';
+import { useAuth } from '../hooks/useAuth';
 
 export const LandingPage: React.FC = () => {
+  const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [isYearly, setIsYearly] = React.useState(false);
   const [isTransitioning, setIsTransitioning] = React.useState(false);
@@ -184,8 +186,8 @@ export const LandingPage: React.FC = () => {
               <button onClick={() => scrollToSection('testimonials')} className="text-gray-700 hover:text-green-600 transition">
                 Testimonials
               </button>
-              <Link to="/signin" className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
-                Get Started
+              <Link to={user ? "/app" : "/signin"} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                {user ? "Go to App" : "Get Started"}
               </Link>
             </div>
 
@@ -212,8 +214,8 @@ export const LandingPage: React.FC = () => {
               <button onClick={() => scrollToSection('testimonials')} className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">
                 Testimonials
               </button>
-              <Link to="/signin" className="block w-full text-center bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700">
-                Get Started
+              <Link to={user ? "/app" : "/signin"} className="block w-full text-center bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700">
+                {user ? "Go to App" : "Get Started"}
               </Link>
             </div>
           </div>
@@ -233,8 +235,8 @@ export const LandingPage: React.FC = () => {
               No data leaves your device. Convert recipes to Vegan, Gluten-Free, Keto, and more instantly.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/signin" className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 transition">
-                Get Started
+              <Link to={user ? "/app" : "/signin"} className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 transition">
+                {user ? "Go to App" : "Get Started"}
               </Link>
               <button onClick={() => scrollToSection('features')} className="border-2 border-green-600 text-green-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-50 transition">
                 Learn More
@@ -694,8 +696,8 @@ export const LandingPage: React.FC = () => {
           <p className="text-xl text-green-100 mb-8">
             Join thousands of users who've revolutionized their meal planning
           </p>
-          <Link to="/signin" className="inline-block bg-white text-green-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-50 transition">
-            Get Started Free
+          <Link to={user ? "/app" : "/signin"} className="inline-block bg-white text-green-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-50 transition">
+            {user ? "Go to App" : "Get Started Free"}
           </Link>
           <p className="mt-4 text-green-100">No credit card required • Start instantly</p>
         </div>
@@ -718,7 +720,7 @@ export const LandingPage: React.FC = () => {
             <div>
               <h4 className="text-white font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link to="/signin" className="hover:text-white transition">Get Started</Link></li>
+                <li><Link to={user ? "/app" : "/signin"} className="hover:text-white transition">{user ? "Go to App" : "Get Started"}</Link></li>
                 <li><button onClick={() => scrollToSection('features')} className="hover:text-white transition">Features</button></li>
                 <li><button onClick={() => scrollToSection('pricing')} className="hover:text-white transition">Pricing</button></li>
               </ul>

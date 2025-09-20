@@ -10,7 +10,7 @@ export const PrivacyPolicy: React.FC = () => {
 
   const handleManageAccount = () => {
     if (user) {
-      navigate('/app/settings?section=profile');
+      navigate('/app');
     } else {
       navigate('/signin');
     }
