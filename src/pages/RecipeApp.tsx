@@ -686,7 +686,11 @@ export function RecipeApp() {
       </header>
 
       {/* Main Content */}
-      <main className="w-full px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <main className={`px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 ${
+        !showSaved && !showSettings && !showMealPlanner
+          ? 'w-full'
+          : 'max-w-7xl mx-auto'
+      }`}>
         {!user ? (
           <div className="flex justify-center py-6 sm:py-8 lg:py-12">
             {authMode === 'signin' ? (
