@@ -1528,22 +1528,24 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               <div className="space-y-6">
                 {/* Auto-save Recipes */}
                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                      <Save className="w-5 h-5 text-blue-600" />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                        <Save className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900">Auto-save Recipes</h4>
+                        <p className="text-sm text-gray-600">Automatically save recipes as you work</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-lg font-semibold text-gray-900">Auto-save Recipes</h4>
-                      <p className="text-sm text-gray-600">Automatically save recipes as you work</p>
-                    </div>
+                    <Toggle
+                      enabled={settings.autoSaveRecipes}
+                      onChange={(enabled) => updateSetting('autoSaveRecipes', enabled)}
+                      label=""
+                      description=""
+                      size="lg"
+                    />
                   </div>
-                  <Toggle
-                    enabled={settings.autoSaveRecipes}
-                    onChange={(enabled) => updateSetting('autoSaveRecipes', enabled)}
-                    label=""
-                    description=""
-                    size="lg"
-                  />
                 </div>
 
                 {/* Recipe Conversion Defaults */}
@@ -1574,7 +1576,11 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                           min="1"
                           max="20"
                           value={settings.defaultServingSize}
-                          onChange={(e) => updateSetting('defaultServingSize', parseInt(e.target.value))}
+                          onChange={(e) => {
+                            const value = parseInt(e.target.value);
+                            const servingSize = isNaN(value) || value < 1 ? 1 : value;
+                            updateSetting('defaultServingSize', servingSize);
+                          }}
                           className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-lg font-medium text-center"
                         />
                         <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
