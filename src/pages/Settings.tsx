@@ -39,6 +39,7 @@ import { DeleteConfirmationModal } from '../components/DeleteConfirmationModal';
 import { RestoreConfirmationModal } from '../components/RestoreConfirmationModal';
 import { PersonalProfileEditor } from '../components/PersonalProfileEditor';
 import { HealthGoalsManager } from '../components/HealthGoalsManager';
+import { PricingModal } from '../components/PricingModal';
 import { AdminNotificationCreator } from '../components/AdminNotificationCreator';
 import { AdminUserManagement } from '../components/AdminUserManagement';
 import { AdminBlogManagement } from '../components/AdminBlogManagement';
@@ -100,6 +101,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [backupToRestore, setBackupToRestore] = useState<BackupData | null>(null);
   const [uploadingProfilePicture, setUploadingProfilePicture] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
   const [recipeCount, setRecipeCount] = useState<number>(0);
   const [changingPassword, setChangingPassword] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
@@ -1238,13 +1240,13 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       Track your progress and get AI-powered recipe recommendations tailored to your health journey.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3">
-                      <button className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors flex items-center justify-center font-medium">
+                      <button
+                        onClick={() => setShowPricingModal(true)}
+                        className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors flex items-center justify-center font-medium"
+                      >
                         <Crown className="w-4 h-4 mr-2" />
-                        Upgrade to Chef Plan
+                        Upgrade Plan
                         <ArrowRight className="w-4 h-4 ml-2" />
-                      </button>
-                      <button className="border border-amber-300 text-amber-700 px-4 py-2 rounded-lg hover:bg-amber-50 transition-colors font-medium">
-                        Learn More
                       </button>
                     </div>
                   </div>
@@ -1487,10 +1489,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 </div>
                 
                 <button
-                  data-upgrade-plan
+                  onClick={() => setShowPricingModal(true)}
                   className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg"
                 >
-                  Upgrade to Access Preferences
+                  Upgrade Plan
                 </button>
               </div>
             )}
@@ -2435,6 +2437,14 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           </div>
         </div>
       )}
+
+      {/* Pricing Modal */}
+      <PricingModal
+        isOpen={showPricingModal}
+        onClose={() => setShowPricingModal(false)}
+        defaultPlan="chef"
+        source="settings"
+      />
     </div>
   );
 };
