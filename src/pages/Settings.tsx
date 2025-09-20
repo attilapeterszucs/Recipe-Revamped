@@ -1604,7 +1604,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base font-medium"
                       >
                         <option value="metric">🌍 Metric (grams, ml, °C)</option>
-                        <option value="imperial">🇺🇸 Imperial (cups, oz, °F)</option>
+                        <option value="imperial">🦅 Imperial (cups, oz, °F)</option>
                       </select>
                     </div>
                   </div>
