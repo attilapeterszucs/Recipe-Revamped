@@ -888,7 +888,12 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         
         return (
           <div className="space-y-4 sm:space-y-6">
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Account Information</h3>
+            <div>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Account</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Manage your account information, profile picture, and security settings. Update your personal details and control your Recipe Revamped experience.
+              </p>
+            </div>
 
             {/* Profile Picture Section */}
             <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
@@ -1308,6 +1313,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           <div className="space-y-8">
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Dietary Filters</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Customize your recipe experience with dietary filters that match your lifestyle. Set preferences to automatically show recipes that fit your nutritional needs and food choices.
+              </p>
             </div>
 
             {featureAccess?.canSetDefaultPreferences ? (
@@ -1518,8 +1526,13 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         };
         
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">Notification Preferences</h3>
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Notifications</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Control how and when you receive updates from Recipe Revamped. Customize email preferences, push notifications, and marketing communications to suit your needs.
+              </p>
+            </div>
             
             <div className="space-y-6">
               {/* Main notification toggles on the same level */}
@@ -1590,6 +1603,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           <div className="space-y-8">
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Recipe Settings</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Configure your recipe conversion preferences and cooking defaults. Set up auto-save, serving sizes, and measurement units to streamline your cooking experience.
+              </p>
             </div>
 
             {featureAccess?.canSetDefaultPreferences ? (
@@ -2039,8 +2055,13 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
       case 'data':
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">Data & Backup Settings</h3>
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Data & Backup</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Protect your recipes and cooking data with secure cloud backups. Restore your collection anytime and keep your culinary creations safe.
+              </p>
+            </div>
             
             {/* Backup features restricted to paid plans */}
             {featureAccess?.canBackupRestore ? (
