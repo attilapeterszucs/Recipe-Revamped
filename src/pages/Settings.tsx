@@ -39,7 +39,6 @@ import { DeleteConfirmationModal } from '../components/DeleteConfirmationModal';
 import { RestoreConfirmationModal } from '../components/RestoreConfirmationModal';
 import { PersonalProfileEditor } from '../components/PersonalProfileEditor';
 import { HealthGoalsManager } from '../components/HealthGoalsManager';
-import { PricingModal } from '../components/PricingModal';
 import { AdminNotificationCreator } from '../components/AdminNotificationCreator';
 import { AdminUserManagement } from '../components/AdminUserManagement';
 import { AdminBlogManagement } from '../components/AdminBlogManagement';
@@ -101,7 +100,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [backupToRestore, setBackupToRestore] = useState<BackupData | null>(null);
   const [uploadingProfilePicture, setUploadingProfilePicture] = useState(false);
-  const [showPricingModal, setShowPricingModal] = useState(false);
   const [recipeCount, setRecipeCount] = useState<number>(0);
   const [changingPassword, setChangingPassword] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
@@ -1241,7 +1239,11 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3">
                       <button
-                        onClick={() => setShowPricingModal(true)}
+                        onClick={() => {
+                          if ((window as any).showUpgradeModal) {
+                            (window as any).showUpgradeModal('chef', 'health-goals');
+                          }
+                        }}
                         className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors flex items-center justify-center font-medium"
                       >
                         <Crown className="w-4 h-4 mr-2" />
@@ -1489,7 +1491,11 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 </div>
                 
                 <button
-                  onClick={() => setShowPricingModal(true)}
+                  onClick={() => {
+                    if ((window as any).showUpgradeModal) {
+                      (window as any).showUpgradeModal('chef', 'recipe-settings');
+                    }
+                  }}
                   className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg"
                 >
                   Upgrade Plan
@@ -2437,14 +2443,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           </div>
         </div>
       )}
-
-      {/* Pricing Modal */}
-      <PricingModal
-        isOpen={showPricingModal}
-        onClose={() => setShowPricingModal(false)}
-        defaultPlan="chef"
-        source="settings"
-      />
     </div>
   );
 };
