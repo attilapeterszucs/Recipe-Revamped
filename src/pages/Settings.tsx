@@ -2170,23 +2170,45 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 </div>
               </>
             ) : (
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 text-center">
-                <Database className="h-12 w-12 text-orange-400 mx-auto mb-4" />
-                <h4 className="text-lg font-semibold text-orange-800 mb-2">
-                  Backup & Recovery - Paid Plan Required
-                </h4>
-                <p className="text-orange-700 mb-4">
-                  Protect your recipes with cloud backup and recovery features. Available with any paid plan.
-                </p>
-                <div className="space-y-1 text-sm text-orange-600 mb-4">
-                  <p>✓ Automatic cloud backups</p>
-                  <p>✓ Manual backup creation</p>
-                  <p>✓ Recipe recovery tools</p>
-                  <p>✓ 90-day retention policy</p>
+              <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-8 text-center">
+                <div className="mb-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+                    <Database className="h-8 w-8 text-orange-600" />
+                  </div>
+                  <h4 className="text-xl font-bold text-orange-800 mb-2">
+                    Backup & Recovery - Paid Plan Required
+                  </h4>
+                  <p className="text-orange-700 leading-relaxed mb-6">
+                    Protect your recipes with cloud backup and recovery features. Available with any paid plan.
+                  </p>
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-lg mx-auto">
+                  <div className="bg-white/50 rounded-lg p-4 text-left">
+                    <div className="text-orange-600 font-semibold mb-2">🔄 Backup Features</div>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      <li>✓ Automatic cloud backups</li>
+                      <li>✓ Manual backup creation</li>
+                      <li>✓ Recipe recovery tools</li>
+                    </ul>
+                  </div>
+                  <div className="bg-white/50 rounded-lg p-4 text-left">
+                    <div className="text-orange-600 font-semibold mb-2">🛡️ Protection</div>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      <li>✓ 90-day retention policy</li>
+                      <li>✓ Cross-device sync</li>
+                      <li>✓ Secure cloud storage</li>
+                    </ul>
+                  </div>
+                </div>
+
                 <button
-                  data-upgrade-plan
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                  onClick={() => {
+                    if ((window as any).showUpgradeModal) {
+                      (window as any).showUpgradeModal('master-chef', 'backup-recovery');
+                    }
+                  }}
+                  className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg"
                 >
                   Upgrade Plan
                 </button>
