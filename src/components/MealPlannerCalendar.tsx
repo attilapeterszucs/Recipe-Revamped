@@ -1999,11 +1999,18 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       <div className="flex justify-end mt-4">
         <div className="flex items-center space-x-3">
           <button
+            onClick={() => setShowShoppingList(true)}
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <ShoppingCart className="w-4 h-4 mr-2" />
+            Shopping List
+          </button>
+          <button
             onClick={saveMealPlan}
             disabled={saving || !hasUnsavedChanges}
             className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-              hasUnsavedChanges 
-                ? 'bg-green-600 text-white hover:bg-green-700' 
+              hasUnsavedChanges
+                ? 'bg-green-600 text-white hover:bg-green-700'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
@@ -2018,13 +2025,6 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                 {hasUnsavedChanges ? 'Save Plan' : 'Saved'}
               </>
             )}
-          </button>
-          <button
-            onClick={() => setShowShoppingList(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            Shopping List
           </button>
         </div>
       </div>
