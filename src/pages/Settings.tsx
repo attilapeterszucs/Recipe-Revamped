@@ -623,7 +623,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   }
 
   const sections = [
-    { id: 'profile', label: 'Profile', icon: UserIcon },
+    { id: 'profile', label: 'Account', icon: UserIcon },
     { id: 'personal', label: 'Personal Profile & Goals', icon: Activity },
     { id: 'preferences', label: 'Recipe Preferences', icon: Palette },
     { id: 'health', label: 'Health Conditions', icon: Heart },
@@ -826,7 +826,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         
         return (
           <div className="space-y-4 sm:space-y-6">
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Profile Information</h3>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Account Information</h3>
 
             {/* Profile Picture Section */}
             <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
