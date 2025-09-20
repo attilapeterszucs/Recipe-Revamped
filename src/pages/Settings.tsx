@@ -346,23 +346,56 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     }
   };
 
+  // Helper function to recursively remove undefined values from objects
+  const cleanUndefinedValues = (obj: any): any => {
+    if (obj === null || obj === undefined) {
+      return null;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(cleanUndefinedValues).filter(item => item !== undefined);
+    }
+
+    if (obj instanceof Date) {
+      return obj;
+    }
+
+    if (typeof obj === 'object') {
+      const cleaned: any = {};
+      for (const [key, value] of Object.entries(obj)) {
+        if (value !== undefined) {
+          const cleanedValue = cleanUndefinedValues(value);
+          if (cleanedValue !== undefined) {
+            cleaned[key] = cleanedValue;
+          }
+        }
+      }
+      return cleaned;
+    }
+
+    return obj;
+  };
+
   const handleSaveSettings = async () => {
     if (!settings) return;
-    
+
     try {
       setSaving(true);
       setSaveStatus('saving');
-      
+
       // Update profile info (only if not Google user for email)
       const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
       const emailToUpdate = isGoogleUser ? user.email : settings.email;
-      
+
       if (settings.displayName !== user.displayName || (!isGoogleUser && emailToUpdate !== user.email)) {
         await updateUserProfile(settings.displayName, emailToUpdate || '');
       }
-      
+
+      // Clean undefined values before saving to Firestore
+      const cleanedSettings = cleanUndefinedValues(settings);
+
       // Update other settings
-      await updateUserSettings(user.uid, settings);
+      await updateUserSettings(user.uid, cleanedSettings);
       
       // Handle backup setting change
       if (settings.backupToCloud) {
