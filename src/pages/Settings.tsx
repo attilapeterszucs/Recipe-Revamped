@@ -1718,12 +1718,23 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   Access advanced recipe management and conversion defaults with a premium subscription.
                   Customize your cooking experience with auto-save, preferred units, and default serving sizes.
                 </p>
-                <div className="space-y-2 text-sm text-blue-600">
+                <div className="space-y-2 text-sm text-blue-600 mb-6">
                   <p>🤖 Recipe conversion defaults</p>
                   <p>💾 Auto-save recipes</p>
                   <p>📏 Preferred measurement units</p>
                   <p>🍽️ Default serving sizes</p>
                 </div>
+
+                <button
+                  onClick={() => {
+                    if ((window as any).showUpgradeModal) {
+                      (window as any).showUpgradeModal('chef', 'recipe-settings');
+                    }
+                  }}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg"
+                >
+                  Upgrade Plan
+                </button>
               </div>
             )}
           </div>
