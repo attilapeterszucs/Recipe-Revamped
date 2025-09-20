@@ -26,11 +26,30 @@ export const getUserSettings = async (userId: string): Promise<UserSettings> => 
   
   if (settingsSnap.exists()) {
     const data = settingsSnap.data();
-    return {
+
+    // Convert Firestore Timestamps to Date objects
+    const convertedData: any = {
       ...data,
       createdAt: data.createdAt?.toDate(),
       updatedAt: data.updatedAt?.toDate()
-    } as UserSettings;
+    };
+
+    // Convert dates in personalProfile.healthGoals if they exist
+    if (data.personalProfile?.healthGoals) {
+      convertedData.personalProfile = {
+        ...data.personalProfile,
+        createdAt: data.personalProfile.createdAt?.toDate ? data.personalProfile.createdAt.toDate() : data.personalProfile.createdAt,
+        updatedAt: data.personalProfile.updatedAt?.toDate ? data.personalProfile.updatedAt.toDate() : data.personalProfile.updatedAt,
+        healthGoals: data.personalProfile.healthGoals.map((goal: any) => ({
+          ...goal,
+          targetDate: goal.targetDate?.toDate ? goal.targetDate.toDate() : goal.targetDate,
+          createdAt: goal.createdAt?.toDate ? goal.createdAt.toDate() : goal.createdAt,
+          updatedAt: goal.updatedAt?.toDate ? goal.updatedAt.toDate() : goal.updatedAt
+        }))
+      };
+    }
+
+    return convertedData as UserSettings;
   } else {
     // Create default settings if none exist
     const user = auth.currentUser;
