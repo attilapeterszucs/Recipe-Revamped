@@ -1592,7 +1592,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     {/* Preferred Units */}
                     <div className="bg-white rounded-lg p-5 border border-green-100">
                       <div className="flex items-center mb-3">
-                        <span className="text-2xl mr-3">🦅</span>
+                        <span className="text-2xl mr-3">📏</span>
                         <div>
                           <label className="block text-sm font-semibold text-gray-800">Measurement Units</label>
                           <p className="text-xs text-gray-500">Your preferred measurement system</p>
