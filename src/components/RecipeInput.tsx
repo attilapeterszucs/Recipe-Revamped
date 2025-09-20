@@ -72,6 +72,9 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // State for locked filters pagination
+  const [lockedCurrentPage, setLockedCurrentPage] = useState(0);
   const filtersPerPage = 8;
 
   // Use provided dietary filters or fall back to basic filters
@@ -487,20 +490,20 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
 
         {/* Custom Ingredient Preferences for Chef+ Users */}
         {availableFilters.length > basicFilters.length && (
-          <div className="mt-6 p-4 bg-gradient-to-br from-green-50 to-blue-50 border border-green-200 rounded-lg">
-            <h4 className="text-lg font-semibold text-green-800 mb-3 flex items-center">
+          <div className="mt-6">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
               🥘 Custom Ingredient Preferences
             </h4>
-            <p className="text-sm text-green-600 mb-4">
+            <p className="text-sm text-gray-600 mb-4">
               Specify must-use and avoid ingredients for more precise recipe customization
             </p>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Must-Use Ingredients
                   {mustUseIngredients.length > 0 && (
-                    <span className="text-green-600 text-xs ml-1">({mustUseIngredients.length})</span>
+                    <span className="text-blue-600 text-xs ml-1">({mustUseIngredients.length})</span>
                   )}
                 </label>
                 <div className="flex space-x-2">
@@ -515,14 +518,14 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
                       }
                     }}
                     placeholder="e.g., chicken, tomatoes, basil (separate with commas)"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     disabled={disabled}
                   />
                   <button
                     type="button"
                     onClick={addMustUseIngredient}
                     disabled={disabled || !mustUseInput.trim()}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Add
                   </button>
@@ -532,14 +535,14 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
                     {mustUseIngredients.map((ingredient, index) => (
                       <span
                         key={index}
-                        className="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm"
+                        className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
                       >
                         {ingredient}
                         <button
                           type="button"
                           onClick={() => removeMustUseIngredient(ingredient)}
                           disabled={disabled}
-                          className="ml-2 text-green-600 hover:text-green-800 disabled:opacity-50"
+                          className="ml-2 text-blue-600 hover:text-blue-800 disabled:opacity-50"
                         >
                           ×
                         </button>
@@ -548,7 +551,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
                   </div>
                 )}
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Avoid Ingredients
@@ -683,51 +686,101 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             </label>
           </div>
 
-          {/* Locked Filters Grid - Matching regular design */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-            {dietaryOptions.filter(option => !availableFilters.includes(option.name)).map(option => (
-              <div
-                key={option.name}
-                className={`relative flex items-center justify-center px-3 py-3 rounded-lg text-sm font-medium border-2 opacity-60 cursor-not-allowed ${option.color} border-transparent`}
-                title="Requires premium subscription"
-              >
-                <span className="text-lg mr-2">{option.icon}</span>
-                <span className="text-center leading-tight">{option.name}</span>
-                <div className="absolute top-1 right-1">
-                  <span className="text-xs">🔒</span>
+          {(() => {
+            const lockedFilters = dietaryOptions.filter(option => !availableFilters.includes(option.name));
+            const lockedFiltersPerPage = 8;
+            const lockedTotalPages = Math.ceil(lockedFilters.length / lockedFiltersPerPage);
+            const lockedStartIndex = lockedCurrentPage * lockedFiltersPerPage;
+            const visibleLockedFilters = lockedFilters.slice(lockedStartIndex, lockedStartIndex + lockedFiltersPerPage);
+
+            return (
+              <div>
+                {/* Locked Filters Grid - Matching regular design */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                  {visibleLockedFilters.map(option => (
+                    <div
+                      key={option.name}
+                      className={`relative flex items-center justify-center px-3 py-3 rounded-lg text-sm font-medium border-2 opacity-60 cursor-not-allowed ${option.color} border-transparent`}
+                      title="Requires premium subscription"
+                    >
+                      <span className="text-lg mr-2">{option.icon}</span>
+                      <span className="text-center leading-tight">{option.name}</span>
+                      <div className="absolute top-1 right-1">
+                        <span className="text-xs">🔒</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
+
+                {/* Pagination Controls for Locked Filters */}
+                {lockedTotalPages > 1 && (
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-sm text-gray-600">
+                      Showing {lockedStartIndex + 1}-{Math.min(lockedStartIndex + lockedFiltersPerPage, lockedFilters.length)} of {lockedFilters.length} premium filters
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <button
+                        type="button"
+                        onClick={() => setLockedCurrentPage(prev => Math.max(0, prev - 1))}
+                        disabled={lockedCurrentPage === 0}
+                        className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <span className="text-sm text-gray-600 px-2">
+                        Page {lockedCurrentPage + 1} of {lockedTotalPages}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setLockedCurrentPage(prev => Math.min(lockedTotalPages - 1, prev + 1))}
+                        disabled={lockedCurrentPage === lockedTotalPages - 1}
+                        className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            ))}
-          </div>
+            );
+          })()}
           
           {/* Custom Ingredient Preferences - Only show for Free plan users */}
           {availableFilters.length <= allFilters.slice(0, 4).length && (
-            <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
-              <h4 className="text-base sm:text-lg font-semibold text-purple-800 mb-2 sm:mb-3 flex items-center">
+            <div className="mt-4">
+              <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2 sm:mb-3 flex items-center">
                 🥘 Custom Ingredient Preferences
               </h4>
-              <p className="text-xs sm:text-sm text-purple-600 mb-3 sm:mb-4">
+              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
                 Specify must-use and avoid ingredients for more precise recipe customization
               </p>
-              
+
               <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-3 sm:mb-4">
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-600 mb-1 sm:mb-2">Must-Use Ingredients</label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Must-Use Ingredients</label>
                   <input
                     type="text"
                     placeholder="e.g., chicken, tomatoes, basil"
                     className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm opacity-50 cursor-not-allowed bg-gray-50"
                     disabled
                   />
+                  <div className="absolute top-1 right-1">
+                    <span className="text-xs">🔒</span>
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-600 mb-1 sm:mb-2">Avoid Ingredients</label>
-                  <input
-                    type="text"
-                    placeholder="e.g., nuts, shellfish, dairy"
-                    className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm opacity-50 cursor-not-allowed bg-gray-50"
-                    disabled
-                  />
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Avoid Ingredients</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="e.g., nuts, shellfish, dairy"
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm opacity-50 cursor-not-allowed bg-gray-50"
+                      disabled
+                    />
+                    <div className="absolute top-1 right-1">
+                      <span className="text-xs">🔒</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
