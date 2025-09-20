@@ -9,6 +9,11 @@ export const LandingPage: React.FC = () => {
   const [isYearly, setIsYearly] = React.useState(false);
   const [isTransitioning, setIsTransitioning] = React.useState(false);
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });

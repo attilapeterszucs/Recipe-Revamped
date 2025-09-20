@@ -236,6 +236,11 @@ export const Blog: React.FC = () => {
   const { blogId } = useParams();
   const navigate = useNavigate();
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleShare = async (post: BlogPost) => {
     const shareData = {
       title: post.title,

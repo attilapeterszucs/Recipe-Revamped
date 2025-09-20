@@ -4,10 +4,11 @@ import { Shield, Calendar, Users, CreditCard, AlertTriangle, Scale, FileText, Ma
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 
 export const TermsOfUse: React.FC = () => {
-  // Set page title
+  // Set page title and scroll to top
   useEffect(() => {
+    window.scrollTo(0, 0);
     document.title = 'Terms of Use | Recipe Revamped - Service Terms & Conditions';
-    
+
     const metaDescription = document.querySelector('meta[name="description"]') || document.createElement('meta');
     metaDescription.setAttribute('name', 'description');
     metaDescription.setAttribute('content', 'Read our terms of use for Recipe Revamped. Understand your rights, responsibilities, and service conditions for our AI recipe conversion platform.');

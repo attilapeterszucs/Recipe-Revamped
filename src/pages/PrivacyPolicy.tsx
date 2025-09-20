@@ -16,10 +16,11 @@ export const PrivacyPolicy: React.FC = () => {
     }
   };
 
-  // Set page title
+  // Set page title and scroll to top
   useEffect(() => {
+    window.scrollTo(0, 0);
     document.title = 'Privacy Policy | Recipe Revamped - Data Protection & Privacy';
-    
+
     const metaDescription = document.querySelector('meta[name="description"]') || document.createElement('meta');
     metaDescription.setAttribute('name', 'description');
     metaDescription.setAttribute('content', 'Learn how Recipe Revamped protects your privacy and data. Comprehensive privacy policy covering data collection, usage, storage, and your rights.');

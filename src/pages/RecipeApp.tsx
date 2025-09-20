@@ -76,10 +76,15 @@ export function RecipeApp() {
   
   // Feature access control
   const featureAccess = useFeatureAccess(
-    user?.uid, 
-    user?.email || undefined, 
+    user?.uid,
+    user?.email || undefined,
     recipeLimitInfo?.currentCount || 0
   );
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Refresh recipe limit info when subscription changes
   useEffect(() => {

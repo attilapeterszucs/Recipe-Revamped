@@ -9,10 +9,11 @@ export const CookiePolicy: React.FC = () => {
   const { showConsentPopup } = useCookieContext();
   const [showCookieSettings, setShowCookieSettings] = useState(false);
 
-  // Set page title
+  // Set page title and scroll to top
   useEffect(() => {
+    window.scrollTo(0, 0);
     document.title = 'Cookie Policy | Recipe Revamped - Cookie Usage & Management';
-    
+
     const metaDescription = document.querySelector('meta[name="description"]') || document.createElement('meta');
     metaDescription.setAttribute('name', 'description');
     metaDescription.setAttribute('content', 'Learn about how Recipe Revamped uses cookies and similar technologies. Understand our cookie practices and manage your preferences.');

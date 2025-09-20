@@ -63,6 +63,11 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeSection, setActiveSection] = useState('profile');
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [backups, setBackups] = useState<BackupData[]>([]);
   const [backupLoading, setBackupLoading] = useState(false);

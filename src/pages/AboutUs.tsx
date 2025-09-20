@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Target, Heart, Lightbulb, Globe, Award, Zap, Shield } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { SEOHead } from '../components/SEOHead';
 
 export const AboutUs: React.FC = () => {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
       <SEOHead pageKey="about" />
