@@ -1250,7 +1250,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               <div className="space-y-8">
                 {/* Dietary Preferences Section */}
                 <div>
-                  <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Default Dietary Filters</h4>
                   <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 leading-relaxed">
                     Select dietary preferences to automatically filter recipes. These will be applied to all recipe searches and suggestions.
                   </p>
@@ -1526,33 +1525,49 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             </div>
 
             {featureAccess?.canSetDefaultPreferences ? (
-              <div className="space-y-8">
-                {/* Auto-save Recipes - Premium Feature */}
-                <div>
-                  <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Recipe Management</h4>
-                  <div className="bg-white border-2 border-gray-200 rounded-xl p-4 sm:p-6">
-                    <Toggle
-                      enabled={settings.autoSaveRecipes}
-                      onChange={(enabled) => updateSetting('autoSaveRecipes', enabled)}
-                      label="Auto-save Recipes"
-                      description="Automatically save recipes as you work"
-                      size="md"
-                    />
+              <div className="space-y-6">
+                {/* Auto-save Recipes */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                      <Save className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900">Auto-save Recipes</h4>
+                      <p className="text-sm text-gray-600">Automatically save recipes as you work</p>
+                    </div>
                   </div>
+                  <Toggle
+                    enabled={settings.autoSaveRecipes}
+                    onChange={(enabled) => updateSetting('autoSaveRecipes', enabled)}
+                    label=""
+                    description=""
+                    size="lg"
+                  />
                 </div>
 
-                {/* Recipe Conversion Defaults Section */}
-                <div className="bg-gray-50 rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6">
-                  <div className="flex items-center mb-2">
-                    <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 mr-2 sm:mr-3 flex-shrink-0" />
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-900">Recipe Conversion Defaults</h4>
+                {/* Recipe Conversion Defaults */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
+                  <div className="flex items-center mb-6">
+                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                      <Bot className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900">Recipe Conversion Defaults</h4>
+                      <p className="text-sm text-gray-600">Set your preferred recipe generation settings</p>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-3">
-                        🍽️ Default Serving Size
-                      </label>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Default Serving Size */}
+                    <div className="bg-white rounded-lg p-5 border border-green-100">
+                      <div className="flex items-center mb-3">
+                        <span className="text-2xl mr-3">🍽️</span>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-800">Default Serving Size</label>
+                          <p className="text-xs text-gray-500">How many people to cook for</p>
+                        </div>
+                      </div>
                       <div className="relative">
                         <input
                           type="number"
@@ -1560,32 +1575,31 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                           max="20"
                           value={settings.defaultServingSize}
                           onChange={(e) => updateSetting('defaultServingSize', parseInt(e.target.value))}
-                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base touch-friendly"
+                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-lg font-medium text-center"
                         />
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                          <span className="text-gray-400 text-xs sm:text-sm">people</span>
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                          <span className="text-gray-400 text-sm font-medium">people</span>
                         </div>
                       </div>
-                      <p className="mt-2 text-xs sm:text-sm text-gray-500">
-                        How many servings should recipes default to?
-                      </p>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-3">
-                        📏 Preferred Measurement Units
-                      </label>
+                    {/* Preferred Units */}
+                    <div className="bg-white rounded-lg p-5 border border-green-100">
+                      <div className="flex items-center mb-3">
+                        <span className="text-2xl mr-3">📏</span>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-800">Measurement Units</label>
+                          <p className="text-xs text-gray-500">Your preferred measurement system</p>
+                        </div>
+                      </div>
                       <select
                         value={settings.preferredUnits}
                         onChange={(e) => updateSetting('preferredUnits', e.target.value as 'metric' | 'imperial')}
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base touch-friendly"
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base font-medium"
                       >
-                        <option value="metric">🌍 Metric (grams, milliliters, celsius)</option>
-                        <option value="imperial">🇺🇸 Imperial (cups, ounces, fahrenheit)</option>
+                        <option value="metric">🌍 Metric (grams, ml, °C)</option>
+                        <option value="imperial">🇺🇸 Imperial (cups, oz, °F)</option>
                       </select>
-                      <p className="mt-2 text-xs sm:text-sm text-gray-500">
-                        Your preferred measurement system for ingredients
-                      </p>
                     </div>
                   </div>
                 </div>
