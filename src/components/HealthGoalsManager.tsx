@@ -3,6 +3,7 @@ import { Plus, Target, Calendar, TrendingUp, TrendingDown, Activity, User, X, Ed
 import type { HealthGoal, PersonalProfile } from '../types/userSettings';
 import { createHealthGoal, HEALTH_GOAL_TEMPLATES } from '../types/userSettings';
 import { updateUserSettings } from '../lib/userSettings';
+import { useToast } from './ToastContainer';
 
 interface HealthGoalsManagerProps {
   personalProfile: PersonalProfile;
@@ -22,6 +23,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<HealthGoal | null>(null);
   const [deletingGoalId, setDeletingGoalId] = useState<string | null>(null);
+  const { showSuccess, showError } = useToast();
 
   // Helper function to recursively remove undefined values from objects
   const cleanUndefinedValues = (obj: any): any => {
@@ -102,9 +104,11 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       onUpdateProfile(updatedProfile);
       setShowAddModal(false);
       setNewGoal(getInitialGoalState());
+      // Show success notification
+      showSuccess('Health Goal Added', `"${goal.title}" has been successfully added to your health goals.`, 'settings');
     } catch (error) {
       console.error('Failed to save health goal:', error);
-      // TODO: Show error toast to user
+      showError('Failed to Add Goal', 'Unable to save your health goal. Please try again.', 'settings');
     }
   };
 
@@ -127,9 +131,12 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       // Update local state only after successful save
       onUpdateProfile(updatedProfile);
       setEditingGoal(null);
+      // Show success notification
+      const updatedGoal = updatedProfile.healthGoals.find(g => g.id === goalId);
+      showSuccess('Health Goal Updated', `"${updatedGoal?.title || 'Goal'}" has been successfully updated.`, 'settings');
     } catch (error) {
       console.error('Failed to update health goal:', error);
-      // TODO: Show error toast to user
+      showError('Failed to Update Goal', 'Unable to update your health goal. Please try again.', 'settings');
     }
   };
 
@@ -141,6 +148,8 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
     };
 
     try {
+      // Get goal title before deletion for notification
+      const goalToDelete = personalProfile.healthGoals.find(g => g.id === goalId);
       // Clean undefined values before saving to Firestore
       const cleanedData = cleanUndefinedValues({ personalProfile: updatedProfile });
       // Save directly to Firestore
@@ -148,9 +157,11 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       // Update local state only after successful save
       onUpdateProfile(updatedProfile);
       setDeletingGoalId(null);
+      // Show success notification
+      showSuccess('Health Goal Deleted', `"${goalToDelete?.title || 'Goal'}" has been successfully deleted.`, 'delete');
     } catch (error) {
       console.error('Failed to delete health goal:', error);
-      // TODO: Show error toast to user
+      showError('Failed to Delete Goal', 'Unable to delete your health goal. Please try again.', 'delete');
     }
   };
 
@@ -176,7 +187,34 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
   const handleToggleGoal = async (goalId: string) => {
     const goal = personalProfile.healthGoals.find(g => g.id === goalId);
     if (goal) {
-      await handleUpdateGoal(goalId, { isActive: !goal.isActive });
+      const newStatus = !goal.isActive;
+      const updatedProfile = {
+        ...personalProfile,
+        healthGoals: personalProfile.healthGoals.map(g =>
+          g.id === goalId
+            ? { ...g, isActive: newStatus, updatedAt: new Date() }
+            : g
+        ),
+        updatedAt: new Date()
+      };
+
+      try {
+        // Clean undefined values before saving to Firestore
+        const cleanedData = cleanUndefinedValues({ personalProfile: updatedProfile });
+        // Save directly to Firestore
+        await updateUserSettings(userId, cleanedData);
+        // Update local state only after successful save
+        onUpdateProfile(updatedProfile);
+        // Show appropriate success notification
+        if (newStatus) {
+          showSuccess('Goal Reactivated', `"${goal.title}" has been reactivated and is now active.`, 'settings');
+        } else {
+          showSuccess('Goal Completed', `"${goal.title}" has been marked as completed. Great job!`, 'settings');
+        }
+      } catch (error) {
+        console.error('Failed to toggle health goal:', error);
+        showError('Failed to Update Goal', 'Unable to update your health goal status. Please try again.', 'settings');
+      }
     }
   };
 
