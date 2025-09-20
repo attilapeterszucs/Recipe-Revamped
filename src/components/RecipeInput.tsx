@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RecipeSchema } from '../lib/validation';
 import { z } from 'zod';
-import { Shuffle, Wand2, Search, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import { Shuffle, Wand2, Search, ChevronLeft, ChevronRight, Filter, Trash2 } from 'lucide-react';
 import type { UserSettings } from '../types/userSettings';
 
 interface RecipeInputProps {
@@ -448,9 +448,10 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
                 <button
                   type="button"
                   onClick={() => setSelectedFilters([])}
-                  className="text-xs text-blue-600 hover:text-blue-800 underline transition-colors"
+                  className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200 group"
+                  title="Clear all filters"
                 >
-                  Clear All
+                  <Trash2 className="w-4 h-4" />
                 </button>
               )}
             </div>
