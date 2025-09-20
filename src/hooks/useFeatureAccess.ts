@@ -49,6 +49,7 @@ interface FeatureAccess {
   
   // Health features
   canUseHealthConditions: boolean;
+  canUseHealthGoals: boolean;
   
   // Dietary filter features
   availableDietaryFilters: string[];
@@ -160,6 +161,7 @@ export const useFeatureAccess = (
         canBackupRestore: true,
         canUploadProfilePicture: true,
         canUseHealthConditions: true,
+        canUseHealthGoals: true,
         
         // Dietary filter features - admins get all filters
         availableDietaryFilters: allDietaryFilters,
@@ -219,6 +221,7 @@ export const useFeatureAccess = (
       
       // Health features
       canUseHealthConditions: planDetails.canUseHealthConditions,
+      canUseHealthGoals: planDetails.canUseHealthGoals,
       
       // Dietary filter features - based on plan
       availableDietaryFilters: (() => {

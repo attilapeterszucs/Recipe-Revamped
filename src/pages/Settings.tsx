@@ -23,7 +23,9 @@ import {
   AlertTriangle,
   UserX,
   Info,
-  Activity
+  Activity,
+  Crown,
+  ArrowRight
 } from 'lucide-react';
 import { getUserSettings, updateUserSettings, updateUserProfile, uploadProfilePicture, deleteProfilePicture } from '../lib/userSettings';
 import { createBackup, getUserBackups, restoreFromBackup, scheduleAutoBackup, deleteBackup } from '../lib/backup';
@@ -55,6 +57,7 @@ interface SettingsProps {
     canBackupRestore: boolean;
     canUploadProfilePicture: boolean;
     canUseHealthConditions: boolean;
+    canUseHealthGoals: boolean;
     availableDietaryFilters: string[];
     currentPlan: string;
   };
@@ -1209,13 +1212,45 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             />
 
             {/* Health Goals Manager */}
-            <HealthGoalsManager
-              personalProfile={personalProfile}
-              onUpdateProfile={handleUpdatePersonalProfile}
-              disabled={saving}
-              preferredUnits={settings?.preferredUnits || 'metric'}
-              userId={user.uid}
-            />
+            {featureAccess?.canUseHealthGoals ? (
+              <HealthGoalsManager
+                personalProfile={personalProfile}
+                onUpdateProfile={handleUpdatePersonalProfile}
+                disabled={saving}
+                preferredUnits={settings?.preferredUnits || 'metric'}
+                userId={user.uid}
+              />
+            ) : (
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-6">
+                <div className="flex items-start">
+                  <div className="bg-amber-100 rounded-full p-3 mr-4 flex-shrink-0">
+                    <Crown className="w-6 h-6 text-amber-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-lg font-semibold text-amber-900 mb-2 flex items-center">
+                      Health Goals
+                      <span className="ml-2 bg-amber-200 text-amber-800 text-xs font-bold px-2 py-1 rounded-full">
+                        CHEF PLAN+
+                      </span>
+                    </h4>
+                    <p className="text-amber-800 mb-4">
+                      Set personalized health goals like weight management, calorie targets, and nutritional objectives.
+                      Track your progress and get AI-powered recipe recommendations tailored to your health journey.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors flex items-center justify-center font-medium">
+                        <Crown className="w-4 h-4 mr-2" />
+                        Upgrade to Chef Plan
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </button>
+                      <button className="border border-amber-300 text-amber-700 px-4 py-2 rounded-lg hover:bg-amber-50 transition-colors font-medium">
+                        Learn More
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* AI Personalization Info */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">

@@ -20,6 +20,7 @@ export interface SubscriptionPlanDetails {
   canBackupRestore: boolean;
   canUploadProfilePicture: boolean;
   canUseHealthConditions: boolean;
+  canUseHealthGoals: boolean;
 }
 
 export interface UserSubscription {
@@ -61,6 +62,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     canBackupRestore: false,
     canUploadProfilePicture: false,
     canUseHealthConditions: false,
+    canUseHealthGoals: false,
     features: [
       '5 recipes in Recipe Book',
       '3 recipe conversions per day',
@@ -89,6 +91,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     canBackupRestore: false,
     canUploadProfilePicture: true,
     canUseHealthConditions: false,
+    canUseHealthGoals: true,
     features: [
       'Everything in Free',
       '100 recipes in Recipe Book',
@@ -97,6 +100,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
       'Meal planning calendar',
       'Default recipe preferences',
       'Custom profile pictures',
+      'Health Goals tracking',
       '✗ Backup & restore recipes',
       '✗ Health Conditions'
     ]
@@ -120,11 +124,13 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     canBackupRestore: true,
     canUploadProfilePicture: true,
     canUseHealthConditions: true,
+    canUseHealthGoals: true,
     features: [
       'Everything in Chef plan',
       '1,000 recipes in Recipe Book',
       'Advanced nutrition analysis',
       'Recipe collections & tags',
+      'Health Goals tracking',
       'Health Conditions',
       'Backup & restore recipes',
       'Priority support'
@@ -149,9 +155,11 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     canBackupRestore: true,
     canUploadProfilePicture: true,
     canUseHealthConditions: true,
+    canUseHealthGoals: true,
     features: [
       '2,500 recipes per user',
       'Everything in Master Chef',
+      'Health Goals tracking',
       'Team meal planning',
       'Organization-wide preferences',
       'Enterprise backup/restore',

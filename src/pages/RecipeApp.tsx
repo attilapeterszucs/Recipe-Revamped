@@ -746,6 +746,7 @@ export function RecipeApp() {
                   canBackupRestore: featureAccess.canBackupRestore,
                   canUploadProfilePicture: featureAccess.canUploadProfilePicture,
                   canUseHealthConditions: featureAccess.canUseHealthConditions,
+                  canUseHealthGoals: featureAccess.canUseHealthGoals,
                   availableDietaryFilters: featureAccess.availableDietaryFilters,
                   currentPlan: featureAccess.currentPlan
                 }}
