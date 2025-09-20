@@ -2,19 +2,22 @@ import React, { useState } from 'react';
 import { Plus, Target, Calendar, TrendingUp, TrendingDown, Activity, User, X, Edit3, Check } from 'lucide-react';
 import type { HealthGoal, PersonalProfile } from '../types/userSettings';
 import { createHealthGoal, HEALTH_GOAL_TEMPLATES } from '../types/userSettings';
+import { updateUserSettings } from '../lib/userSettings';
 
 interface HealthGoalsManagerProps {
   personalProfile: PersonalProfile;
   onUpdateProfile: (profile: PersonalProfile) => void;
   disabled?: boolean;
   preferredUnits?: 'metric' | 'imperial';
+  userId: string;
 }
 
 export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
   personalProfile,
   onUpdateProfile,
   disabled = false,
-  preferredUnits = 'metric'
+  preferredUnits = 'metric',
+  userId
 }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<HealthGoal | null>(null);
@@ -38,7 +41,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
   const [newGoal, setNewGoal] = useState<Partial<HealthGoal>>(getInitialGoalState());
 
-  const handleAddGoal = () => {
+  const handleAddGoal = async () => {
     if (!newGoal.title || !newGoal.description) return;
 
     const goal = createHealthGoal(
@@ -60,12 +63,20 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       updatedAt: new Date()
     };
 
-    onUpdateProfile(updatedProfile);
-    setShowAddModal(false);
-    setNewGoal(getInitialGoalState());
+    try {
+      // Save directly to Firestore
+      await updateUserSettings(userId, { personalProfile: updatedProfile });
+      // Update local state only after successful save
+      onUpdateProfile(updatedProfile);
+      setShowAddModal(false);
+      setNewGoal(getInitialGoalState());
+    } catch (error) {
+      console.error('Failed to save health goal:', error);
+      // TODO: Show error toast to user
+    }
   };
 
-  const handleUpdateGoal = (goalId: string, updates: Partial<HealthGoal>) => {
+  const handleUpdateGoal = async (goalId: string, updates: Partial<HealthGoal>) => {
     const updatedProfile = {
       ...personalProfile,
       healthGoals: personalProfile.healthGoals.map(goal =>
@@ -76,29 +87,45 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       updatedAt: new Date()
     };
 
-    onUpdateProfile(updatedProfile);
-    setEditingGoal(null);
+    try {
+      // Save directly to Firestore
+      await updateUserSettings(userId, { personalProfile: updatedProfile });
+      // Update local state only after successful save
+      onUpdateProfile(updatedProfile);
+      setEditingGoal(null);
+    } catch (error) {
+      console.error('Failed to update health goal:', error);
+      // TODO: Show error toast to user
+    }
   };
 
-  const handleDeleteGoal = (goalId: string) => {
+  const handleDeleteGoal = async (goalId: string) => {
     const updatedProfile = {
       ...personalProfile,
       healthGoals: personalProfile.healthGoals.filter(goal => goal.id !== goalId),
       updatedAt: new Date()
     };
 
-    onUpdateProfile(updatedProfile);
-    setDeletingGoalId(null);
+    try {
+      // Save directly to Firestore
+      await updateUserSettings(userId, { personalProfile: updatedProfile });
+      // Update local state only after successful save
+      onUpdateProfile(updatedProfile);
+      setDeletingGoalId(null);
+    } catch (error) {
+      console.error('Failed to delete health goal:', error);
+      // TODO: Show error toast to user
+    }
   };
 
   const handleEditGoal = (goal: HealthGoal) => {
     setEditingGoal(goal);
   };
 
-  const handleSaveEditGoal = () => {
+  const handleSaveEditGoal = async () => {
     if (!editingGoal || !editingGoal.title || !editingGoal.description) return;
 
-    handleUpdateGoal(editingGoal.id, {
+    await handleUpdateGoal(editingGoal.id, {
       type: editingGoal.type,
       title: editingGoal.title,
       description: editingGoal.description,
@@ -110,10 +137,10 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
     });
   };
 
-  const handleToggleGoal = (goalId: string) => {
+  const handleToggleGoal = async (goalId: string) => {
     const goal = personalProfile.healthGoals.find(g => g.id === goalId);
     if (goal) {
-      handleUpdateGoal(goalId, { isActive: !goal.isActive });
+      await handleUpdateGoal(goalId, { isActive: !goal.isActive });
     }
   };
 
