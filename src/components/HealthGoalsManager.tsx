@@ -23,6 +23,36 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
   const [editingGoal, setEditingGoal] = useState<HealthGoal | null>(null);
   const [deletingGoalId, setDeletingGoalId] = useState<string | null>(null);
 
+  // Helper function to recursively remove undefined values from objects
+  const cleanUndefinedValues = (obj: any): any => {
+    if (obj === null || obj === undefined) {
+      return null;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(cleanUndefinedValues).filter(item => item !== undefined);
+    }
+
+    if (obj instanceof Date) {
+      return obj;
+    }
+
+    if (typeof obj === 'object') {
+      const cleaned: any = {};
+      for (const [key, value] of Object.entries(obj)) {
+        if (value !== undefined) {
+          const cleanedValue = cleanUndefinedValues(value);
+          if (cleanedValue !== undefined) {
+            cleaned[key] = cleanedValue;
+          }
+        }
+      }
+      return cleaned;
+    }
+
+    return obj;
+  };
+
   // Helper function to get appropriate unit based on goal type and user preferences
   const getDefaultUnit = (goalType: HealthGoal['type']): string | undefined => {
     if (goalType === 'weight_loss' || goalType === 'weight_gain' || goalType === 'muscle_gain') {
@@ -64,8 +94,10 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
     };
 
     try {
+      // Clean undefined values before saving to Firestore
+      const cleanedData = cleanUndefinedValues({ personalProfile: updatedProfile });
       // Save directly to Firestore
-      await updateUserSettings(userId, { personalProfile: updatedProfile });
+      await updateUserSettings(userId, cleanedData);
       // Update local state only after successful save
       onUpdateProfile(updatedProfile);
       setShowAddModal(false);
@@ -88,8 +120,10 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
     };
 
     try {
+      // Clean undefined values before saving to Firestore
+      const cleanedData = cleanUndefinedValues({ personalProfile: updatedProfile });
       // Save directly to Firestore
-      await updateUserSettings(userId, { personalProfile: updatedProfile });
+      await updateUserSettings(userId, cleanedData);
       // Update local state only after successful save
       onUpdateProfile(updatedProfile);
       setEditingGoal(null);
@@ -107,8 +141,10 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
     };
 
     try {
+      // Clean undefined values before saving to Firestore
+      const cleanedData = cleanUndefinedValues({ personalProfile: updatedProfile });
       // Save directly to Firestore
-      await updateUserSettings(userId, { personalProfile: updatedProfile });
+      await updateUserSettings(userId, cleanedData);
       // Update local state only after successful save
       onUpdateProfile(updatedProfile);
       setDeletingGoalId(null);
