@@ -780,9 +780,9 @@ export function RecipeApp() {
               )
             ) : (
               <div className="space-y-4 sm:space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start">
-                  <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                    <RecipeInput 
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-start">
+                  <div className="lg:col-span-4 bg-white rounded-lg shadow-md p-4 sm:p-6">
+                    <RecipeInput
                       onSubmit={handleRecipeSubmit}
                       onSurpriseMe={handleSurpriseMe}
                       disabled={converting}
@@ -796,8 +796,8 @@ export function RecipeApp() {
                     />
                   </div>
 
-                  <div className="mt-4 lg:mt-0">
-                    <StructuredRecipeDisplay 
+                  <div className="lg:col-span-8 mt-4 lg:mt-0">
+                    <StructuredRecipeDisplay
                       recipeJson={result}
                       loading={converting}
                       saving={saving}
