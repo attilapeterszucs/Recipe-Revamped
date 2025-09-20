@@ -1525,34 +1525,6 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
         </div>
       )}
 
-      {/* Week Navigation */}
-      <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow mb-6">
-        <button
-          onClick={() => navigateWeek('prev')}
-          className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4 mr-1" />
-          Previous Week
-        </button>
-
-        <div className="text-center">
-          <h2 className="text-lg font-semibold text-gray-900">
-            {weekDates[0].toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-          </h2>
-          <p className="text-sm text-gray-600">
-            {weekDates[0].toLocaleDateString()} - {weekDates[6].toLocaleDateString()}
-          </p>
-        </div>
-
-        <button
-          onClick={() => navigateWeek('next')}
-          className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          Next Week
-          <ChevronRight className="w-4 h-4 ml-1" />
-        </button>
-      </div>
-
       {/* Weekly Recipe Generator */}
       <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-4 mb-6">
         <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 sm:space-x-4">
@@ -1569,29 +1541,15 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             {/* Left Side: Week Selector and Settings Toggles */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              {/* Week Type Selector */}
-              <select
-                value={selectedWeekType}
-                onChange={(e) => setSelectedWeekType(e.target.value)}
-                className="px-3 py-2 border border-purple-300 rounded-lg bg-white text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm font-medium min-w-[140px]"
-              >
-                <option value="balanced">🌟 Balanced</option>
-                <option value="protein-focused">💪 Protein</option>
-                <option value="low-carb">🥩 Low Carb</option>
-                <option value="vegetarian">🌱 Vegetarian</option>
-                <option value="comfort-food">🍲 Comfort</option>
-                <option value="quick-easy">⚡ Quick</option>
-              </select>
-
-              {/* User Settings Alignment Toggles - Vertical Stack */}
-              <div className="flex flex-col gap-1">
+              {/* Health Conditions and Dietary Preferences */}
+              <div className="flex flex-col gap-2">
                 {userSettings?.healthConditions && userSettings.healthConditions.length > 0 && (
-                  <label className="flex items-center text-xs cursor-pointer whitespace-nowrap">
+                  <label className="flex items-center text-sm cursor-pointer whitespace-nowrap">
                     <input
                       type="checkbox"
                       checked={alignWithHealthConditions}
                       onChange={(e) => setAlignWithHealthConditions(e.target.checked)}
-                      className="mr-2 h-3 w-3 text-purple-600 focus:ring-purple-500 border-purple-300 rounded"
+                      className="mr-2 h-4 w-4 text-purple-600 focus:ring-purple-500 border-purple-300 rounded"
                     />
                     <span className="text-purple-800 font-medium">🩺 Health Conditions</span>
                     <span className="ml-1 text-xs text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded-full">
@@ -1601,12 +1559,12 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                 )}
 
                 {userSettings?.defaultDietaryFilters && userSettings.defaultDietaryFilters.length > 0 && (
-                  <label className="flex items-center text-xs cursor-pointer whitespace-nowrap">
+                  <label className="flex items-center text-sm cursor-pointer whitespace-nowrap">
                     <input
                       type="checkbox"
                       checked={alignWithDietaryPreferences}
                       onChange={(e) => setAlignWithDietaryPreferences(e.target.checked)}
-                      className="mr-2 h-3 w-3 text-purple-600 focus:ring-purple-500 border-purple-300 rounded"
+                      className="mr-2 h-4 w-4 text-purple-600 focus:ring-purple-500 border-purple-300 rounded"
                     />
                     <span className="text-purple-800 font-medium">🌱 Dietary Preferences</span>
                     <span className="ml-1 text-xs text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded-full">
@@ -1614,7 +1572,15 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                     </span>
                   </label>
                 )}
+
+                {(!userSettings?.healthConditions || userSettings.healthConditions.length === 0) &&
+                 (!userSettings?.defaultDietaryFilters || userSettings.defaultDietaryFilters.length === 0) && (
+                  <div className="text-sm text-purple-600 bg-purple-50 px-3 py-2 rounded-lg">
+                    💡 Set health conditions and dietary preferences in Settings
+                  </div>
+                )}
               </div>
+
             </div>
 
             {/* Right Side: Action Buttons */}
@@ -1675,6 +1641,34 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
             </p>
           </div>
         )}
+      </div>
+
+      {/* Week Navigation */}
+      <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow mb-6">
+        <button
+          onClick={() => navigateWeek('prev')}
+          className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          Previous Week
+        </button>
+
+        <div className="text-center">
+          <h2 className="text-lg font-semibold text-gray-900">
+            {weekDates[0].toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+          </h2>
+          <p className="text-sm text-gray-600">
+            {weekDates[0].toLocaleDateString()} - {weekDates[6].toLocaleDateString()}
+          </p>
+        </div>
+
+        <button
+          onClick={() => navigateWeek('next')}
+          className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          Next Week
+          <ChevronRight className="w-4 h-4 ml-1" />
+        </button>
       </div>
 
       {/* Calendar Grid */}
