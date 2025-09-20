@@ -658,7 +658,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const sections = [
     { id: 'profile', label: 'Account', icon: UserIcon },
     { id: 'personal', label: 'Personal Profile & Goals', icon: Activity },
-    { id: 'preferences', label: 'Recipe Preferences', icon: Palette },
+    { id: 'recipe-settings', label: 'Recipe Settings', icon: Bot },
+    { id: 'preferences', label: 'Dietary Filters', icon: Palette },
     { id: 'health', label: 'Health Conditions', icon: Heart },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'data', label: 'Data & Backup', icon: Database },
@@ -1242,75 +1243,11 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         return (
           <div className="space-y-8">
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Recipe Preferences & Defaults</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Dietary Filters</h3>
             </div>
-            
-            
+
             {featureAccess?.canSetDefaultPreferences ? (
               <div className="space-y-8">
-                {/* Auto-save Recipes - Premium Feature */}
-                <div>
-                  <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Recipe Management</h4>
-                  <div className="bg-white border-2 border-gray-200 rounded-xl p-4 sm:p-6">
-                    <Toggle
-                      enabled={settings.autoSaveRecipes}
-                      onChange={(enabled) => updateSetting('autoSaveRecipes', enabled)}
-                      label="Auto-save Recipes"
-                      description="Automatically save recipes as you work"
-                      size="md"
-                    />
-                  </div>
-                </div>
-                
-                {/* Recipe Conversion Defaults Section */}
-                <div className="bg-gray-50 rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6">
-                  <div className="flex items-center mb-2">
-                    <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 mr-2 sm:mr-3 flex-shrink-0" />
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-900">Recipe Conversion Defaults</h4>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-3">
-                        🍽️ Default Serving Size
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="number"
-                          min="1"
-                          max="20"
-                          value={settings.defaultServingSize}
-                          onChange={(e) => updateSetting('defaultServingSize', parseInt(e.target.value))}
-                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base touch-friendly"
-                        />
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                          <span className="text-gray-400 text-xs sm:text-sm">people</span>
-                        </div>
-                      </div>
-                      <p className="mt-2 text-xs sm:text-sm text-gray-500">
-                        How many servings should recipes default to?
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-3">
-                        📏 Preferred Measurement Units
-                      </label>
-                      <select
-                        value={settings.preferredUnits}
-                        onChange={(e) => updateSetting('preferredUnits', e.target.value as 'metric' | 'imperial')}
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base touch-friendly"
-                      >
-                        <option value="metric">🌍 Metric (grams, milliliters, celsius)</option>
-                        <option value="imperial">🇺🇸 Imperial (cups, ounces, fahrenheit)</option>
-                      </select>
-                      <p className="mt-2 text-xs sm:text-sm text-gray-500">
-                        Your preferred measurement system for ingredients
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
                 {/* Dietary Preferences Section */}
                 <div>
                   <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Default Dietary Filters</h4>
@@ -1462,30 +1399,30 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     <Shield className="h-8 w-8 text-orange-600" />
                   </div>
                   <h4 className="text-xl font-bold text-orange-800 mb-2">
-                    Premium Recipe Preferences
+                    Premium Dietary Filters
                   </h4>
                   <p className="text-orange-700 mb-6 max-w-md mx-auto leading-relaxed">
-                    Unlock personalized recipe defaults and dietary filters with any paid plan. Save time by having your preferences automatically applied to every recipe.
+                    Unlock advanced dietary filters and personalized preferences with any paid plan. Automatically filter recipes based on your dietary requirements.
                   </p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-lg mx-auto">
                   <div className="bg-white/50 rounded-lg p-4 text-left">
-                    <div className="text-orange-600 font-semibold mb-2">🎯 Smart Defaults</div>
+                    <div className="text-orange-600 font-semibold mb-2">🎯 Smart Filtering</div>
                     <ul className="text-sm text-orange-700 space-y-1">
                       <li>✓ Auto-apply dietary filters</li>
-                      <li>✓ Default serving sizes</li>
-                      <li>✓ Preferred measurements</li>
-                      <li>✓ Auto-save recipes</li>
+                      <li>✓ Advanced allergen-free options</li>
+                      <li>✓ Medical condition support</li>
+                      <li>✓ Religious dietary requirements</li>
                     </ul>
                   </div>
                   <div className="bg-white/50 rounded-lg p-4 text-left">
-                    <div className="text-orange-600 font-semibold mb-2">⚡ Time Saving</div>
+                    <div className="text-orange-600 font-semibold mb-2">⚡ Personalization</div>
                     <ul className="text-sm text-orange-700 space-y-1">
-                      <li>✓ Skip repetitive settings</li>
-                      <li>✓ Instant recipe customization</li>
+                      <li>✓ Skip repetitive filtering</li>
+                      <li>✓ Instant diet matching</li>
                       <li>✓ Consistent preferences</li>
-                      <li>✓ Never lose a recipe</li>
+                      <li>✓ Tailored suggestions</li>
                     </ul>
                   </div>
                 </div>
@@ -1581,6 +1518,100 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           </div>
         );
 
+      case 'recipe-settings':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Recipe Settings</h3>
+            </div>
+
+            {featureAccess?.canSetDefaultPreferences ? (
+              <div className="space-y-8">
+                {/* Auto-save Recipes - Premium Feature */}
+                <div>
+                  <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Recipe Management</h4>
+                  <div className="bg-white border-2 border-gray-200 rounded-xl p-4 sm:p-6">
+                    <Toggle
+                      enabled={settings.autoSaveRecipes}
+                      onChange={(enabled) => updateSetting('autoSaveRecipes', enabled)}
+                      label="Auto-save Recipes"
+                      description="Automatically save recipes as you work"
+                      size="md"
+                    />
+                  </div>
+                </div>
+
+                {/* Recipe Conversion Defaults Section */}
+                <div className="bg-gray-50 rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+                  <div className="flex items-center mb-2">
+                    <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 mr-2 sm:mr-3 flex-shrink-0" />
+                    <h4 className="text-base sm:text-lg font-semibold text-gray-900">Recipe Conversion Defaults</h4>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">
+                        🍽️ Default Serving Size
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          min="1"
+                          max="20"
+                          value={settings.defaultServingSize}
+                          onChange={(e) => updateSetting('defaultServingSize', parseInt(e.target.value))}
+                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base touch-friendly"
+                        />
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          <span className="text-gray-400 text-xs sm:text-sm">people</span>
+                        </div>
+                      </div>
+                      <p className="mt-2 text-xs sm:text-sm text-gray-500">
+                        How many servings should recipes default to?
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">
+                        📏 Preferred Measurement Units
+                      </label>
+                      <select
+                        value={settings.preferredUnits}
+                        onChange={(e) => updateSetting('preferredUnits', e.target.value as 'metric' | 'imperial')}
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base touch-friendly"
+                      >
+                        <option value="metric">🌍 Metric (grams, milliliters, celsius)</option>
+                        <option value="imperial">🇺🇸 Imperial (cups, ounces, fahrenheit)</option>
+                      </select>
+                      <p className="mt-2 text-xs sm:text-sm text-gray-500">
+                        Your preferred measurement system for ingredients
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-6 text-center">
+                <div className="flex justify-center mb-4">
+                  <Bot className="w-12 h-12 text-blue-600" />
+                </div>
+                <h4 className="text-lg font-semibold text-blue-900 mb-2">
+                  Premium Recipe Settings
+                </h4>
+                <p className="text-blue-700 text-sm leading-relaxed mb-4">
+                  Access advanced recipe management and conversion defaults with a premium subscription.
+                  Customize your cooking experience with auto-save, preferred units, and default serving sizes.
+                </p>
+                <div className="space-y-2 text-sm text-blue-600">
+                  <p>🤖 Recipe conversion defaults</p>
+                  <p>💾 Auto-save recipes</p>
+                  <p>📏 Preferred measurement units</p>
+                  <p>🍽️ Default serving sizes</p>
+                </div>
+              </div>
+            )}
+          </div>
+        );
 
       case 'health':
         const healthConditions = [
