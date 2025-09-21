@@ -54,6 +54,7 @@ export function RecipeApp() {
   const [showMealPlanner, setShowMealPlanner] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
+  const [userSettingsLoading, setUserSettingsLoading] = useState(false);
   const [viewingRecipe, setViewingRecipe] = useState<SavedRecipe | null>(null);
   const [editingRecipe, setEditingRecipe] = useState<SavedRecipe | null>(null);
   const [recipeLimitInfo, setRecipeLimitInfo] = useState<{
@@ -212,6 +213,8 @@ export function RecipeApp() {
 
         if (shouldLoadFullApp) {
           try {
+            setUserSettingsLoading(true);
+
             // Create/update user profile in Firestore for verified users only
             await createOrUpdateUserProfile(
               user.uid,
@@ -239,15 +242,19 @@ export function RecipeApp() {
             setRecipeLimitInfo(limitInfo);
           } catch (error) {
             console.error('Error loading user data:', error);
+          } finally {
+            setUserSettingsLoading(false);
           }
         } else {
           // User exists but hasn't verified email - clear all app data
           setUserSettings(null);
           setRecipeLimitInfo(null);
+          setUserSettingsLoading(false);
         }
       } else {
         setUserSettings(null);
         setRecipeLimitInfo(null);
+        setUserSettingsLoading(false);
       }
     };
 
@@ -842,6 +849,7 @@ export function RecipeApp() {
                         onSurpriseMe={handleSurpriseMe}
                         disabled={converting}
                         userSettings={userSettings || undefined}
+                        userSettingsLoading={userSettingsLoading}
                         availableDietaryFilters={featureAccess.availableDietaryFilters}
                         currentPlan={featureAccess.currentPlan}
                         dailyUsage={{

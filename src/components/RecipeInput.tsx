@@ -9,6 +9,7 @@ interface RecipeInputProps {
   onSurpriseMe: (filters: string[], mustUseIngredients?: string[], avoidIngredients?: string[]) => void;
   disabled?: boolean;
   userSettings?: UserSettings;
+  userSettingsLoading?: boolean;
   availableDietaryFilters?: string[];
   currentPlan?: string;
   dailyUsage?: {
@@ -58,7 +59,7 @@ const categoryLabels = {
   'religious': { label: '🙏 Religious', color: 'text-indigo-700' }
 };
 
-export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe, disabled, userSettings, availableDietaryFilters, currentPlan, dailyUsage }) => {
+export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe, disabled, userSettings, userSettingsLoading, availableDietaryFilters, currentPlan, dailyUsage }) => {
   const [recipe, setRecipe] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [mustUseIngredients, setMustUseIngredients] = useState<string[]>([]);
@@ -84,13 +85,13 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
 
   // Initialize selected filters with user's default dietary filters (filtered by available filters)
   useEffect(() => {
-    if (userSettings?.defaultDietaryFilters && userSettings.defaultDietaryFilters.length > 0) {
-      const filteredDefaults = userSettings.defaultDietaryFilters.filter(filter => 
+    if (!userSettingsLoading && userSettings?.defaultDietaryFilters && userSettings.defaultDietaryFilters.length > 0) {
+      const filteredDefaults = userSettings.defaultDietaryFilters.filter(filter =>
         availableFilters.includes(filter)
       );
       setSelectedFilters(filteredDefaults);
     }
-  }, [userSettings?.defaultDietaryFilters, availableFilters]);
+  }, [userSettings?.defaultDietaryFilters, availableFilters, userSettingsLoading]);
 
   const handleFilterToggle = (filter: string) => {
     setSelectedFilters(prev => 
@@ -440,7 +441,21 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
         )}
 
         {/* Selected Filters Display */}
-        {selectedFilters.length > 0 && (
+        {userSettingsLoading ? (
+          <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-blue-200 rounded animate-pulse mr-2"></div>
+                <div className="h-4 bg-blue-200 rounded animate-pulse w-48"></div>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-8 bg-blue-200 rounded-full animate-pulse" style={{ width: `${60 + Math.random() * 40}px` }}></div>
+              ))}
+            </div>
+          </div>
+        ) : selectedFilters.length > 0 && (
           <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-sm font-semibold text-blue-900 flex items-center">
@@ -630,7 +645,23 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
 
 
       {/* Default Serving Size and Units Display */}
-      {userSettings && (
+      {userSettingsLoading ? (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center">
+                <div className="h-4 bg-blue-200 rounded animate-pulse w-32"></div>
+                <div className="ml-2 h-4 bg-blue-200 rounded animate-pulse w-20"></div>
+              </div>
+              <div className="flex items-center">
+                <div className="h-4 bg-blue-200 rounded animate-pulse w-24"></div>
+                <div className="ml-2 h-4 bg-blue-200 rounded animate-pulse w-16"></div>
+              </div>
+            </div>
+            <div className="h-3 bg-blue-200 rounded animate-pulse w-32"></div>
+          </div>
+        </div>
+      ) : userSettings && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
