@@ -675,7 +675,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
       
       {/* Premium Features Section - Matching regular design */}
       {availableFilters.length < allFilters.length && (
-        <div className="mt-4 sm:mt-6">
+        <div className="mt-4 sm:mt-6 bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-4 sm:p-6" style={{ filter: 'drop-shadow(0 0 12px rgba(251, 146, 60, 0.2))' }}>
           {/* Header matching regular section */}
           <div className="mb-4">
             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
@@ -756,7 +756,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
               </p>
 
               <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-3 sm:mb-4">
-                <div>
+                <div className="relative">
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Must-Use Ingredients</label>
                   <input
                     type="text"
@@ -768,18 +768,16 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
                     <span className="text-xs">🔒</span>
                   </div>
                 </div>
-                <div>
+                <div className="relative">
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Avoid Ingredients</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="e.g., nuts, shellfish, dairy"
-                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm opacity-50 cursor-not-allowed bg-gray-50"
-                      disabled
-                    />
-                    <div className="absolute top-1 right-1">
-                      <span className="text-xs">🔒</span>
-                    </div>
+                  <input
+                    type="text"
+                    placeholder="e.g., nuts, shellfish, dairy"
+                    className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm opacity-50 cursor-not-allowed bg-gray-50"
+                    disabled
+                  />
+                  <div className="absolute top-1 right-1">
+                    <span className="text-xs">🔒</span>
                   </div>
                 </div>
               </div>
@@ -790,7 +788,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
           <div className="mt-4">
             <button
               type="button"
-              className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold text-sm"
+              className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg text-sm"
               onClick={() => {
                 // Try direct global function first
                 if ((window as any).showUpgradeModal) {
