@@ -1948,6 +1948,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
             {canAccessHealthConditions && (
               <div className="space-y-6">
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 leading-relaxed">
+                  Select health conditions to get personalized recipe recommendations. These will help us suggest recipes that support your specific dietary requirements and wellness goals.
+                </p>
+
                 {Object.entries(categorizedConditions).map(([category, conditions]) => (
                 <div key={category} className="space-y-3">
                   <h4 className="text-lg font-semibold text-gray-800 capitalize border-b pb-2">
