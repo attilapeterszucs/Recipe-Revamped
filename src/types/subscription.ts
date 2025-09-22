@@ -16,6 +16,7 @@ export interface SubscriptionPlanDetails {
   canUseTeamFeatures: boolean;
   canUseApiAccess: boolean;
   canUseMealPlanning: boolean;
+  canGenerateWeeklyMenu: boolean;
   canSetDefaultPreferences: boolean;
   canBackupRestore: boolean;
   canUploadProfilePicture: boolean;
@@ -58,6 +59,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     canUseTeamFeatures: false,
     canUseApiAccess: false,
     canUseMealPlanning: false,
+    canGenerateWeeklyMenu: false,
     canSetDefaultPreferences: false,
     canBackupRestore: false,
     canUploadProfilePicture: false,
@@ -87,6 +89,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     canUseTeamFeatures: false,
     canUseApiAccess: false,
     canUseMealPlanning: true,
+    canGenerateWeeklyMenu: false,
     canSetDefaultPreferences: true,
     canBackupRestore: false,
     canUploadProfilePicture: true,
@@ -120,6 +123,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     canUseTeamFeatures: false,
     canUseApiAccess: false,
     canUseMealPlanning: true,
+    canGenerateWeeklyMenu: true,
     canSetDefaultPreferences: true,
     canBackupRestore: true,
     canUploadProfilePicture: true,
@@ -151,6 +155,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     canUseTeamFeatures: true,
     canUseApiAccess: true,
     canUseMealPlanning: true,
+    canGenerateWeeklyMenu: true,
     canSetDefaultPreferences: true,
     canBackupRestore: true,
     canUploadProfilePicture: true,

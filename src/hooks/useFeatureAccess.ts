@@ -10,54 +10,55 @@ interface FeatureAccess {
   canSaveRecipes: boolean;
   recipeLimit: number;
   currentRecipeCount: number;
-  
+
   // Conversion features
   canConvert: boolean;
   conversionLimit: number;
   conversionsUsedToday: number;
   recordConversion: () => Promise<boolean>;
-  
+
   // Export features
   canExportPdf: boolean;
-  
+
   // Filter features
   canUseAdvancedFilters: boolean;
-  
+
   // Analysis features
   canUseNutritionAnalysis: boolean;
-  
+
   // Organization features
   canUseCollections: boolean;
-  
+
   // Team features
   canUseTeamFeatures: boolean;
-  
+
   // API features
   canUseApiAccess: boolean;
-  
+
   // Meal planning features
   canUseMealPlanning: boolean;
-  
+  canGenerateWeeklyMenu: boolean;
+
   // Settings features
   canSetDefaultPreferences: boolean;
-  
+
   // Backup features
   canBackupRestore: boolean;
-  
+
   // Profile features
   canUploadProfilePicture: boolean;
-  
+
   // Health features
   canUseHealthConditions: boolean;
   canUseHealthGoals: boolean;
-  
+
   // Dietary filter features
   availableDietaryFilters: string[];
-  
+
   // Plan info
   currentPlan: SubscriptionPlan;
   planDetails: typeof SUBSCRIPTION_PLANS[SubscriptionPlan];
-  
+
   // Refresh function
   refreshFeatures: () => void;
   refreshConversions: () => Promise<void>;
@@ -157,6 +158,7 @@ export const useFeatureAccess = (
         canUseTeamFeatures: true,
         canUseApiAccess: true,
         canUseMealPlanning: true,
+        canGenerateWeeklyMenu: true,
         canSetDefaultPreferences: true,
         canBackupRestore: true,
         canUploadProfilePicture: true,
@@ -209,7 +211,8 @@ export const useFeatureAccess = (
       
       // Meal planning features
       canUseMealPlanning: planDetails.canUseMealPlanning,
-      
+      canGenerateWeeklyMenu: planDetails.canGenerateWeeklyMenu,
+
       // Settings features
       canSetDefaultPreferences: planDetails.canSetDefaultPreferences,
       

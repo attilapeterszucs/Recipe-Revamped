@@ -19,6 +19,7 @@ interface MealPlannerCalendarProps {
     canUseAdvancedFilters: boolean;
     canUseHealthConditions: boolean;
     canUseNutritionAnalysis: boolean;
+    canGenerateWeeklyMenu: boolean;
   };
 }
 
@@ -1526,17 +1527,18 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       )}
 
       {/* Weekly Recipe Generator */}
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-4 mb-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 sm:space-x-4">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-full">
-              <Sparkles className="w-5 h-5 text-purple-600" />
+      {featureAccess?.canGenerateWeeklyMenu ? (
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 sm:space-x-4">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-full">
+                <Sparkles className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-purple-900">Generate Weekly Menu</h3>
+                <p className="text-sm text-purple-700">Auto-fill your calendar with recipes based on your preferences</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-purple-900">Generate Weekly Menu</h3>
-              <p className="text-sm text-purple-700">Auto-fill your calendar with recipes based on your preferences</p>
-            </div>
-          </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             {/* Left Side: Week Selector and Settings Toggles */}
@@ -1648,14 +1650,34 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           </div>
         </div>
 
-        {recipes.length === 0 && (
-          <div className="mt-3 text-center">
-            <p className="text-sm text-purple-600 bg-purple-100 rounded-lg px-3 py-2 inline-block">
-              💡 Save some recipes first to generate meal plans
-            </p>
+          {recipes.length === 0 && (
+            <div className="mt-3 text-center">
+              <p className="text-sm text-purple-600 bg-purple-100 rounded-lg px-3 py-2 inline-block">
+                💡 Save some recipes first to generate meal plans
+              </p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-lg p-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 sm:space-x-4">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full">
+                <Sparkles className="w-5 h-5 text-orange-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-orange-900">Generate Weekly Menu</h3>
+                <p className="text-sm text-orange-700">Auto-generate weekly meal plans with AI-powered recipe recommendations</p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">
+                Master Chef
+              </span>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Week Navigation */}
       <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow mb-6">
