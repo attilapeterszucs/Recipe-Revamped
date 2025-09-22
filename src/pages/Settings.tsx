@@ -109,6 +109,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   });
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
+  const [cancelSectionHidden, setCancelSectionHidden] = useState(false);
   const { showSuccess, showError, showInfo } = useToast();
   
   // Use subscription status hook for consistent admin checking
@@ -1137,8 +1138,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">Account Management</h4>
 
               <div className="space-y-4">
-                {/* Cancel Plan Button - Only show if user has an active subscription */}
-                {featureAccess?.currentPlan && featureAccess.currentPlan !== 'free' && (
+                {/* Cancel Plan Button - Only show if user has an active subscription and section not hidden */}
+                {featureAccess?.currentPlan && featureAccess.currentPlan !== 'free' && !cancelSectionHidden && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 sm:p-6">
                     <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4">
                       <div className="flex items-center sm:items-start">
@@ -1153,7 +1154,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         </p>
                         <CancelSubscriptionButton
                           className="w-full sm:w-auto"
-                          onCancellationComplete={refreshSubscriptionStatus}
+                          onCancellationComplete={() => {
+                            setCancelSectionHidden(true);
+                            refreshSubscriptionStatus();
+                          }}
                         />
                       </div>
                     </div>
