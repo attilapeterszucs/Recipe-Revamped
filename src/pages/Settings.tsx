@@ -113,7 +113,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const { showSuccess, showError, showInfo } = useToast();
   
   // Use subscription status hook for consistent admin checking
-  const { isAdmin: isUserAdmin, loading: adminCheckLoading, refresh: refreshSubscriptionStatus } = useSubscriptionStatus(
+  const { isAdmin: isUserAdmin, loading: adminCheckLoading, refresh: refreshSubscriptionStatus, subscription } = useSubscriptionStatus(
     user?.uid,
     user?.email
   );
@@ -1139,7 +1139,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
               <div className="space-y-4">
                 {/* Cancel Plan Button - Only show if user has an active subscription and section not hidden */}
-                {featureAccess?.currentPlan && featureAccess.currentPlan !== 'free' && !cancelSectionHidden && (
+                {featureAccess?.currentPlan &&
+                 featureAccess.currentPlan !== 'free' &&
+                 subscription?.status === 'active' &&
+                 !cancelSectionHidden && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 sm:p-6">
                     <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4">
                       <div className="flex items-center sm:items-start">
