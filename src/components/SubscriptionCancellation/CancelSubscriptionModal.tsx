@@ -28,8 +28,6 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
   const [step, setStep] = useState<'preview' | 'reasons' | 'feedback' | 'processing' | 'completed'>('preview');
   const [selectedReason, setSelectedReason] = useState<string>('');
   const [feedback, setFeedback] = useState<string>('');
-  const [preview, setPreview] = useState<any>(null);
-  const [canCancel, setCanCancel] = useState<{ canCancel: boolean; reason?: string; currentPlan?: string }>({ canCancel: false });
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string>('');
   const [isVisible, setIsVisible] = useState(false);
@@ -39,7 +37,6 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
-      loadCancellationData();
     } else {
       setStep('preview');
       setSelectedReason('');
@@ -47,25 +44,6 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
       setError('');
     }
   }, [isOpen]);
-
-  const loadCancellationData = async () => {
-    try {
-      const currentUser = auth.currentUser;
-      if (!currentUser) return;
-
-      // Check if user can cancel
-      const cancellationCheck = await SubscriptionCancellationService.canCancelSubscription(currentUser.uid);
-      setCanCancel(cancellationCheck);
-
-      if (cancellationCheck.canCancel) {
-        // Get cancellation preview
-        const previewData = await SubscriptionCancellationService.getCancellationPreview(currentUser.uid);
-        setPreview(previewData);
-      }
-    } catch (err) {
-      setError('Failed to load cancellation information');
-    }
-  };
 
   const handleClose = () => {
     setIsVisible(false);
@@ -124,41 +102,6 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
 
   if (!isOpen) return null;
 
-  if (!canCancel.canCancel) {
-    return (
-      <div
-        className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 transition-opacity duration-300 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-        onClick={handleBackdropClick}
-      >
-        <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
-          <button
-            onClick={handleClose}
-            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
-          >
-            <X className="w-5 h-5" />
-          </button>
-
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Cannot Cancel Subscription
-            </h2>
-            <p className="text-gray-600 mb-6">
-              {canCancel.reason || 'Unable to cancel subscription at this time.'}
-            </p>
-            <button
-              onClick={handleClose}
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 transition-opacity duration-300 ${
@@ -183,7 +126,7 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
 
         {/* Content */}
         <div className="p-6 sm:p-8">
-          {step === 'preview' && preview && (
+          {step === 'preview' && (
             <>
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -193,41 +136,14 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
                   Cancel Your Subscription?
                 </h2>
                 <p className="text-gray-600">
-                  You're currently on the <span className="font-semibold capitalize">{preview.currentPlan}</span> plan
+                  Are you sure you want to cancel your subscription?
                 </p>
-                {!preview.immediateChange && preview.daysUntilExpiry && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
-                    <p className="text-sm text-blue-700">
-                      <strong>Good news:</strong> You'll keep full access for {preview.daysUntilExpiry} more days until your subscription expires.
-                    </p>
-                  </div>
-                )}
               </div>
 
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                <h3 className="font-semibold text-red-800 mb-2">
-                  {preview.immediateChange ? 'You will lose access to:' : `You will lose access to these features ${preview.daysUntilExpiry ? `in ${preview.daysUntilExpiry} days` : 'when your subscription expires'}:`}
-                </h3>
-                <ul className="text-red-700 text-sm space-y-1">
-                  {preview.willLoseAccess.map((feature: string, index: number) => (
-                    <li key={index} className="flex items-center">
-                      <span className="w-2 h-2 bg-red-500 rounded-full mr-2 flex-shrink-0"></span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                <h3 className="font-semibold text-green-800 mb-2">You will keep access to:</h3>
-                <ul className="text-green-700 text-sm space-y-1">
-                  {preview.willKeepAccess.map((feature: string, index: number) => (
-                    <li key={index} className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-2 flex-shrink-0"></span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p className="text-sm text-blue-700">
+                  <strong>Note:</strong> Your subscription will be cancelled at the end of your current billing period. You'll continue to have access to all features until then.
+                </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
