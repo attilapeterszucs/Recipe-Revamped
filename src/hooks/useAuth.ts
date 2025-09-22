@@ -28,8 +28,6 @@ export const useAuth = () => {
 
         // CHECK SUBSCRIPTION EXPIRY ON EVERY LOGIN
         if (user) {
-          console.log('👤 User logged in:', user.uid);
-
           // Check and update expired subscriptions
           await SubscriptionExpiryChecker.checkAndUpdateExpiredSubscription(user.uid);
         }

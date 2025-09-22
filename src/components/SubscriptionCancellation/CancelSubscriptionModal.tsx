@@ -84,11 +84,19 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
       if (result.success) {
         setStep('completed');
 
-        // Call completion callback after a short delay
+        // Immediately hide the cancellation section and reactivation banner
+        onCancellationComplete?.();
+
+        // Trigger events to refresh subscription status and hide banners
+        window.dispatchEvent(new CustomEvent('subscription-cancelled', {
+          detail: { immediate: true }
+        }));
+        window.dispatchEvent(new CustomEvent('refresh-subscription'));
+
+        // Close modal after a short delay to show success message
         setTimeout(() => {
-          onCancellationComplete?.();
           handleClose();
-        }, 3000);
+        }, 2000);
       } else {
         throw new Error(result.error || 'Cancellation failed');
       }
@@ -277,7 +285,7 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
                 Subscription Cancelled
               </h2>
               <p className="text-gray-600 mb-4">
-                Your subscription has been cancelled successfully. You now have access to our free plan.
+                Your subscription has been cancelled successfully. You're now on the free plan.
               </p>
               <p className="text-sm text-gray-500">
                 Thank you for using Recipe Revamp. We hope to see you back soon!

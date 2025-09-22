@@ -19,8 +19,8 @@ export const PaymentNotification: React.FC<PaymentNotificationProps> = ({
   useEffect(() => {
     setIsVisible(true);
     
-    // Auto-close after 8 seconds for success, 6 seconds for others
-    const timeoutMs = type === 'success' ? 8000 : 6000;
+    // Auto-close after 5 seconds for success, 6 seconds for others
+    const timeoutMs = type === 'success' ? 5000 : 6000;
     const timer = setTimeout(() => {
       handleClose();
     }, timeoutMs);

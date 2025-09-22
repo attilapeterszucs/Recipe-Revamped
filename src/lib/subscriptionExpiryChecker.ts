@@ -10,44 +10,24 @@ export class SubscriptionExpiryChecker {
    */
   static async checkAndUpdateExpiredSubscription(userId: string): Promise<void> {
     try {
-      console.log('🔍 Checking subscription expiry for user:', userId);
-
       // Find user's subscription by userId field (not document ID)
       const subscription = await this.findUserSubscriptionByUserId(userId);
 
       if (!subscription) {
-        console.log('📭 No subscription found for user');
         return;
       }
 
       const now = new Date();
       const endDate = subscription.endDate ? subscription.endDate.toDate() : null;
 
-      // Log subscription details to browser console for debugging
-      console.log('📊 Subscription Status:', subscription.status);
-      console.log('📦 Current Plan:', subscription.plan);
-
-      if (endDate) {
-        console.log('📅 Subscription End Date:', endDate.toISOString());
-        console.log('🕐 Current Date:', now.toISOString());
-        console.log('⏰ Days until expiry:', Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
-      } else {
-        console.log('📅 No end date found for subscription');
-      }
-
       // Handle different subscription scenarios
       if (subscription.plan === 'free') {
-        console.log('🆓 User is on free plan - no subscription management needed');
         return;
       }
 
       // Check if subscription is expired and was cancelled
       if (endDate && endDate <= now && subscription.status === 'cancelled') {
-        console.log('⚠️ Subscription expired and was cancelled - downgrading to free');
-
         await this.downgradeExpiredSubscription(subscription.documentId);
-
-        console.log('✅ User downgraded to free plan due to expiry');
 
         // Trigger UI refresh
         window.dispatchEvent(new CustomEvent('subscription-expired', {
@@ -57,14 +37,6 @@ export class SubscriptionExpiryChecker {
             downgradedAt: now.toISOString()
           }
         }));
-      } else if (subscription.status === 'active' && subscription.plan !== 'free') {
-        console.log('✅ Subscription is active and not expired');
-      } else if (subscription.status === 'cancelled' && endDate && endDate > now) {
-        console.log('⏳ Subscription cancelled but still has access until:', endDate.toISOString());
-      } else if (subscription.status === 'cancelled' && !endDate) {
-        console.log('🔄 Subscription cancelled without end date - may need manual review');
-      } else {
-        console.log('❓ Subscription status unclear:', { status: subscription.status, plan: subscription.plan, hasEndDate: !!endDate });
       }
 
     } catch (error) {
@@ -130,7 +102,6 @@ export class SubscriptionExpiryChecker {
         updatedAt: serverTimestamp()
       });
 
-      console.log('✅ Subscription downgraded to free due to expiry');
     } catch (error) {
       console.error('❌ Error downgrading expired subscription:', error);
       throw error;

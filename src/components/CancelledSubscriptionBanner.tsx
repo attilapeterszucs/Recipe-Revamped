@@ -18,12 +18,21 @@ export const CancelledSubscriptionBanner: React.FC = () => {
 
     // Listen for subscription changes
     const handleRefresh = () => checkCancelledStatus();
+    const handleCancellation = (e: CustomEvent) => {
+      // If it's an immediate cancellation, hide the banner immediately
+      if (e.detail?.immediate) {
+        setIsDismissed(true);
+      } else {
+        checkCancelledStatus();
+      }
+    };
+
     window.addEventListener('refresh-subscription', handleRefresh);
-    window.addEventListener('subscription-cancelled', handleRefresh);
+    window.addEventListener('subscription-cancelled', handleCancellation as EventListener);
 
     return () => {
       window.removeEventListener('refresh-subscription', handleRefresh);
-      window.removeEventListener('subscription-cancelled', handleRefresh);
+      window.removeEventListener('subscription-cancelled', handleCancellation as EventListener);
     };
   }, []);
 

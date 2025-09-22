@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { auth } from '../lib/firebase';
-import { SubscriptionSyncService } from '../lib/subscriptionSyncService';
 
 export const usePaymentSuccess = () => {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
@@ -15,44 +13,13 @@ export const usePaymentSuccess = () => {
     const isSuccess = urlParams.get('success') === 'true';
 
     if (isSuccess && !syncAttempted) {
-      setShowSuccessPopup(true);
+      // Don't show the success popup - let SubscriptionContext handle the notification
       setSyncAttempted(true); // Prevent multiple sync attempts
 
-      // Trigger subscription sync immediately
-      const syncSubscription = async () => {
-        const currentUser = auth.currentUser;
-        if (currentUser && currentUser.email) {
-          setSyncingSubscription(true);
-          console.log('🔄 Starting subscription sync after payment success...');
-
-          try {
-            // Try to sync the subscription - this will look for webhook records
-            const syncSuccess = await SubscriptionSyncService.forceSyncCheck(currentUser.email, 15);
-
-            if (syncSuccess) {
-              console.log('✅ Subscription synced successfully!');
-            } else {
-              console.warn('⚠️ Could not find subscription to sync - webhook may still be processing');
-            }
-          } catch (error) {
-            console.error('❌ Subscription sync error:', error);
-          } finally {
-            setSyncingSubscription(false);
-          }
-        }
-      };
-
-      syncSubscription();
-
       // Clean up the URL by removing the success parameter
-      // This prevents the popup from showing again if the user refreshes
       urlParams.delete('success');
-
-      // Redirect to convert page after successful subscription
-      // Add a short delay to allow user to see the success popup
-      setTimeout(() => {
-        navigate('/app', { replace: true });
-      }, 3000); // 3 second delay
+      const newUrl = `${location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
+      navigate(newUrl, { replace: true });
     }
   }, [location, navigate]);
 
