@@ -1,93 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
-        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 
-  <!-- Homepage - Highest Priority -->
+  <!--
+    Recipe Revamped - Professional SEO Sitemap
+    AI-powered recipe converter for dietary restrictions & meal planning
+    Last updated: 2024-12-22
+  -->
+
+  <!-- ========================================== -->
+  <!-- TIER 1: CORE BUSINESS PAGES (Priority 1.0-0.9) -->
+  <!-- ========================================== -->
+
+  <!-- Homepage - Maximum Priority -->
   <url>
     <loc>https://reciperevamped.com/</loc>
-    <lastmod>2024-12-14</lastmod>
+    <lastmod>2024-12-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://reciperevamped.com/images/og-image.jpg</image:loc>
-      <image:title>Recipe Revamped - AI Recipe Converter</image:title>
-      <image:caption>Transform any recipe for your dietary needs with AI</image:caption>
+      <image:title>Recipe Revamped - #1 AI Recipe Converter for Dietary Restrictions</image:title>
+      <image:caption>Transform any recipe instantly for gluten-free, vegan, keto, and 12+ dietary needs with AI</image:caption>
     </image:image>
   </url>
 
-  <!-- Main Application -->
+  <!-- Main Application - Core Product -->
   <url>
     <loc>https://reciperevamped.com/app</loc>
-    <lastmod>2024-12-14</lastmod>
+    <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
     <image:image>
-      <image:loc>https://reciperevamped.com/images/app-screenshot.jpg</image:loc>
-      <image:title>Recipe Converter App Interface</image:title>
-      <image:caption>AI-powered recipe conversion tool</image:caption>
+      <image:loc>https://reciperevamped.com/images/app-interface.jpg</image:loc>
+      <image:title>Recipe Converter App Interface - AI-Powered Dietary Recipe Conversion</image:title>
+      <image:caption>Professional recipe conversion tool supporting 16+ dietary restrictions with nutrition analysis</image:caption>
     </image:image>
   </url>
 
-  <!-- About Page -->
-  <url>
-    <loc>https://reciperevamped.com/about</loc>
-    <lastmod>2024-12-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ========================================== -->
+  <!-- TIER 2: CONTENT & ENGAGEMENT (Priority 0.8-0.7) -->
+  <!-- ========================================== -->
 
-  <!-- Contact Page -->
-  <url>
-    <loc>https://reciperevamped.com/contact</loc>
-    <lastmod>2024-12-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Blog/Resources -->
+  <!-- Blog Hub - SEO Content Strategy -->
   <url>
     <loc>https://reciperevamped.com/blog</loc>
-    <lastmod>2024-12-14</lastmod>
+    <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://reciperevamped.com/images/blog-hero.jpg</image:loc>
+      <image:title>Recipe Revamped Blog - Dietary Cooking Tips & AI Recipe Conversion Guides</image:title>
+      <image:caption>Expert guides on gluten-free, vegan, keto cooking with AI recipe conversion tips</image:caption>
+    </image:image>
   </url>
 
-  <!-- Authentication Pages -->
+  <!-- About Us - Brand Authority -->
   <url>
-    <loc>https://reciperevamped.com/signin</loc>
-    <lastmod>2024-12-14</lastmod>
+    <loc>https://reciperevamped.com/about</loc>
+    <lastmod>2024-12-22</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://reciperevamped.com/images/team-story.jpg</image:loc>
+      <image:title>About Recipe Revamped - AI Recipe Conversion Innovation Team</image:title>
+      <image:caption>Meet the team revolutionizing dietary cooking with AI-powered recipe conversion technology</image:caption>
+    </image:image>
   </url>
 
+  <!-- Contact - Customer Acquisition -->
+  <url>
+    <loc>https://reciperevamped.com/contact</loc>
+    <lastmod>2024-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- ========================================== -->
+  <!-- TIER 3: USER ACQUISITION (Priority 0.6-0.5) -->
+  <!-- ========================================== -->
+
+  <!-- Sign Up - Conversion Critical -->
   <url>
     <loc>https://reciperevamped.com/signup</loc>
-    <lastmod>2024-12-14</lastmod>
+    <lastmod>2024-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reciperevamped.com/images/signup-benefits.jpg</image:loc>
+      <image:title>Sign Up for Recipe Revamped - Free AI Recipe Converter</image:title>
+      <image:caption>Start converting recipes for free - 5 conversions monthly, all dietary restrictions supported</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Sign In - User Retention -->
+  <url>
+    <loc>https://reciperevamped.com/signin</loc>
+    <lastmod>2024-12-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <!-- Legal Pages -->
+  <!-- ========================================== -->
+  <!-- TIER 4: LEGAL COMPLIANCE (Priority 0.3-0.2) -->
+  <!-- ========================================== -->
+
+  <!-- Privacy Policy -->
   <url>
     <loc>https://reciperevamped.com/privacy</loc>
-    <lastmod>2024-12-14</lastmod>
-    <changefreq>yearly</changefreq>
+    <lastmod>2024-12-22</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.3</priority>
   </url>
 
+  <!-- Terms of Use -->
   <url>
     <loc>https://reciperevamped.com/terms</loc>
-    <lastmod>2024-12-14</lastmod>
-    <changefreq>yearly</changefreq>
+    <lastmod>2024-12-22</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.3</priority>
   </url>
 
+  <!-- Cookie Policy -->
   <url>
     <loc>https://reciperevamped.com/cookies</loc>
-    <lastmod>2024-12-14</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
+    <lastmod>2024-12-22</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.25</priority>
   </url>
-
 </urlset>

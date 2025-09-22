@@ -1,55 +1,224 @@
-# Recipe Revamped - Robots.txt for SEO Optimization
+# Recipe Revamped - Professional SEO Robots.txt
+# AI-powered recipe converter for dietary restrictions & meal planning
+# Last updated: 2024-12-22
+
+# ========================================
+# GLOBAL SEARCH ENGINE DIRECTIVES
+# ========================================
 
 User-agent: *
 Allow: /
 
-# High-priority pages for indexing
+# ========================================
+# HIGH-PRIORITY PUBLIC PAGES
+# ========================================
+
+# Core application pages (highest SEO value)
 Allow: /
 Allow: /app
 Allow: /about
 Allow: /contact
 Allow: /blog
+Allow: /blog/*
+
+# Authentication pages (user acquisition)
 Allow: /signin
 Allow: /signup
 
-# Policy pages - allow but lower priority
+# Legal compliance pages (required but lower priority)
 Allow: /privacy
 Allow: /terms
 Allow: /cookies
 
-# Block admin and internal pages
-Disallow: /admin
+# ========================================
+# BLOCKED PATHS - SECURITY & PERFORMANCE
+# ========================================
+
+# Authentication & verification flows (prevent indexing of sensitive flows)
+Disallow: /verify-email
+Disallow: /verify-email-debug
+Disallow: /password-recovery
+Disallow: /auth/
+Disallow: /__/auth/
+Disallow: /finishSignUp
+Disallow: /emulator/
+Disallow: /action
+Disallow: /handler
+
+# API endpoints and backend resources
 Disallow: /api/
-Disallow: /_next/
+Disallow: /functions/
+Disallow: /__/
+
+# Development and build files
 Disallow: /src/
 Disallow: /node_modules/
+Disallow: /_next/
+Disallow: /dist/
+Disallow: /build/
 
-# Block sensitive or duplicate content
-Disallow: /password-reset
-Disallow: /email-verification
+# Admin and internal management
+Disallow: /admin
+Disallow: /admin/
+Disallow: /dashboard/admin
+Disallow: /settings/admin
+
+# User-specific and dynamic content
+Disallow: /settings
+Disallow: /user/
+Disallow: /profile/
+Disallow: /account/
+
+# Query parameters that create duplicate content
 Disallow: /*?success=*
 Disallow: /*?canceled=*
 Disallow: /*?error=*
+Disallow: /*?utm_*
+Disallow: /*?ref=*
+Disallow: /*?fbclid=*
+Disallow: /*?gclid=*
+Disallow: /*?session*
+Disallow: /*?token*
 
-# Allow search engines to crawl CSS and JS for better rendering
+# File types that shouldn't be indexed
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*.txt$
+Disallow: /*.log$
+Disallow: /*.pdf$
+Disallow: /*.doc$
+Disallow: /*.docx$
+
+# ========================================
+# ALLOWED RESOURCES FOR RENDERING
+# ========================================
+
+# Critical for proper page rendering and Core Web Vitals
 Allow: /*.css$
 Allow: /*.js$
+Allow: /*.woff$
+Allow: /*.woff2$
+Allow: /*.ttf$
+Allow: /*.svg$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.webp$
+Allow: /*.ico$
 
-# Sitemap location
-Sitemap: https://reciperevamped.com/sitemap.xml
+# ========================================
+# MAJOR SEARCH ENGINE OPTIMIZATION
+# ========================================
 
-# Crawl delay (optional - be respectful to smaller bots)
-Crawl-delay: 1
-
-# Specific instructions for major search engines
+# Google (fastest crawling, highest priority)
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 0
+Request-rate: 1/1s
 
+# Microsoft Bing
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
+Request-rate: 1/2s
 
+# Yahoo (Verizon Media)
 User-agent: Slurp
 Allow: /
 Crawl-delay: 2
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+# Yandex (important for international users)
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 2
+
+# ========================================
+# AI & SPECIALIZED CRAWLERS
+# ========================================
+
+# OpenAI (ChatGPT, GPT models)
+User-agent: ChatGPT-User
+Allow: /
+Allow: /about
+Allow: /contact
+Disallow: /app
+Disallow: /signin
+Disallow: /signup
+
+User-agent: CCBot
+Allow: /
+Allow: /about
+Allow: /contact
+Disallow: /app
+
+# Anthropic Claude
+User-agent: Claude-Web
+Allow: /
+Allow: /about
+Allow: /contact
+Disallow: /app
+
+# Google Bard/Gemini
+User-agent: Google-Extended
+Allow: /
+Allow: /about
+Allow: /contact
+Disallow: /app
+
+# ========================================
+# SOCIAL MEDIA CRAWLERS
+# ========================================
+
+# Facebook/Meta
+User-agent: facebookexternalhit
+Allow: /
+Crawl-delay: 1
+
+# Twitter/X
+User-agent: Twitterbot
+Allow: /
+Crawl-delay: 1
+
+# LinkedIn
+User-agent: LinkedInBot
+Allow: /
+Crawl-delay: 2
+
+# ========================================
+# BAD BOTS & SECURITY
+# ========================================
+
+# Block aggressive scrapers and malicious bots
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+# ========================================
+# SITEMAP DECLARATION
+# ========================================
+
+Sitemap: https://reciperevamped.com/sitemap.xml
+Sitemap: https://reciperevamped.com/sitemap-blog.xml
+
+# ========================================
+# CONTACT INFORMATION
+# ========================================
+
+# Website: https://reciperevamped.com
+# Support: support@reciperevamped.com
