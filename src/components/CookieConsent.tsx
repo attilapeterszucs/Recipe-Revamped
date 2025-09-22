@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Cookie, Shield, Eye, Settings, X, CheckCircle, AlertTriangle, Info } from 'lucide-react';
 import type { CookiePreferences } from '../types/cookies';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Switch } from './ui/switch';
+import { Badge } from './ui/badge';
+import { Separator } from './ui/separator';
+import { Alert, AlertDescription } from './ui/alert';
 
 interface CookieConsentProps {
   onAcceptAll: (preferences: CookiePreferences) => void;
@@ -15,7 +21,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
   onReject
 }) => {
   const [currentView, setCurrentView] = useState<'banner' | 'detailed'>('banner');
-  
+
   const [preferences, setPreferences] = useState<CookiePreferences>({
     essential: true, // Always true, cannot be disabled
     analytics: false,
@@ -32,7 +38,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
       preferences: true,
       marketing: false // We don't use marketing cookies
     };
-    
+
     saveConsent(allAccepted);
     onAcceptAll(allAccepted);
   };
@@ -44,7 +50,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
       preferences: false,
       marketing: false
     };
-    
+
     saveConsent(essentialOnly);
     onReject();
   };
@@ -62,7 +68,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
 
   const togglePreference = (key: keyof CookiePreferences) => {
     if (key === 'essential') return; // Essential cookies cannot be disabled
-    
+
     setPreferences(prev => ({
       ...prev,
       [key]: !prev[key]
@@ -72,17 +78,17 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center pointer-events-none">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/20 backdrop-blur-sm pointer-events-auto"
         onClick={() => currentView === 'detailed' ? setCurrentView('banner') : undefined}
       />
-      
+
       {/* Cookie Consent Popup */}
       <div className="relative w-full max-w-4xl mx-4 mb-4 pointer-events-auto">
-        <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+        <Card className="shadow-2xl overflow-hidden">
           {currentView === 'banner' ? (
             // Simple Banner View
-            <div className="p-6">
+            <CardContent className="p-6">
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center">
@@ -90,8 +96,8 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                     <Cookie className="w-6 h-6 text-orange-600" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">We value your privacy</h2>
-                    <p className="text-sm text-gray-600">Choose how we use cookies to improve your experience</p>
+                    <h2 className="text-xl font-bold text-foreground">We value your privacy</h2>
+                    <p className="text-sm text-muted-foreground">Choose how we use cookies to improve your experience</p>
                   </div>
                 </div>
                 {/* Removed dismiss button - consent is required */}
@@ -99,253 +105,264 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
 
               {/* Content */}
               <div className="mb-6">
-                <p className="text-gray-700 mb-3">
-                  We use cookies to provide essential functionality, remember your preferences, and analyze usage to improve our service. 
+                <p className="text-foreground mb-3">
+                  We use cookies to provide essential functionality, remember your preferences, and analyze usage to improve our service.
                   Recipe processing is powered by OpenAI with automatic consent for AI data sharing.
                 </p>
-                
+
                 {/* Privacy Highlights */}
-                <div className="bg-green-50 rounded-lg p-3 mb-4 border border-green-200">
-                  <div className="flex items-center text-green-800 text-sm">
-                    <Shield className="w-4 h-4 mr-2 flex-shrink-0" />
+                <Alert className="bg-green-50 border-green-200 mb-4">
+                  <Shield className="w-4 h-4 text-green-600" />
+                  <AlertDescription className="text-green-800 text-sm">
                     <span className="font-medium">Privacy-focused:</span>
                     <span className="ml-1">Google Analytics only • OpenAI API processing • GDPR & CCPA compliant</span>
-                  </div>
-                </div>
+                  </AlertDescription>
+                </Alert>
 
                 {/* Quick Options */}
-                <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                   <span>Essential cookies are always active</span>
-                  <button
+                  <Button
+                    variant="link"
                     onClick={() => setCurrentView('detailed')}
-                    className="flex items-center text-blue-600 hover:text-blue-700 font-medium"
+                    className="h-auto p-0 text-blue-600 hover:text-blue-700 font-medium"
                   >
                     Customize settings
                     <Settings className="w-4 h-4 ml-1" />
-                  </button>
+                  </Button>
                 </div>
               </div>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
-                <button
+                <Button
                   onClick={handleAcceptAll}
-                  className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                  className="flex-1 bg-green-600 hover:bg-green-700"
                 >
                   Accept all cookies
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleRejectAll}
-                  className="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                  variant="outline"
+                  className="flex-1"
                 >
                   Reject optional cookies
-                </button>
+                </Button>
               </div>
 
               {/* Legal Links */}
-              <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
-                <Link to="/privacy" className="hover:text-gray-700 transition-colors">Privacy Policy</Link>
-                <Link to="/cookies" className="hover:text-gray-700 transition-colors">Cookie Policy</Link>
-                <Link to="/terms" className="hover:text-gray-700 transition-colors">Terms of Service</Link>
+              <Separator className="mt-4" />
+              <div className="flex flex-wrap gap-4 mt-4 text-xs text-muted-foreground">
+                <Link to="/privacy" className="hover:text-foreground transition-colors underline">Privacy Policy</Link>
+                <Link to="/cookies" className="hover:text-foreground transition-colors underline">Cookie Policy</Link>
+                <Link to="/terms" className="hover:text-foreground transition-colors underline">Terms of Service</Link>
                 <span>•</span>
                 <span>Your choices will be saved for 6 months</span>
               </div>
-            </div>
+            </CardContent>
           ) : (
             // Detailed Settings View
             <div className="max-h-[80vh] overflow-y-auto">
               {/* Header */}
-              <div className="sticky top-0 bg-white border-b border-gray-200 p-6">
+              <CardHeader className="sticky top-0 bg-background border-b">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => setCurrentView('banner')}
-                      className="p-2 mr-2 text-gray-400 hover:text-gray-600 transition-colors"
+                      className="mr-2"
                     >
                       <X className="w-5 h-5" />
-                    </button>
+                    </Button>
                     <div>
-                      <h2 className="text-xl font-bold text-gray-900">Cookie Settings</h2>
-                      <p className="text-sm text-gray-600">Manage your cookie preferences</p>
+                      <CardTitle className="text-xl">Cookie Settings</CardTitle>
+                      <CardDescription>Manage your cookie preferences</CardDescription>
                     </div>
                   </div>
-                  <div className="flex items-center text-sm text-gray-500">
+                  <Badge variant="outline" className="text-xs">
                     <Info className="w-4 h-4 mr-1" />
                     GDPR & CCPA Compliant
-                  </div>
+                  </Badge>
                 </div>
-              </div>
+              </CardHeader>
 
               {/* Cookie Categories */}
-              <div className="p-6 space-y-6">
+              <CardContent className="p-6 space-y-6">
                 {/* Essential Cookies */}
-                <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start flex-1">
-                      <Shield className="w-6 h-6 text-green-600 mr-3 mt-0.5" />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold text-gray-900">Essential Cookies</h3>
-                          <div className="flex items-center">
-                            <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                            <span className="text-sm font-medium text-green-700">Always Active</span>
+                <Card className="bg-green-50 border-green-200">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start flex-1">
+                        <Shield className="w-6 h-6 text-green-600 mr-3 mt-0.5" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">Essential Cookies</CardTitle>
+                            <Badge className="bg-green-600 hover:bg-green-700">
+                              <CheckCircle className="w-4 h-4 mr-1" />
+                              Always Active
+                            </Badge>
+                          </div>
+                          <CardDescription className="text-sm mt-1 mb-3">
+                            Required for authentication, security, and basic website functionality. Cannot be disabled.
+                          </CardDescription>
+                          <div className="text-xs text-muted-foreground">
+                            <strong>Examples:</strong> Login sessions, security tokens, form submissions
                           </div>
                         </div>
-                        <p className="text-gray-700 text-sm mt-1 mb-3">
-                          Required for authentication, security, and basic website functionality. Cannot be disabled.
-                        </p>
-                        <div className="text-xs text-gray-600">
-                          <strong>Examples:</strong> Login sessions, security tokens, form submissions
-                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </CardHeader>
+                </Card>
 
                 {/* Analytics Cookies */}
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start flex-1">
-                      <Eye className="w-6 h-6 text-purple-600 mr-3 mt-0.5" />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold text-gray-900">Analytics Cookies</h3>
-                          <button
-                            onClick={() => togglePreference('analytics')}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              preferences.analytics ? 'bg-green-600' : 'bg-gray-300'
-                            }`}
-                          >
-                            <span
-                              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                preferences.analytics ? 'translate-x-6' : 'translate-x-1'
-                              }`}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start flex-1">
+                        <Eye className="w-6 h-6 text-purple-600 mr-3 mt-0.5" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">Analytics Cookies</CardTitle>
+                            <Switch
+                              checked={preferences.analytics}
+                              onCheckedChange={() => togglePreference('analytics')}
                             />
-                          </button>
-                        </div>
-                        <p className="text-gray-700 text-sm mt-1 mb-3">
-                          Help us understand how you use our service to improve performance and user experience.
-                        </p>
-                        <div className="text-xs text-gray-600 mb-2">
-                          <strong>Google Analytics:</strong> Page views, feature usage, performance metrics (no personal recipe content)
-                        </div>
-                        <div className="bg-white rounded p-2 text-xs text-gray-600 border border-gray-200">
-                          <strong>Privacy protection:</strong> No personal information • No recipe content tracked • Standard Google Analytics data collection
+                          </div>
+                          <CardDescription className="text-sm mt-1 mb-3">
+                            Help us understand how you use our service to improve performance and user experience.
+                          </CardDescription>
+                          <div className="text-xs text-muted-foreground mb-2">
+                            <strong>Google Analytics:</strong> Page views, feature usage, performance metrics (no personal recipe content)
+                          </div>
+                          <Alert className="border-muted">
+                            <AlertDescription className="text-xs">
+                              <strong>Privacy protection:</strong> No personal information • No recipe content tracked • Standard Google Analytics data collection
+                            </AlertDescription>
+                          </Alert>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </CardHeader>
+                </Card>
 
                 {/* Preference Cookies */}
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start flex-1">
-                      <Settings className="w-6 h-6 text-blue-600 mr-3 mt-0.5" />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold text-gray-900">Preference Cookies</h3>
-                          <button
-                            onClick={() => togglePreference('preferences')}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              preferences.preferences ? 'bg-green-600' : 'bg-gray-300'
-                            }`}
-                          >
-                            <span
-                              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                preferences.preferences ? 'translate-x-6' : 'translate-x-1'
-                              }`}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start flex-1">
+                        <Settings className="w-6 h-6 text-blue-600 mr-3 mt-0.5" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">Preference Cookies</CardTitle>
+                            <Switch
+                              checked={preferences.preferences}
+                              onCheckedChange={() => togglePreference('preferences')}
                             />
-                          </button>
-                        </div>
-                        <p className="text-gray-700 text-sm mt-1 mb-3">
-                          Remember your settings, preferences, and choices to provide a personalized experience.
-                        </p>
-                        <div className="text-xs text-gray-600 mb-2">
-                          <strong>What we remember:</strong> Theme preferences, dietary filter selections, UI settings
-                        </div>
-                        <div className="bg-blue-50 rounded p-2 text-xs text-blue-700 border border-blue-200">
-                          <strong>Recommended:</strong> Enables a more personalized and convenient experience
+                          </div>
+                          <CardDescription className="text-sm mt-1 mb-3">
+                            Remember your settings, preferences, and choices to provide a personalized experience.
+                          </CardDescription>
+                          <div className="text-xs text-muted-foreground mb-2">
+                            <strong>What we remember:</strong> Theme preferences, dietary filter selections, UI settings
+                          </div>
+                          <Alert className="bg-blue-50 border-blue-200">
+                            <AlertDescription className="text-xs text-blue-700">
+                              <strong>Recommended:</strong> Enables a more personalized and convenient experience
+                            </AlertDescription>
+                          </Alert>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </CardHeader>
+                </Card>
 
                 {/* Marketing Cookies (Disabled) */}
-                <div className="bg-gray-100 rounded-lg p-4 border border-gray-200 opacity-75">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start flex-1">
-                      <AlertTriangle className="w-6 h-6 text-gray-400 mr-3 mt-0.5" />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold text-gray-500">Marketing Cookies</h3>
-                          <span className="text-sm font-medium text-gray-500 bg-gray-200 px-2 py-1 rounded">Not Used</span>
-                        </div>
-                        <p className="text-gray-600 text-sm mt-1 mb-3">
-                          We don't use marketing or advertising cookies. This category is shown for transparency.
-                        </p>
-                        <div className="bg-green-100 rounded p-2 text-xs text-green-700 border border-green-200">
-                          <strong>Privacy commitment:</strong> No advertising networks • No tracking pixels • No behavioral profiling
+                <Card className="bg-muted/30 opacity-75">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start flex-1">
+                        <AlertTriangle className="w-6 h-6 text-muted-foreground mr-3 mt-0.5" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg text-muted-foreground">Marketing Cookies</CardTitle>
+                            <Badge variant="secondary">
+                              Not Used
+                            </Badge>
+                          </div>
+                          <CardDescription className="text-sm mt-1 mb-3">
+                            We don't use marketing or advertising cookies. This category is shown for transparency.
+                          </CardDescription>
+                          <Alert className="bg-green-100 border-green-200">
+                            <AlertDescription className="text-xs text-green-700">
+                              <strong>Privacy commitment:</strong> No advertising networks • No tracking pixels • No behavioral profiling
+                            </AlertDescription>
+                          </Alert>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </CardHeader>
+                </Card>
 
                 {/* Third-Party Services Info */}
-                <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-                  <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
-                    <Info className="w-5 h-5 text-yellow-600 mr-2" />
-                    Third-Party Services
-                  </h4>
-                  <p className="text-gray-700 text-sm mb-3">
-                    We use minimal third-party services, each with their own privacy policies:
-                  </p>
-                  <div className="grid md:grid-cols-2 gap-3 text-xs">
-                    <div className="bg-white rounded p-2 border border-yellow-200">
-                      <strong>Firebase (Google):</strong> Authentication & secure storage
+                <Alert className="bg-yellow-50 border-yellow-200">
+                  <Info className="w-4 h-4 text-yellow-600" />
+                  <AlertDescription>
+                    <h4 className="font-semibold text-foreground mb-2">
+                      Third-Party Services
+                    </h4>
+                    <p className="text-foreground text-sm mb-3">
+                      We use minimal third-party services, each with their own privacy policies:
+                    </p>
+                    <div className="grid md:grid-cols-2 gap-3 text-xs">
+                      <Card className="p-2">
+                        <strong>Firebase (Google):</strong> Authentication & secure storage
+                      </Card>
+                      <Card className="p-2">
+                        <strong>Netlify:</strong> Hosting & content delivery
+                      </Card>
                     </div>
-                    <div className="bg-white rounded p-2 border border-yellow-200">
-                      <strong>Netlify:</strong> Hosting & content delivery
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
 
               {/* Action Buttons */}
-              <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6">
+              <div className="sticky bottom-0 bg-background border-t p-6">
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <button
+                  <Button
                     onClick={handleSavePreferences}
-                    className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                    className="flex-1"
                   >
                     Save my preferences
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleAcceptAll}
-                    className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                    className="flex-1 bg-green-600 hover:bg-green-700"
                   >
                     Accept all
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleRejectAll}
-                    className="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                    variant="outline"
+                    className="flex-1"
                   >
                     Reject optional
-                  </button>
+                  </Button>
                 </div>
 
                 {/* Legal Compliance Info */}
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500">
+                <Separator className="mt-4" />
+                <div className="mt-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-muted-foreground">
                     <div className="flex flex-wrap gap-3">
-                      <Link to="/privacy" className="hover:text-gray-700 transition-colors">Privacy Policy</Link>
-                      <Link to="/cookies" className="hover:text-gray-700 transition-colors">Cookie Policy</Link>
-                      <Link to="/terms" className="hover:text-gray-700 transition-colors">Terms of Service</Link>
+                      <Link to="/privacy" className="hover:text-foreground transition-colors underline">Privacy Policy</Link>
+                      <Link to="/cookies" className="hover:text-foreground transition-colors underline">Cookie Policy</Link>
+                      <Link to="/terms" className="hover:text-foreground transition-colors underline">Terms of Service</Link>
                     </div>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                      <span>GDPR & CCPA Rights</span>
+                      <Badge variant="outline" className="text-xs">
+                        GDPR & CCPA Rights
+                      </Badge>
                       <span className="hidden sm:inline">•</span>
                       <span>Consent expires in 6 months</span>
                     </div>
@@ -354,7 +371,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
               </div>
             </div>
           )}
-        </div>
+        </Card>
       </div>
     </div>
   );
