@@ -23,15 +23,22 @@ export class SubscriptionExpiryChecker {
       const now = new Date();
       const endDate = subscription.endDate ? subscription.endDate.toDate() : null;
 
-      // Log endDate to browser console for debugging
+      // Log subscription details to browser console for debugging
+      console.log('📊 Subscription Status:', subscription.status);
+      console.log('📦 Current Plan:', subscription.plan);
+
       if (endDate) {
         console.log('📅 Subscription End Date:', endDate.toISOString());
         console.log('🕐 Current Date:', now.toISOString());
         console.log('⏰ Days until expiry:', Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
-        console.log('📊 Subscription Status:', subscription.status);
-        console.log('📦 Current Plan:', subscription.plan);
       } else {
         console.log('📅 No end date found for subscription');
+      }
+
+      // Handle different subscription scenarios
+      if (subscription.plan === 'free') {
+        console.log('🆓 User is on free plan - no subscription management needed');
+        return;
       }
 
       // Check if subscription is expired and was cancelled
@@ -50,10 +57,14 @@ export class SubscriptionExpiryChecker {
             downgradedAt: now.toISOString()
           }
         }));
-      } else if (subscription.status === 'active') {
+      } else if (subscription.status === 'active' && subscription.plan !== 'free') {
         console.log('✅ Subscription is active and not expired');
       } else if (subscription.status === 'cancelled' && endDate && endDate > now) {
         console.log('⏳ Subscription cancelled but still has access until:', endDate.toISOString());
+      } else if (subscription.status === 'cancelled' && !endDate) {
+        console.log('🔄 Subscription cancelled without end date - may need manual review');
+      } else {
+        console.log('❓ Subscription status unclear:', { status: subscription.status, plan: subscription.plan, hasEndDate: !!endDate });
       }
 
     } catch (error) {
