@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { SignUp } from '../components/Auth/SignUp';
+import { Button } from '../components/ui/button';
 
 export const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,19 +21,21 @@ export const SignUpPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200">
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center hover:opacity-75 transition-opacity">
               <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-8 w-8 mr-2" />
-              <span className="text-xl font-bold text-gray-900">Recipe Revamped</span>
+              <span className="text-xl font-bold text-foreground">Recipe Revamped</span>
             </Link>
-            <Link to="/" className="flex items-center text-gray-600 hover:text-green-600 transition-colors group">
-              <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              Back to Home
-            </Link>
+            <Button variant="ghost" asChild className="text-muted-foreground hover:text-primary">
+              <Link to="/" className="flex items-center group">
+                <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+                Back to Home
+              </Link>
+            </Button>
           </div>
         </div>
       </header>

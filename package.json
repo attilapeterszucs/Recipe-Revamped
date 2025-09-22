@@ -17,6 +17,7 @@
     "deploy:all": "npm run functions:deploy && npm run build && netlify deploy --prod --dir=dist"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@lexical/code": "^0.35.0",
     "@lexical/file": "^0.35.0",
     "@lexical/headless": "^0.35.0",
@@ -31,6 +32,7 @@
     "@lexical/text": "^0.35.0",
     "@lexical/utils": "^0.35.0",
     "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.7",
@@ -53,10 +55,11 @@
     "react": "^19.1.1",
     "react-colorful": "^5.6.1",
     "react-dom": "^19.1.1",
+    "react-hook-form": "^7.63.0",
     "react-router-dom": "^7.8.2",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^4.1.5"
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
