@@ -66,6 +66,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [editingRecipe, setEditingRecipe] = useState<SavedRecipe | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const recipesPerPage = 8;
   const { showSuccess, showError } = useToast();
 
@@ -211,6 +212,21 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   useEffect(() => {
     loadRecipes();
   }, [loadRecipes]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage === currentPage || isTransitioning) return;
+
+    setIsTransitioning(true);
+
+    // Short delay to allow fade-out animation
+    setTimeout(() => {
+      setCurrentPage(newPage);
+      // End transition after a brief moment for fade-in
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 150);
+    }, 150);
+  };
 
   const handleDeleteClick = (recipeId: string) => {
     setShowDeleteConfirm(recipeId);
@@ -505,7 +521,12 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         </div>
 
         {/* Recipe Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+        <div
+          data-recipes-grid
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 transition-all duration-300 ${
+            isTransitioning ? 'opacity-0 transform translate-y-2' : 'opacity-100 transform translate-y-0'
+          }`}
+        >
           {currentRecipes.map(recipe => {
             const recipeInfo = extractRecipeInfo(recipe.convertedRecipe);
             return (
@@ -655,8 +676,8 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             <div className="flex items-center space-x-2">
               {/* Previous Button */}
               <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                disabled={currentPage === 1}
+                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1 || isTransitioning}
                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
@@ -674,8 +695,9 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                     return (
                       <button
                         key={page}
-                        onClick={() => setCurrentPage(page)}
-                        className={`inline-flex items-center px-3 py-2 text-sm font-medium border rounded-lg ${
+                        onClick={() => handlePageChange(page)}
+                        disabled={isTransitioning}
+                        className={`inline-flex items-center px-3 py-2 text-sm font-medium border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
                           currentPage === page
                             ? 'bg-blue-50 text-blue-600 border-blue-200'
                             : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-50 hover:text-gray-700'
@@ -700,8 +722,8 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
 
               {/* Next Button */}
               <button
-                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                disabled={currentPage === totalPages}
+                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages || isTransitioning}
                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
