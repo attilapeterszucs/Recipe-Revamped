@@ -318,6 +318,10 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
   return (
     <Card className="w-full max-w-lg">
       <CardHeader className="text-center">
+        <div className="flex items-center justify-center mb-4">
+          <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-8 w-8 mr-2" />
+          <span className="text-xl font-bold text-foreground">Recipe Revamped</span>
+        </div>
         <CardTitle className="text-2xl">Sign In</CardTitle>
         <CardDescription>
           Welcome back! Please sign in to your account.
