@@ -930,8 +930,8 @@ async function handleCancellationRequest(req, res) {
       return;
     }
 
-    // Parse request body
-    const { userId, stripeSubscriptionId, stripeCustomerId, reason, idempotencyKey } = req.body;
+    // Parse request body - NOW INCLUDES IMMEDIATE PARAMETER
+    const { userId, stripeSubscriptionId, stripeCustomerId, reason, idempotencyKey, immediate } = req.body;
 
     // Validate required fields
     if (!userId) {
@@ -951,7 +951,7 @@ async function handleCancellationRequest(req, res) {
       }
     }
 
-    console.log(`[INFO] Cancellation request - User: ${userId}, Subscription: ${stripeSubscriptionId}, Customer: ${stripeCustomerId}`);
+    console.log(`[INFO] Cancellation request - User: ${userId}, Subscription: ${stripeSubscriptionId}, Customer: ${stripeCustomerId}, Immediate: ${immediate}`);
 
     // Atomic check and lock to prevent race conditions
     const lockKey = `cancel_lock_${userId}`;
@@ -983,7 +983,7 @@ async function handleCancellationRequest(req, res) {
 
       if (isTestOrAdminSubscription) {
         console.log('[WARN] Test/admin subscription detected - handling locally');
-        const result = await handleTestSubscriptionCancellation(userId, subscriptionData, reason);
+        const result = await handleTestSubscriptionCancellation(userId, subscriptionData, reason, immediate);
         await releaseLock(lockKey, operationId);
         res.status(200).json(result);
         return;
@@ -995,18 +995,30 @@ async function handleCancellationRequest(req, res) {
         return;
       }
 
-      // Cancel subscription in Stripe with idempotency
-      console.log(`[PROCESS] Cancelling Stripe subscription: ${actualStripeSubId}`);
+      // Cancel subscription in Stripe with different behavior based on immediate flag
+      console.log(`[PROCESS] Cancelling Stripe subscription: ${actualStripeSubId} (immediate: ${immediate})`);
 
       let stripeSubscription;
       try {
         const cancelIdempotencyKey = `cancel_stripe_${actualStripeSubId}_${Date.now()}`;
-        stripeSubscription = await stripeClient.subscriptions.cancel(actualStripeSubId, {
-          prorate: true, // Prorate the cancellation
-        }, {
-          idempotencyKey: cancelIdempotencyKey
-        });
-        console.log(`[SUCCESS] Stripe subscription cancelled: ${actualStripeSubId}`);
+
+        if (immediate) {
+          // Immediate cancellation - cancel subscription immediately
+          stripeSubscription = await stripeClient.subscriptions.cancel(actualStripeSubId, {
+            prorate: true, // Prorate the cancellation
+          }, {
+            idempotencyKey: cancelIdempotencyKey
+          });
+          console.log(`[SUCCESS] Stripe subscription cancelled immediately: ${actualStripeSubId}`);
+        } else {
+          // End-of-period cancellation - cancel at period end
+          stripeSubscription = await stripeClient.subscriptions.update(actualStripeSubId, {
+            cancel_at_period_end: true
+          }, {
+            idempotencyKey: cancelIdempotencyKey
+          });
+          console.log(`[SUCCESS] Stripe subscription scheduled for cancellation: ${actualStripeSubId}`);
+        }
       } catch (stripeError) {
         console.error(`[ERROR] Stripe cancellation failed:`, stripeError);
 
@@ -1018,26 +1030,47 @@ async function handleCancellationRequest(req, res) {
         console.log('[WARN] Subscription already cancelled in Stripe, proceeding with Firestore update');
       }
 
-      // Get current subscription end date to preserve access until expiry
+      // Update subscription in Firestore with different logic based on immediate flag
       const currentEndDate = subscriptionData.endDate;
       const now = new Date();
 
-      // Update subscription in Firestore - keep current plan active until expiry
-      const updateData = {
-        status: 'cancelled', // Mark as cancelled but keep plan active
-        cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
-        cancellationReason: reason || 'User requested',
-        willDowngradeAt: currentEndDate || admin.firestore.Timestamp.fromDate(now),
-        downgradeToPlan: 'free',
-        autoRenewal: false, // Prevent automatic renewal
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-        operationId // Track operation for debugging
-      };
+      let updateData;
 
-      // Keep Stripe IDs for potential reactivation or billing history
-      if (stripeSubscription) {
+      if (immediate) {
+        // Immediate cancellation - downgrade to free plan immediately
+        updateData = {
+          plan: 'free',
+          status: 'cancelled',
+          cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
+          cancellationReason: reason || 'User requested immediate cancellation',
+          downgradedAt: admin.firestore.FieldValue.serverTimestamp(),
+          endDate: null,
+          stripeSubscriptionId: null,
+          stripeCustomerId: null,
+          autoRenewal: false,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          operationId
+        };
+      } else {
+        // End-of-period cancellation - keep current plan active until expiry
+        updateData = {
+          status: 'cancelled',
+          cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
+          cancellationReason: reason || 'User requested',
+          willDowngradeAt: currentEndDate || admin.firestore.Timestamp.fromDate(now),
+          downgradeToPlan: 'free',
+          autoRenewal: false,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          operationId
+        };
+      }
+
+      // Keep Stripe IDs for potential reactivation or billing history (unless immediate)
+      if (stripeSubscription && !immediate) {
         updateData.stripeSubscriptionStatus = stripeSubscription.status;
-        updateData.stripeCancelledAt = admin.firestore.Timestamp.fromDate(new Date(stripeSubscription.canceled_at * 1000));
+        if (stripeSubscription.canceled_at) {
+          updateData.stripeCancelledAt = admin.firestore.Timestamp.fromDate(new Date(stripeSubscription.canceled_at * 1000));
+        }
       }
 
       await db.collection(SUBSCRIPTIONS_COLLECTION).doc(userId).update(updateData);
@@ -1051,26 +1084,29 @@ async function handleCancellationRequest(req, res) {
           stripeSubscriptionId: actualStripeSubId,
           stripeCustomerId: actualStripeCustomerId,
           reason: reason || 'User requested',
+          immediate: immediate || false,
           operationId,
           processingTime: Date.now() - startTime
         }
       });
 
       const processingTime = Date.now() - startTime;
-      console.log(`[SUCCESS] Subscription cancelled successfully in ${processingTime}ms`);
+      console.log(`[SUCCESS] Subscription ${immediate ? 'cancelled immediately' : 'scheduled for cancellation'} successfully in ${processingTime}ms`);
 
-      const willDowngradeAt = currentEndDate ? currentEndDate.toDate() : now;
+      const willDowngradeAt = immediate ? now : (currentEndDate ? currentEndDate.toDate() : now);
+      const currentPlan = immediate ? 'free' : subscriptionData.plan;
 
       const result = {
         success: true,
-        message: 'Subscription cancelled successfully',
+        message: immediate ? 'Subscription cancelled immediately' : 'Subscription cancelled successfully',
         userId,
-        currentPlan: subscriptionData.plan, // Keep current plan until expiry
+        currentPlan: currentPlan,
         willDowngradeTo: 'free',
         willDowngradeAt: willDowngradeAt.toISOString(),
         cancelledAt: new Date().toISOString(),
         processing_time: processingTime,
-        operationId
+        operationId,
+        immediate: immediate || false
       };
 
       // Cache result for idempotency
@@ -1111,31 +1147,46 @@ async function handleCancellationRequest(req, res) {
   }
 }
 
-async function handleTestSubscriptionCancellation(userId, subscriptionData, reason) {
+async function handleTestSubscriptionCancellation(userId, subscriptionData, reason, immediate = false) {
   try {
-    // For test/admin subscriptions, delete completely
-    const updateData = {
-      plan: 'free',
-      status: 'cancelled',
-      cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
-      cancellationReason: reason || 'Test/admin subscription cancelled',
-      willDowngradeAt: admin.firestore.FieldValue.serverTimestamp(),
-      downgradeToPlan: 'free',
-      endDate: null,
-      autoRenewal: false,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    };
+    let updateData;
+
+    if (immediate) {
+      // Immediate cancellation for test subscriptions
+      updateData = {
+        plan: 'free',
+        status: 'cancelled',
+        cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
+        cancellationReason: reason || 'Test/admin subscription cancelled immediately',
+        downgradedAt: admin.firestore.FieldValue.serverTimestamp(),
+        endDate: null,
+        autoRenewal: false,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      };
+    } else {
+      // End-of-period cancellation for test subscriptions
+      updateData = {
+        status: 'cancelled',
+        cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
+        cancellationReason: reason || 'Test/admin subscription cancelled',
+        willDowngradeAt: subscriptionData.endDate || admin.firestore.FieldValue.serverTimestamp(),
+        downgradeToPlan: 'free',
+        autoRenewal: false,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      };
+    }
 
     await db.collection(SUBSCRIPTIONS_COLLECTION).doc(userId).update(updateData);
 
     return {
       success: true,
-      message: 'Test subscription cancelled successfully',
+      message: immediate ? 'Test subscription cancelled immediately' : 'Test subscription cancelled successfully',
       userId,
-      currentPlan: 'free',
+      currentPlan: immediate ? 'free' : subscriptionData.plan,
       willDowngradeTo: 'free',
       cancelledAt: new Date().toISOString(),
-      note: 'Test/admin subscription cancelled - immediately reverted to free plan'
+      immediate: immediate,
+      note: immediate ? 'Test/admin subscription cancelled - immediately reverted to free plan' : 'Test/admin subscription will downgrade at end of period'
     };
 
   } catch (error) {
