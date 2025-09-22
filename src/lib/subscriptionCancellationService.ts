@@ -11,6 +11,7 @@ export interface CancellationRequest {
   stripeSubscriptionId?: string;
   stripeCustomerId?: string;
   reason?: string;
+  immediate?: boolean; // For account deletion - terminate immediately
 }
 
 export interface CancellationResponse {
@@ -29,7 +30,7 @@ export interface CancellationResponse {
 export class SubscriptionCancellationService {
 
   /**
-   * Cancel user's subscription in both Stripe and Firestore
+   * Cancel user's subscription in both Stripe and Firestore (end-of-period)
    */
   static async cancelSubscription(reason?: string): Promise<CancellationResponse> {
     try {
@@ -90,7 +91,8 @@ export class SubscriptionCancellationService {
         userId: currentUser.uid,
         stripeSubscriptionId: stripeSubscriptionId || undefined,
         stripeCustomerId: stripeCustomerId || undefined,
-        reason: reason || 'User requested cancellation'
+        reason: reason || 'User requested cancellation',
+        immediate: false // End-of-period cancellation
       };
 
 
@@ -133,6 +135,113 @@ export class SubscriptionCancellationService {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred',
         message: 'Failed to cancel subscription. Please try again or contact support.'
+      };
+    }
+  }
+
+  /**
+   * Cancel user's subscription immediately (for account deletion)
+   */
+  static async cancelSubscriptionImmediately(reason?: string): Promise<CancellationResponse> {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        throw new Error('User not authenticated');
+      }
+
+      // Get current subscription details
+      const currentSubscription = await SubscriptionService.getUserSubscription(currentUser.uid);
+      if (!currentSubscription || currentSubscription.plan === 'free') {
+        return {
+          success: true,
+          message: 'No active subscription to cancel',
+          userId: currentUser.uid,
+          currentPlan: 'free'
+        };
+      }
+
+      // Check if we have Stripe IDs
+      const stripeSubscriptionId = currentSubscription.stripeSubscriptionId;
+      const stripeCustomerId = currentSubscription.stripeCustomerId;
+
+      if (!stripeSubscriptionId && !stripeCustomerId) {
+        // For subscriptions without Stripe IDs (like admin-set/test subscriptions), delete completely
+        const success = await SubscriptionService.deleteSubscription(currentUser.uid);
+
+        if (success) {
+          // Trigger UI refresh
+          window.dispatchEvent(new CustomEvent('subscription-cancelled', {
+            detail: {
+              userId: currentUser.uid,
+              currentPlan: 'free',
+              willDowngradeTo: 'free',
+              cancelledAt: new Date().toISOString(),
+              note: 'Test/admin subscription deleted immediately'
+            }
+          }));
+
+          return {
+            success: true,
+            message: 'Subscription terminated immediately',
+            userId: currentUser.uid,
+            currentPlan: 'free',
+            willDowngradeTo: 'free',
+            cancelledAt: new Date().toISOString(),
+            note: 'Test/admin subscription deleted - immediately reverted to free plan'
+          };
+        } else {
+          return {
+            success: false,
+            error: 'Failed to delete test/admin subscription'
+          };
+        }
+      }
+
+      // Prepare immediate cancellation request with Stripe IDs
+      const cancellationRequest: CancellationRequest = {
+        userId: currentUser.uid,
+        stripeSubscriptionId: stripeSubscriptionId || undefined,
+        stripeCustomerId: stripeCustomerId || undefined,
+        reason: reason || 'Account deletion - immediate termination required',
+        immediate: true // Immediate cancellation
+      };
+
+      // Get auth token for authenticated request
+      const idToken = await currentUser.getIdToken();
+
+      // Call Cloud Run webhook service to cancel subscription immediately
+      const response = await fetch(`${STRIPE_WEBHOOK_URL}/cancel-subscription`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+          'Origin': window.location.origin
+        },
+        body: JSON.stringify(cancellationRequest)
+      });
+
+      const result: CancellationResponse = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      if (result.success) {
+        // Force refresh subscription status in UI
+        window.dispatchEvent(new CustomEvent('subscription-cancelled', {
+          detail: result
+        }));
+
+        return result;
+      } else {
+        throw new Error(result.error || 'Immediate cancellation failed');
+      }
+
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        message: 'Failed to cancel subscription immediately. Please try again or contact support.'
       };
     }
   }

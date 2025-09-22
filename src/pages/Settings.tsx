@@ -217,12 +217,22 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       if (currentPlan && currentPlan !== 'free') {
         try {
           console.log(`🚫 Auto-cancelling subscription due to account ${action}`);
-          const cancellationResult = await SubscriptionCancellationService.cancelSubscription(
-            `Account ${action === 'deactivate' ? 'deactivation' : 'deletion'} - automatic cancellation`
-          );
+
+          let cancellationResult;
+          if (action === 'deactivate') {
+            // For deactivation: End-of-period cancellation (keep access until expiry)
+            cancellationResult = await SubscriptionCancellationService.cancelSubscription(
+              'Account deactivation - subscription will remain active until expiry'
+            );
+          } else {
+            // For deletion: Immediate cancellation (terminate access immediately)
+            cancellationResult = await SubscriptionCancellationService.cancelSubscriptionImmediately(
+              'Account deletion - immediate subscription termination'
+            );
+          }
 
           if (cancellationResult.success) {
-            console.log('✅ Subscription automatically cancelled due to account action');
+            console.log(`✅ Subscription automatically ${action === 'deactivate' ? 'scheduled for cancellation' : 'terminated immediately'} due to account ${action}`);
           } else {
             console.warn('⚠️ Could not automatically cancel subscription:', cancellationResult.error);
           }
