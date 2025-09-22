@@ -498,23 +498,31 @@ async function handlePaymentSucceeded(invoice) {
   try {
     console.log(`💳 Payment succeeded: ${invoice.id}`);
 
-    const customerId = invoice.customer;
+    const stripeCustomerId = invoice.customer;
     const subscriptionId = invoice.subscription;
 
     if (subscriptionId) {
+      // Find the Firebase user ID by Stripe customer ID
+      const userId = await findUserIdByStripeCustomerId(stripeCustomerId);
+
+      if (!userId) {
+        console.error(`❌ No user found for Stripe customer ID: ${stripeCustomerId}`);
+        return;
+      }
+
       // Retrieve subscription details
       const subscription = await stripeClient.subscriptions.retrieve(subscriptionId);
       const planInfo = determinePlanFromSubscription(subscription);
 
       if (planInfo) {
-        await renewSubscription(customerId, {
+        await renewSubscription(userId, {
           planInfo,
           currentPeriodStart: new Date(subscription.current_period_start * 1000),
           currentPeriodEnd: new Date(subscription.current_period_end * 1000),
           paymentDate: new Date(invoice.created * 1000)
         });
 
-        console.log(`✅ Subscription renewed for customer: ${customerId}`);
+        console.log(`✅ Subscription renewed for user: ${userId} (Stripe customer: ${stripeCustomerId})`);
       }
     }
 
@@ -527,15 +535,23 @@ async function handlePaymentFailed(invoice) {
   try {
     console.log(`❌ Payment failed: ${invoice.id}`);
 
-    const customerId = invoice.customer;
+    const stripeCustomerId = invoice.customer;
 
-    await updateSubscriptionStatus(customerId, {
+    // Find the Firebase user ID by Stripe customer ID
+    const userId = await findUserIdByStripeCustomerId(stripeCustomerId);
+
+    if (!userId) {
+      console.error(`❌ No user found for Stripe customer ID: ${stripeCustomerId}`);
+      return;
+    }
+
+    await updateSubscriptionStatus(userId, {
       status: 'past_due',
       lastFailedPaymentDate: new Date(invoice.created * 1000),
       failureReason: invoice.last_finalization_error?.message || 'Payment failed'
     });
 
-    console.log(`⚠️ Subscription marked as past_due for: ${customerId}`);
+    console.log(`⚠️ Subscription marked as past_due for: ${userId} (Stripe customer: ${stripeCustomerId})`);
 
   } catch (error) {
     console.error('❌ Payment failure handling error:', error);
@@ -572,9 +588,17 @@ async function handleSubscriptionCancelled(subscription) {
   try {
     console.log(`❌ Subscription cancelled: ${subscription.id}`);
 
-    const customerId = subscription.customer;
+    const stripeCustomerId = subscription.customer;
 
-    await updateSubscriptionStatus(customerId, {
+    // Find the Firebase user ID by Stripe customer ID
+    const userId = await findUserIdByStripeCustomerId(stripeCustomerId);
+
+    if (!userId) {
+      console.error(`❌ No user found for Stripe customer ID: ${stripeCustomerId}`);
+      return;
+    }
+
+    await updateSubscriptionStatus(userId, {
       status: 'cancelled',
       plan: 'free',
       cancelledAt: new Date(),
@@ -583,7 +607,7 @@ async function handleSubscriptionCancelled(subscription) {
       stripeCustomerId: null
     });
 
-    console.log(`✅ User downgraded to free plan: ${customerId}`);
+    console.log(`✅ User downgraded to free plan: ${userId} (Stripe customer: ${stripeCustomerId})`);
 
   } catch (error) {
     console.error('❌ Subscription cancellation error:', error);
@@ -593,6 +617,30 @@ async function handleSubscriptionCancelled(subscription) {
 // ============================================================================
 // SUBSCRIPTION MANAGEMENT UTILITIES
 // ============================================================================
+
+async function findUserIdByStripeCustomerId(stripeCustomerId) {
+  try {
+    // Query subscriptions collection to find document with matching stripeCustomerId
+    const subscriptionsRef = db.collection(SUBSCRIPTIONS_COLLECTION);
+    const querySnapshot = await subscriptionsRef.where('stripeCustomerId', '==', stripeCustomerId).get();
+
+    if (querySnapshot.empty) {
+      console.warn(`⚠️ No subscription found for Stripe customer ID: ${stripeCustomerId}`);
+      return null;
+    }
+
+    // Should only be one document, but take the first one
+    const doc = querySnapshot.docs[0];
+    const userId = doc.id; // Document ID is the Firebase user ID
+
+    console.log(`🔍 Found user ID: ${userId} for Stripe customer: ${stripeCustomerId}`);
+    return userId;
+
+  } catch (error) {
+    console.error('❌ Error finding user by Stripe customer ID:', error);
+    return null;
+  }
+}
 
 async function determinePlanFromSession(session) {
   try {
