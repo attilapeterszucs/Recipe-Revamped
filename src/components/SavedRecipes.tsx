@@ -65,6 +65,8 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [editingRecipe, setEditingRecipe] = useState<SavedRecipe | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recipesPerPage = 8;
   const { showSuccess, showError } = useToast();
 
   const loadRecipes = useCallback(async () => {
@@ -184,11 +186,19 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     });
     
     setFilteredRecipes(filtered);
+    // Reset to first page when filters change
+    setCurrentPage(1);
   }, [recipes, searchTerm, selectedFilter, selectedHealthCondition, selectedCategory, sortBy, sortOrder, featureAccess, userSettings]);
 
   // Get all unique dietary filters from recipes
   const availableFilters = [...new Set(recipes.flatMap(recipe => recipe.dietaryFilters))].sort();
-  
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredRecipes.length / recipesPerPage);
+  const startIndex = (currentPage - 1) * recipesPerPage;
+  const endIndex = startIndex + recipesPerPage;
+  const currentRecipes = filteredRecipes.slice(startIndex, endIndex);
+
   // Advanced category filters (only for Chef+ plans)
   const categoryFilters = [
     { value: '', label: 'All Categories' },
@@ -496,7 +506,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
 
         {/* Recipe Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {filteredRecipes.map(recipe => {
+          {currentRecipes.map(recipe => {
             const recipeInfo = extractRecipeInfo(recipe.convertedRecipe);
             return (
               <div 
@@ -632,6 +642,73 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             );
           })}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && filteredRecipes.length > 0 && (
+          <div className="mt-8 flex items-center justify-between border-t border-gray-200 pt-6">
+            <div className="flex items-center text-sm text-gray-600">
+              <span>
+                Showing {startIndex + 1} to {Math.min(endIndex, filteredRecipes.length)} of {filteredRecipes.length} recipes
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              {/* Previous Button */}
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                  // Show first page, last page, current page, and pages around current page
+                  if (
+                    page === 1 ||
+                    page === totalPages ||
+                    (page >= currentPage - 2 && page <= currentPage + 2)
+                  ) {
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`inline-flex items-center px-3 py-2 text-sm font-medium border rounded-lg ${
+                          currentPage === page
+                            ? 'bg-blue-50 text-blue-600 border-blue-200'
+                            : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-50 hover:text-gray-700'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  } else if (
+                    (page === currentPage - 3 && currentPage > 4) ||
+                    (page === currentPage + 3 && currentPage < totalPages - 3)
+                  ) {
+                    return (
+                      <span key={page} className="px-2 py-2 text-sm text-gray-400">
+                        ...
+                      </span>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* No Results */}
         {filteredRecipes.length === 0 && recipes.length > 0 && (
