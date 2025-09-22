@@ -3,6 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Shield, Lock, Database, Eye, Globe, Users, Settings, Mail, MapPin, Calendar, FileText, Zap, Server, CheckCircle } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { useAuth } from '../hooks/useAuth';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Separator } from '../components/ui/separator';
 
 export const PrivacyPolicy: React.FC = () => {
   const { user } = useAuth();
@@ -35,7 +39,7 @@ export const PrivacyPolicy: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <AuthAwareNavigation />
 
@@ -43,83 +47,92 @@ export const PrivacyPolicy: React.FC = () => {
         <div className="grid lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1 order-2 lg:order-1">
-            <div className="sticky top-20 sm:top-24 bg-white rounded-xl shadow-lg p-4 sm:p-6">
-              <h2 className="text-base sm:text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 sm:mb-4">Contents</h2>
-              <nav className="space-y-2">
-                {[
-                  { id: 'commitment', title: 'Our Commitment', icon: Shield },
-                  { id: 'information', title: 'Information We Collect', icon: Database },
-                  { id: 'usage', title: 'How We Use Information', icon: Settings },
-                  { id: 'local-processing', title: 'Local Processing Tech', icon: Zap },
-                  { id: 'security', title: 'Data Security', icon: Lock },
-                  { id: 'sharing', title: 'Information Sharing', icon: Users },
-                  { id: 'rights', title: 'Your Rights', icon: CheckCircle },
-                  { id: 'cookies', title: 'Cookies & Tracking', icon: Eye },
-                  { id: 'international', title: 'International Transfers', icon: Globe },
-                  { id: 'contact', title: 'Contact Us', icon: Mail }
-                ].map(({ id, title, icon: Icon }) => (
-                  <button
-                    key={id}
-                    onClick={() => scrollToSection(id)}
-                    className="flex items-center w-full text-left px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                  >
-                    <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                    <span className="truncate">{title}</span>
-                  </button>
-                ))}
-              </nav>
-            </div>
+            <Card className="sticky top-20 sm:top-24">
+              <CardHeader>
+                <CardTitle className="text-base sm:text-lg">Contents</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <nav className="space-y-2">
+                  {[
+                    { id: 'commitment', title: 'Our Commitment', icon: Shield },
+                    { id: 'information', title: 'Information We Collect', icon: Database },
+                    { id: 'usage', title: 'How We Use Information', icon: Settings },
+                    { id: 'local-processing', title: 'Local Processing Tech', icon: Zap },
+                    { id: 'security', title: 'Data Security', icon: Lock },
+                    { id: 'sharing', title: 'Information Sharing', icon: Users },
+                    { id: 'rights', title: 'Your Rights', icon: CheckCircle },
+                    { id: 'cookies', title: 'Cookies & Tracking', icon: Eye },
+                    { id: 'international', title: 'International Transfers', icon: Globe },
+                    { id: 'contact', title: 'Contact Us', icon: Mail }
+                  ].map(({ id, title, icon: Icon }) => (
+                    <Button
+                      key={id}
+                      variant="ghost"
+                      onClick={() => scrollToSection(id)}
+                      className="flex items-center w-full justify-start text-xs sm:text-sm h-auto py-2 px-2 sm:px-3"
+                    >
+                      <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+                      <span className="truncate">{title}</span>
+                    </Button>
+                  ))}
+                </nav>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Main Content */}
           <div className="lg:col-span-3 order-1 lg:order-2">
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+            <Card className="overflow-hidden">
               {/* Hero Section */}
-              <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12 text-white">
+              <CardHeader className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 text-white">
                 <div className="flex items-start sm:items-center mb-3 sm:mb-4">
                   <Shield className="w-5 h-5 sm:w-6 sm:h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 mr-2 sm:mr-3 flex-shrink-0" />
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">Privacy Policy</h1>
+                  <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-white">Privacy Policy</CardTitle>
                 </div>
-                <p className="text-base sm:text-lg lg:text-xl text-blue-100 mb-4 sm:mb-6 leading-relaxed">
+                <CardDescription className="text-base sm:text-lg lg:text-xl text-blue-100 mb-4 sm:mb-6 leading-relaxed">
                   Your privacy is our priority - built into every line of code
-                </p>
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6 text-blue-100">
-                  <div className="flex items-center">
+                </CardDescription>
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6">
+                  <Badge variant="secondary" className="bg-blue-100/20 text-blue-100 hover:bg-blue-100/30 w-fit">
                     <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    <span className="text-sm sm:text-base">Effective: September 13, 2025</span>
-                  </div>
-                  <div className="flex items-center">
+                    Effective: September 13, 2025
+                  </Badge>
+                  <Badge variant="secondary" className="bg-blue-100/20 text-blue-100 hover:bg-blue-100/30 w-fit">
                     <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    <span className="text-sm sm:text-base">Last Updated: September 13, 2025</span>
-                  </div>
+                    Last Updated: September 13, 2025
+                  </Badge>
                 </div>
-              </div>
+              </CardHeader>
 
-              <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 lg:space-y-12">
+              <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 lg:space-y-12">
                 {/* Privacy Highlights Banner */}
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4 sm:p-6 border border-green-200">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center">
-                    <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mr-2" />
-                    Privacy at a Glance
-                  </h3>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="bg-white rounded-lg p-4">
-                      <Server className="w-8 h-8 text-green-600 mb-2" />
-                      <h4 className="font-semibold text-gray-900">AI Processing</h4>
-                      <p className="text-sm text-gray-600">AI-powered recipe conversion with data protection</p>
+                <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+                  <CardHeader>
+                    <CardTitle className="text-lg sm:text-xl flex items-center">
+                      <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mr-2" />
+                      Privacy at a Glance
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <Card className="p-4">
+                        <Server className="w-8 h-8 text-green-600 mb-2" />
+                        <h4 className="font-semibold text-foreground">AI Processing</h4>
+                        <p className="text-sm text-muted-foreground">AI-powered recipe conversion with data protection</p>
+                      </Card>
+                      <Card className="p-4">
+                        <Lock className="w-8 h-8 text-blue-600 mb-2" />
+                        <h4 className="font-semibold text-foreground">Encrypted Storage</h4>
+                        <p className="text-sm text-muted-foreground">All user data securely stored with Firebase encryption</p>
+                      </Card>
+                      <Card className="p-4">
+                        <Eye className="w-8 h-8 text-purple-600 mb-2" />
+                        <h4 className="font-semibold text-foreground">No Tracking</h4>
+                        <p className="text-sm text-muted-foreground">No third-party trackers or advertising networks</p>
+                      </Card>
                     </div>
-                    <div className="bg-white rounded-lg p-4">
-                      <Lock className="w-8 h-8 text-blue-600 mb-2" />
-                      <h4 className="font-semibold text-gray-900">Encrypted Storage</h4>
-                      <p className="text-sm text-gray-600">All user data securely stored with Firebase encryption</p>
-                    </div>
-                    <div className="bg-white rounded-lg p-4">
-                      <Eye className="w-8 h-8 text-purple-600 mb-2" />
-                      <h4 className="font-semibold text-gray-900">No Tracking</h4>
-                      <p className="text-sm text-gray-600">No third-party trackers or advertising networks</p>
-                    </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
 
                 {/* Section 1: Our Commitment */}
                 <section id="commitment" className="scroll-mt-24">
@@ -128,20 +141,24 @@ export const PrivacyPolicy: React.FC = () => {
                       <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                     </div>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Our Commitment to Privacy</h2>
-                      <p className="text-gray-500">Privacy isn't just a feature - it's our foundation</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">Our Commitment to Privacy</h2>
+                      <p className="text-muted-foreground">Privacy isn't just a feature - it's our foundation</p>
                     </div>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-6">
-                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">
-                      At Recipe Revamped, privacy is not just a feature—it's the foundation of our service. We've built our entire 
-                      architecture around the principle that your recipes and dietary preferences are yours alone.
-                    </p>
-                    <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                      <p className="text-green-800 font-semibold">🔒 Privacy-First Architecture</p>
-                      <p className="text-green-700 mt-1">This Privacy Policy explains how we achieve maximum privacy and what limited information we do collect to provide you with the best service.</p>
-                    </div>
-                  </div>
+                  <Card className="bg-muted/30">
+                    <CardContent className="p-6">
+                      <p className="text-sm sm:text-base text-foreground leading-relaxed mb-3 sm:mb-4">
+                        At Recipe Revamped, privacy is not just a feature—it's the foundation of our service. We've built our entire
+                        architecture around the principle that your recipes and dietary preferences are yours alone.
+                      </p>
+                      <Card className="bg-green-50 border-green-200">
+                        <CardContent className="p-4">
+                          <p className="text-green-800 font-semibold">🔒 Privacy-First Architecture</p>
+                          <p className="text-green-700 mt-1">This Privacy Policy explains how we achieve maximum privacy and what limited information we do collect to provide you with the best service.</p>
+                        </CardContent>
+                      </Card>
+                    </CardContent>
+                  </Card>
                 </section>
 
                 {/* Section 2: Information We Collect */}
@@ -151,87 +168,105 @@ export const PrivacyPolicy: React.FC = () => {
                       <Database className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">1. Information We Collect</h2>
-                      <p className="text-gray-500">Only what's necessary to provide our service</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">1. Information We Collect</h2>
+                      <p className="text-muted-foreground">Only what's necessary to provide our service</p>
                     </div>
                   </div>
                   <div className="space-y-6">
-                    <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
-                        <Users className="w-5 h-5 text-blue-600 mr-2" />
-                        Account Information
-                      </h3>
-                      <p className="text-gray-700 mb-3">When you create an account, we collect:</p>
-                      <div className="grid md:grid-cols-2 gap-3">
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Email address</li>
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Password (encrypted and hashed)</li>
-                        </ul>
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Display name (optional)</li>
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Subscription plan information</li>
-                        </ul>
-                      </div>
-                    </div>
+                    <Card className="bg-blue-50 border-blue-200">
+                      <CardHeader>
+                        <CardTitle className="text-base sm:text-lg flex items-center">
+                          <Users className="w-5 h-5 text-blue-600 mr-2" />
+                          Account Information
+                        </CardTitle>
+                        <CardDescription>When you create an account, we collect:</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid md:grid-cols-2 gap-3">
+                          <ul className="space-y-2 text-foreground">
+                            <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Email address</li>
+                            <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Password (encrypted and hashed)</li>
+                          </ul>
+                          <ul className="space-y-2 text-foreground">
+                            <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Display name (optional)</li>
+                            <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Subscription plan information</li>
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                    <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
-                        <Server className="w-5 h-5 text-green-600 mr-2" />
-                        Recipe Data
-                      </h3>
-                      <div className="bg-green-100 rounded-lg p-4 mb-4 border border-green-300">
-                        <p className="text-green-800 font-semibold">🔥 Important: AI Data Processing</p>
-                        <p className="text-green-700 mt-1">Free plan users get local processing only (no data sharing). Paid plan users can access cloud-based AI features powered by OpenAI's API, where recipe data and dietary preferences may be processed externally to provide enhanced recipe suggestions. Personal information like email addresses are never shared with third parties.</p>
-                      </div>
-                      <p className="text-gray-700 mb-3">For saved recipes (paid plans only), we store:</p>
-                      <div className="grid md:grid-cols-2 gap-3">
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Recipe title and ingredients (encrypted)</li>
-                          <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Dietary filters applied</li>
-                          <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Health conditions (encrypted)</li>
-                        </ul>
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Date saved</li>
-                          <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> User-added notes (encrypted)</li>
-                          <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Notification preferences</li>
-                        </ul>
-                      </div>
-                    </div>
+                    <Card className="bg-green-50 border-green-200">
+                      <CardHeader>
+                        <CardTitle className="text-base sm:text-lg flex items-center">
+                          <Server className="w-5 h-5 text-green-600 mr-2" />
+                          Recipe Data
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <Card className="bg-green-100 border-green-300 mb-4">
+                          <CardContent className="p-4">
+                            <p className="text-green-800 font-semibold">🔥 Important: AI Data Processing</p>
+                            <p className="text-green-700 mt-1">Free plan users get local processing only (no data sharing). Paid plan users can access cloud-based AI features powered by OpenAI's API, where recipe data and dietary preferences may be processed externally to provide enhanced recipe suggestions. Personal information like email addresses are never shared with third parties.</p>
+                          </CardContent>
+                        </Card>
+                        <p className="text-foreground mb-3">For saved recipes (paid plans only), we store:</p>
+                        <div className="grid md:grid-cols-2 gap-3">
+                          <ul className="space-y-2 text-foreground">
+                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Recipe title and ingredients (encrypted)</li>
+                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Dietary filters applied</li>
+                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Health conditions (encrypted)</li>
+                          </ul>
+                          <ul className="space-y-2 text-foreground">
+                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Date saved</li>
+                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> User-added notes (encrypted)</li>
+                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Notification preferences</li>
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                    <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
-                        <Eye className="w-5 h-5 text-purple-600 mr-2" />
-                        Usage Information (Minimal & Anonymous)
-                      </h3>
-                      <p className="text-gray-700 mb-3">We collect limited analytics to improve our service:</p>
-                      <div className="grid md:grid-cols-2 gap-3">
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Daily conversion counts (Free: 3/day, Chef: 100/day, others: unlimited)</li>
-                          <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Dietary filters usage (aggregate data only)</li>
-                        </ul>
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Feature usage statistics</li>
-                          <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Error logs (without recipe content)</li>
-                        </ul>
-                      </div>
-                    </div>
+                    <Card className="bg-purple-50 border-purple-200">
+                      <CardHeader>
+                        <CardTitle className="text-base sm:text-lg flex items-center">
+                          <Eye className="w-5 h-5 text-purple-600 mr-2" />
+                          Usage Information (Minimal & Anonymous)
+                        </CardTitle>
+                        <CardDescription>We collect limited analytics to improve our service:</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid md:grid-cols-2 gap-3">
+                          <ul className="space-y-2 text-foreground">
+                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Daily conversion counts (Free: 3/day, Chef: 100/day, others: unlimited)</li>
+                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Dietary filters usage (aggregate data only)</li>
+                          </ul>
+                          <ul className="space-y-2 text-foreground">
+                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Feature usage statistics</li>
+                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Error logs (without recipe content)</li>
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                    <div className="bg-gray-50 rounded-lg p-6">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
-                        <Settings className="w-5 h-5 text-gray-600 mr-2" />
-                        Technical Information
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-3">
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><Settings className="w-4 h-4 text-gray-600 mr-2" /> Browser type and version</li>
-                          <li className="flex items-center"><Settings className="w-4 h-4 text-gray-600 mr-2" /> Device type (desktop/mobile)</li>
-                        </ul>
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><Settings className="w-4 h-4 text-gray-600 mr-2" /> IP address (for security only)</li>
-                          <li className="flex items-center"><Settings className="w-4 h-4 text-gray-600 mr-2" /> Performance data</li>
-                        </ul>
-                      </div>
-                    </div>
+                    <Card className="bg-muted/30">
+                      <CardHeader>
+                        <CardTitle className="text-base sm:text-lg flex items-center">
+                          <Settings className="w-5 h-5 text-muted-foreground mr-2" />
+                          Technical Information
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid md:grid-cols-2 gap-3">
+                          <ul className="space-y-2 text-foreground">
+                            <li className="flex items-center"><Settings className="w-4 h-4 text-muted-foreground mr-2" /> Browser type and version</li>
+                            <li className="flex items-center"><Settings className="w-4 h-4 text-muted-foreground mr-2" /> Device type (desktop/mobile)</li>
+                          </ul>
+                          <ul className="space-y-2 text-foreground">
+                            <li className="flex items-center"><Settings className="w-4 h-4 text-muted-foreground mr-2" /> IP address (for security only)</li>
+                            <li className="flex items-center"><Settings className="w-4 h-4 text-muted-foreground mr-2" /> Performance data</li>
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
                 </section>
 
@@ -652,12 +687,13 @@ export const PrivacyPolicy: React.FC = () => {
                         <div className="space-y-2">
                           <Link to="/terms" className="block text-blue-600 hover:text-blue-700">Terms of Use</Link>
                           <Link to="/cookies" className="block text-blue-600 hover:text-blue-700">Cookie Policy</Link>
-                          <button 
+                          <Button
+                            variant="link"
                             onClick={handleManageAccount}
-                            className="block text-left text-green-600 hover:text-green-700"
+                            className="h-auto p-0 text-green-600 hover:text-green-700 justify-start"
                           >
                             Manage Account Settings
-                          </button>
+                          </Button>
                         </div>
                         <div className="mt-4 pt-4 border-t border-gray-200">
                           <p className="text-sm text-gray-600">
@@ -668,8 +704,8 @@ export const PrivacyPolicy: React.FC = () => {
                     </div>
                   </div>
                 </section>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

@@ -2,6 +2,10 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Calendar, Users, CreditCard, AlertTriangle, Scale, FileText, Mail, MapPin } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Separator } from '../components/ui/separator';
 
 export const TermsOfUse: React.FC = () => {
   // Set page title and scroll to top
@@ -23,7 +27,7 @@ export const TermsOfUse: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <AuthAwareNavigation />
 
@@ -31,59 +35,64 @@ export const TermsOfUse: React.FC = () => {
         <div className="grid lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1 order-2 lg:order-1">
-            <div className="sticky top-20 sm:top-24 bg-white rounded-xl shadow-lg p-4 sm:p-6">
-              <h2 className="text-base sm:text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 sm:mb-4">Contents</h2>
-              <nav className="space-y-2">
-                {[
-                  { id: 'acceptance', title: 'Acceptance of Terms', icon: Shield },
-                  { id: 'service', title: 'Description of Service', icon: FileText },
-                  { id: 'ai-consent', title: 'AI Data Sharing Consent', icon: Shield },
-                  { id: 'accounts', title: 'User Accounts', icon: Users },
-                  { id: 'billing', title: 'Subscription & Billing', icon: CreditCard },
-                  { id: 'acceptable-use', title: 'Acceptable Use', icon: AlertTriangle },
-                  { id: 'intellectual-property', title: 'Intellectual Property', icon: Scale },
-                  { id: 'privacy', title: 'Privacy & Data Security', icon: Shield },
-                  { id: 'disclaimers', title: 'Disclaimers', icon: AlertTriangle },
-                  { id: 'contact', title: 'Contact Information', icon: Mail }
-                ].map(({ id, title, icon: Icon }) => (
-                  <button
-                    key={id}
-                    onClick={() => scrollToSection(id)}
-                    className="flex items-center w-full text-left px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                  >
-                    <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0" />
-                    <span className="truncate">{title}</span>
-                  </button>
-                ))}
-              </nav>
-            </div>
+            <Card className="sticky top-20 sm:top-24">
+              <CardHeader>
+                <CardTitle className="text-base sm:text-lg">Contents</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <nav className="space-y-2">
+                  {[
+                    { id: 'acceptance', title: 'Acceptance of Terms', icon: Shield },
+                    { id: 'service', title: 'Description of Service', icon: FileText },
+                    { id: 'ai-consent', title: 'AI Data Sharing Consent', icon: Shield },
+                    { id: 'accounts', title: 'User Accounts', icon: Users },
+                    { id: 'billing', title: 'Subscription & Billing', icon: CreditCard },
+                    { id: 'acceptable-use', title: 'Acceptable Use', icon: AlertTriangle },
+                    { id: 'intellectual-property', title: 'Intellectual Property', icon: Scale },
+                    { id: 'privacy', title: 'Privacy & Data Security', icon: Shield },
+                    { id: 'disclaimers', title: 'Disclaimers', icon: AlertTriangle },
+                    { id: 'contact', title: 'Contact Information', icon: Mail }
+                  ].map(({ id, title, icon: Icon }) => (
+                    <Button
+                      key={id}
+                      variant="ghost"
+                      onClick={() => scrollToSection(id)}
+                      className="flex items-center w-full justify-start text-xs sm:text-sm h-auto py-2 px-2 sm:px-3"
+                    >
+                      <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0" />
+                      <span className="truncate">{title}</span>
+                    </Button>
+                  ))}
+                </nav>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Main Content */}
           <div className="lg:col-span-3 order-1 lg:order-2">
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+            <Card className="overflow-hidden">
               {/* Hero Section */}
-              <div className="bg-gradient-to-r from-green-600 to-blue-600 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12 text-white">
+              <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white">
                 <div className="flex items-start sm:items-center mb-3 sm:mb-4">
                   <Scale className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 mr-2 sm:mr-3 flex-shrink-0" />
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">Terms of Use</h1>
+                  <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-white">Terms of Use</CardTitle>
                 </div>
-                <p className="text-base sm:text-lg lg:text-xl text-green-100 mb-4 sm:mb-6 leading-relaxed">
+                <CardDescription className="text-base sm:text-lg lg:text-xl text-green-100 mb-4 sm:mb-6 leading-relaxed">
                   Clear, fair terms for using Recipe Revamped
-                </p>
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6 text-green-100">
-                  <div className="flex items-center">
+                </CardDescription>
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6">
+                  <Badge variant="secondary" className="bg-green-100/20 text-green-100 hover:bg-green-100/30 w-fit">
                     <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    <span className="text-sm sm:text-base">Effective: September 13, 2025</span>
-                  </div>
-                  <div className="flex items-center">
+                    Effective: September 13, 2025
+                  </Badge>
+                  <Badge variant="secondary" className="bg-green-100/20 text-green-100 hover:bg-green-100/30 w-fit">
                     <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    <span className="text-sm sm:text-base">Last Updated: September 13, 2025</span>
-                  </div>
+                    Last Updated: September 13, 2025
+                  </Badge>
                 </div>
-              </div>
+              </CardHeader>
 
-              <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 lg:space-y-12">
+              <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 lg:space-y-12">
                 {/* Section 1: Acceptance of Terms */}
                 <section id="acceptance" className="scroll-mt-24">
                   <div className="flex items-start sm:items-center mb-4 sm:mb-6">
@@ -91,16 +100,18 @@ export const TermsOfUse: React.FC = () => {
                       <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                     </div>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">1. Acceptance of Terms</h2>
-                      <p className="text-gray-500">Understanding your agreement with us</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">1. Acceptance of Terms</h2>
+                      <p className="text-muted-foreground">Understanding your agreement with us</p>
                     </div>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-6">
-                    <p className="text-gray-700 leading-relaxed">
-                      By accessing or using Recipe Revamped ("the Service"), you agree to be bound by these Terms of Use ("Terms"). 
-                      If you do not agree to these Terms, please do not use the Service.
-                    </p>
-                  </div>
+                  <Card className="bg-muted/30">
+                    <CardContent className="p-6">
+                      <p className="text-foreground leading-relaxed">
+                        By accessing or using Recipe Revamped ("the Service"), you agree to be bound by these Terms of Use ("Terms").
+                        If you do not agree to these Terms, please do not use the Service.
+                      </p>
+                    </CardContent>
+                  </Card>
                 </section>
 
                 {/* Section 2: Description of Service */}
@@ -110,39 +121,41 @@ export const TermsOfUse: React.FC = () => {
                       <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">2. Description of Service</h2>
-                      <p className="text-gray-500">What Recipe Revamped offers</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">2. Description of Service</h2>
+                      <p className="text-muted-foreground">What Recipe Revamped offers</p>
                     </div>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-6 space-y-4">
-                    <p className="text-gray-700 leading-relaxed">
-                      Recipe Revamped is an AI-powered recipe conversion tool that helps users adapt recipes to meet various dietary requirements.
-                      Free plan users receive local processing only, while paid plan users access cloud-based AI features powered by OpenAI's API for enhanced personalized recipe responses.
-                    </p>
-                    <div className="grid md:grid-cols-2 gap-4 mt-4">
-                      <div className="bg-white rounded-lg p-4 border border-gray-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Free Plan Features</h4>
-                        <ul className="space-y-1 text-gray-600">
-                          <li>• 3 recipe conversions per day</li>
-                          <li>• 5 recipes in Recipe Book</li>
-                          <li>• Basic diet filters (4 options)</li>
-                          <li>• Local processing only</li>
-                        </ul>
+                  <Card className="bg-muted/30">
+                    <CardContent className="p-6 space-y-4">
+                      <p className="text-foreground leading-relaxed">
+                        Recipe Revamped is an AI-powered recipe conversion tool that helps users adapt recipes to meet various dietary requirements.
+                        Free plan users receive local processing only, while paid plan users access cloud-based AI features powered by OpenAI's API for enhanced personalized recipe responses.
+                      </p>
+                      <div className="grid md:grid-cols-2 gap-4 mt-4">
+                        <Card className="p-4">
+                          <h4 className="font-semibold text-foreground mb-2">Free Plan Features</h4>
+                          <ul className="space-y-1 text-muted-foreground">
+                            <li>• 3 recipe conversions per day</li>
+                            <li>• 5 recipes in Recipe Book</li>
+                            <li>• Basic diet filters (4 options)</li>
+                            <li>• Local processing only</li>
+                          </ul>
+                        </Card>
+                        <Card className="p-4">
+                          <h4 className="font-semibold text-foreground mb-2">Paid Plan Features</h4>
+                          <ul className="space-y-1 text-muted-foreground">
+                            <li>• Cloud-based AI processing (OpenAI)</li>
+                            <li>• 100+ recipes in Recipe Book</li>
+                            <li>• All diet filters (16+ options)</li>
+                            <li>• Meal planning calendar</li>
+                            <li>• Health conditions support</li>
+                            <li>• Backup & restore recipes</li>
+                            <li>• Team collaboration (Enterprise)</li>
+                          </ul>
+                        </Card>
                       </div>
-                      <div className="bg-white rounded-lg p-4 border border-gray-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Paid Plan Features</h4>
-                        <ul className="space-y-1 text-gray-600">
-                          <li>• Cloud-based AI processing (OpenAI)</li>
-                          <li>• 100+ recipes in Recipe Book</li>
-                          <li>• All diet filters (16+ options)</li>
-                          <li>• Meal planning calendar</li>
-                          <li>• Health conditions support</li>
-                          <li>• Backup & restore recipes</li>
-                          <li>• Team collaboration (Enterprise)</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 </section>
 
                 {/* Section 3: AI Data Sharing Consent */}
@@ -152,37 +165,47 @@ export const TermsOfUse: React.FC = () => {
                       <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">3. AI Data Sharing Consent</h2>
-                      <p className="text-gray-500">Automatic consent for AI recipe generation</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">3. AI Data Sharing Consent</h2>
+                      <p className="text-muted-foreground">Automatic consent for AI recipe generation</p>
                     </div>
                   </div>
-                  <div className="bg-blue-50 rounded-lg p-6 space-y-4 border-l-4 border-blue-400">
-                    <div className="bg-white rounded-lg p-6 shadow-sm">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Automatic Consent to AI Data Sharing</h3>
-                      <p className="text-gray-700 leading-relaxed mb-4">
-                        By upgrading to a paid plan (Chef, Master Chef, or Enterprise), you automatically consent to the sharing of your recipe-related data with OpenAI for AI-powered recipe generation. Free plan users receive local processing only with no data sharing. This consent includes:
-                      </p>
-                      <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
-                        <li>Recipe input text (ingredients, cooking instructions, dish names)</li>
-                        <li>Your dietary preferences and restrictions</li>
-                        <li>Your health conditions and medical dietary requirements</li>
-                        <li>Recipe conversion and modification requests</li>
-                        <li>Usage data for service improvement purposes</li>
-                      </ul>
-                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
-                        <h4 className="font-semibold text-amber-800 mb-2">Important Notes:</h4>
-                        <ul className="text-sm text-amber-700 space-y-1">
-                          <li>• Personal information (email, account details) is NOT shared with OpenAI</li>
-                          <li>• Only recipe-related content is processed by OpenAI's services</li>
-                          <li>• Data is used to generate personalized recipe responses</li>
-                          <li>• OpenAI may use this data to improve their AI models and services</li>
-                        </ul>
-                      </div>
-                      <p className="text-gray-700 leading-relaxed">
-                        This consent is required to provide our AI-powered recipe generation service. If you do not agree to this data sharing, please do not use Recipe Revamped's services. For more details about data handling, see our Privacy Policy.
-                      </p>
-                    </div>
-                  </div>
+                  <Card className="bg-blue-50 border-blue-200 border-l-4 border-l-blue-400">
+                    <CardContent className="p-6 space-y-4">
+                      <Card className="shadow-sm">
+                        <CardHeader>
+                          <CardTitle className="text-lg">Automatic Consent to AI Data Sharing</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-foreground leading-relaxed mb-4">
+                            By upgrading to a paid plan (Chef, Master Chef, or Enterprise), you automatically consent to the sharing of your recipe-related data with OpenAI for AI-powered recipe generation. Free plan users receive local processing only with no data sharing. This consent includes:
+                          </p>
+                          <ul className="list-disc pl-6 space-y-2 text-foreground mb-4">
+                            <li>Recipe input text (ingredients, cooking instructions, dish names)</li>
+                            <li>Your dietary preferences and restrictions</li>
+                            <li>Your health conditions and medical dietary requirements</li>
+                            <li>Recipe conversion and modification requests</li>
+                            <li>Usage data for service improvement purposes</li>
+                          </ul>
+                          <Card className="bg-amber-50 border-amber-200">
+                            <CardHeader>
+                              <CardTitle className="text-amber-800 text-base">Important Notes:</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <ul className="text-sm text-amber-700 space-y-1">
+                                <li>• Personal information (email, account details) is NOT shared with OpenAI</li>
+                                <li>• Only recipe-related content is processed by OpenAI's services</li>
+                                <li>• Data is used to generate personalized recipe responses</li>
+                                <li>• OpenAI may use this data to improve their AI models and services</li>
+                              </ul>
+                            </CardContent>
+                          </Card>
+                          <p className="text-foreground leading-relaxed">
+                            This consent is required to provide our AI-powered recipe generation service. If you do not agree to this data sharing, please do not use Recipe Revamped's services. For more details about data handling, see our Privacy Policy.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </CardContent>
+                  </Card>
                 </section>
 
                 {/* Section 4: User Accounts */}
@@ -509,8 +532,8 @@ export const TermsOfUse: React.FC = () => {
                     </div>
                   </div>
                 </section>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

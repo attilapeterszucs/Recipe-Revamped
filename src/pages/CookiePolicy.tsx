@@ -4,6 +4,10 @@ import { Cookie, Shield, Calendar, Settings, Eye, ToggleLeft, ToggleRight, Check
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { useCookieContext } from '../contexts/CookieContext';
 import { CookieSettings } from '../components/CookieSettings';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Separator } from '../components/ui/separator';
 
 export const CookiePolicy: React.FC = () => {
   const { showConsentPopup } = useCookieContext();
@@ -28,7 +32,7 @@ export const CookiePolicy: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-amber-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <AuthAwareNavigation />
 
@@ -36,81 +40,90 @@ export const CookiePolicy: React.FC = () => {
         <div className="grid lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1 order-2 lg:order-1">
-            <div className="sticky top-20 sm:top-24 bg-white rounded-xl shadow-lg p-4 sm:p-6">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Contents</h2>
-              <nav className="space-y-2">
-                {[
-                  { id: 'overview', title: 'Cookie Overview', icon: Cookie },
-                  { id: 'essential', title: 'Essential Cookies', icon: Shield },
-                  { id: 'analytics', title: 'Analytics Cookies', icon: Eye },
-                  { id: 'preferences', title: 'Preference Cookies', icon: Settings },
-                  { id: 'third-party', title: 'Third-Party Cookies', icon: AlertTriangle },
-                  { id: 'management', title: 'Cookie Management', icon: ToggleLeft },
-                  { id: 'updates', title: 'Policy Updates', icon: Calendar },
-                  { id: 'contact', title: 'Contact Us', icon: Mail }
-                ].map(({ id, title, icon: Icon }) => (
-                  <button
-                    key={id}
-                    onClick={() => scrollToSection(id)}
-                    className="flex items-center w-full text-left px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                  >
-                    <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0" />
-                    <span className="truncate">{title}</span>
-                  </button>
-                ))}
-              </nav>
-            </div>
+            <Card className="sticky top-20 sm:top-24">
+              <CardHeader>
+                <CardTitle className="text-base sm:text-lg">Contents</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <nav className="space-y-2">
+                  {[
+                    { id: 'overview', title: 'Cookie Overview', icon: Cookie },
+                    { id: 'essential', title: 'Essential Cookies', icon: Shield },
+                    { id: 'analytics', title: 'Analytics Cookies', icon: Eye },
+                    { id: 'preferences', title: 'Preference Cookies', icon: Settings },
+                    { id: 'third-party', title: 'Third-Party Cookies', icon: AlertTriangle },
+                    { id: 'management', title: 'Cookie Management', icon: ToggleLeft },
+                    { id: 'updates', title: 'Policy Updates', icon: Calendar },
+                    { id: 'contact', title: 'Contact Us', icon: Mail }
+                  ].map(({ id, title, icon: Icon }) => (
+                    <Button
+                      key={id}
+                      variant="ghost"
+                      onClick={() => scrollToSection(id)}
+                      className="flex items-center w-full justify-start text-xs sm:text-sm h-auto py-2 px-2 sm:px-3"
+                    >
+                      <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0" />
+                      <span className="truncate">{title}</span>
+                    </Button>
+                  ))}
+                </nav>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Main Content */}
           <div className="lg:col-span-3 order-1 lg:order-2">
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+            <Card className="overflow-hidden">
               {/* Hero Section */}
-              <div className="bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12 text-white">
+              <CardHeader className="bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 text-white">
                 <div className="flex items-start sm:items-center mb-3 sm:mb-4">
                   <Cookie className="w-5 h-5 sm:w-6 sm:h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 mr-2 sm:mr-3 flex-shrink-0" />
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">Cookie Policy</h1>
+                  <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-white">Cookie Policy</CardTitle>
                 </div>
-                <p className="text-base sm:text-lg lg:text-xl text-orange-100 mb-4 sm:mb-6 leading-relaxed">
+                <CardDescription className="text-base sm:text-lg lg:text-xl text-orange-100 mb-4 sm:mb-6 leading-relaxed">
                   Transparent cookie usage for enhanced user experience
-                </p>
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6 text-orange-100">
-                  <div className="flex items-center">
+                </CardDescription>
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6">
+                  <Badge variant="secondary" className="bg-orange-100/20 text-orange-100 hover:bg-orange-100/30 w-fit">
                     <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    <span className="text-sm sm:text-base">Effective: September 13, 2025</span>
-                  </div>
-                  <div className="flex items-center">
+                    Effective: September 13, 2025
+                  </Badge>
+                  <Badge variant="secondary" className="bg-orange-100/20 text-orange-100 hover:bg-orange-100/30 w-fit">
                     <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    <span className="text-sm sm:text-base">Last Updated: September 13, 2025</span>
-                  </div>
+                    Last Updated: September 13, 2025
+                  </Badge>
                 </div>
-              </div>
+              </CardHeader>
 
-              <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 lg:space-y-12">
+              <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 lg:space-y-12">
                 {/* Cookie Summary Banner */}
-                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-4 sm:p-6 border border-orange-200">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center">
-                    <Cookie className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mr-2" />
-                    Our Cookie Approach
-                  </h3>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="bg-white rounded-lg p-4">
-                      <Shield className="w-8 h-8 text-green-600 mb-2" />
-                      <h4 className="font-semibold text-gray-900">Privacy-First</h4>
-                      <p className="text-sm text-gray-600">Minimal data collection with maximum user control</p>
+                <Card className="bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200">
+                  <CardHeader>
+                    <CardTitle className="text-lg sm:text-xl flex items-center">
+                      <Cookie className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mr-2" />
+                      Our Cookie Approach
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <Card className="p-4">
+                        <Shield className="w-8 h-8 text-green-600 mb-2" />
+                        <h4 className="font-semibold text-foreground">Privacy-First</h4>
+                        <p className="text-sm text-muted-foreground">Minimal data collection with maximum user control</p>
+                      </Card>
+                      <Card className="p-4">
+                        <ToggleLeft className="w-8 h-8 text-blue-600 mb-2" />
+                        <h4 className="font-semibold text-foreground">Your Choice</h4>
+                        <p className="text-sm text-muted-foreground">Easy controls to manage your cookie preferences</p>
+                      </Card>
+                      <Card className="p-4">
+                        <Eye className="w-8 h-8 text-purple-600 mb-2" />
+                        <h4 className="font-semibold text-foreground">No Tracking</h4>
+                        <p className="text-sm text-muted-foreground">No third-party advertising or tracking cookies</p>
+                      </Card>
                     </div>
-                    <div className="bg-white rounded-lg p-4">
-                      <ToggleLeft className="w-8 h-8 text-blue-600 mb-2" />
-                      <h4 className="font-semibold text-gray-900">Your Choice</h4>
-                      <p className="text-sm text-gray-600">Easy controls to manage your cookie preferences</p>
-                    </div>
-                    <div className="bg-white rounded-lg p-4">
-                      <Eye className="w-8 h-8 text-purple-600 mb-2" />
-                      <h4 className="font-semibold text-gray-900">No Tracking</h4>
-                      <p className="text-sm text-gray-600">No third-party advertising or tracking cookies</p>
-                    </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
 
                 {/* Section 1: Cookie Overview */}
                 <section id="overview" className="scroll-mt-24">
@@ -585,12 +598,13 @@ export const CookiePolicy: React.FC = () => {
                         <div className="space-y-2">
                           <Link to="/privacy" className="block text-blue-600 hover:text-blue-700">Privacy Policy</Link>
                           <Link to="/terms" className="block text-blue-600 hover:text-blue-700">Terms of Use</Link>
-                          <button 
+                          <Button
+                            variant="link"
                             onClick={() => setShowCookieSettings(true)}
-                            className="block text-left text-green-600 hover:text-green-700"
+                            className="h-auto p-0 text-green-600 hover:text-green-700 justify-start"
                           >
                             Manage Cookie Preferences
-                          </button>
+                          </Button>
                         </div>
                         <div className="mt-4 pt-4 border-t border-gray-200">
                           <p className="text-sm text-gray-600">
@@ -601,8 +615,8 @@ export const CookiePolicy: React.FC = () => {
                     </div>
                   </div>
                 </section>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
