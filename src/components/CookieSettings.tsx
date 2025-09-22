@@ -2,6 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Cookie, Shield, Eye, Settings, Check, X, RotateCcw, Info } from 'lucide-react';
 import { useCookieContext } from '../contexts/CookieContext';
+import { Card, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Switch } from './ui/switch';
+import { Badge } from './ui/badge';
+import { Separator } from './ui/separator';
+import { Alert, AlertDescription } from './ui/alert';
 
 export const CookieSettings: React.FC = () => {
   const {
@@ -50,23 +56,24 @@ export const CookieSettings: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
-      <div className="flex items-center mb-6">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center">
         <div className="bg-orange-100 rounded-full p-3 mr-4">
           <Cookie className="w-6 h-6 text-orange-600" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Cookie Settings</h2>
-          <p className="text-gray-600">Manage your privacy preferences</p>
+          <h2 className="text-2xl font-bold text-foreground">Cookie Settings</h2>
+          <p className="text-muted-foreground">Manage your privacy preferences</p>
         </div>
       </div>
 
       {/* Consent Status */}
       {hasConsent && (
-        <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center">
-              <Check className="w-5 h-5 text-green-600 mr-2" />
+        <Alert className="border-green-200 bg-green-50">
+          <Check className="w-4 h-4 text-green-600" />
+          <AlertDescription>
+            <div className="flex items-start justify-between w-full">
               <div>
                 <p className="font-medium text-green-800">
                   Cookie preferences saved
@@ -76,189 +83,190 @@ export const CookieSettings: React.FC = () => {
                   {consentAge && ` (${consentAge} days ago)`}
                 </p>
               </div>
-            </div>
-            {isStale && (
-              <div className="bg-yellow-100 px-3 py-1 rounded-full border border-yellow-200">
-                <span className="text-xs font-medium text-yellow-800">
+              {isStale && (
+                <Badge variant="outline" className="bg-yellow-100 border-yellow-200 text-yellow-800">
                   Needs refresh
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
+                </Badge>
+              )}
+            </div>
+          </AlertDescription>
+        </Alert>
       )}
 
       {/* Cookie Categories */}
-      <div className="space-y-6 mb-8">
+      <div className="space-y-4">
         {/* Essential Cookies */}
-        <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start flex-1">
-              <Shield className="w-6 h-6 text-green-600 mr-3 mt-0.5" />
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900">Essential Cookies</h3>
-                  <div className="flex items-center">
-                    <Check className="w-5 h-5 text-green-600 mr-2" />
-                    <span className="text-sm font-medium text-green-700">Always Active</span>
-                  </div>
+        <Card className="bg-green-50 border-green-200">
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start">
+                <Shield className="w-6 h-6 text-green-600 mr-3 mt-0.5" />
+                <div>
+                  <CardTitle className="text-lg">Essential Cookies</CardTitle>
+                  <CardDescription className="text-sm">
+                    Required for authentication, security, and basic website functionality. Cannot be disabled.
+                  </CardDescription>
                 </div>
-                <p className="text-gray-700 text-sm">
-                  Required for authentication, security, and basic website functionality. Cannot be disabled.
-                </p>
               </div>
+              <Badge className="bg-green-600 hover:bg-green-700">
+                <Check className="w-4 h-4 mr-1" />
+                Always Active
+              </Badge>
             </div>
-          </div>
-        </div>
+          </CardHeader>
+        </Card>
 
         {/* Analytics Cookies */}
-        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start flex-1">
-              <Eye className="w-6 h-6 text-purple-600 mr-3 mt-0.5" />
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900">Analytics Cookies</h3>
-                  <button
-                    onClick={() => handleToggle('analytics')}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      preferences.analytics ? 'bg-green-600' : 'bg-gray-300'
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        preferences.analytics ? 'translate-x-6' : 'translate-x-1'
-                      }`}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start flex-1">
+                <Eye className="w-6 h-6 text-purple-600 mr-3 mt-0.5" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <CardTitle className="text-lg">Analytics Cookies</CardTitle>
+                    <Switch
+                      checked={preferences.analytics}
+                      onCheckedChange={() => handleToggle('analytics')}
                     />
-                  </button>
-                </div>
-                <p className="text-gray-700 text-sm mb-2">
-                  Help us understand how you use our service to improve performance and user experience.
-                </p>
-                <div className="text-xs text-gray-600">
-                  Data anonymized after 90 days • No personal recipe content tracked
+                  </div>
+                  <CardDescription className="text-sm mb-2">
+                    Help us understand how you use our service to improve performance and user experience.
+                  </CardDescription>
+                  <div className="text-xs text-muted-foreground">
+                    Data anonymized after 90 days • No personal recipe content tracked
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </CardHeader>
+        </Card>
 
         {/* Preference Cookies */}
-        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start flex-1">
-              <Settings className="w-6 h-6 text-blue-600 mr-3 mt-0.5" />
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900">Preference Cookies</h3>
-                  <button
-                    onClick={() => handleToggle('preferences')}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      preferences.preferences ? 'bg-green-600' : 'bg-gray-300'
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        preferences.preferences ? 'translate-x-6' : 'translate-x-1'
-                      }`}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start flex-1">
+                <Settings className="w-6 h-6 text-blue-600 mr-3 mt-0.5" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <CardTitle className="text-lg">Preference Cookies</CardTitle>
+                    <Switch
+                      checked={preferences.preferences}
+                      onCheckedChange={() => handleToggle('preferences')}
                     />
-                  </button>
-                </div>
-                <p className="text-gray-700 text-sm mb-2">
-                  Remember your settings, preferences, and choices to provide a personalized experience.
-                </p>
-                <div className="text-xs text-gray-600">
-                  Theme preferences • Dietary filter selections • UI settings
+                  </div>
+                  <CardDescription className="text-sm mb-2">
+                    Remember your settings, preferences, and choices to provide a personalized experience.
+                  </CardDescription>
+                  <div className="text-xs text-muted-foreground">
+                    Theme preferences • Dietary filter selections • UI settings
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </CardHeader>
+        </Card>
 
         {/* Marketing Cookies (Disabled) */}
-        <div className="bg-gray-100 rounded-lg p-4 border border-gray-200 opacity-75">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start flex-1">
-              <X className="w-6 h-6 text-gray-400 mr-3 mt-0.5" />
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-gray-500">Marketing Cookies</h3>
-                  <span className="text-sm font-medium text-gray-500 bg-gray-200 px-2 py-1 rounded">Not Used</span>
+        <Card className="bg-muted/30 opacity-75">
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start flex-1">
+                <X className="w-6 h-6 text-muted-foreground mr-3 mt-0.5" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <CardTitle className="text-lg text-muted-foreground">Marketing Cookies</CardTitle>
+                    <Badge variant="secondary">
+                      Not Used
+                    </Badge>
+                  </div>
+                  <CardDescription className="text-sm">
+                    We don't use marketing or advertising cookies.
+                  </CardDescription>
                 </div>
-                <p className="text-gray-600 text-sm">
-                  We don't use marketing or advertising cookies.
-                </p>
               </div>
             </div>
-          </div>
-        </div>
+          </CardHeader>
+        </Card>
       </div>
+
+      <Separator />
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <button
-          onClick={handleSave}
-          className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-        >
-          Save Preferences
-        </button>
-        <button
-          onClick={acceptAll}
-          className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
-        >
-          Accept All
-        </button>
-        <button
-          onClick={rejectAll}
-          className="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-        >
-          Essential Only
-        </button>
-      </div>
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button
+            onClick={handleSave}
+            className="flex-1"
+          >
+            Save Preferences
+          </Button>
+          <Button
+            onClick={acceptAll}
+            variant="default"
+            className="flex-1 bg-green-600 hover:bg-green-700"
+          >
+            Accept All
+          </Button>
+          <Button
+            onClick={rejectAll}
+            variant="outline"
+            className="flex-1"
+          >
+            Essential Only
+          </Button>
+        </div>
 
-      {/* Additional Actions */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <button
-          onClick={handleReset}
-          className="flex items-center justify-center px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
-        >
-          <RotateCcw className="w-4 h-4 mr-2" />
-          Reset Settings
-        </button>
+        {/* Additional Actions */}
+        <div className="flex justify-start">
+          <Button
+            onClick={handleReset}
+            variant="outline"
+            size="sm"
+            className="text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+          >
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Reset Settings
+          </Button>
+        </div>
       </div>
 
       {/* Information Panel */}
-      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-        <div className="flex items-start">
-          <Info className="w-5 h-5 text-blue-600 mr-3 mt-0.5" />
+      <Alert className="border-blue-200 bg-blue-50">
+        <Info className="w-4 h-4 text-blue-600" />
+        <AlertDescription>
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-900 mb-2">Important Information</h4>
-            <ul className="text-sm text-gray-700 space-y-1">
+            <h4 className="font-semibold text-foreground mb-2">Important Information</h4>
+            <ul className="text-sm text-foreground space-y-1">
               <li>• Your preferences are stored locally and will expire after 6 months</li>
               <li>• Essential cookies are always active to ensure proper functionality</li>
               <li>• We never use tracking or advertising cookies</li>
               <li>• All recipe processing happens locally in your browser</li>
             </ul>
             <div className="mt-3 flex flex-wrap gap-3 text-xs">
-              <Link to="/privacy" className="text-blue-600 hover:text-blue-700">Privacy Policy</Link>
-              <Link to="/cookies" className="text-blue-600 hover:text-blue-700">Cookie Policy</Link>
-              <Link to="/terms" className="text-blue-600 hover:text-blue-700">Terms of Service</Link>
+              <Link to="/privacy" className="text-blue-600 hover:text-blue-700 underline">Privacy Policy</Link>
+              <Link to="/cookies" className="text-blue-600 hover:text-blue-700 underline">Cookie Policy</Link>
+              <Link to="/terms" className="text-blue-600 hover:text-blue-700 underline">Terms of Service</Link>
             </div>
           </div>
-        </div>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       {/* Technical Details */}
       {hasConsent && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+        <>
+          <Separator />
+          <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
             <span>Consent version: {CURRENT_VERSION}</span>
             {consentTimestamp && (
               <span>Last updated: {formatDate(consentTimestamp)}</span>
             )}
-            <span>GDPR & CCPA Compliant</span>
+            <Badge variant="outline" className="text-xs">
+              GDPR & CCPA Compliant
+            </Badge>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

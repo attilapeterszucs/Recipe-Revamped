@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 
 export const CookiePolicy: React.FC = () => {
   const { showConsentPopup } = useCookieContext();
@@ -622,24 +623,19 @@ export const CookiePolicy: React.FC = () => {
       </div>
       
       {/* Cookie Settings Modal */}
-      {showCookieSettings && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900">Cookie Settings</h2>
-              <button
-                onClick={() => setShowCookieSettings(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="max-h-[70vh] overflow-y-auto p-4">
-              <CookieSettings />
-            </div>
+      <Dialog open={showCookieSettings} onOpenChange={setShowCookieSettings}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle className="sr-only">Cookie Settings</DialogTitle>
+            <DialogDescription className="sr-only">
+              Manage your cookie preferences and privacy settings
+            </DialogDescription>
+          </DialogHeader>
+          <div className="max-h-[75vh] overflow-y-auto pr-2">
+            <CookieSettings />
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

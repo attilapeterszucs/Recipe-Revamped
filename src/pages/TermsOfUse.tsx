@@ -5,7 +5,6 @@ import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Separator } from '../components/ui/separator';
 
 export const TermsOfUse: React.FC = () => {
   // Set page title and scroll to top
