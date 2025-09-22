@@ -30,11 +30,24 @@ export const createOrUpdateUserProfile = async (
     const userRef = doc(db, 'users', uid);
     const existingUser = await getDoc(userRef);
     
-    // Generate default displayName from email if not provided
+    // Determine final display name
     let finalDisplayName = displayName;
-    if (!finalDisplayName) {
-      // Extract username from email (part before @)
-      finalDisplayName = email.split('@')[0];
+
+    // For existing users, always preserve their current display name
+    if (existingUser.exists()) {
+      const existingData = existingUser.data();
+      if (existingData?.displayName) {
+        // User already has a display name, never override it
+        finalDisplayName = existingData.displayName;
+      } else if (!finalDisplayName) {
+        // Existing user but no display name set, generate from email
+        finalDisplayName = email.split('@')[0];
+      }
+    } else {
+      // New user - generate display name from email if not provided
+      if (!finalDisplayName) {
+        finalDisplayName = email.split('@')[0];
+      }
     }
     
     const userData: Partial<UserProfile> = {
