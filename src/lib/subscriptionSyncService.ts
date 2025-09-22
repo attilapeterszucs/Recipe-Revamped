@@ -130,7 +130,7 @@ export class SubscriptionSyncService {
         detail: { subscription, source: 'customer_portal' }
       }));
 
-      console.log(`✅ Subscription updated from portal: ${subscription.plan} for ${currentUser.email}`);
+      // Subscription updated from portal
 
       // Clean up the update record
       await deleteDoc(doc(db, SUBSCRIPTIONS_COLLECTION, updateDocId));
@@ -179,7 +179,7 @@ export class SubscriptionSyncService {
         // Also update user's profile with subscription info
         await this.updateUserProfile(currentUser.uid, subscription);
 
-        console.log(`✅ Subscription synced from webhook: ${subscription.plan} for ${customerEmail}`);
+        // Subscription synced from webhook
 
         // Trigger subscription status refresh for UI components
         window.dispatchEvent(new CustomEvent('subscription-updated', {
@@ -189,7 +189,7 @@ export class SubscriptionSyncService {
         // Note: UI will refresh via React state management instead of full page reload
 
       } else {
-        console.log(`⚠️ No matching user found for email: ${customerEmail}`);
+        // No matching user found for email
       }
 
     } catch (error) {
@@ -346,7 +346,7 @@ export class SubscriptionSyncService {
 
       await this.updateUserProfile(currentUser.uid, subscription);
 
-      console.log(`✅ Manually fixed subscription sync for ${userEmail}: ${plan}`);
+      // Manually fixed subscription sync
       return true;
     } catch (error) {
       console.error('❌ Error in manual subscription sync fix:', error);

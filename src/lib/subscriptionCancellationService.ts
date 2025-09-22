@@ -37,7 +37,7 @@ export class SubscriptionCancellationService {
         throw new Error('User not authenticated');
       }
 
-      console.log('🔥 Cancelling subscription (end-of-period) for user:', currentUser.uid);
+      // Cancelling subscription (end-of-period)
 
       // Prepare cancellation request
       const cancellationRequest: CancellationRequest = {
@@ -67,7 +67,7 @@ export class SubscriptionCancellationService {
       }
 
       if (result.success) {
-        console.log('✅ Cancellation request sent successfully - webhook will update Firestore');
+        // Cancellation request sent successfully
 
         // Trigger UI refresh event (Firestore will be updated by webhook)
         window.dispatchEvent(new CustomEvent('subscription-cancellation-requested', {
@@ -100,7 +100,7 @@ export class SubscriptionCancellationService {
         throw new Error('User not authenticated');
       }
 
-      console.log('⚡ Cancelling subscription (immediate) for user:', currentUser.uid);
+      // Cancelling subscription (immediate)
 
       // Prepare immediate cancellation request
       const cancellationRequest: CancellationRequest = {
@@ -130,7 +130,7 @@ export class SubscriptionCancellationService {
       }
 
       if (result.success) {
-        console.log('✅ Immediate cancellation request sent successfully - webhook will update Firestore');
+        // Immediate cancellation request sent successfully
 
         // Trigger UI refresh event (Firestore will be updated by webhook)
         window.dispatchEvent(new CustomEvent('subscription-cancellation-requested', {

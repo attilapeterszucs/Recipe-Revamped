@@ -41,7 +41,7 @@ export class SubscriptionExpiryService {
 
       // Check if subscription has expired
       if (endDate && endDate <= now) {
-        console.log(`📅 Subscription expired for user ${userId}: ${subscription.plan} → free`);
+        // Subscription expired - downgrading to free
 
         const originalPlan = subscription.plan;
 
@@ -54,7 +54,7 @@ export class SubscriptionExpiryService {
         });
 
         if (success) {
-          console.log(`✅ User ${userId} downgraded from ${originalPlan} to free due to expiry`);
+          // User downgraded to free due to expiry
 
           // Trigger UI refresh
           window.dispatchEvent(new CustomEvent('subscription-expired', {
@@ -210,7 +210,7 @@ export class SubscriptionExpiryService {
         }
       }
 
-      console.log(`✅ Batch expiry check complete: ${downgradedUsers.length} users downgraded`);
+      // Batch expiry check complete
 
       return {
         checkedCount,

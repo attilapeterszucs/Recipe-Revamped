@@ -228,8 +228,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       const currentPlan = featureAccess?.currentPlan;
       if (currentPlan && currentPlan !== 'free') {
         try {
-          console.log(`🚫 Auto-cancelling subscription due to account ${action}`);
-
           let cancellationResult;
           if (action === 'deactivate') {
             // For deactivation: End-of-period cancellation (keep access until expiry)
@@ -244,7 +242,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           }
 
           if (cancellationResult.success) {
-            console.log(`✅ Subscription automatically ${action === 'deactivate' ? 'scheduled for cancellation' : 'terminated immediately'} due to account ${action}`);
+            // Subscription cancelled successfully
           } else {
             console.warn('⚠️ Could not automatically cancel subscription:', cancellationResult.error);
           }
