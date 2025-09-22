@@ -1,14 +1,3 @@
-# CORRECTED Current Webhook - Fixed for Your Requirements
-
-## Key Fixes Applied
-
-1. ✅ **Uses Stripe customer ID as document ID** (instead of Firebase user ID)
-2. ✅ **Cancellation handler only calls Stripe** - doesn't update Firestore directly
-3. ✅ **Webhook events update Firestore** with proper end-of-period logic
-4. ✅ **Preserves plan access until endDate** for cancelled subscriptions
-
-## Complete Corrected index.js
-
 ```javascript
 const functions = require('@google-cloud/functions-framework');
 const admin = require('firebase-admin');
@@ -38,6 +27,50 @@ const PRICE_TO_PLAN_MAPPING = {
   'price_1S72MwJqTrCMANHgYsTjUAtS': { plan: 'master-chef', billing_period: 'monthly', amount: 1999 },
   'price_1S72MwJqTrCMANHgmG64NQcW': { plan: 'master-chef', billing_period: 'yearly', amount: 19190 }
 };
+
+// ============================================================================
+// FIREBASE USER LOOKUP UTILITY
+// ============================================================================
+
+async function findFirebaseUserByEmail(email) {
+  try {
+    console.log(`🔍 Looking up Firebase user by email: ${email}`);
+
+    const userRecord = await admin.auth().getUserByEmail(email);
+    console.log(`✅ Found Firebase user: ${userRecord.uid} for email: ${email}`);
+
+    return userRecord.uid;
+  } catch (error) {
+    console.error(`❌ No Firebase user found for email: ${email}`, error.message);
+    return null;
+  }
+}
+
+async function findFirebaseUserByStripeCustomerId(stripeCustomerId) {
+  try {
+    console.log(`🔍 Looking up Firebase user by Stripe customer ID: ${stripeCustomerId}`);
+
+    // Query subscriptions collection to find document with matching stripeCustomerId
+    const subscriptionsRef = db.collection(SUBSCRIPTIONS_COLLECTION);
+    const querySnapshot = await subscriptionsRef.where('stripeCustomerId', '==', stripeCustomerId).get();
+
+    if (querySnapshot.empty) {
+      console.warn(`⚠️ No subscription found for Stripe customer ID: ${stripeCustomerId}`);
+      return null;
+    }
+
+    // Document ID should be the Firebase user ID
+    const doc = querySnapshot.docs[0];
+    const userId = doc.id;
+
+    console.log(`✅ Found Firebase user: ${userId} for Stripe customer: ${stripeCustomerId}`);
+    return userId;
+
+  } catch (error) {
+    console.error('❌ Error finding Firebase user by Stripe customer ID:', error);
+    return null;
+  }
+}
 
 // ============================================================================
 // STRIPE CHECKOUT SESSION CREATION
@@ -78,7 +111,7 @@ async function createCheckoutSessionHandler(req, res) {
       return;
     }
 
-    console.log(`[INFO] Creating checkout session - Price: ${priceId}, Customer: ${customerEmail}`);
+    console.log(`[INFO] Creating checkout session - Price: ${priceId}, Customer: ${customerEmail}, User: ${userId}`);
 
     try {
       // Create Stripe checkout session
@@ -188,11 +221,23 @@ async function createPortalSessionHandler(req, res) {
       return;
     }
 
-    // Find user's subscription by userId to get Stripe customer ID
-    const stripeCustomerId = await findStripeCustomerIdByUserId(userId);
+    // Get user's subscription to find Stripe customer ID
+    const subscriptionRef = db.collection(SUBSCRIPTIONS_COLLECTION).doc(userId);
+    const subscriptionDoc = await subscriptionRef.get();
+
+    if (!subscriptionDoc.exists) {
+      res.status(404).json({ error: 'No subscription found for user' });
+      return;
+    }
+
+    const subscriptionData = subscriptionDoc.data();
+    const stripeCustomerId = subscriptionData.stripeCustomerId;
 
     if (!stripeCustomerId) {
-      res.status(404).json({ error: 'No subscription found for user' });
+      res.status(400).json({
+        error: 'No Stripe customer ID found',
+        message: 'Customer portal is only available for active subscriptions'
+      });
       return;
     }
 
@@ -292,7 +337,7 @@ functions.http('stripeWebhook', async (req, res) => {
       return;
     }
 
-    // Check if this is a cancellation request - ONLY CALLS STRIPE, NO FIRESTORE UPDATE
+    // Check if this is a cancellation request (not a webhook)
     if (req.path === '/cancel-subscription' || req.url.includes('/cancel-subscription')) {
       await handleCancellationRequest(req, res);
       return;
@@ -325,7 +370,7 @@ functions.http('stripeWebhook', async (req, res) => {
     // Log the event
     await logPaymentEvent(event);
 
-    // Process the event - ONLY WEBHOOK EVENTS UPDATE FIRESTORE
+    // Process the event
     await processWebhookEvent(event);
 
     const processingTime = Date.now() - startTime;
@@ -385,7 +430,7 @@ async function verifyWebhookSignature(req) {
 }
 
 // ============================================================================
-// EVENT PROCESSING - ONLY THESE UPDATE FIRESTORE
+// EVENT PROCESSING - FIXED TO USE FIREBASE UIDs
 // ============================================================================
 
 async function processWebhookEvent(event) {
@@ -420,7 +465,7 @@ async function processWebhookEvent(event) {
 }
 
 // ============================================================================
-// PAYMENT EVENT HANDLERS - THESE UPDATE FIRESTORE
+// PAYMENT EVENT HANDLERS - FIXED TO USE FIREBASE UIDs
 // ============================================================================
 
 async function handleCheckoutCompleted(session) {
@@ -428,11 +473,17 @@ async function handleCheckoutCompleted(session) {
     console.log(`🎉 Checkout completed: ${session.id}`);
 
     const customerEmail = session.customer_email || session.customer_details?.email;
-    const customerId = session.customer;
+    const stripeCustomerId = session.customer;
     const subscriptionId = session.subscription;
 
     if (!customerEmail) {
       throw new Error('No customer email found in checkout session');
+    }
+
+    // FIXED: Find Firebase UID by email instead of using Stripe customer ID
+    const firebaseUserId = await findFirebaseUserByEmail(customerEmail);
+    if (!firebaseUserId) {
+      throw new Error(`No Firebase user found for email: ${customerEmail}`);
     }
 
     // Determine plan from session
@@ -442,25 +493,28 @@ async function handleCheckoutCompleted(session) {
     }
 
     console.log(`📋 Plan: ${planInfo.plan} (${planInfo.billing_period}) - ${planInfo.amount/100}`);
+    console.log(`👤 Firebase User ID: ${firebaseUserId} for email: ${customerEmail}`);
 
-    // Create subscription object
+    // Create subscription object with Firebase UID
     const subscription = createSubscriptionObject({
-      customerId,
+      firebaseUserId,
+      stripeCustomerId,
       customerEmail,
       subscriptionId,
       planInfo,
       status: 'active'
     });
 
-    // Use Stripe customer ID as document ID
-    await db.collection(SUBSCRIPTIONS_COLLECTION).doc(customerId).set({
+    // FIXED: Use Firebase UID as document ID instead of Stripe customer ID
+    await db.collection(SUBSCRIPTIONS_COLLECTION).doc(firebaseUserId).set({
       ...subscription,
       source: 'stripe_checkout',
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    console.log(`✅ Subscription created with Stripe customer ID: ${customerId}`);
+    console.log(`✅ Subscription created with Firebase UID: ${firebaseUserId}`);
     console.log(`📧 Customer email: ${customerEmail}`);
+    console.log(`🏪 Stripe customer ID: ${stripeCustomerId}`);
     console.log(`📅 Subscription expires: ${subscription.endDate.toDate().toISOString()}`);
 
   } catch (error) {
@@ -482,18 +536,26 @@ async function handleSubscriptionCreated(subscription) {
       return;
     }
 
-    // Create/update subscription record using Stripe customer ID as document ID
+    // FIXED: Find Firebase UID by email instead of using Stripe customer ID
+    const firebaseUserId = await findFirebaseUserByEmail(customer.email);
+    if (!firebaseUserId) {
+      console.error(`❌ No Firebase user found for email: ${customer.email}`);
+      return;
+    }
+
+    // Create/update subscription record using Firebase UID as document ID
     await createOrUpdateSubscription({
-      customerId: subscription.customer,
+      firebaseUserId,
+      stripeCustomerId: subscription.customer,
       customerEmail: customer.email,
       subscriptionId: subscription.id,
       planInfo,
       status: subscription.status,
-      currentPeriodStart: new Date(subscription.current_period_start * 1000),
-      currentPeriodEnd: new Date(subscription.current_period_end * 1000)
+      currentPeriodStart: subscription.current_period_start ? new Date(subscription.current_period_start * 1000) : new Date(),
+      currentPeriodEnd: subscription.current_period_end ? new Date(subscription.current_period_end * 1000) : null
     });
 
-    console.log(`✅ Subscription record created for customer: ${subscription.customer}`);
+    console.log(`✅ Subscription record created for Firebase user: ${firebaseUserId} (email: ${customer.email})`);
 
   } catch (error) {
     console.error('❌ Subscription creation error:', error);
@@ -505,23 +567,31 @@ async function handlePaymentSucceeded(invoice) {
   try {
     console.log(`💳 Payment succeeded: ${invoice.id}`);
 
-    const customerId = invoice.customer;
+    const stripeCustomerId = invoice.customer;
     const subscriptionId = invoice.subscription;
 
     if (subscriptionId) {
+      // FIXED: Find Firebase UID by Stripe customer ID
+      const firebaseUserId = await findFirebaseUserByStripeCustomerId(stripeCustomerId);
+
+      if (!firebaseUserId) {
+        console.error(`❌ No Firebase user found for Stripe customer ID: ${stripeCustomerId}`);
+        return;
+      }
+
       // Retrieve subscription details
       const subscription = await stripeClient.subscriptions.retrieve(subscriptionId);
       const planInfo = determinePlanFromSubscription(subscription);
 
       if (planInfo) {
-        await renewSubscription(customerId, {
+        await renewSubscription(firebaseUserId, {
           planInfo,
-          currentPeriodStart: new Date(subscription.current_period_start * 1000),
-          currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+          currentPeriodStart: subscription.current_period_start ? new Date(subscription.current_period_start * 1000) : new Date(),
+          currentPeriodEnd: subscription.current_period_end ? new Date(subscription.current_period_end * 1000) : null,
           paymentDate: new Date(invoice.created * 1000)
         });
 
-        console.log(`✅ Subscription renewed for customer: ${customerId}`);
+        console.log(`✅ Subscription renewed for Firebase user: ${firebaseUserId} (Stripe customer: ${stripeCustomerId})`);
       }
     }
 
@@ -534,15 +604,23 @@ async function handlePaymentFailed(invoice) {
   try {
     console.log(`❌ Payment failed: ${invoice.id}`);
 
-    const customerId = invoice.customer;
+    const stripeCustomerId = invoice.customer;
 
-    await updateSubscriptionStatus(customerId, {
+    // FIXED: Find Firebase UID by Stripe customer ID
+    const firebaseUserId = await findFirebaseUserByStripeCustomerId(stripeCustomerId);
+
+    if (!firebaseUserId) {
+      console.error(`❌ No Firebase user found for Stripe customer ID: ${stripeCustomerId}`);
+      return;
+    }
+
+    await updateSubscriptionStatus(firebaseUserId, {
       status: 'past_due',
       lastFailedPaymentDate: new Date(invoice.created * 1000),
       failureReason: invoice.last_finalization_error?.message || 'Payment failed'
     });
 
-    console.log(`⚠️ Subscription marked as past_due for: ${customerId}`);
+    console.log(`⚠️ Subscription marked as past_due for Firebase user: ${firebaseUserId} (Stripe customer: ${stripeCustomerId})`);
 
   } catch (error) {
     console.error('❌ Payment failure handling error:', error);
@@ -561,25 +639,35 @@ async function handleSubscriptionUpdated(subscription) {
       return;
     }
 
-    // Get current subscription data to preserve existing endDate if needed
-    const customerId = subscription.customer;
-    const currentDoc = await db.collection(SUBSCRIPTIONS_COLLECTION).doc(customerId).get();
+    // FIXED: Find Firebase UID by email
+    const firebaseUserId = await findFirebaseUserByEmail(customer.email);
+    if (!firebaseUserId) {
+      console.error(`❌ No Firebase user found for email: ${customer.email}`);
+      return;
+    }
+
+    // Get current subscription data to preserve existing data if needed
+    const currentDoc = await db.collection(SUBSCRIPTIONS_COLLECTION).doc(firebaseUserId).get();
     let currentData = {};
     if (currentDoc.exists) {
       currentData = currentDoc.data();
     }
 
-    // Build update object
+    // Build update object with safe timestamp conversion
     const updateData = {
       plan: planInfo.plan,
       status: subscription.status,
       stripeSubscriptionId: subscription.id,
-      stripeCustomerId: customerId,
+      stripeCustomerId: subscription.customer,
       billingPeriod: planInfo.billing_period,
       amount: planInfo.amount,
       currency: 'usd',
-      startDate: admin.firestore.Timestamp.fromDate(new Date(subscription.current_period_start * 1000)),
-      endDate: admin.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
+      startDate: subscription.current_period_start ?
+        admin.firestore.Timestamp.fromDate(new Date(subscription.current_period_start * 1000)) :
+        admin.firestore.FieldValue.serverTimestamp(),
+      endDate: subscription.current_period_end ?
+        admin.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)) :
+        null,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       autoRenewal: !subscription.cancel_at_period_end,
       cancelAtPeriodEnd: subscription.cancel_at_period_end || false
@@ -588,18 +676,26 @@ async function handleSubscriptionUpdated(subscription) {
     // If subscription has cancel_at_period_end = true, preserve access until endDate
     if (subscription.cancel_at_period_end) {
       updateData.status = 'cancelled';
-      updateData.willDowngradeAt = admin.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000));
+      updateData.willDowngradeAt = subscription.current_period_end ?
+        admin.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)) :
+        admin.firestore.FieldValue.serverTimestamp();
       updateData.downgradeToPlan = 'free';
       updateData.cancelledAt = admin.firestore.FieldValue.serverTimestamp();
       // DO NOT change plan - keep current plan until endDate
       updateData.plan = currentData.plan || planInfo.plan;
-      console.log(`📅 Subscription will end at: ${new Date(subscription.current_period_end * 1000).toISOString()}`);
+
+      if (subscription.current_period_end) {
+        console.log(`📅 Subscription will end at: ${new Date(subscription.current_period_end * 1000).toISOString()}`);
+      } else {
+        console.log(`📅 Subscription cancelled - no specific end date from Stripe`);
+      }
       console.log(`⏳ User keeps ${updateData.plan} plan access until end date`);
     }
 
-    await db.collection(SUBSCRIPTIONS_COLLECTION).doc(customerId).set(updateData, { merge: true });
+    // FIXED: Use Firebase UID as document ID
+    await db.collection(SUBSCRIPTIONS_COLLECTION).doc(firebaseUserId).set(updateData, { merge: true });
 
-    console.log(`✅ Subscription updated: ${planInfo.plan} for customer: ${customerId}`);
+    console.log(`✅ Subscription updated: ${planInfo.plan} for Firebase user: ${firebaseUserId}`);
 
   } catch (error) {
     console.error('❌ Subscription update error:', error);
@@ -610,7 +706,15 @@ async function handleSubscriptionCancelled(subscription) {
   try {
     console.log(`❌ Subscription cancelled (deleted): ${subscription.id}`);
 
-    const customerId = subscription.customer;
+    const stripeCustomerId = subscription.customer;
+
+    // FIXED: Find Firebase UID by Stripe customer ID
+    const firebaseUserId = await findFirebaseUserByStripeCustomerId(stripeCustomerId);
+
+    if (!firebaseUserId) {
+      console.error(`❌ No Firebase user found for Stripe customer ID: ${stripeCustomerId}`);
+      return;
+    }
 
     // Immediate cancellation - downgrade to free immediately
     const updateData = {
@@ -625,9 +729,10 @@ async function handleSubscriptionCancelled(subscription) {
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     };
 
-    await db.collection(SUBSCRIPTIONS_COLLECTION).doc(customerId).update(updateData);
+    // FIXED: Use Firebase UID as document ID
+    await db.collection(SUBSCRIPTIONS_COLLECTION).doc(firebaseUserId).update(updateData);
 
-    console.log(`✅ User immediately downgraded to free plan: ${customerId}`);
+    console.log(`✅ User immediately downgraded to free plan: ${firebaseUserId} (Stripe customer: ${stripeCustomerId})`);
 
   } catch (error) {
     console.error('❌ Subscription cancellation error:', error);
@@ -635,33 +740,8 @@ async function handleSubscriptionCancelled(subscription) {
 }
 
 // ============================================================================
-// SUBSCRIPTION MANAGEMENT UTILITIES
+// SUBSCRIPTION MANAGEMENT UTILITIES - FIXED TO USE FIREBASE UIDs
 // ============================================================================
-
-async function findStripeCustomerIdByUserId(userId) {
-  try {
-    // Query subscriptions collection to find document with matching userId
-    const subscriptionsRef = db.collection(SUBSCRIPTIONS_COLLECTION);
-    const querySnapshot = await subscriptionsRef.where('userId', '==', userId).get();
-
-    if (querySnapshot.empty) {
-      console.warn(`⚠️ No subscription found for user ID: ${userId}`);
-      return null;
-    }
-
-    // Should only be one document, but take the first one
-    const doc = querySnapshot.docs[0];
-    const docData = doc.data();
-    const stripeCustomerId = docData.stripeCustomerId;
-
-    console.log(`🔍 Found Stripe customer ID: ${stripeCustomerId} for user: ${userId}`);
-    return stripeCustomerId;
-
-  } catch (error) {
-    console.error('❌ Error finding Stripe customer ID by user ID:', error);
-    return null;
-  }
-}
 
 async function determinePlanFromSession(session) {
   try {
@@ -732,18 +812,19 @@ function determinePlanFromSubscription(subscription) {
   }
 }
 
-function createSubscriptionObject({ customerId, customerEmail, subscriptionId, planInfo, status }) {
+// FIXED: Updated to accept Firebase UID instead of Stripe customer ID
+function createSubscriptionObject({ firebaseUserId, stripeCustomerId, customerEmail, subscriptionId, planInfo, status }) {
   const startDate = new Date();
   const endDate = calculateEndDate(planInfo.billing_period, startDate);
 
   return {
-    userId: customerId, // For compatibility with frontend
+    userId: firebaseUserId, // FIXED: Use Firebase UID instead of Stripe customer ID
     customerEmail: customerEmail,
     plan: planInfo.plan,
     status: status,
     startDate: admin.firestore.Timestamp.fromDate(startDate),
     endDate: admin.firestore.Timestamp.fromDate(endDate),
-    stripeCustomerId: customerId,
+    stripeCustomerId: stripeCustomerId, // Keep Stripe customer ID for reference
     stripeSubscriptionId: subscriptionId,
     billingPeriod: planInfo.billing_period,
     amount: planInfo.amount,
@@ -753,26 +834,49 @@ function createSubscriptionObject({ customerId, customerEmail, subscriptionId, p
   };
 }
 
+// FIXED: Updated to use Firebase UID as document ID
 async function createOrUpdateSubscription(data) {
-  const subscription = createSubscriptionObject(data);
+  const startDate = data.currentPeriodStart || new Date();
+  const endDate = data.currentPeriodEnd || calculateEndDate(data.planInfo.billing_period, startDate);
 
-  // Use Stripe customer ID as document ID
-  await db.collection(SUBSCRIPTIONS_COLLECTION).doc(data.customerId).set({
-    ...subscription,
+  const subscription = {
+    userId: data.firebaseUserId, // FIXED: Use Firebase UID
+    customerEmail: data.customerEmail,
+    plan: data.planInfo.plan,
+    status: data.status,
+    startDate: admin.firestore.Timestamp.fromDate(startDate),
+    endDate: endDate ? admin.firestore.Timestamp.fromDate(endDate) : null,
+    stripeCustomerId: data.stripeCustomerId, // Keep Stripe customer ID for reference
+    stripeSubscriptionId: data.subscriptionId,
+    billingPeriod: data.planInfo.billing_period,
+    amount: data.planInfo.amount,
+    currency: 'usd',
+    autoRenewal: true,
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
-  }, { merge: true });
+  };
+
+  // FIXED: Use Firebase UID as document ID instead of Stripe customer ID
+  await db.collection(SUBSCRIPTIONS_COLLECTION).doc(data.firebaseUserId).set(subscription, { merge: true });
 }
 
-async function renewSubscription(customerId, renewalData) {
-  await db.collection(SUBSCRIPTIONS_COLLECTION).doc(customerId).update({
+// FIXED: Updated to use Firebase UID as document ID
+async function renewSubscription(firebaseUserId, renewalData) {
+  const updateData = {
     status: 'active',
-    endDate: admin.firestore.Timestamp.fromDate(renewalData.currentPeriodEnd),
     lastPaymentDate: admin.firestore.Timestamp.fromDate(renewalData.paymentDate),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
-  });
+  };
+
+  if (renewalData.currentPeriodEnd) {
+    updateData.endDate = admin.firestore.Timestamp.fromDate(renewalData.currentPeriodEnd);
+  }
+
+  // FIXED: Use Firebase UID as document ID
+  await db.collection(SUBSCRIPTIONS_COLLECTION).doc(firebaseUserId).update(updateData);
 }
 
-async function updateSubscriptionStatus(customerId, updateData) {
+// FIXED: Updated to use Firebase UID as document ID
+async function updateSubscriptionStatus(firebaseUserId, updateData) {
   const updateObj = {
     ...updateData,
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -785,7 +889,8 @@ async function updateSubscriptionStatus(customerId, updateData) {
     }
   });
 
-  await db.collection(SUBSCRIPTIONS_COLLECTION).doc(customerId).update(updateObj);
+  // FIXED: Use Firebase UID as document ID
+  await db.collection(SUBSCRIPTIONS_COLLECTION).doc(firebaseUserId).update(updateObj);
 }
 
 function calculateEndDate(billingPeriod, startDate = new Date()) {
@@ -801,7 +906,7 @@ function calculateEndDate(billingPeriod, startDate = new Date()) {
 }
 
 // ============================================================================
-// PLAN CHANGE HANDLER
+// PLAN CHANGE HANDLER - FIXED TO USE FIREBASE UIDs
 // ============================================================================
 
 async function handlePlanChangeRequest(req, res) {
@@ -847,28 +952,20 @@ async function handlePlanChangeRequest(req, res) {
       return;
     }
 
-    // Find the user's Stripe customer ID
-    const stripeCustomerId = await findStripeCustomerIdByUserId(userId);
-
-    if (!stripeCustomerId) {
-      res.status(404).json({ error: 'Subscription not found for user' });
-      return;
-    }
-
     // Check if this is a test/admin subscription (no Stripe IDs)
     const isTestOrAdminSubscription = !currentStripeSubscriptionId && !currentStripeCustomerId;
 
     if (isTestOrAdminSubscription) {
       console.log('[WARN] Test/admin subscription detected - handling locally');
-      const result = await handleTestPlanChange(stripeCustomerId, newPlan, reason);
+      const result = await handleTestPlanChange(userId, newPlan, reason);
       res.status(200).json(result);
       return;
     }
 
-    console.log(`[INFO] Plan change request - User: ${userId}, Customer: ${stripeCustomerId}, New Plan: ${newPlan}, Subscription: ${currentStripeSubscriptionId}`);
+    console.log(`[INFO] Plan change request - User: ${userId}, New Plan: ${newPlan}, Subscription: ${currentStripeSubscriptionId}`);
 
-    // Get current subscription from Firestore using Stripe customer ID
-    const subscriptionDoc = await db.collection(SUBSCRIPTIONS_COLLECTION).doc(stripeCustomerId).get();
+    // FIXED: Get current subscription from Firestore using Firebase UID
+    const subscriptionDoc = await db.collection(SUBSCRIPTIONS_COLLECTION).doc(userId).get();
 
     if (!subscriptionDoc.exists) {
       res.status(404).json({ error: 'Subscription not found' });
@@ -909,7 +1006,7 @@ async function handlePlanChangeRequest(req, res) {
       id: `plan_change_${Date.now()}`,
       data: {
         userId,
-        stripeCustomerId,
+        stripeCustomerId: currentStripeCustomerId,
         oldPlan: currentPlan,
         newPlan,
         stripeSubscriptionId: currentStripeSubscriptionId,
@@ -925,7 +1022,7 @@ async function handlePlanChangeRequest(req, res) {
       success: true,
       message: `Plan changed from ${currentPlan} to ${newPlan}`,
       userId,
-      stripeCustomerId,
+      stripeCustomerId: currentStripeCustomerId,
       oldPlan: currentPlan,
       newPlan,
       effectiveDate: new Date().toISOString(),
@@ -956,9 +1053,10 @@ async function handlePlanChangeRequest(req, res) {
   }
 }
 
-async function handleTestPlanChange(stripeCustomerId, newPlan, reason) {
+// FIXED: Updated to use Firebase UID as document ID
+async function handleTestPlanChange(firebaseUserId, newPlan, reason) {
   try {
-    // For test/admin subscriptions, update directly in Firestore using Stripe customer ID
+    // For test/admin subscriptions, update directly in Firestore using Firebase UID
     const updateData = {
       plan: newPlan,
       status: 'active',
@@ -967,12 +1065,12 @@ async function handleTestPlanChange(stripeCustomerId, newPlan, reason) {
       planChangeReason: reason || `Test plan change to ${newPlan}`
     };
 
-    await db.collection(SUBSCRIPTIONS_COLLECTION).doc(stripeCustomerId).update(updateData);
+    await db.collection(SUBSCRIPTIONS_COLLECTION).doc(firebaseUserId).update(updateData);
 
     return {
       success: true,
       message: `Test subscription plan changed to ${newPlan}`,
-      stripeCustomerId,
+      firebaseUserId,
       newPlan,
       effectiveDate: new Date().toISOString(),
       processing_time: Date.now()
@@ -1004,7 +1102,7 @@ async function getSubscriptionItemId(subscriptionId) {
 }
 
 // ============================================================================
-// SUBSCRIPTION CANCELLATION HANDLER - ONLY CALLS STRIPE
+// SUBSCRIPTION CANCELLATION HANDLER - FIXED TO USE FIREBASE UIDs
 // ============================================================================
 
 async function handleCancellationRequest(req, res) {
@@ -1031,29 +1129,31 @@ async function handleCancellationRequest(req, res) {
       return;
     }
 
-    // Parse request body - NOW INCLUDES IMMEDIATE PARAMETER
+    // Parse request body
     const { stripeSubscriptionId, stripeCustomerId, reason, immediate } = req.body;
 
     console.log(`[INFO] Cancellation request - User: ${userId}, Customer: ${stripeCustomerId}, Subscription: ${stripeSubscriptionId}, Immediate: ${immediate}`);
 
-    // Find user's subscription using userId to get Stripe IDs
-    let actualStripeCustomerId = stripeCustomerId;
-    let actualStripeSubId = stripeSubscriptionId;
+    // FIXED: Get current subscription from Firestore using Firebase UID
+    const subscriptionDoc = await db.collection(SUBSCRIPTIONS_COLLECTION).doc(userId).get();
 
-    if (!actualStripeCustomerId) {
-      actualStripeCustomerId = await findStripeCustomerIdByUserId(userId);
-      if (!actualStripeCustomerId) {
-        res.status(404).json({ error: 'No subscription found for user' });
-        return;
-      }
+    if (!subscriptionDoc.exists) {
+      res.status(404).json({ error: 'No subscription found for user' });
+      return;
     }
 
-    if (!actualStripeSubId) {
-      // Get subscription ID from Firestore
-      const subscriptionDoc = await db.collection(SUBSCRIPTIONS_COLLECTION).doc(actualStripeCustomerId).get();
-      if (subscriptionDoc.exists) {
-        actualStripeSubId = subscriptionDoc.data().stripeSubscriptionId;
-      }
+    const subscriptionData = subscriptionDoc.data();
+    const actualStripeSubId = stripeSubscriptionId || subscriptionData.stripeSubscriptionId;
+    const actualStripeCustomerId = stripeCustomerId || subscriptionData.stripeCustomerId;
+
+    // Check if this is a test/admin subscription (no Stripe IDs)
+    const isTestOrAdminSubscription = !actualStripeSubId && !actualStripeCustomerId;
+
+    if (isTestOrAdminSubscription) {
+      console.log('[WARN] Test/admin subscription detected - handling locally');
+      const result = await handleTestSubscriptionCancellation(userId, subscriptionData, reason, immediate);
+      res.status(200).json(result);
+      return;
     }
 
     if (!actualStripeSubId) {
@@ -1126,6 +1226,55 @@ async function handleCancellationRequest(req, res) {
   }
 }
 
+// FIXED: Updated to use Firebase UID as document ID
+async function handleTestSubscriptionCancellation(firebaseUserId, subscriptionData, reason, immediate = false) {
+  try {
+    let updateData;
+
+    if (immediate) {
+      // Immediate cancellation for test subscriptions
+      updateData = {
+        plan: 'free',
+        status: 'cancelled',
+        cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
+        cancellationReason: reason || 'Test/admin subscription cancelled immediately',
+        downgradedAt: admin.firestore.FieldValue.serverTimestamp(),
+        endDate: null,
+        autoRenewal: false,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      };
+    } else {
+      // End-of-period cancellation for test subscriptions
+      updateData = {
+        status: 'cancelled',
+        cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
+        cancellationReason: reason || 'Test/admin subscription cancelled',
+        willDowngradeAt: subscriptionData.endDate || admin.firestore.FieldValue.serverTimestamp(),
+        downgradeToPlan: 'free',
+        autoRenewal: false,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      };
+    }
+
+    // FIXED: Use Firebase UID as document ID
+    await db.collection(SUBSCRIPTIONS_COLLECTION).doc(firebaseUserId).update(updateData);
+
+    return {
+      success: true,
+      message: immediate ? 'Test subscription cancelled immediately' : 'Test subscription cancelled successfully',
+      firebaseUserId,
+      currentPlan: immediate ? 'free' : subscriptionData.plan,
+      willDowngradeTo: 'free',
+      cancelledAt: new Date().toISOString(),
+      immediate: immediate,
+      note: immediate ? 'Test/admin subscription cancelled - immediately reverted to free plan' : 'Test/admin subscription will downgrade at end of period'
+    };
+
+  } catch (error) {
+    throw new Error(`Test subscription cancellation failed: ${error.message}`);
+  }
+}
+
 // Lock management functions (simplified - remove if not needed)
 async function acquireLock(lockKey, operationId, ttlMs) {
   return true; // Simplified for this version
@@ -1164,36 +1313,3 @@ async function logPaymentEvent(event) {
 // Export for Google Cloud Functions
 exports.stripeWebhook = functions.http;
 ```
-
-## Key Changes Made
-
-### 🔴 **Critical Fixes:**
-
-1. **✅ Uses Stripe Customer ID as Document ID**
-   - `createCheckoutSessionHandler`: Uses `customerId` (Stripe customer ID) as document ID
-   - `handleSubscriptionUpdated`: Uses `subscription.customer` as document ID
-   - All Firestore operations now use Stripe customer ID consistently
-
-2. **✅ Cancellation Handler Only Calls Stripe**
-   - `handleCancellationRequest`: ONLY calls Stripe APIs, doesn't update Firestore
-   - Firestore updates happen via subsequent webhook events
-   - Uses proper `cancel_at_period_end: true` for end-of-period cancellation
-
-3. **✅ Webhook Events Update Firestore Properly**
-   - `handleSubscriptionUpdated`: Preserves plan access until endDate for cancelled subscriptions
-   - When `cancel_at_period_end: true`, keeps current plan but sets status to 'cancelled'
-   - Only `customer.subscription.deleted` triggers immediate free plan downgrade
-
-4. **✅ Portal Session Fixed**
-   - `createPortalSessionHandler`: Uses `findStripeCustomerIdByUserId()` to find customer ID
-   - Looks up by `userId` field, then uses Stripe customer ID for portal
-
-### 🔄 **Expected Flow:**
-
-1. User cancels subscription → Frontend calls `/cancel-subscription`
-2. Webhook calls Stripe with `cancel_at_period_end: true`
-3. Stripe sends `customer.subscription.updated` webhook
-4. Webhook updates Firestore: status='cancelled' but preserves current plan until endDate
-5. User keeps subscription access until endDate expires
-
-This corrected webhook should resolve all the issues you mentioned!

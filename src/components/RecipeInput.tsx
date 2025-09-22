@@ -364,21 +364,21 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
           return (
             <div>
               {/* Filters Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+              <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 mb-4">
                 {visibleOptions.map(option => (
                   <button
                     key={option.name}
                     type="button"
                     onClick={() => handleFilterToggle(option.name)}
                     disabled={disabled}
-                    className={`flex items-center justify-center px-3 py-3 rounded-lg text-sm font-medium transition-all border-2 ${
+                    className={`flex items-center justify-center px-2 sm:px-3 py-2 sm:py-3 rounded-lg text-xs sm:text-sm font-medium transition-all border-2 min-h-[44px] ${
                       selectedFilters.includes(option.name)
                         ? 'bg-blue-600 text-white border-blue-600 shadow-md transform scale-105'
                         : `${option.color} border-transparent hover:shadow-md hover:transform hover:scale-102`
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
-                    <span className="text-lg mr-2">{option.icon}</span>
-                    <span className="text-center leading-tight">{option.name}</span>
+                    <span className="text-base sm:text-lg mr-1 sm:mr-2">{option.icon}</span>
+                    <span className="text-center leading-tight text-xs sm:text-sm">{option.name}</span>
                   </button>
                 ))}
               </div>
@@ -513,15 +513,15 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
               Specify must-use and avoid ingredients for more precise recipe customization
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="space-y-4 sm:space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                   Must-Use Ingredients
                   {mustUseIngredients.length > 0 && (
                     <span className="text-blue-600 text-xs ml-1">({mustUseIngredients.length})</span>
                   )}
                 </label>
-                <div className="flex space-x-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={mustUseInput}
@@ -532,15 +532,15 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
                         addMustUseIngredient();
                       }
                     }}
-                    placeholder="e.g., chicken, tomatoes, basil (separate with commas)"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="e.g., chicken, tomatoes"
+                    className="flex-1 px-2 sm:px-3 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     disabled={disabled}
                   />
                   <button
                     type="button"
                     onClick={addMustUseIngredient}
                     disabled={disabled || !mustUseInput.trim()}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg text-xs sm:text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
                   >
                     Add
                   </button>
@@ -568,13 +568,13 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                   Avoid Ingredients
                   {avoidIngredients.length > 0 && (
                     <span className="text-red-600 text-xs ml-1">({avoidIngredients.length})</span>
                   )}
                 </label>
-                <div className="flex space-x-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={avoidInput}
@@ -585,15 +585,15 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
                         addAvoidIngredient();
                       }
                     }}
-                    placeholder="e.g., nuts, shellfish, dairy (separate with commas)"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="e.g., nuts, shellfish"
+                    className="flex-1 px-2 sm:px-3 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     disabled={disabled}
                   />
                   <button
                     type="button"
                     onClick={addAvoidIngredient}
                     disabled={disabled || !avoidInput.trim()}
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg text-xs sm:text-sm hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
                   >
                     Add
                   </button>
@@ -646,32 +646,32 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
 
       {/* Default Serving Size and Units Display */}
       {userSettingsLoading ? (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
               <div className="flex items-center">
-                <div className="h-4 bg-blue-200 rounded animate-pulse w-32"></div>
-                <div className="ml-2 h-4 bg-blue-200 rounded animate-pulse w-20"></div>
+                <div className="h-4 bg-blue-200 rounded animate-pulse w-28 sm:w-32"></div>
+                <div className="ml-2 h-4 bg-blue-200 rounded animate-pulse w-16 sm:w-20"></div>
               </div>
               <div className="flex items-center">
-                <div className="h-4 bg-blue-200 rounded animate-pulse w-24"></div>
-                <div className="ml-2 h-4 bg-blue-200 rounded animate-pulse w-16"></div>
+                <div className="h-4 bg-blue-200 rounded animate-pulse w-20 sm:w-24"></div>
+                <div className="ml-2 h-4 bg-blue-200 rounded animate-pulse w-12 sm:w-16"></div>
               </div>
             </div>
-            <div className="h-3 bg-blue-200 rounded animate-pulse w-32"></div>
+            <div className="h-3 bg-blue-200 rounded animate-pulse w-40 sm:w-32"></div>
           </div>
         </div>
       ) : userSettings && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div>
-                <span className="text-sm font-medium text-blue-800">Default Serving Size:</span>
-                <span className="ml-2 text-sm text-blue-700">{userSettings.defaultServingSize} servings</span>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className="flex flex-col xs:flex-row xs:items-center">
+                <span className="text-xs sm:text-sm font-medium text-blue-800">Default Serving Size:</span>
+                <span className="ml-0 xs:ml-2 text-xs sm:text-sm text-blue-700">{userSettings.defaultServingSize} servings</span>
               </div>
-              <div>
-                <span className="text-sm font-medium text-blue-800">Unit System:</span>
-                <span className="ml-2 text-sm text-blue-700 capitalize">{userSettings.preferredUnits}</span>
+              <div className="flex flex-col xs:flex-row xs:items-center">
+                <span className="text-xs sm:text-sm font-medium text-blue-800">Unit System:</span>
+                <span className="ml-0 xs:ml-2 text-xs sm:text-sm text-blue-700 capitalize">{userSettings.preferredUnits}</span>
               </div>
             </div>
             <div className="text-xs text-blue-600">
@@ -727,15 +727,15 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             return (
               <div>
                 {/* Locked Filters Grid - Matching regular design */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 mb-4">
                   {visibleLockedFilters.map(option => (
                     <div
                       key={option.name}
-                      className={`relative flex items-center justify-center px-3 py-3 rounded-lg text-sm font-medium border-2 opacity-60 cursor-not-allowed ${option.color} border-transparent`}
+                      className={`relative flex items-center justify-center px-2 sm:px-3 py-2 sm:py-3 rounded-lg text-xs sm:text-sm font-medium border-2 opacity-60 cursor-not-allowed min-h-[44px] ${option.color} border-transparent`}
                       title="Requires premium subscription"
                     >
-                      <span className="text-lg mr-2">{option.icon}</span>
-                      <span className="text-center leading-tight">{option.name}</span>
+                      <span className="text-base sm:text-lg mr-1 sm:mr-2">{option.icon}</span>
+                      <span className="text-center leading-tight text-xs sm:text-sm">{option.name}</span>
                       <div className="absolute top-1 right-1">
                         <span className="text-xs">🔒</span>
                       </div>
