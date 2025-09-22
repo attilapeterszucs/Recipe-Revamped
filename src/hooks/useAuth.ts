@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { SubscriptionExpiryChecker } from '../lib/subscriptionExpiryChecker';
 
 interface AuthState {
   user: User | null;
@@ -18,12 +19,20 @@ export const useAuth = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       auth,
-      (user) => {
+      async (user) => {
         setAuthState({
           user,
           loading: false,
           error: null
         });
+
+        // CHECK SUBSCRIPTION EXPIRY ON EVERY LOGIN
+        if (user) {
+          console.log('👤 User logged in:', user.uid);
+
+          // Check and update expired subscriptions
+          await SubscriptionExpiryChecker.checkAndUpdateExpiredSubscription(user.uid);
+        }
       },
       (error) => {
         setAuthState({
