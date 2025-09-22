@@ -205,7 +205,18 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const handleDeleteAccount = async (action: 'deactivate' | 'delete') => {
     try {
       setDeletingAccount(true);
-      
+      setShowDeleteAccountModal(false);
+
+      // Show immediate feedback and redirect for deletion
+      if (action === 'delete') {
+        showInfo('Account Deletion Started', 'You are being signed out. Your account deletion is now processing in the background.');
+
+        // Immediate redirect to signin page
+        setTimeout(() => {
+          window.location.href = '/signin';
+        }, 1500); // Brief delay to show the message
+      }
+
       // Import necessary services
       const { SubscriptionService } = await import('../lib/subscriptionService');
       const { SubscriptionCancellationService } = await import('../lib/subscriptionCancellationService');
@@ -259,8 +270,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         
         showSuccess('Account Deactivated', 'Your account has been deactivated. You can reactivate it on your next login.');
         
-        setShowDeleteAccountModal(false);
-        
         // Sign out user after a delay
         setTimeout(() => {
           import('firebase/auth').then(({ signOut, getAuth }) => {
@@ -306,15 +315,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         
         // Finally, delete the Firebase Auth user account
         await deleteUser(user);
-        
-        showSuccess('Account Deleted', 'Your account and all associated data have been permanently deleted from our servers.');
 
-        setShowDeleteAccountModal(false);
-
-        // Redirect to signin page after account deletion
-        setTimeout(() => {
-          window.location.href = '/signin';
-        }, 2000); // 2 second delay to show success message
+        // Account deletion completed in background (user already redirected)
       }
       
     } catch (error) {
