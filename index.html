@@ -11,7 +11,8 @@
           'addIconStyles', 'initializeNodeIcons', 'appendChild',
           'Cannot read properties of null', 'Cannot use \'in\' operator',
           'extension://', 'chrome-extension://', 'moz-extension://',
-          'Cr @', 'animation\' in undefined', 'search for \'animation\''
+          'Cr @', 'animation\' in undefined', 'search for \'animation\'',
+          'Cannot use \'in\' operator to search for \'animation\' in undefined'
         ];
 
         const suppressedStackPatterns = [
@@ -169,6 +170,8 @@
     " />
     
     <!-- Favicons for all devices and browsers -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicons/favicon.ico" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
@@ -178,6 +181,7 @@
     <script>
       // Preload favicons to prevent 404 errors
       const faviconPaths = [
+        '/favicon.ico',
         '/favicons/favicon.ico',
         '/favicons/favicon-16x16.png',
         '/favicons/favicon-32x32.png'
