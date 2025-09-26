@@ -95,11 +95,11 @@ export const PrivacyPolicy: React.FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6">
                   <Badge variant="secondary" className="bg-blue-100/20 text-blue-100 hover:bg-blue-100/30 w-fit">
                     <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Effective: September 13, 2025
+                    Effective: January 1, 2025
                   </Badge>
                   <Badge variant="secondary" className="bg-blue-100/20 text-blue-100 hover:bg-blue-100/30 w-fit">
                     <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Last Updated: September 13, 2025
+                    Last Updated: January 1, 2025
                   </Badge>
                 </div>
               </CardHeader>
@@ -127,8 +127,8 @@ export const PrivacyPolicy: React.FC = () => {
                       </Card>
                       <Card className="p-4">
                         <Eye className="w-8 h-8 text-purple-600 mb-2" />
-                        <h4 className="font-semibold text-foreground">No Tracking</h4>
-                        <p className="text-sm text-muted-foreground">No third-party trackers or advertising networks</p>
+                        <h4 className="font-semibold text-foreground">Smart Analytics</h4>
+                        <p className="text-sm text-muted-foreground">Google Analytics with Ads integration for service optimization</p>
                       </Card>
                     </div>
                   </CardContent>
@@ -229,21 +229,29 @@ export const PrivacyPolicy: React.FC = () => {
                       <CardHeader>
                         <CardTitle className="text-base sm:text-lg flex items-center">
                           <Eye className="w-5 h-5 text-purple-600 mr-2" />
-                          Usage Information (Minimal & Anonymous)
+                          Analytics & Advertising Information
                         </CardTitle>
-                        <CardDescription>We collect limited analytics to improve our service:</CardDescription>
+                        <CardDescription>We collect analytics data to improve our service and enable advertising measurement:</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="grid md:grid-cols-2 gap-3">
+                        <div className="grid md:grid-cols-2 gap-3 mb-4">
                           <ul className="space-y-2 text-foreground">
-                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Daily conversion counts (Free: 3/day, Chef: 100/day, others: unlimited)</li>
-                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Dietary filters usage (aggregate data only)</li>
+                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Daily conversion counts and feature usage</li>
+                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Page views, user flows, and engagement metrics</li>
+                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Demographic information (age, gender, interests)</li>
                           </ul>
                           <ul className="space-y-2 text-foreground">
-                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Feature usage statistics</li>
-                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Error logs (without recipe content)</li>
+                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Device and browser information</li>
+                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Geographic location (city/region level)</li>
+                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Advertising interaction data</li>
                           </ul>
                         </div>
+                        <Card className="bg-amber-50 border-amber-200">
+                          <CardContent className="p-4">
+                            <p className="text-amber-800 font-semibold">🔗 Google Analytics & Google Ads Integration</p>
+                            <p className="text-amber-700 mt-1">We share analytics data with Google Ads to measure advertising effectiveness, create audience segments, and show you relevant ads across Google's advertising network. You can opt-out via our cookie settings.</p>
+                          </CardContent>
+                        </Card>
                       </CardContent>
                     </Card>
 
@@ -461,44 +469,76 @@ export const PrivacyPolicy: React.FC = () => {
                   </div>
                   <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
                     <div className="bg-red-100 rounded-lg p-4 mb-4 border border-red-300">
-                      <p className="text-red-800 font-bold">🚫 We NEVER sell your personal information.</p>
+                      <p className="text-red-800 font-bold">🚫 We do NOT sell your personal information for monetary consideration.</p>
+                      <p className="text-red-700 text-sm mt-1">However, we do share certain data with advertising partners as described below.</p>
                     </div>
-                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">We share information only in these limited circumstances:</p>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <ul className="space-y-3 text-gray-700">
-                        <li className="flex items-start">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                          <div>
-                            <strong>With your consent:</strong> When you explicitly authorize sharing
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">We share information in the following circumstances:</p>
+                    <div className="space-y-4">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <ul className="space-y-3 text-gray-700">
+                          <li className="flex items-start">
+                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
+                            <div>
+                              <strong>With your consent:</strong> When you explicitly authorize sharing
+                            </div>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
+                            <div>
+                              <strong>Service providers:</strong> Trusted partners (payment, hosting, analytics)
+                            </div>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
+                            <div>
+                              <strong>AI processing:</strong> Recipe data shared with OpenAI for generation
+                            </div>
+                          </li>
+                        </ul>
+                        <ul className="space-y-3 text-gray-700">
+                          <li className="flex items-start">
+                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
+                            <div>
+                              <strong>Legal requirements:</strong> When required by law or legal process
+                            </div>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
+                            <div>
+                              <strong>Business transfers:</strong> M&A events (with user notice)
+                            </div>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
+                            <div>
+                              <strong>Safety & security:</strong> To protect rights and prevent fraud
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                      <Card className="bg-blue-50 border-blue-200">
+                        <CardHeader>
+                          <CardTitle className="text-lg">Google Analytics & Advertising Data Sharing</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-gray-700 mb-3">We share analytics and behavioral data with Google for advertising purposes:</p>
+                          <div className="grid md:grid-cols-2 gap-3">
+                            <ul className="space-y-2 text-gray-600">
+                              <li>• Website usage patterns and user behavior</li>
+                              <li>• Demographics and interest data</li>
+                              <li>• Conversion events and engagement metrics</li>
+                            </ul>
+                            <ul className="space-y-2 text-gray-600">
+                              <li>• Device and browser characteristics</li>
+                              <li>• Geographic location (city/region level)</li>
+                              <li>• Marketing campaign effectiveness data</li>
+                            </ul>
                           </div>
-                        </li>
-                        <li className="flex items-start">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                          <div>
-                            <strong>Service providers:</strong> Trusted partners (e.g., payment processors)
+                          <div className="mt-3 p-3 bg-blue-100 rounded">
+                            <p className="text-blue-800 text-sm"><strong>Purpose:</strong> This sharing enables advertising measurement, audience creation, and personalized ad delivery across Google's network. You can opt-out in your cookie preferences.</p>
                           </div>
-                        </li>
-                        <li className="flex items-start">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                          <div>
-                            <strong>AI processing:</strong> Recipe data shared with OpenAI for recipe generation (automatic consent)
-                          </div>
-                        </li>
-                      </ul>
-                      <ul className="space-y-3 text-gray-700">
-                        <li className="flex items-start">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                          <div>
-                            <strong>Legal requirements:</strong> When required by law
-                          </div>
-                        </li>
-                        <li className="flex items-start">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                          <div>
-                            <strong>Business transfers:</strong> M&A events (with user notice)
-                          </div>
-                        </li>
-                      </ul>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
                 </section>
@@ -599,42 +639,117 @@ export const PrivacyPolicy: React.FC = () => {
                       <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600" />
                     </div>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">8. International Compliance</h2>
-                      <p className="text-gray-500">GDPR, CCPA, and global privacy standards</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">8. US & International Privacy Compliance</h2>
+                      <p className="text-gray-500">Comprehensive compliance with US state laws, GDPR, and global privacy standards</p>
                     </div>
                   </div>
                   <div className="space-y-6">
-                    <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
-                        <Globe className="w-5 h-5 text-blue-600 mr-2" />
-                        GDPR Compliance (EU Users)
+                    {/* US State Privacy Laws */}
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <MapPin className="w-5 h-5 text-blue-600 mr-2" />
+                        US State Privacy Rights
                       </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-600 mr-2" /> Legal basis: Consent or legitimate interests</li>
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-600 mr-2" /> Data minimization: Only necessary data</li>
-                        </ul>
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-600 mr-2" /> Right to erasure: Complete data deletion</li>
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-600 mr-2" /> DPO contact: privacy@reciperevamped.com</li>
-                        </ul>
+                      <div className="space-y-4">
+                        <div className="bg-white rounded-lg p-4 border border-purple-200">
+                          <h4 className="font-semibold text-gray-900 mb-2">California (CCPA/CPRA)</h4>
+                          <div className="grid md:grid-cols-2 gap-3">
+                            <ul className="space-y-1 text-gray-700 text-sm">
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> Right to know what personal information is collected</li>
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> Right to delete personal information</li>
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> Right to correct inaccurate information</li>
+                            </ul>
+                            <ul className="space-y-1 text-gray-700 text-sm">
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> Right to opt-out of sale/sharing for advertising</li>
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> Right to limit use of sensitive personal information</li>
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> No discrimination for exercising rights</li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-4">
+                          <div className="bg-white rounded-lg p-4 border border-blue-200">
+                            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Virginia (VCDPA)</h4>
+                            <ul className="space-y-1 text-gray-600 text-xs">
+                              <li>• Right to access, correct, delete</li>
+                              <li>• Right to data portability</li>
+                              <li>• Right to opt-out of targeted advertising</li>
+                            </ul>
+                          </div>
+                          <div className="bg-white rounded-lg p-4 border border-blue-200">
+                            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Colorado (CPA)</h4>
+                            <ul className="space-y-1 text-gray-600 text-xs">
+                              <li>• Right to access, correct, delete</li>
+                              <li>• Right to opt-out of processing</li>
+                              <li>• Right to data portability</li>
+                            </ul>
+                          </div>
+                          <div className="bg-white rounded-lg p-4 border border-blue-200">
+                            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Connecticut (CTDPA)</h4>
+                            <ul className="space-y-1 text-gray-600 text-xs">
+                              <li>• Right to access, correct, delete</li>
+                              <li>• Right to data portability</li>
+                              <li>• Right to opt-out of sales/targeted ads</li>
+                            </ul>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
-                        <Globe className="w-5 h-5 text-purple-600 mr-2" />
-                        California Privacy Rights (CCPA)
+                    {/* Federal and Additional US Laws */}
+                    <div className="bg-green-50 rounded-lg p-6 border border-green-200">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                        <Shield className="w-5 h-5 text-green-600 mr-2" />
+                        Federal & Sector-Specific US Laws
                       </h3>
                       <div className="grid md:grid-cols-2 gap-4">
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-600 mr-2" /> Right to know what data is collected</li>
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-600 mr-2" /> Right to deletion of personal information</li>
-                        </ul>
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-600 mr-2" /> No sale of personal information</li>
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-600 mr-2" /> No discrimination for exercising rights</li>
-                        </ul>
+                        <div className="bg-white rounded-lg p-4 border border-green-200">
+                          <h4 className="font-semibold text-gray-900 mb-2">COPPA Compliance</h4>
+                          <ul className="space-y-1 text-gray-600 text-sm">
+                            <li className="flex items-center"><Shield className="w-3 h-3 text-green-600 mr-2" /> No collection from children under 13</li>
+                            <li className="flex items-center"><Shield className="w-3 h-3 text-green-600 mr-2" /> Parental consent required for minors</li>
+                            <li className="flex items-center"><Shield className="w-3 h-3 text-green-600 mr-2" /> Age verification mechanisms</li>
+                          </ul>
+                        </div>
+                        <div className="bg-white rounded-lg p-4 border border-green-200">
+                          <h4 className="font-semibold text-gray-900 mb-2">CAN-SPAM Act</h4>
+                          <ul className="space-y-1 text-gray-600 text-sm">
+                            <li className="flex items-center"><Mail className="w-3 h-3 text-green-600 mr-2" /> Clear opt-out mechanisms</li>
+                            <li className="flex items-center"><Mail className="w-3 h-3 text-green-600 mr-2" /> Honest subject lines and sender info</li>
+                            <li className="flex items-center"><Mail className="w-3 h-3 text-green-600 mr-2" /> Physical address disclosure</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="mt-4 p-3 bg-green-100 rounded border border-green-300">
+                        <p className="text-green-800 font-semibold text-sm">Emerging State Laws</p>
+                        <p className="text-green-700 text-xs mt-1">We monitor and comply with new state privacy laws in Utah, Oregon, Montana, Texas, Florida, and other states as they come into effect.</p>
+                      </div>
+                    </div>
+
+                    {/* International Compliance */}
+                    <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
+                        <Globe className="w-5 h-5 text-blue-600 mr-2" />
+                        International Privacy Compliance
+                      </h3>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="bg-white rounded-lg p-4 border border-blue-200">
+                          <h4 className="font-semibold text-gray-900 mb-2">GDPR (EU/UK)</h4>
+                          <ul className="space-y-1 text-gray-600 text-sm">
+                            <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Legal basis: Consent or legitimate interests</li>
+                            <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Data minimization principles</li>
+                            <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Right to erasure and portability</li>
+                            <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> DPO contact: privacy@reciperevamped.com</li>
+                          </ul>
+                        </div>
+                        <div className="bg-white rounded-lg p-4 border border-blue-200">
+                          <h4 className="font-semibold text-gray-900 mb-2">Other Jurisdictions</h4>
+                          <ul className="space-y-1 text-gray-600 text-sm">
+                            <li className="flex items-center"><Globe className="w-3 h-3 text-blue-600 mr-2" /> Canada (PIPEDA)</li>
+                            <li className="flex items-center"><Globe className="w-3 h-3 text-blue-600 mr-2" /> Australia (Privacy Act)</li>
+                            <li className="flex items-center"><Globe className="w-3 h-3 text-blue-600 mr-2" /> Brazil (LGPD)</li>
+                            <li className="flex items-center"><Globe className="w-3 h-3 text-blue-600 mr-2" /> Other applicable local laws</li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>

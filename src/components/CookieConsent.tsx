@@ -115,7 +115,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                   <Shield className="w-4 h-4 text-green-600" />
                   <AlertDescription className="text-green-800 text-sm">
                     <span className="font-medium">Privacy-focused:</span>
-                    <span className="ml-1">Google Analytics only • OpenAI API processing • GDPR & CCPA compliant</span>
+                    <span className="ml-1">Google Analytics + Ads • OpenAI API processing • GDPR & CCPA compliant</span>
                   </AlertDescription>
                 </Alert>
 
@@ -233,11 +233,11 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                             Help us understand how you use our service to improve performance and user experience.
                           </CardDescription>
                           <div className="text-xs text-muted-foreground mb-2">
-                            <strong>Google Analytics:</strong> Page views, feature usage, performance metrics (no personal recipe content)
+                            <strong>Google Analytics + Ads:</strong> Page views, user behavior, demographics, advertising measurement
                           </div>
                           <Alert className="border-muted">
                             <AlertDescription className="text-xs">
-                              <strong>Privacy protection:</strong> No personal information • No recipe content tracked • Standard Google Analytics data collection
+                              <strong>Data sharing:</strong> Analytics data shared with Google Ads for personalized advertising • You can opt-out anytime
                             </AlertDescription>
                           </Alert>
                         </div>

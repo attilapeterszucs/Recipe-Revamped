@@ -52,6 +52,7 @@ export const CookiePolicy: React.FC = () => {
                     { id: 'essential', title: 'Essential Cookies', icon: Shield },
                     { id: 'analytics', title: 'Analytics Cookies', icon: Eye },
                     { id: 'preferences', title: 'Preference Cookies', icon: Settings },
+                    { id: 'advertising', title: 'Advertising Cookies', icon: Zap },
                     { id: 'third-party', title: 'Third-Party Cookies', icon: AlertTriangle },
                     { id: 'management', title: 'Cookie Management', icon: ToggleLeft },
                     { id: 'updates', title: 'Policy Updates', icon: Calendar },
@@ -87,11 +88,11 @@ export const CookiePolicy: React.FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6">
                   <Badge variant="secondary" className="bg-orange-100/20 text-orange-100 hover:bg-orange-100/30 w-fit">
                     <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Effective: September 13, 2025
+                    Effective: January 1, 2025
                   </Badge>
                   <Badge variant="secondary" className="bg-orange-100/20 text-orange-100 hover:bg-orange-100/30 w-fit">
                     <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Last Updated: September 13, 2025
+                    Last Updated: January 1, 2025
                   </Badge>
                 </div>
               </CardHeader>
@@ -119,8 +120,8 @@ export const CookiePolicy: React.FC = () => {
                       </Card>
                       <Card className="p-4">
                         <Eye className="w-8 h-8 text-purple-600 mb-2" />
-                        <h4 className="font-semibold text-foreground">No Tracking</h4>
-                        <p className="text-sm text-muted-foreground">No third-party advertising or tracking cookies</p>
+                        <h4 className="font-semibold text-foreground">Smart Advertising</h4>
+                        <p className="text-sm text-muted-foreground">Google Analytics with Ads integration for personalized experiences</p>
                       </Card>
                     </div>
                   </CardContent>
@@ -269,14 +270,36 @@ export const CookiePolicy: React.FC = () => {
                         </ul>
                       </div>
                     </div>
-                    <div className="mt-4 bg-green-50 rounded-lg p-4 border border-green-200">
-                      <h4 className="font-semibold text-gray-900 mb-2">Google Analytics</h4>
-                      <ul className="text-gray-700 space-y-1">
-                        <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-600 mr-2" /> Tracks page views and user interactions</li>
-                        <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-600 mr-2" /> Helps us improve user experience</li>
-                        <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-600 mr-2" /> Recipe content is never tracked</li>
-                        <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-600 mr-2" /> Can be disabled via cookie settings</li>
-                      </ul>
+                    <div className="space-y-4 mt-4">
+                      <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                        <h4 className="font-semibold text-gray-900 mb-2">Google Analytics & Ads Integration</h4>
+                        <div className="grid md:grid-cols-2 gap-3">
+                          <div>
+                            <p className="text-sm text-gray-700 font-medium mb-1">Analytics Features:</p>
+                            <ul className="text-gray-600 space-y-1 text-sm">
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-green-600 mr-2" /> Page views and user interactions</li>
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-green-600 mr-2" /> User demographics and interests</li>
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-green-600 mr-2" /> Device and location data</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-700 font-medium mb-1">Advertising Features:</p>
+                            <ul className="text-gray-600 space-y-1 text-sm">
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Conversion tracking and attribution</li>
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Audience segmentation for ads</li>
+                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Cross-device advertising measurement</li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="mt-3 p-3 bg-blue-50 rounded border border-blue-200">
+                          <p className="text-blue-800 text-sm font-semibold">🔗 Google Ads Data Sharing</p>
+                          <p className="text-blue-700 text-xs mt-1">Analytics data is automatically shared with Google Ads to enable personalized advertising, remarketing campaigns, and conversion measurement across Google's advertising network.</p>
+                        </div>
+                        <div className="mt-2 flex items-center text-green-700 text-sm">
+                          <Settings className="w-4 h-4 mr-2" />
+                          <span>Can be disabled via cookie settings - affects both analytics and advertising features</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -352,6 +375,91 @@ export const CookiePolicy: React.FC = () => {
                   </div>
                 </section>
 
+                {/* Section 4.5: Advertising Cookies */}
+                <section id="advertising" className="scroll-mt-24">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
+                    <div className="bg-red-100 rounded-full p-3 mr-4">
+                      <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">4. Advertising Cookies</h2>
+                      <p className="text-gray-500">Personalized advertising and measurement</p>
+                    </div>
+                  </div>
+                  <div className="bg-red-50 rounded-lg p-6 border border-red-200">
+                    <div className="bg-orange-100 rounded-lg p-4 mb-4 border border-orange-300">
+                      <p className="text-orange-800 font-semibold">🎯 Can be disabled</p>
+                      <p className="text-orange-700 mt-1">These cookies enable personalized advertising but can be opted out of via cookie settings.</p>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">What Advertising Cookies Do:</h3>
+                    <div className="space-y-4">
+                      <div className="bg-white rounded-lg p-4 border border-red-200">
+                        <div className="flex items-center mb-2">
+                          <Zap className="w-5 h-5 text-red-600 mr-2" />
+                          <h4 className="font-semibold text-gray-900">Google Ads Integration</h4>
+                        </div>
+                        <p className="text-gray-600 text-sm mb-3">We share analytics data with Google Ads to provide you with relevant advertising experiences:</p>
+                        <div className="grid md:grid-cols-2 gap-3">
+                          <ul className="text-sm text-gray-600 space-y-1">
+                            <li>• Measure advertising campaign effectiveness</li>
+                            <li>• Create audience segments for targeted ads</li>
+                            <li>• Enable remarketing to previous visitors</li>
+                            <li>• Track conversions across devices</li>
+                          </ul>
+                          <ul className="text-sm text-gray-600 space-y-1">
+                            <li>• Show relevant ads on Google properties</li>
+                            <li>• Optimize ad delivery and performance</li>
+                            <li>• Support attribution modeling</li>
+                            <li>• Enable lookalike audience creation</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-lg p-4 border border-red-200">
+                        <h4 className="font-semibold text-gray-900 mb-2">Data Shared with Google Ads:</h4>
+                        <div className="grid md:grid-cols-3 gap-3">
+                          <div>
+                            <p className="text-sm font-medium text-gray-800 mb-1">User Behavior</p>
+                            <ul className="text-xs text-gray-600 space-y-1">
+                              <li>• Page views and engagement</li>
+                              <li>• Time spent on site</li>
+                              <li>• Recipe interactions</li>
+                              <li>• Conversion events</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-800 mb-1">Demographics</p>
+                            <ul className="text-xs text-gray-600 space-y-1">
+                              <li>• Age and gender (estimated)</li>
+                              <li>• Interests and affinities</li>
+                              <li>• Geographic location</li>
+                              <li>• Device characteristics</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-800 mb-1">Technical Data</p>
+                            <ul className="text-xs text-gray-600 space-y-1">
+                              <li>• Browser and device info</li>
+                              <li>• Network and IP address</li>
+                              <li>• Referral sources</li>
+                              <li>• Campaign attribution</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                        <h4 className="font-semibold text-gray-900 mb-2">Your Advertising Privacy Rights</h4>
+                        <p className="text-gray-700 text-sm mb-2">You have multiple ways to control advertising cookies:</p>
+                        <ul className="text-gray-600 text-sm space-y-1">
+                          <li className="flex items-center"><CheckCircle className="w-3 h-3 text-yellow-600 mr-2" /> Use our cookie settings to opt-out</li>
+                          <li className="flex items-center"><CheckCircle className="w-3 h-3 text-yellow-600 mr-2" /> Visit Google Ad Settings to manage preferences</li>
+                          <li className="flex items-center"><CheckCircle className="w-3 h-3 text-yellow-600 mr-2" /> Use browser settings to block third-party cookies</li>
+                          <li className="flex items-center"><CheckCircle className="w-3 h-3 text-yellow-600 mr-2" /> Install ad blockers or privacy tools</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
                 {/* Section 5: Third-Party Cookies */}
                 <section id="third-party" className="scroll-mt-24">
                   <div className="flex items-start sm:items-center mb-4 sm:mb-6">
@@ -364,72 +472,102 @@ export const CookiePolicy: React.FC = () => {
                     </div>
                   </div>
                   <div className="space-y-6">
-                    <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                      <div className="bg-green-100 rounded-lg p-4 mb-4 border border-green-300">
-                        <p className="text-green-800 font-semibold">🎉 Good News: No Tracking!</p>
-                        <p className="text-green-700 mt-1">We do NOT use third-party advertising networks, social media pixels, or tracking cookies.</p>
+                    <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                      <div className="bg-blue-100 rounded-lg p-4 mb-4 border border-blue-300">
+                        <p className="text-blue-800 font-semibold">📊 Analytics & Advertising Integration</p>
+                        <p className="text-blue-700 mt-1">We use Google Analytics with Google Ads integration to provide personalized experiences and measure advertising effectiveness.</p>
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Limited Third-Party Services:</h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="bg-white rounded-lg p-4 border border-green-200">
-                          <div className="flex items-center mb-2">
-                            <Shield className="w-5 h-5 text-green-600 mr-2" />
-                            <h4 className="font-semibold text-gray-900">Firebase (Google)</h4>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Third-Party Services We Use:</h3>
+                      <div className="space-y-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="bg-white rounded-lg p-4 border border-blue-200">
+                            <div className="flex items-center mb-2">
+                              <Shield className="w-5 h-5 text-green-600 mr-2" />
+                              <h4 className="font-semibold text-gray-900">Firebase (Google)</h4>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-2">Authentication and secure data storage</p>
+                            <ul className="text-xs text-gray-500 space-y-1">
+                              <li>• __session (authentication)</li>
+                              <li>• firebase-heartbeat-* (service health)</li>
+                            </ul>
                           </div>
-                          <p className="text-sm text-gray-600 mb-2">Authentication and secure data storage</p>
-                          <ul className="text-xs text-gray-500 space-y-1">
-                            <li>• __session (authentication)</li>
-                            <li>• firebase-heartbeat-* (service health)</li>
-                          </ul>
+                          <div className="bg-white rounded-lg p-4 border border-blue-200">
+                            <div className="flex items-center mb-2">
+                              <Eye className="w-5 h-5 text-blue-600 mr-2" />
+                              <h4 className="font-semibold text-gray-900">Google Analytics</h4>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-2">Usage analytics with consent (ID: G-CR787RJ2VK)</p>
+                            <ul className="text-xs text-gray-500 space-y-1">
+                              <li>• _ga (2 years) - visitor identification</li>
+                              <li>• _ga_* (2 years) - session storage</li>
+                            </ul>
+                          </div>
                         </div>
-                        <div className="bg-white rounded-lg p-4 border border-green-200">
+                        <div className="bg-white rounded-lg p-4 border border-purple-200">
                           <div className="flex items-center mb-2">
-                            <Eye className="w-5 h-5 text-blue-600 mr-2" />
-                            <h4 className="font-semibold text-gray-900">Google Analytics</h4>
+                            <Zap className="w-5 h-5 text-purple-600 mr-2" />
+                            <h4 className="font-semibold text-gray-900">Google Ads Integration</h4>
                           </div>
-                          <p className="text-sm text-gray-600 mb-2">Usage analytics with consent (ID: G-CR787RJ2VK)</p>
-                          <ul className="text-xs text-gray-500 space-y-1">
-                            <li>• _ga (2 years) - visitor identification</li>
-                            <li>• _ga_* (2 years) - session storage</li>
+                          <p className="text-sm text-gray-600 mb-2">Advertising measurement and personalization</p>
+                          <ul className="text-xs text-gray-500 space-y-1 mb-2">
+                            <li>• Conversion tracking and attribution</li>
+                            <li>• Audience segmentation for targeted ads</li>
+                            <li>• Remarketing and lookalike audiences</li>
+                            <li>• Cross-platform advertising measurement</li>
                           </ul>
+                          <div className="p-2 bg-purple-50 rounded border border-purple-200">
+                            <p className="text-purple-800 text-xs">
+                              <strong>Data Sharing:</strong> Analytics data is shared with Google Ads to enable personalized advertising and measure campaign effectiveness across Google's network.
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-red-50 rounded-lg p-6 border border-red-200">
+                    <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
                       <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                         <AlertTriangle className="w-5 h-5 text-orange-600 mr-2" />
                         Third-Party Services We Use & Don't Use
                       </h3>
                       <div className="grid md:grid-cols-2 gap-4">
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center">
-                            <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                            Google Analytics (privacy-focused)
-                          </li>
-                          <li className="flex items-center">
-                            <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
-                            No Facebook/Meta pixels
-                          </li>
-                          <li className="flex items-center">
-                            <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
-                            No advertising networks
-                          </li>
-                        </ul>
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center">
-                            <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
-                            No social media widgets
-                          </li>
-                          <li className="flex items-center">
-                            <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
-                            No behavioral tracking
-                          </li>
-                          <li className="flex items-center">
-                            <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
-                            No cross-site tracking
-                          </li>
-                        </ul>
+                        <div>
+                          <h4 className="font-semibold text-green-800 mb-2">✅ Services We Use</h4>
+                          <ul className="space-y-2 text-gray-700">
+                            <li className="flex items-center">
+                              <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                              Google Analytics (with Ads integration)
+                            </li>
+                            <li className="flex items-center">
+                              <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                              Google Ads (for advertising measurement)
+                            </li>
+                            <li className="flex items-center">
+                              <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                              Firebase (authentication & storage)
+                            </li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-red-800 mb-2">❌ Services We Don't Use</h4>
+                          <ul className="space-y-2 text-gray-700">
+                            <li className="flex items-center">
+                              <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
+                              No Facebook/Meta pixels
+                            </li>
+                            <li className="flex items-center">
+                              <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
+                              No other advertising networks
+                            </li>
+                            <li className="flex items-center">
+                              <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
+                              No social media widgets
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="mt-4 p-3 bg-amber-100 rounded border border-amber-300">
+                        <p className="text-amber-800 font-semibold text-sm">🎯 Important for US Users</p>
+                        <p className="text-amber-700 text-xs mt-1">Under state privacy laws (CCPA, VCDPA, etc.), sharing data with Google Ads may be considered a "sale" or "sharing" of personal information. You have the right to opt-out through our cookie settings.</p>
                       </div>
                     </div>
                   </div>

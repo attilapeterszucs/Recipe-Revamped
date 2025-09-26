@@ -82,11 +82,11 @@ export const TermsOfUse: React.FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6">
                   <Badge variant="secondary" className="bg-green-100/20 text-green-100 hover:bg-green-100/30 w-fit">
                     <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Effective: September 13, 2025
+                    Effective: January 1, 2025
                   </Badge>
                   <Badge variant="secondary" className="bg-green-100/20 text-green-100 hover:bg-green-100/30 w-fit">
                     <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Last Updated: September 13, 2025
+                    Last Updated: January 1, 2025
                   </Badge>
                 </div>
               </CardHeader>
@@ -172,34 +172,48 @@ export const TermsOfUse: React.FC = () => {
                     <CardContent className="p-6 space-y-4">
                       <Card className="shadow-sm">
                         <CardHeader>
-                          <CardTitle className="text-lg">Automatic Consent to AI Data Sharing</CardTitle>
+                          <CardTitle className="text-lg">Automatic Consent to AI & Advertising Data Sharing</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <p className="text-foreground leading-relaxed mb-4">
-                            By upgrading to a paid plan (Chef, Master Chef, or Enterprise), you automatically consent to the sharing of your recipe-related data with OpenAI for AI-powered recipe generation. Free plan users receive local processing only with no data sharing. This consent includes:
+                            By upgrading to a paid plan (Chef, Master Chef, or Enterprise), you automatically consent to the sharing of your recipe-related data with OpenAI for AI-powered recipe generation and with Google for advertising and analytics purposes. Free plan users receive local processing only with no external data sharing. This consent includes:
                           </p>
                           <ul className="list-disc pl-6 space-y-2 text-foreground mb-4">
                             <li>Recipe input text (ingredients, cooking instructions, dish names)</li>
                             <li>Your dietary preferences and restrictions</li>
                             <li>Your health conditions and medical dietary requirements</li>
                             <li>Recipe conversion and modification requests</li>
-                            <li>Usage data for service improvement purposes</li>
+                            <li>Usage data, analytics, and behavioral information for service improvement</li>
+                            <li>Advertising interaction data and demographic information</li>
                           </ul>
                           <Card className="bg-amber-50 border-amber-200">
                             <CardHeader>
-                              <CardTitle className="text-amber-800 text-base">Important Notes:</CardTitle>
+                              <CardTitle className="text-amber-800 text-base">Data Sharing Partners:</CardTitle>
                             </CardHeader>
                             <CardContent>
-                              <ul className="text-sm text-amber-700 space-y-1">
-                                <li>• Personal information (email, account details) is NOT shared with OpenAI</li>
-                                <li>• Only recipe-related content is processed by OpenAI's services</li>
-                                <li>• Data is used to generate personalized recipe responses</li>
-                                <li>• OpenAI may use this data to improve their AI models and services</li>
-                              </ul>
+                              <div className="space-y-3">
+                                <div>
+                                  <p className="font-semibold text-amber-800">OpenAI (Recipe Generation)</p>
+                                  <ul className="text-sm text-amber-700 space-y-1 mt-1">
+                                    <li>• Only recipe-related content is processed by OpenAI's services</li>
+                                    <li>• Data is used to generate personalized recipe responses</li>
+                                    <li>• OpenAI may use this data to improve their AI models and services</li>
+                                  </ul>
+                                </div>
+                                <div>
+                                  <p className="font-semibold text-amber-800">Google (Analytics & Advertising)</p>
+                                  <ul className="text-sm text-amber-700 space-y-1 mt-1">
+                                    <li>• Usage patterns, demographics, and engagement metrics</li>
+                                    <li>• Enables targeted advertising and audience segmentation</li>
+                                    <li>• Used for advertising measurement and optimization</li>
+                                  </ul>
+                                </div>
+                                <p className="text-xs text-amber-700">• Personal information (email, account details) is NOT shared with third parties</p>
+                              </div>
                             </CardContent>
                           </Card>
                           <p className="text-foreground leading-relaxed">
-                            This consent is required to provide our AI-powered recipe generation service. If you do not agree to this data sharing, please do not use Recipe Revamped's services. For more details about data handling, see our Privacy Policy.
+                            This consent is required to provide our AI-powered recipe generation service and advertising-supported business model. If you do not agree to this data sharing, please use only our free plan with local processing. For more details about data handling, see our Privacy Policy.
                           </p>
                         </CardContent>
                       </Card>
@@ -486,6 +500,137 @@ export const TermsOfUse: React.FC = () => {
                         THAT THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, OR COMPLETELY SECURE.
                       </p>
                     </div>
+                  </div>
+                </section>
+
+                {/* Section 8.5: US Legal Compliance */}
+                <section id="us-compliance" className="scroll-mt-24">
+                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
+                    <div className="bg-red-100 rounded-full p-3 mr-4">
+                      <Scale className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">8.5. US Legal Compliance</h2>
+                      <p className="text-muted-foreground">Additional terms for US users</p>
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <Card className="bg-red-50 border-red-200">
+                      <CardHeader>
+                        <CardTitle className="text-lg">State Privacy Law Compliance</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="bg-white rounded-lg p-4 border border-red-200">
+                            <h4 className="font-semibold text-foreground mb-2">California Residents (CCPA/CPRA)</h4>
+                            <p className="text-muted-foreground text-sm mb-2">Under California law, you have specific rights regarding your personal information:</p>
+                            <ul className="text-sm text-muted-foreground space-y-1">
+                              <li>• Right to know what personal information we collect and how it's used</li>
+                              <li>• Right to request deletion of your personal information</li>
+                              <li>• Right to opt-out of sale/sharing of personal information for advertising</li>
+                              <li>• Right to correct inaccurate personal information</li>
+                              <li>• Right to non-discrimination for exercising privacy rights</li>
+                            </ul>
+                            <div className="mt-3 p-2 bg-yellow-50 rounded border border-yellow-200">
+                              <p className="text-yellow-800 text-xs">
+                                <strong>Important:</strong> We share analytics data with Google Ads, which may constitute a "sale" or "sharing" under CCPA. You can opt-out via our cookie settings.
+                              </p>
+                            </div>
+                          </div>
+                          <div className="grid md:grid-cols-3 gap-4">
+                            <div className="bg-white rounded-lg p-3 border border-red-200">
+                              <h5 className="font-semibold text-foreground mb-1 text-sm">Virginia (VCDPA)</h5>
+                              <p className="text-xs text-muted-foreground">Rights to access, correct, delete, and opt-out of targeted advertising</p>
+                            </div>
+                            <div className="bg-white rounded-lg p-3 border border-red-200">
+                              <h5 className="font-semibold text-foreground mb-1 text-sm">Colorado (CPA)</h5>
+                              <p className="text-xs text-muted-foreground">Consumer rights including data portability and opt-out options</p>
+                            </div>
+                            <div className="bg-white rounded-lg p-3 border border-red-200">
+                              <h5 className="font-semibold text-foreground mb-1 text-sm">Connecticut (CTDPA)</h5>
+                              <p className="text-xs text-muted-foreground">Privacy rights similar to GDPR with local enforcement</p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-blue-50 border-blue-200">
+                      <CardHeader>
+                        <CardTitle className="text-lg">Federal Law Compliance</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="bg-white rounded-lg p-4 border border-blue-200">
+                            <h4 className="font-semibold text-foreground mb-2">COPPA Compliance</h4>
+                            <ul className="text-sm text-muted-foreground space-y-1">
+                              <li>• Service not directed to children under 13</li>
+                              <li>• No knowing collection of children's data</li>
+                              <li>• Parental consent required for minors</li>
+                              <li>• Age verification mechanisms in place</li>
+                            </ul>
+                          </div>
+                          <div className="bg-white rounded-lg p-4 border border-blue-200">
+                            <h4 className="font-semibold text-foreground mb-2">CAN-SPAM Act</h4>
+                            <ul className="text-sm text-muted-foreground space-y-1">
+                              <li>• Clear sender identification</li>
+                              <li>• Honest subject lines</li>
+                              <li>• Easy unsubscribe options</li>
+                              <li>• Physical address disclosure</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-green-50 border-green-200">
+                      <CardHeader>
+                        <CardTitle className="text-lg">Advertising & Marketing Compliance</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="bg-white rounded-lg p-4 border border-green-200">
+                            <h4 className="font-semibold text-foreground mb-2">Google Ads Integration</h4>
+                            <p className="text-muted-foreground text-sm mb-2">
+                              By using our service, you acknowledge that we share data with Google for advertising purposes, including:
+                            </p>
+                            <ul className="text-sm text-muted-foreground space-y-1">
+                              <li>• Website usage and interaction data</li>
+                              <li>• Demographic and interest information</li>
+                              <li>• Conversion tracking and attribution</li>
+                              <li>• Audience segmentation for targeted advertising</li>
+                            </ul>
+                            <div className="mt-2 p-2 bg-green-100 rounded">
+                              <p className="text-green-800 text-xs">
+                                You can opt-out of targeted advertising through your browser settings, our cookie preferences, or Google's Ad Settings.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-purple-50 border-purple-200">
+                      <CardHeader>
+                        <CardTitle className="text-lg">Dispute Resolution & Jurisdiction</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="bg-white rounded-lg p-4 border border-purple-200">
+                            <h4 className="font-semibold text-foreground mb-2">US Legal Jurisdiction</h4>
+                            <p className="text-muted-foreground text-sm mb-2">
+                              For US users, these terms are governed by applicable US federal and state laws. Disputes may be resolved through:
+                            </p>
+                            <ul className="text-sm text-muted-foreground space-y-1">
+                              <li>• Good faith negotiation first</li>
+                              <li>• Binding arbitration (where permitted by law)</li>
+                              <li>• Small claims court (for eligible disputes)</li>
+                              <li>• Class action waivers (where enforceable)</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
                 </section>
 
