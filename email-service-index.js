@@ -179,55 +179,338 @@ function generateContactEmailHTML(formData) {
 function generateMarketingEmailHTML(recipeName, recipeContent, userName) {
   return `
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
     <head>
       <meta charset="utf-8">
-      <title>New Recipe: ${recipeName} - Recipe Revamped</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${recipeName} - Recipe Revamped</title>
       <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #f97316, #eab308); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
-        .content { background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; }
-        .footer { background: #374151; color: white; padding: 15px; border-radius: 0 0 8px 8px; text-align: center; }
-        .recipe { background: white; padding: 20px; border-radius: 8px; margin: 15px 0; }
-        .cta { background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 10px 0; }
-        .unsubscribe { font-size: 12px; color: #6b7280; margin-top: 10px; }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+          line-height: 1.6;
+          color: #1f2937;
+          margin: 0;
+          padding: 0;
+          background-color: #f9fafb;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background-color: #ffffff;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+          border-radius: 12px;
+          overflow: hidden;
+        }
+        .header {
+          background: linear-gradient(135deg, #10b981, #16a34a);
+          color: white;
+          padding: 30px 25px;
+          text-align: center;
+        }
+        .header h1 {
+          margin: 0 0 8px 0;
+          font-size: 28px;
+          font-weight: 700;
+          letter-spacing: -0.5px;
+        }
+        .header p {
+          margin: 0;
+          font-size: 16px;
+          opacity: 0.9;
+          font-weight: 300;
+        }
+        .logo {
+          font-size: 32px;
+          margin-bottom: 8px;
+        }
+        .content {
+          padding: 30px 25px;
+          background-color: #ffffff;
+        }
+        .greeting {
+          font-size: 18px;
+          color: #374151;
+          margin-bottom: 20px;
+          font-weight: 500;
+        }
+        .intro {
+          font-size: 16px;
+          color: #6b7280;
+          margin-bottom: 25px;
+          line-height: 1.7;
+        }
+        .recipe-card {
+          background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+          border: 1px solid #d1fae5;
+          border-radius: 12px;
+          padding: 25px;
+          margin: 25px 0;
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+        }
+        .recipe-title {
+          color: #065f46;
+          font-size: 22px;
+          font-weight: 700;
+          margin: 0 0 15px 0;
+          line-height: 1.3;
+        }
+        .recipe-content {
+          color: #047857;
+          font-size: 15px;
+          line-height: 1.7;
+          white-space: pre-wrap;
+          background: rgba(255, 255, 255, 0.8);
+          padding: 15px;
+          border-radius: 8px;
+          border-left: 4px solid #10b981;
+        }
+        .cta-section {
+          text-align: center;
+          margin: 30px 0;
+        }
+        .cta {
+          background: linear-gradient(135deg, #10b981, #16a34a);
+          color: white;
+          padding: 15px 30px;
+          text-decoration: none;
+          border-radius: 8px;
+          display: inline-block;
+          font-weight: 600;
+          font-size: 16px;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .cta:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+        .features {
+          background: #f8fafc;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 25px 0;
+          border-left: 4px solid #10b981;
+        }
+        .feature-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        .feature-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 12px;
+          font-size: 15px;
+          color: #374151;
+        }
+        .feature-icon {
+          color: #10b981;
+          margin-right: 10px;
+          font-weight: bold;
+        }
+        .footer {
+          background: #1f2937;
+          color: #d1d5db;
+          padding: 25px;
+          text-align: center;
+        }
+        .footer-brand {
+          color: #ffffff;
+          font-weight: 600;
+          font-size: 18px;
+          margin-bottom: 10px;
+        }
+        .footer-tagline {
+          color: #9ca3af;
+          font-size: 14px;
+          margin-bottom: 15px;
+        }
+        .footer-links {
+          margin: 15px 0;
+        }
+        .footer-links a {
+          color: #10b981;
+          text-decoration: none;
+          margin: 0 8px;
+          font-size: 14px;
+        }
+        .footer-links a:hover {
+          color: #34d399;
+        }
+        .unsubscribe {
+          font-size: 12px;
+          color: #6b7280;
+          margin-top: 15px;
+          line-height: 1.5;
+        }
+        .unsubscribe a {
+          color: #10b981;
+          text-decoration: none;
+        }
+        .divider {
+          height: 1px;
+          background: linear-gradient(to right, transparent, #d1d5db, transparent);
+          margin: 20px 0;
+        }
+
+        /* Responsive design */
+        @media only screen and (max-width: 600px) {
+          .container {
+            margin: 10px;
+            border-radius: 8px;
+          }
+          .header, .content, .footer {
+            padding: 20px;
+          }
+          .header h1 {
+            font-size: 24px;
+          }
+          .recipe-card {
+            padding: 20px;
+          }
+          .cta {
+            padding: 12px 24px;
+            font-size: 15px;
+          }
+        }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <h2>🍳 New Recipe Just for You!</h2>
-          <p>Recipe Revamped - Personalized Recipe Newsletter</p>
+          <div class="logo">🍳</div>
+          <h1>Recipe Revamped</h1>
+          <p>Transform Your Cooking Experience</p>
         </div>
 
         <div class="content">
-          <p>Hi ${userName || 'Food Lover'}!</p>
+          <div class="greeting">Hi ${userName || 'Food Lover'}! 👋</div>
 
-          <p>We've got something delicious for you - a brand new recipe that matches your preferences!</p>
-
-          <div class="recipe">
-            <h3>${recipeName}</h3>
-            <div style="white-space: pre-wrap;">${recipeContent}</div>
+          <div class="intro">
+            ${getEmailIntroText(recipeName, recipeContent)}
           </div>
 
-          <p>Ready to cook? Try this recipe and many more on Recipe Revamped!</p>
+          ${getRecipeCard(recipeName, recipeContent)}
 
-          <a href="https://reciperevamped.com/app" class="cta">Start Cooking →</a>
+          ${getEmailFeatures(recipeName, recipeContent)}
+
+          <div class="cta-section">
+            <a href="https://reciperevamped.com/app" class="cta">
+              ${getCtaText(recipeName, recipeContent)} →
+            </a>
+          </div>
+
+          <div class="divider"></div>
+
+          <p style="color: #6b7280; font-size: 14px; text-align: center; margin: 20px 0;">
+            ✨ Join thousands of home cooks discovering amazing recipes every day!
+          </p>
         </div>
 
         <div class="footer">
-          <p>Happy cooking!</p>
-          <p>The Recipe Revamped Team</p>
+          <div class="footer-brand">Recipe Revamped</div>
+          <div class="footer-tagline">AI-Powered Culinary Innovation</div>
+
+          <div class="footer-links">
+            <a href="https://reciperevamped.com">Website</a> |
+            <a href="https://reciperevamped.com/app">Recipe App</a> |
+            <a href="https://reciperevamped.com/contact">Contact</a>
+          </div>
+
           <div class="unsubscribe">
             <p>You're receiving this because you opted in to marketing emails.</p>
-            <p><a href="https://reciperevamped.com/app" style="color: #fbbf24;">Manage your email preferences</a> | <a href="https://reciperevamped.com/unsubscribe" style="color: #fbbf24;">Unsubscribe</a></p>
+            <p>
+              <a href="https://reciperevamped.com/app">Manage preferences</a> |
+              <a href="https://reciperevamped.com/unsubscribe">Unsubscribe</a>
+            </p>
           </div>
         </div>
       </div>
     </body>
     </html>
   `;
+}
+
+// Helper functions for dynamic content based on email type
+function getRecipeCard(recipeName, recipeContent) {
+  // Don't show recipe card for any emails - content is now handled in intro section
+  return '';
+}
+
+function getEmailIntroText(recipeName, recipeContent) {
+  if (recipeName.toLowerCase().includes('welcome')) {
+    return `Welcome to Recipe Revamped! 🎉 We're thrilled to have you join our community of passionate home cooks. Get ready to transform your kitchen experience with AI-powered recipe discovery and personalized meal planning.`;
+  } else if (recipeName.toLowerCase().includes('weekly') || recipeName.toLowerCase().includes('feature')) {
+    return `This week's featured recipe is here! We've handpicked something special that we think you'll absolutely love. Time to add some excitement to your meal rotation! 🌟`;
+  } else if (recipeName.toLowerCase().includes('comeback') || recipeName.toLowerCase().includes('miss')) {
+    return `We miss you in the kitchen! 👨‍🍳 Come back and discover what's new at Recipe Revamped. We've added amazing new features and recipes just waiting for you to explore.`;
+  } else {
+    // For custom emails, use the recipeContent as the main intro text
+    return recipeContent;
+  }
+}
+
+function getEmailFeatures(recipeName, recipeContent) {
+  // Only show features for welcome and comeback emails, not for custom emails
+  if (recipeName.toLowerCase().includes('welcome')) {
+    return `
+      <div class="features">
+        <h4 style="color: #374151; margin: 0 0 15px 0;">🌟 What you can do with Recipe Revamped:</h4>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="feature-icon">🔍</span>
+            AI-powered recipe discovery based on your preferences
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">📋</span>
+            Smart meal planning and grocery list generation
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">⏱️</span>
+            Quick recipe suggestions for busy weeknights
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">👥</span>
+            Share and save your favorite recipes
+          </li>
+        </ul>
+      </div>
+    `;
+  } else if (recipeName.toLowerCase().includes('comeback')) {
+    return `
+      <div class="features">
+        <h4 style="color: #374151; margin: 0 0 15px 0;">🆕 New features you haven't tried yet:</h4>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="feature-icon">🎯</span>
+            Enhanced personalization engine
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">📱</span>
+            Improved mobile experience
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">🍽️</span>
+            New dietary restriction filters
+          </li>
+        </ul>
+      </div>
+    `;
+  }
+  // Custom emails and other templates don't show features section
+  return '';
+}
+
+function getCtaText(recipeName, recipeContent) {
+  if (recipeName.toLowerCase().includes('welcome')) {
+    return 'Start Your Culinary Journey';
+  } else if (recipeName.toLowerCase().includes('comeback')) {
+    return 'Welcome Back - Start Cooking';
+  } else if (recipeName.toLowerCase().includes('weekly') || recipeName.toLowerCase().includes('feature')) {
+    return 'Try This Week\'s Recipe';
+  } else {
+    return 'Start Cooking Now';
+  }
 }
 
 // ============================================================================
@@ -513,9 +796,9 @@ async function sendMarketingEmail(req, res) {
         } : null
       });
 
-      // Check if user has marketing emails enabled (check multiple possible structures)
-      const hasMarketingEnabled = userData.emailPreferences?.marketing === true ||
-                                  userData.marketingEmails === true ||
+      // Check if user has marketing emails enabled (prioritize Settings page structure)
+      const hasMarketingEnabled = userData.marketingEmails === true ||
+                                  userData.emailPreferences?.marketing === true ||
                                   userData.emailPreferences?.notifications !== false; // Default enabled if not explicitly disabled
 
       if (hasMarketingEnabled) {
@@ -715,6 +998,12 @@ async function handleUnsubscribe(req, res) {
       // Process unsubscribe from personalProfile email
       const userDoc = profileSnapshot.docs[0];
       await userDoc.ref.update({
+        // Settings page structure (main field)
+        'marketingEmails': false,
+        'productUpdates': false,
+        'featuresAnnouncements': false,
+        'promotionalOffers': false,
+        // Legacy structure for backward compatibility
         'emailPreferences.marketing': false,
         'emailPreferences.marketingUnsubscribedAt': admin.firestore.FieldValue.serverTimestamp(),
         'emailPreferences.unsubscribeMethod': 'direct_link',
@@ -724,6 +1013,12 @@ async function handleUnsubscribe(req, res) {
       // Process unsubscribe from main email
       const userDoc = usersSnapshot.docs[0];
       await userDoc.ref.update({
+        // Settings page structure (main field)
+        'marketingEmails': false,
+        'productUpdates': false,
+        'featuresAnnouncements': false,
+        'promotionalOffers': false,
+        // Legacy structure for backward compatibility
         'emailPreferences.marketing': false,
         'emailPreferences.marketingUnsubscribedAt': admin.firestore.FieldValue.serverTimestamp(),
         'emailPreferences.unsubscribeMethod': 'direct_link',

@@ -126,7 +126,40 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     loadUserSettings();
     loadRecipeCount();
     initializeAdminSystemIfNeeded();
-  }, []);
+
+    // Set up real-time listener for user settings changes
+    const setupSettingsListener = async () => {
+      try {
+        const { doc, onSnapshot } = await import('firebase/firestore');
+        const { db } = await import('../lib/firebase');
+
+        const userDocRef = doc(db, 'userSettings', user.uid);
+        const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            // Reload settings when they change (e.g., from unsubscribe page)
+            loadUserSettings();
+          }
+        });
+
+        // Return cleanup function
+        return unsubscribe;
+      } catch (error) {
+        console.error('Error setting up settings listener:', error);
+      }
+    };
+
+    let unsubscribeListener: (() => void) | undefined;
+    setupSettingsListener().then((unsubscribe) => {
+      unsubscribeListener = unsubscribe;
+    });
+
+    // Cleanup listener on unmount
+    return () => {
+      if (unsubscribeListener) {
+        unsubscribeListener();
+      }
+    };
+  }, [user.uid]);
 
   // Refresh admin status when global subscription refresh is triggered
   useEffect(() => {

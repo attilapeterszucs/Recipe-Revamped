@@ -55,12 +55,13 @@ export const Unsubscribe: React.FC = () => {
       const userDoc = await getDoc(doc(db, 'userSettings', user.uid));
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        const isSubscribed = userData.emailPreferences?.marketing === true;
+        // Check both structures: new (marketingEmails) and legacy (emailPreferences.marketing)
+        const isSubscribed = userData.marketingEmails !== false && userData.emailPreferences?.marketing !== false;
 
         if (!isSubscribed) {
           setUnsubscribeStatus({
             status: 'already_unsubscribed',
-            message: 'You are already unsubscribed from marketing emails.',
+            message: 'You are currently unsubscribed from marketing emails.',
             isAuthenticated: true
           });
         }
@@ -125,9 +126,15 @@ export const Unsubscribe: React.FC = () => {
     setUnsubscribeStatus({ status: 'processing' });
 
     try {
-      // Update user settings in Firestore
+      // Update user settings in Firestore - update both structures for compatibility
       const userDocRef = doc(db, 'userSettings', user.uid);
       await updateDoc(userDocRef, {
+        // Settings page structure (main field)
+        'marketingEmails': false,
+        'productUpdates': false,
+        'featuresAnnouncements': false,
+        'promotionalOffers': false,
+        // Legacy structure for email service compatibility
         'emailPreferences.marketing': false,
         'emailPreferences.marketingUnsubscribedAt': new Date().toISOString(),
         'emailPreferences.lastUpdated': new Date().toISOString()
@@ -157,6 +164,12 @@ export const Unsubscribe: React.FC = () => {
     try {
       const userDocRef = doc(db, 'userSettings', user.uid);
       await updateDoc(userDocRef, {
+        // Settings page structure (main field)
+        'marketingEmails': true,
+        'productUpdates': true,
+        'featuresAnnouncements': true,
+        'promotionalOffers': true,
+        // Legacy structure for email service compatibility
         'emailPreferences.marketing': true,
         'emailPreferences.marketingResubscribedAt': new Date().toISOString(),
         'emailPreferences.lastUpdated': new Date().toISOString()
@@ -309,9 +322,9 @@ export const Unsubscribe: React.FC = () => {
                               {unsubscribeStatus.status === 'success' || unsubscribeStatus.status === 'already_unsubscribed' ? (
                                 <Button
                                   onClick={handleResubscribe}
-                                  disabled={false}
+                                  disabled={unsubscribeStatus.status === 'processing'}
                                   variant="outline"
-                                  className="border-orange-600 text-orange-600 hover:bg-orange-50"
+                                  className="border-green-600 text-green-600 hover:bg-green-50"
                                 >
                                   Resubscribe
                                 </Button>

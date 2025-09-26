@@ -220,42 +220,95 @@ export const MarketingEmailCampaign: React.FC = () => {
           )}
 
           <form onSubmit={handleMarketingSubmit} className="space-y-6">
-            {/* Recipe Content */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="recipeName">Recipe Name</Label>
-                <Input
-                  id="recipeName"
-                  value={marketingEmailData.recipeName}
-                  onChange={(e) => setMarketingEmailData(prev => ({ ...prev, recipeName: e.target.value }))}
-                  placeholder="e.g., Spicy Thai Basil Chicken"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="frequency">Email Frequency</Label>
+            {/* Email Template Selection */}
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="emailTemplate">Email Template</Label>
                 <select
-                  id="frequency"
-                  value={marketingEmailData.frequency}
-                  onChange={(e) => setMarketingEmailData(prev => ({ ...prev, frequency: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  id="emailTemplate"
+                  onChange={(e) => {
+                    const template = e.target.value;
+                    if (template === 'welcome') {
+                      setMarketingEmailData(prev => ({
+                        ...prev,
+                        recipeName: 'Welcome to Recipe Revamped!',
+                        recipeContent: 'Transform your cooking experience with our AI-powered recipe tools and personalized meal planning.'
+                      }));
+                    } else if (template === 'weekly_recipe') {
+                      setMarketingEmailData(prev => ({
+                        ...prev,
+                        recipeName: 'This Week\'s Featured Recipe',
+                        recipeContent: 'Discover a delicious new recipe handpicked by our culinary team and convert it to your perfect serving size!'
+                      }));
+                    } else if (template === 'features') {
+                      setMarketingEmailData(prev => ({
+                        ...prev,
+                        recipeName: 'Unlock Recipe Revamped\'s Full Potential',
+                        recipeContent: 'From AI recipe conversion to meal planning - explore all the features that make cooking easier and more enjoyable.'
+                      }));
+                    } else if (template === 'comeback') {
+                      setMarketingEmailData(prev => ({
+                        ...prev,
+                        recipeName: 'We Miss You in the Kitchen!',
+                        recipeContent: 'Come back and discover new recipes, convert your favorites, and plan your meals with Recipe Revamped.'
+                      }));
+                    } else if (template === 'custom') {
+                      setMarketingEmailData(prev => ({
+                        ...prev,
+                        recipeName: '',
+                        recipeContent: ''
+                      }));
+                    }
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
                 >
-                  <option value="weekly">Weekly</option>
-                  <option value="bi-weekly">Bi-weekly</option>
+                  <option value="custom">📝 Custom Email</option>
+                  <option value="welcome">🎉 Welcome Email</option>
+                  <option value="weekly_recipe">🍳 Weekly Recipe Feature</option>
+                  <option value="features">✨ Feature Showcase</option>
+                  <option value="comeback">💚 Re-engagement Email</option>
                 </select>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="recipeName">Email Subject</Label>
+                  <Input
+                    id="recipeName"
+                    value={marketingEmailData.recipeName}
+                    onChange={(e) => setMarketingEmailData(prev => ({ ...prev, recipeName: e.target.value }))}
+                    placeholder="e.g., Welcome to Recipe Revamped!"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="frequency">Email Frequency</Label>
+                  <select
+                    id="frequency"
+                    value={marketingEmailData.frequency}
+                    onChange={(e) => setMarketingEmailData(prev => ({ ...prev, frequency: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="weekly">Weekly</option>
+                    <option value="bi-weekly">Bi-weekly</option>
+                  </select>
+                </div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="recipeContent">Recipe Content</Label>
+              <Label htmlFor="recipeContent">Email Content</Label>
               <textarea
                 id="recipeContent"
                 value={marketingEmailData.recipeContent}
                 onChange={(e) => setMarketingEmailData(prev => ({ ...prev, recipeContent: e.target.value }))}
-                placeholder="Include ingredients, instructions, cooking tips, and any additional content for the newsletter..."
-                className="min-h-[200px] w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                placeholder="Enter your marketing message. This will be the main content of your email campaign..."
+                className="min-h-[200px] w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
               />
+              <p className="text-sm text-gray-500">
+                💡 Tip: Use the templates above for pre-written content designed to engage users and drive them to your website.
+              </p>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -264,7 +317,7 @@ export const MarketingEmailCampaign: React.FC = () => {
                 id="overrideFrequency"
                 checked={marketingEmailData.overrideFrequency}
                 onChange={(e) => setMarketingEmailData(prev => ({ ...prev, overrideFrequency: e.target.checked }))}
-                className="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
               />
               <Label htmlFor="overrideFrequency" className="text-sm">
                 Override frequency limits (send regardless of user's last email date)
@@ -280,8 +333,8 @@ export const MarketingEmailCampaign: React.FC = () => {
                 <div className="flex items-center gap-2">
                   {marketingEmailData.overrideFrequency ? (
                     <>
-                      <AlertCircle className="w-4 h-4 text-orange-600" />
-                      <span className="text-sm text-orange-600 font-medium">
+                      <AlertCircle className="w-4 h-4 text-green-600" />
+                      <span className="text-sm text-green-600 font-medium">
                         Override frequency limits - Send immediately
                       </span>
                     </>
@@ -304,7 +357,7 @@ export const MarketingEmailCampaign: React.FC = () => {
                     name="userSelection"
                     checked={sendMarketingToAllUsers}
                     onChange={() => setSendMarketingToAllUsers(true)}
-                    className="h-4 w-4 text-orange-600 border-gray-300 focus:ring-orange-500"
+                    className="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500"
                   />
                   <Label htmlFor="allUsers">Send to all eligible users</Label>
                 </div>
@@ -315,7 +368,7 @@ export const MarketingEmailCampaign: React.FC = () => {
                     name="userSelection"
                     checked={!sendMarketingToAllUsers}
                     onChange={() => setSendMarketingToAllUsers(false)}
-                    className="h-4 w-4 text-orange-600 border-gray-300 focus:ring-orange-500"
+                    className="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500"
                   />
                   <Label htmlFor="selectedUsers">Send to selected users</Label>
                 </div>
@@ -356,7 +409,7 @@ export const MarketingEmailCampaign: React.FC = () => {
                             id="emailEnabled"
                             checked={showOnlyEmailEnabled}
                             onChange={(e) => setShowOnlyEmailEnabled(e.target.checked)}
-                            className="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                            className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                           />
                           <Label htmlFor="emailEnabled" className="text-sm">Email notifications enabled</Label>
                         </div>
@@ -395,7 +448,7 @@ export const MarketingEmailCampaign: React.FC = () => {
                                     type="checkbox"
                                     checked={selectedMarketingUsers.includes(user.uid)}
                                     onChange={() => handleMarketingUserToggle(user.uid)}
-                                    className="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                                    className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                                   />
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center space-x-2">
@@ -466,7 +519,7 @@ export const MarketingEmailCampaign: React.FC = () => {
               <div className="text-sm text-muted-foreground">Email Enabled</div>
             </div>
             <div className="text-center p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">
+              <div className="text-2xl font-bold text-green-600">
                 {sendMarketingToAllUsers ?
                   allUsers.filter(user => user.emailPreferences?.notifications !== false).length :
                   selectedMarketingUsers.length
