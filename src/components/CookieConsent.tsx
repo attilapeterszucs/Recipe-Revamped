@@ -26,7 +26,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
     essential: true, // Always true, cannot be disabled
     analytics: false,
     preferences: true, // Default to true for better UX
-    marketing: false // We don't use marketing cookies, but included for completeness
+    marketing: false // Default to false - user must explicitly opt-in to advertising
   });
 
   // Component is only rendered when consent is needed (controlled by parent)
@@ -36,7 +36,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
       essential: true,
       analytics: true,
       preferences: true,
-      marketing: false // We don't use marketing cookies
+      marketing: true // Accept all includes marketing/advertising cookies
     };
 
     saveConsent(allAccepted);
@@ -106,18 +106,36 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
               {/* Content */}
               <div className="mb-6">
                 <p className="text-foreground mb-3">
-                  We use cookies to provide essential functionality, remember your preferences, and analyze usage to improve our service.
-                  Recipe processing is powered by OpenAI with automatic consent for AI data sharing.
+                  We use cookies for essential functionality, preferences, analytics, and advertising. Recipe processing uses OpenAI with automatic consent for AI data sharing.
+                  <strong className="text-red-600"> We also share analytics data with Google Ads for personalized advertising.</strong>
                 </p>
 
                 {/* Privacy Highlights */}
-                <Alert className="bg-green-50 border-green-200 mb-4">
-                  <Shield className="w-4 h-4 text-green-600" />
-                  <AlertDescription className="text-green-800 text-sm">
-                    <span className="font-medium">Privacy-focused:</span>
-                    <span className="ml-1">Google Analytics + Ads • OpenAI API processing • GDPR & CCPA compliant</span>
-                  </AlertDescription>
-                </Alert>
+                <div className="space-y-3 mb-4">
+                  <Alert className="bg-green-50 border-green-200">
+                    <Shield className="w-4 h-4 text-green-600" />
+                    <AlertDescription className="text-green-800 text-sm">
+                      <span className="font-medium">Privacy compliance:</span>
+                      <span className="ml-1">GDPR, CCPA, VCDPA & US state privacy laws</span>
+                    </AlertDescription>
+                  </Alert>
+
+                  <Alert className="bg-blue-50 border-blue-200">
+                    <Info className="w-4 h-4 text-blue-600" />
+                    <AlertDescription className="text-blue-800 text-sm">
+                      <span className="font-medium">Data sharing:</span>
+                      <span className="ml-1">Google Analytics + Ads for personalized advertising • OpenAI for recipe generation</span>
+                    </AlertDescription>
+                  </Alert>
+
+                  <Alert className="bg-amber-50 border-amber-200">
+                    <AlertTriangle className="w-4 h-4 text-amber-600" />
+                    <AlertDescription className="text-amber-800 text-sm">
+                      <span className="font-medium">US residents:</span>
+                      <span className="ml-1">This may constitute "sale/sharing" under CCPA • You can opt-out anytime</span>
+                    </AlertDescription>
+                  </Alert>
+                </div>
 
                 {/* Quick Options */}
                 <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
@@ -182,7 +200,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                   </div>
                   <Badge variant="outline" className="text-xs">
                     <Info className="w-4 h-4 mr-1" />
-                    GDPR & CCPA Compliant
+                    GDPR, CCPA & US State Law Compliant
                   </Badge>
                 </div>
               </CardHeader>
@@ -277,25 +295,29 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                   </CardHeader>
                 </Card>
 
-                {/* Marketing Cookies (Disabled) */}
-                <Card className="bg-muted/30 opacity-75">
+                {/* Marketing/Advertising Cookies */}
+                <Card className="bg-red-50 border-red-200">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start flex-1">
-                        <AlertTriangle className="w-6 h-6 text-muted-foreground mr-3 mt-0.5" />
+                        <AlertTriangle className="w-6 h-6 text-red-600 mr-3 mt-0.5" />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <CardTitle className="text-lg text-muted-foreground">Marketing Cookies</CardTitle>
-                            <Badge variant="secondary">
-                              Not Used
-                            </Badge>
+                            <CardTitle className="text-lg">Marketing/Advertising Cookies</CardTitle>
+                            <Switch
+                              checked={preferences.marketing}
+                              onCheckedChange={() => togglePreference('marketing')}
+                            />
                           </div>
                           <CardDescription className="text-sm mt-1 mb-3">
-                            We don't use marketing or advertising cookies. This category is shown for transparency.
+                            Enable personalized advertising and measurement through Google Ads integration.
                           </CardDescription>
-                          <Alert className="bg-green-100 border-green-200">
-                            <AlertDescription className="text-xs text-green-700">
-                              <strong>Privacy commitment:</strong> No advertising networks • No tracking pixels • No behavioral profiling
+                          <div className="text-xs text-muted-foreground mb-2">
+                            <strong>Google Ads Features:</strong> Remarketing, audience targeting, conversion tracking, personalized ads
+                          </div>
+                          <Alert className="bg-amber-50 border-amber-200">
+                            <AlertDescription className="text-xs text-amber-700">
+                              <strong>US residents:</strong> This constitutes "sale/sharing" under CCPA • You have the right to opt-out • Affects ads you see on Google services
                             </AlertDescription>
                           </Alert>
                         </div>
@@ -312,14 +334,20 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                       Third-Party Services
                     </h4>
                     <p className="text-foreground text-sm mb-3">
-                      We use minimal third-party services, each with their own privacy policies:
+                      We use select third-party services, each with their own privacy policies:
                     </p>
                     <div className="grid md:grid-cols-2 gap-3 text-xs">
                       <Card className="p-2">
-                        <strong>Firebase (Google):</strong> Authentication & secure storage
+                        <strong>Firebase (Google):</strong> Authentication & secure data storage
                       </Card>
                       <Card className="p-2">
-                        <strong>Netlify:</strong> Hosting & content delivery
+                        <strong>Google Analytics & Ads:</strong> Usage analytics & personalized advertising
+                      </Card>
+                      <Card className="p-2">
+                        <strong>OpenAI:</strong> AI-powered recipe generation & processing
+                      </Card>
+                      <Card className="p-2">
+                        <strong>Netlify:</strong> Website hosting & content delivery
                       </Card>
                     </div>
                   </AlertDescription>
