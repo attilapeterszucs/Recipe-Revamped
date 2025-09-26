@@ -352,9 +352,28 @@ export const Unsubscribe: React.FC = () => {
                     </div>
 
                     {!emailParam && (
-                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <>
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <div className="flex items-start">
+                            <Settings className="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-semibold text-blue-900 mb-2">How to Manage Email Preferences</h4>
+                              <p className="text-blue-800 text-sm mb-2">
+                                You can also manage your marketing email preferences directly in your account:
+                              </p>
+                              <ol className="text-blue-800 text-sm space-y-1 ml-4">
+                                <li className="list-decimal">Sign in to your Recipe Revamped account</li>
+                                <li className="list-decimal">Go to <strong>Settings</strong></li>
+                                <li className="list-decimal">Navigate to <strong>Notifications</strong></li>
+                                <li className="list-decimal">Toggle <strong>Marketing Emails</strong> on/off</li>
+                              </ol>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button asChild>
-                          <Link to="/auth?mode=signin">
+                          <Link to="/signin">
                             Sign In to Manage Preferences
                           </Link>
                         </Button>
@@ -363,7 +382,8 @@ export const Unsubscribe: React.FC = () => {
                             Contact Support
                           </Link>
                         </Button>
-                      </div>
+                        </div>
+                      </>
                     )}
                   </div>
                 )}
