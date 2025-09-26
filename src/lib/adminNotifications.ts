@@ -114,11 +114,69 @@ export const getAllUsers = async (): Promise<string[]> => {
   }
 };
 
+// Get all users with email data
+export const getAllUsersWithEmails = async (): Promise<Array<{
+  uid: string;
+  email: string;
+  displayName?: string;
+  emailPreferences?: {
+    notifications?: boolean;
+  };
+}>> => {
+  try {
+    const { getAllUserProfiles } = await import('./userService');
+    const userProfiles = await getAllUserProfiles();
+
+    return userProfiles.map(profile => ({
+      uid: profile.uid,
+      email: profile.email,
+      displayName: profile.displayName,
+      emailPreferences: profile.emailPreferences
+    }));
+  } catch (error) {
+    console.error('Error getting users with emails:', error);
+    return [];
+  }
+};
+
+// Send email notification via the email service
+const sendEmailNotification = async (
+  notificationData: NotificationData,
+  userEmails: string[]
+): Promise<void> => {
+  try {
+    const EMAIL_SERVICE_URL = 'https://emailservice-428797186446.us-central1.run.app/notification';
+
+    const response = await fetch(EMAIL_SERVICE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: notificationData.title,
+        message: notificationData.message,
+        type: notificationData.type,
+        recipients: userEmails
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Email service responded with status: ${response.status}`);
+    }
+
+    console.log(`Email notifications sent to ${userEmails.length} users`);
+  } catch (error) {
+    console.error('Error sending email notifications:', error);
+    throw error;
+  }
+};
+
 // Create notification for all users (with admin verification)
 export const createNotificationForAllUsers = async (
   notificationData: NotificationData,
   adminUserId: string,
-  adminEmail: string
+  adminEmail: string,
+  sendAsEmail: boolean = false
 ): Promise<number> => {
   try {
     // Verify admin privileges
@@ -151,7 +209,25 @@ export const createNotificationForAllUsers = async (
     });
     
     await Promise.all(promises);
-    
+
+    // Send email notifications if requested
+    if (sendAsEmail) {
+      try {
+        const usersWithEmails = await getAllUsersWithEmails();
+        const emailEnabledUsers = usersWithEmails.filter(user =>
+          user.emailPreferences?.notifications !== false
+        );
+        const userEmails = emailEnabledUsers.map(user => user.email);
+
+        if (userEmails.length > 0) {
+          await sendEmailNotification(notificationData, userEmails);
+        }
+      } catch (emailError) {
+        console.error('Error sending email notifications:', emailError);
+        // Don't fail the entire operation if email fails
+      }
+    }
+
     // Log the admin action using the new admin management system
     await logAdminAction({
       adminUid: adminUserId,
@@ -161,14 +237,100 @@ export const createNotificationForAllUsers = async (
         notificationData,
         userCount: userIds.length,
         successCount,
+        emailSent: sendAsEmail,
         timestamp: new Date().toISOString()
       },
       timestamp: new Date()
     });
-    
+
     return successCount;
   } catch (error) {
     console.error('Error creating notifications for all users:', error);
+    throw error;
+  }
+};
+
+// Create notification for selected users (with admin verification)
+export const createNotificationForSelectedUsers = async (
+  notificationData: NotificationData,
+  selectedUserIds: string[],
+  adminUserId: string,
+  adminEmail: string,
+  sendAsEmail: boolean = false
+): Promise<number> => {
+  try {
+    // Verify admin privileges
+    const isAdmin = await isUserAdmin(adminEmail, adminUserId);
+    if (!isAdmin) {
+      throw new Error('Unauthorized: Admin privileges required');
+    }
+
+    if (selectedUserIds.length === 0) {
+      throw new Error('No users selected');
+    }
+
+    let successCount = 0;
+
+    // Create notification for each selected user
+    const promises = selectedUserIds.map(async (userId) => {
+      try {
+        await addDoc(collection(db, 'notifications'), {
+          userId,
+          title: notificationData.title,
+          message: notificationData.message,
+          type: notificationData.type,
+          isRead: false,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          createdBy: adminUserId,
+          createdByAdmin: adminEmail
+        });
+        successCount++;
+      } catch (error) {
+        console.error(`Failed to create notification for user ${userId}:`, error);
+      }
+    });
+
+    await Promise.all(promises);
+
+    // Send email notifications if requested
+    if (sendAsEmail) {
+      try {
+        const usersWithEmails = await getAllUsersWithEmails();
+        const selectedUsersWithEmails = usersWithEmails.filter(user =>
+          selectedUserIds.includes(user.uid) &&
+          user.emailPreferences?.notifications !== false
+        );
+        const userEmails = selectedUsersWithEmails.map(user => user.email);
+
+        if (userEmails.length > 0) {
+          await sendEmailNotification(notificationData, userEmails);
+        }
+      } catch (emailError) {
+        console.error('Error sending email notifications:', emailError);
+        // Don't fail the entire operation if email fails
+      }
+    }
+
+    // Log the admin action
+    await logAdminAction({
+      adminUid: adminUserId,
+      adminEmail: adminEmail,
+      action: 'CREATE_NOTIFICATION_SELECTED_USERS',
+      details: {
+        notificationData,
+        selectedUserIds,
+        userCount: selectedUserIds.length,
+        successCount,
+        emailSent: sendAsEmail,
+        timestamp: new Date().toISOString()
+      },
+      timestamp: new Date()
+    });
+
+    return successCount;
+  } catch (error) {
+    console.error('Error creating notifications for selected users:', error);
     throw error;
   }
 };
