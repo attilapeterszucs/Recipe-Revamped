@@ -194,7 +194,6 @@ export const Contact: React.FC = () => {
       }
 
       const result = await response.json();
-      console.log('Contact form submitted successfully:', result);
 
       setSubmitStatus('success');
       setFormData({

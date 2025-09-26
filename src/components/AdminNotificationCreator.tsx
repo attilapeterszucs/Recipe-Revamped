@@ -11,7 +11,7 @@ import {
   Shield,
   Mail,
   UserCheck,
-  Search
+  Search,
 } from 'lucide-react';
 import { createNotificationForAllUsers, createNotificationForSelectedUsers, getAdminStats, getAllUsersWithEmails } from '../lib/adminNotifications';
 import type { NotificationData } from '../types/notifications';
@@ -51,6 +51,7 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stats, setStats] = useState({ totalUsers: 0, totalNotifications: 0 });
   const [loadingStats, setLoadingStats] = useState(true);
+
 
   const { showSuccess, showError } = useToast();
 
@@ -158,6 +159,7 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
     user.email.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
     user.displayName?.toLowerCase().includes(userSearchTerm.toLowerCase())
   );
+
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -521,6 +523,7 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
           </div>
         </form>
       </div>
+
     </div>
   );
 };

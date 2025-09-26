@@ -42,6 +42,7 @@ import { HealthGoalsManager } from '../components/HealthGoalsManager';
 import { AdminNotificationCreator } from '../components/AdminNotificationCreator';
 import { AdminUserManagement } from '../components/AdminUserManagement';
 import { AdminBlogManagement } from '../components/AdminBlogManagement';
+import { MarketingEmailCampaign } from '../components/MarketingEmailCampaign';
 import { checkAdminAccess, initializeAdminSystem } from '../utils/adminUtils';
 import { useSubscriptionRefresh } from '../contexts/SubscriptionContext';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
@@ -2262,6 +2263,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'admin':
       case 'admin-users':
       case 'admin-notifications':
+      case 'admin-marketing':
       case 'admin-blog':
         if (!isUserAdmin) {
           return (
@@ -2297,6 +2299,16 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   Notifications
                 </button>
                 <button
+                  onClick={() => setActiveSection('admin-marketing')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeSection === 'admin-marketing'
+                      ? 'border-red-500 text-red-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Marketing Emails
+                </button>
+                <button
                   onClick={() => setActiveSection('admin-blog')}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeSection === 'admin-blog'
@@ -2317,6 +2329,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   adminUserId={user.uid}
                   adminEmail={user.email || ''}
                 />
+              ) : activeSection === 'admin-marketing' ? (
+                <MarketingEmailCampaign key="admin-marketing" />
               ) : activeSection === 'admin-blog' ? (
                 <AdminBlogManagement
                   key="admin-blog"
@@ -2394,7 +2408,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               <div className="flex space-x-3 min-w-max">
                 {sections.map((section) => {
                   const Icon = section.icon;
-                  const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-blog'));
+                  const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'));
                   return (
                     <button
                       key={section.id}
@@ -2424,7 +2438,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     key={section.id}
                     onClick={() => setActiveSection(section.id)}
                     className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                      activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-blog'))
+                      activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'))
                         ? 'bg-green-50 text-green-700 border-r-2 border-green-500'
                         : 'text-gray-700 hover:bg-gray-50'
                     }`}
