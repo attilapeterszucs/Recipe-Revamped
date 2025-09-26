@@ -179,11 +179,7 @@ export const Unsubscribe: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead
-        title="Unsubscribe from Marketing Emails | Recipe Revamped"
-        description="Unsubscribe from Recipe Revamped marketing emails and manage your email preferences."
-        canonical="/unsubscribe"
-      />
+      <SEOHead pageKey="unsubscribe" />
 
       {/* Header */}
       <AuthAwareNavigation />
@@ -313,7 +309,7 @@ export const Unsubscribe: React.FC = () => {
                               {unsubscribeStatus.status === 'success' || unsubscribeStatus.status === 'already_unsubscribed' ? (
                                 <Button
                                   onClick={handleResubscribe}
-                                  disabled={unsubscribeStatus.status === 'processing'}
+                                  disabled={false}
                                   variant="outline"
                                   className="border-orange-600 text-orange-600 hover:bg-orange-50"
                                 >

@@ -44,11 +44,19 @@ export const useAuth = () => {
     return unsubscribe;
   }, []);
 
+  const getIdToken = async () => {
+    if (!authState.user) {
+      throw new Error('No authenticated user');
+    }
+    return await authState.user.getIdToken();
+  };
+
   return {
     user: authState.user,
     loading: authState.loading,
     error: authState.error,
     isAuthenticated: !!authState.user,
-    isEmailVerified: authState.user?.emailVerified ?? false
+    isEmailVerified: authState.user?.emailVerified ?? false,
+    getIdToken
   };
 };
