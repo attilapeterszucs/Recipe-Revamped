@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Mail, MessageSquare, MapPin, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { SEOHead } from '../components/SEOHead';
+import { useAuth } from '../hooks/useAuth';
 
 interface ContactForm {
   name: string;
@@ -12,6 +13,8 @@ interface ContactForm {
 }
 
 export const Contact: React.FC = () => {
+  const { user, getIdToken } = useAuth();
+
   const [formData, setFormData] = useState<ContactForm>({
     name: '',
     email: '',
@@ -19,7 +22,7 @@ export const Contact: React.FC = () => {
     message: '',
     category: 'general'
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Partial<ContactForm>>({});
@@ -141,22 +144,58 @@ export const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     setIsSubmitting(true);
     setSubmitStatus('idle');
-    
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // TODO: Implement actual form submission to info@reciperevamped.com
-      // The form data should be sent to a backend endpoint that forwards to info@reciperevamped.com
-      console.log('Form data to be sent to info@reciperevamped.com:', formData);
-      
+      // Get auth token if user is logged in (optional for contact form)
+      let authToken = null;
+      try {
+        if (user) {
+          authToken = await getIdToken();
+        }
+      } catch (authError) {
+        console.warn('Could not get auth token, proceeding anonymously:', authError);
+      }
+
+      const EMAIL_SERVICE_URL = 'https://emailservice-428797186446.us-central1.run.app/contact';
+
+      // Prepare headers
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      // Add auth header if available
+      if (authToken) {
+        headers.Authorization = `Bearer ${authToken}`;
+      }
+
+      // Submit form to email service
+      const response = await fetch(EMAIL_SERVICE_URL, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          category: formData.category
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('Contact form submitted successfully:', result);
+
       setSubmitStatus('success');
       setFormData({
         name: '',
@@ -166,6 +205,7 @@ export const Contact: React.FC = () => {
         category: 'general'
       });
     } catch (error) {
+      console.error('Contact form submission error:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -303,11 +343,11 @@ export const Contact: React.FC = () => {
                   >
                     <option value="general">General Inquiry</option>
                     <option value="support">Technical Support</option>
-                    <option value="feedback">Feedback</option>
-                    <option value="partnership">Partnership</option>
-                    <option value="billing">Billing</option>
-                    <option value="bug">Bug Report</option>
-                    <option value="enterprise">Enterprise Plan</option>
+                    <option value="business">Business Partnership</option>
+                    <option value="legal">Legal Matters</option>
+                    <option value="privacy">Privacy Policy Questions</option>
+                    <option value="cookies">Cookie Questions</option>
+                    <option value="dpo">Data Protection Officer</option>
                   </select>
                 </div>
                 
@@ -521,4 +561,3 @@ export const Contact: React.FC = () => {
   );
 };
 
-export default Contact;

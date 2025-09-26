@@ -11,6 +11,7 @@ const CookiePolicy = lazy(() => import('./pages/CookiePolicy').then(module => ({
 const AboutUs = lazy(() => import('./pages/AboutUs').then(module => ({ default: module.AboutUs })));
 const Blog = lazy(() => import('./pages/Blog').then(module => ({ default: module.Blog })));
 const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
+const Unsubscribe = lazy(() => import('./pages/Unsubscribe').then(module => ({ default: module.Unsubscribe })));
 const RecipeApp = lazy(() => import('./pages/RecipeApp').then(module => ({ default: module.RecipeApp })));
 const SignInPage = lazy(() => import('./pages/SignInPage').then(module => ({ default: module.SignInPage })));
 const SignUpPage = lazy(() => import('./pages/SignUpPage').then(module => ({ default: module.SignUpPage })));
@@ -79,6 +80,7 @@ const AppContent: React.FC = () => {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:blogId" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
