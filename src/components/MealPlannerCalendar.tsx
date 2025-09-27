@@ -992,7 +992,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
     };
   };
 
-  const getNutritionRecommendations = (dailyAvg: { calories: number; protein: number; carbs: number; fat: number }) => {
+  const getNutritionRecommendations = (dailyAvg: { calories: number; protein: number; carbs: number; fat: number; fiber?: number; sodium?: number }) => {
     const recommendations = [];
 
     if (dailyAvg.calories < 1200) {

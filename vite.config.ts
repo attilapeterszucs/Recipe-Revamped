@@ -22,7 +22,7 @@ export default defineConfig({
     // Reduce module preloading to prevent unused preload warnings
     modulePreload: {
       polyfill: false,
-      resolveDependencies: (filename, deps) => {
+      resolveDependencies: (_filename, deps) => {
         // Only preload critical dependencies
         return deps.filter(dep =>
           dep.includes('firebase') ||
