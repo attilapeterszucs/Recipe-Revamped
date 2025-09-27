@@ -19,6 +19,18 @@ export default defineConfig({
     commonjsOptions: {
       include: [/firebase/, /node_modules/]
     },
+    // Reduce module preloading to prevent unused preload warnings
+    modulePreload: {
+      polyfill: false,
+      resolveDependencies: (filename, deps) => {
+        // Only preload critical dependencies
+        return deps.filter(dep =>
+          dep.includes('firebase') ||
+          dep.includes('react') ||
+          dep.includes('router')
+        );
+      }
+    },
     rollupOptions: {
       output: {
         manualChunks: {
