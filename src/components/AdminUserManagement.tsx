@@ -14,7 +14,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { getAllUsers } from '../lib/adminNotifications';
-import { getAllAdmins, addAdminUser, removeAdminUser, type AdminUser } from '../lib/adminManagement';
+import { getAllAdmins, addAdminUser, removeAdminUser, isUserAdmin, type AdminUser } from '../lib/adminManagement';
 import { getAllUserProfiles } from '../lib/userService';
 import { SubscriptionService } from '../lib/subscriptionService';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
@@ -62,7 +62,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
       setAdmins([]);
       
       // First check if current user is actually an admin
-      const { isUserAdmin } = await import('../lib/adminManagement');
       const isCurrentUserAdmin = await isUserAdmin(currentAdminEmail, currentAdminUid);
       
       if (!isCurrentUserAdmin) {

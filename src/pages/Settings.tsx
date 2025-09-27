@@ -70,6 +70,13 @@ interface SettingsProps {
 }
 
 export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpdate, initialActiveSection, featureAccess }) => {
+  // Authentication guard - Settings should only be accessible when user is logged in
+  if (!user) {
+    logger.warn('Settings accessed without authenticated user - redirecting');
+    onBack();
+    return null;
+  }
+
   const navigate = useNavigate();
   const location = useLocation();
   const [settings, setSettings] = useState<UserSettings | null>(null);
