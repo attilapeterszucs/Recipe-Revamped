@@ -239,7 +239,7 @@ export const createNotificationForAllUsers = async (
       try {
         const usersWithEmails = await getAllUsersWithEmails();
         const emailEnabledUsers = usersWithEmails.filter(user =>
-          user.marketingEmails === true
+          user.emailPreferences?.notifications !== false  // Use notification preferences, not marketing emails
         );
         const userEmails = emailEnabledUsers.map(user => user.email);
 
@@ -321,11 +321,20 @@ export const createNotificationForSelectedUsers = async (
     if (sendAsEmail) {
       try {
         const usersWithEmails = await getAllUsersWithEmails();
-        const selectedUsersWithEmails = usersWithEmails.filter(user =>
-          selectedUserIds.includes(user.uid) &&
-          user.marketingEmails === true
-        );
+        console.log(`[ADMIN_NOTIFICATIONS] Checking ${usersWithEmails.length} users for email notifications`);
+
+        const selectedUsersWithEmails = usersWithEmails.filter(user => {
+          const isSelected = selectedUserIds.includes(user.uid);
+          const hasEmailNotifications = user.emailPreferences?.notifications !== false;
+
+          console.log(`[ADMIN_NOTIFICATIONS] User ${user.uid}: selected=${isSelected}, emailNotifications=${hasEmailNotifications}, email=${user.email}`);
+
+          return isSelected && hasEmailNotifications;
+        });
+
         const userEmails = selectedUsersWithEmails.map(user => user.email);
+
+        console.log(`[ADMIN_NOTIFICATIONS] Filtered to ${selectedUsersWithEmails.length} users for email notifications: [${userEmails.join(', ')}]`);
 
         if (userEmails.length > 0) {
           await sendEmailNotification(notificationData, userEmails);
