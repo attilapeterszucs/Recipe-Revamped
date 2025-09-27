@@ -703,7 +703,7 @@ async function updateUserLastMarketingEmail(userId) {
 }
 
 // ============================================================================
-// MARKETING EMAIL HANDLER
+// MARKETING EMAIL HANDLER - UPDATED TO USE MARKETINGEMAILS FIELD
 // ============================================================================
 
 async function sendMarketingEmail(req, res) {
@@ -770,19 +770,65 @@ async function sendMarketingEmail(req, res) {
 
     console.log(`[MARKETING] Sending recipe: ${recipeName} (frequency: ${frequency}, override: ${overrideFrequency})`);
 
-    // Query users who have marketing emails enabled
-    let usersQuery = admin.firestore().collection('userSettings');
+    // Query users who have marketing emails enabled - UPDATED TO USE MARKETINGEMAILS FIELD
+    let usersDocuments = [];
 
     if (targetUserIds && targetUserIds.length > 0) {
-      // Send to specific users
-      usersQuery = usersQuery.where(admin.firestore.FieldPath.documentId(), 'in', targetUserIds);
-    }
+      console.log(`[MARKETING] Querying ${targetUserIds.length} specific users`);
 
-    const usersSnapshot = await usersQuery.get();
+      // Handle Firestore 'in' operator limitation (max 10 items)
+      // Split into batches of 10 to handle large selections
+      const batchSize = 10;
+      const batches = [];
+
+      for (let i = 0; i < targetUserIds.length; i += batchSize) {
+        const batch = targetUserIds.slice(i, i + batchSize);
+        batches.push(batch);
+      }
+
+      console.log(`[MARKETING] Processing ${batches.length} batches of users`);
+      batches.forEach((batch, index) => {
+        console.log(`[MARKETING] Batch ${index + 1}: [${batch.join(', ')}]`);
+      });
+
+      // Execute all batches in parallel
+      const batchPromises = batches.map(async (batch) => {
+        const batchQuery = admin.firestore().collection('userSettings')
+          .where(admin.firestore.FieldPath.documentId(), 'in', batch);
+        return await batchQuery.get();
+      });
+
+      const batchResults = await Promise.all(batchPromises);
+
+      // Combine all batch results
+      batchResults.forEach(snapshot => {
+        snapshot.forEach(doc => {
+          usersDocuments.push(doc);
+        });
+      });
+
+      console.log(`[MARKETING] Retrieved ${usersDocuments.length} user documents from batches`);
+      const retrievedUserIds = usersDocuments.map(doc => doc.id);
+      console.log(`[MARKETING] Retrieved user IDs: [${retrievedUserIds.join(', ')}]`);
+
+      // Check if any selected users were missing
+      const missingUserIds = targetUserIds.filter(id => !retrievedUserIds.includes(id));
+      if (missingUserIds.length > 0) {
+        console.log(`[MARKETING] Warning: ${missingUserIds.length} selected users not found in userSettings: [${missingUserIds.join(', ')}]`);
+      }
+    } else {
+      console.log(`[MARKETING] Querying all users with marketing emails enabled`);
+      // Send to all users - single query
+      const usersQuery = admin.firestore().collection('userSettings');
+      const usersSnapshot = await usersQuery.get();
+      usersSnapshot.forEach(doc => {
+        usersDocuments.push(doc);
+      });
+    }
     const marketingUsers = [];
     const skippedUsers = [];
 
-    usersSnapshot.forEach(doc => {
+    usersDocuments.forEach(doc => {
       const userData = doc.data();
       const userId = doc.id;
 
@@ -790,16 +836,14 @@ async function sendMarketingEmail(req, res) {
       console.log(`[MARKETING] Checking user ${userId}:`, {
         email: userData.email,
         emailPreferences: userData.emailPreferences,
-        hasMarketing: userData.emailPreferences?.marketing,
+        marketingEmails: userData.marketingEmails,
         personalProfile: userData.personalProfile ? {
           email: userData.personalProfile.email
         } : null
       });
 
-      // Check if user has marketing emails enabled (prioritize Settings page structure)
-      const hasMarketingEnabled = userData.marketingEmails === true ||
-                                  userData.emailPreferences?.marketing === true ||
-                                  userData.emailPreferences?.notifications !== false; // Default enabled if not explicitly disabled
+      // UPDATED: Check if user has marketing emails enabled using the marketingEmails field from Settings > Notifications
+      const hasMarketingEnabled = userData.marketingEmails === true;
 
       if (hasMarketingEnabled) {
         const lastSentDate = userData.emailPreferences?.lastMarketingEmailSent?.toDate?.() ||
@@ -822,17 +866,30 @@ async function sendMarketingEmail(req, res) {
           name: userData.personalProfile?.name || userData.displayName,
           lastSent: lastSentDate
         });
+      } else {
+        // Skip users who don't have marketing emails enabled
+        skippedUsers.push({
+          userId,
+          email: userData.email || userData.personalProfile?.email,
+          reason: 'marketing_disabled',
+          marketingEmails: userData.marketingEmails
+        });
       }
     });
 
-    console.log(`[MARKETING] Found ${marketingUsers.length} users eligible for marketing emails`);
-    console.log(`[MARKETING] Skipped ${skippedUsers.length} users due to frequency limits`);
+    console.log(`[MARKETING] Found ${marketingUsers.length} users with marketing emails enabled`);
+    console.log(`[MARKETING] Skipped ${skippedUsers.length} users (marketing disabled or frequency limits)`);
 
     if (marketingUsers.length === 0) {
       res.status(200).json({
         success: true,
         message: 'No users with marketing emails enabled',
         emailsSent: 0,
+        skippedUsers: skippedUsers.length,
+        skippedReasons: skippedUsers.reduce((acc, user) => {
+          acc[user.reason] = (acc[user.reason] || 0) + 1;
+          return acc;
+        }, {}),
         processing_time: Date.now() - startTime
       });
       return;
@@ -914,6 +971,7 @@ Unsubscribe: https://reciperevamped.com/unsubscribe
       results,
       skippedUsers: skippedUsers.map(u => ({ userId: u.userId, reason: u.reason })),
       adminUserId,
+      filterField: 'marketingEmails', // Added to track which field was used for filtering
       timestamp: admin.firestore.FieldValue.serverTimestamp()
     });
 
@@ -949,7 +1007,7 @@ Unsubscribe: https://reciperevamped.com/unsubscribe
 }
 
 // ============================================================================
-// UNSUBSCRIBE HANDLER
+// UNSUBSCRIBE HANDLER - UPDATED TO USE MARKETINGEMAILS FIELD
 // ============================================================================
 
 async function handleUnsubscribe(req, res) {
@@ -995,31 +1053,21 @@ async function handleUnsubscribe(req, res) {
         return;
       }
 
-      // Process unsubscribe from personalProfile email
+      // Process unsubscribe from personalProfile email - UPDATED TO USE MARKETINGEMAILS FIELD
       const userDoc = profileSnapshot.docs[0];
       await userDoc.ref.update({
-        // Settings page structure (main field)
-        'marketingEmails': false,
-        'productUpdates': false,
-        'featuresAnnouncements': false,
-        'promotionalOffers': false,
-        // Legacy structure for backward compatibility
-        'emailPreferences.marketing': false,
+        'marketingEmails': false, // Updated field (correct case)
+        'emailPreferences.marketing': false, // Keep legacy field for backward compatibility
         'emailPreferences.marketingUnsubscribedAt': admin.firestore.FieldValue.serverTimestamp(),
         'emailPreferences.unsubscribeMethod': 'direct_link',
         'emailPreferences.lastUpdated': admin.firestore.FieldValue.serverTimestamp()
       });
     } else {
-      // Process unsubscribe from main email
+      // Process unsubscribe from main email - UPDATED TO USE MARKETINGEMAILS FIELD
       const userDoc = usersSnapshot.docs[0];
       await userDoc.ref.update({
-        // Settings page structure (main field)
-        'marketingEmails': false,
-        'productUpdates': false,
-        'featuresAnnouncements': false,
-        'promotionalOffers': false,
-        // Legacy structure for backward compatibility
-        'emailPreferences.marketing': false,
+        'marketingEmails': false, // Updated field (correct case)
+        'emailPreferences.marketing': false, // Keep legacy field for backward compatibility
         'emailPreferences.marketingUnsubscribedAt': admin.firestore.FieldValue.serverTimestamp(),
         'emailPreferences.unsubscribeMethod': 'direct_link',
         'emailPreferences.lastUpdated': admin.firestore.FieldValue.serverTimestamp()
@@ -1319,6 +1367,7 @@ const emailService = onRequest(
           status: 'healthy',
           service: 'email-service',
           smtp_configured: true,
+          filterField: 'marketingEmails', // Added to indicate which field is used for filtering
           timestamp: new Date().toISOString(),
           processing_time: processingTime
         });
