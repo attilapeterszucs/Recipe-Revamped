@@ -12,8 +12,9 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from './firebase';
-import { getUserRecipes } from './firestore';
-import { getUserSettings } from './userSettings';
+import { getUserRecipes, saveRecipe } from './firestore';
+import { getUserSettings, updateUserSettings } from './userSettings';
+import { logger } from './logger';
 import type { BackupData, BackupRecipe, RecoveryOptions } from '../types/backup';
 
 const BACKUP_COLLECTION = 'backups';
@@ -66,7 +67,7 @@ export const createBackup = async (userId: string): Promise<string> => {
     const docRef = await addDoc(collection(db, BACKUP_COLLECTION), backupData);
     return docRef.id;
   } catch (error) {
-    console.error('Failed to create backup:', error);
+    logger.error('Failed to create backup', { error });
     throw new Error('Failed to create backup');
   }
 };
@@ -109,18 +110,18 @@ export const getUserBackups = async (userId: string): Promise<BackupData[]> => {
     // Return only the first 10 non-expired backups
     return backups.slice(0, 10);
   } catch (error) {
-    console.error('Failed to get backups:', error);
+    logger.error('Failed to get backups', { error });
     if (error.message && (
       error.message.includes('net::ERR_BLOCKED_BY_CLIENT') ||
       error.message.includes('ERR_BLOCKED_BY_CLIENT') ||
       error.message.includes('Failed to fetch') ||
       error.message.includes('NetworkError')
     )) {
-      console.warn('Network request blocked by client (ad blocker or extension). Returning empty backup list.');
+      logger.warn('Network request blocked by client (ad blocker or extension). Returning empty backup list.');
       return [];
     }
     // For any other Firebase/network errors, return empty array instead of throwing
-    console.warn('Backup retrieval failed, returning empty backup list.');
+    logger.warn('Backup retrieval failed, returning empty backup list.');
     return [];
   }
 };
@@ -146,8 +147,6 @@ export const restoreFromBackup = async (
 
     // Restore recipes if requested
     if (options.includeRecipes && backup.recipes) {
-      const { saveRecipe, getUserRecipes } = await import('./firestore');
-      
       // Get existing recipes to check for duplicates
       const existingRecipes = await getUserRecipes(userId, 1000);
       
@@ -180,7 +179,7 @@ export const restoreFromBackup = async (
               );
               restoredRecipes++;
             } catch (error) {
-              console.error('Failed to restore recipe:', recipe.title, error);
+              logger.error('Failed to restore recipe', { recipeTitle: recipe.title, error });
             }
           } else {
             skippedDuplicates++;
@@ -192,17 +191,16 @@ export const restoreFromBackup = async (
     // Restore settings if requested
     if (options.includeSettings && backup.settings) {
       try {
-        const { updateUserSettings } = await import('./userSettings');
         await updateUserSettings(userId, backup.settings);
         restoredSettings = true;
       } catch (error) {
-        console.error('Failed to restore settings:', error);
+        logger.error('Failed to restore settings', { error });
       }
     }
 
     return { restoredRecipes, restoredSettings, skippedDuplicates };
   } catch (error) {
-    console.error('Failed to restore from backup:', error);
+    logger.error('Failed to restore from backup', { error });
     throw new Error('Failed to restore data from backup');
   }
 };
@@ -212,7 +210,7 @@ export const deleteBackup = async (backupId: string): Promise<void> => {
   try {
     await deleteDoc(doc(db, BACKUP_COLLECTION, backupId));
   } catch (error) {
-    console.error('Failed to delete backup:', error);
+    logger.error('Failed to delete backup', { error });
     throw new Error('Failed to delete backup');
   }
 };
@@ -235,7 +233,7 @@ export const cleanupExpiredBackups = async (): Promise<number> => {
 
     return deletedCount;
   } catch (error) {
-    console.error('Failed to cleanup expired backups:', error);
+    logger.error('Failed to cleanup expired backups', { error });
     throw new Error('Failed to cleanup expired backups');
   }
 };
@@ -256,6 +254,6 @@ export const scheduleAutoBackup = async (userId: string): Promise<void> => {
       await createBackup(userId);
     }
   } catch (error) {
-    console.error('Failed to schedule auto backup:', error);
+    logger.error('Failed to schedule auto backup', { error });
   }
 };
