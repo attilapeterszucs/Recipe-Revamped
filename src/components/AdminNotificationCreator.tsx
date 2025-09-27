@@ -186,27 +186,6 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
     }
   };
 
-  const handleUserToggle = (userId: string) => {
-    setSelectedUsers(prev =>
-      prev.includes(userId)
-        ? prev.filter(id => id !== userId)
-        : [...prev, userId]
-    );
-  };
-
-  const handleSelectAllUsers = () => {
-    setSelectedUsers(availableUsers.map(user => user.uid));
-  };
-
-  const handleDeselectAllUsers = () => {
-    setSelectedUsers([]);
-  };
-
-  const filteredUsers = availableUsers.filter(user =>
-    user.email.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
-    user.displayName?.toLowerCase().includes(userSearchTerm.toLowerCase())
-  );
-
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -500,8 +479,10 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
                             </span>
                           )}
                         </div>
-                        {sendAsEmail && user.emailPreferences?.notifications !== false && (
-                          <Mail className="w-4 h-4 text-green-600" title="Will receive email notification" />
+                        {sendAsEmail && user.emailNotifications === true && (
+                          <div title="Will receive email notification">
+                            <Mail className="w-4 h-4 text-green-600" />
+                          </div>
                         )}
                       </div>
                     ))

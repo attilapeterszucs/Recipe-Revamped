@@ -141,7 +141,7 @@ export const getAllUsersWithEmails = async (): Promise<Array<{
           uid: profile.uid,
           email: profile.email,
           displayName: profile.displayName,
-          emailPreferences: profile.emailPreferences,
+          emailPreferences: userSettings?.emailPreferences,
           marketingEmails: userSettings?.marketingEmails || false,
           emailNotifications: userSettings?.emailNotifications !== false  // Default to true unless explicitly set to false
         };
@@ -151,7 +151,7 @@ export const getAllUsersWithEmails = async (): Promise<Array<{
           uid: profile.uid,
           email: profile.email,
           displayName: profile.displayName,
-          emailPreferences: profile.emailPreferences,
+          emailPreferences: undefined,
           marketingEmails: false,
           emailNotifications: true  // Default to true on error
         };
