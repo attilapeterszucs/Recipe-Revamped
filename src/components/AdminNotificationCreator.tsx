@@ -65,7 +65,7 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
 
   useEffect(() => {
     filterUsers();
-  }, [availableUsers, userSearchTerm, showOnlyEmailEnabled]);
+  }, [availableUsers, userSearchTerm, showOnlyEmailEnabled, sendAsEmail]);
 
   const loadStats = async () => {
     try {
@@ -95,7 +95,8 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
   const filterUsers = () => {
     let filtered = availableUsers;
 
-    if (showOnlyEmailEnabled) {
+    // Only filter by email notifications when "Send as Email" is enabled
+    if (sendAsEmail && showOnlyEmailEnabled) {
       filtered = filtered.filter(user => user.emailNotifications === true);
     }
 
@@ -349,7 +350,7 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
               Select Recipients
             </label>
             <p className="text-xs text-gray-500 mb-3">
-              ℹ️ Filter options available below to show/hide users based on their email notification preferences
+              ℹ️ Email notification filters will appear when "Send as Email" is enabled
             </p>
 
             {/* Send to All Users Toggle */}
@@ -400,27 +401,38 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
                   </div>
                 </div>
 
-                {/* Filter Toggle */}
-                <div className="mb-4">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="showOnlyEmailEnabled"
-                      checked={showOnlyEmailEnabled}
-                      onChange={(e) => setShowOnlyEmailEnabled(e.target.checked)}
-                      className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label htmlFor="showOnlyEmailEnabled" className="text-sm text-gray-700">
-                      Show only users with email notifications enabled
-                    </label>
+                {/* Filter Toggle - Only show when "Send as Email" is enabled */}
+                {sendAsEmail && (
+                  <div className="mb-4">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="showOnlyEmailEnabled"
+                        checked={showOnlyEmailEnabled}
+                        onChange={(e) => setShowOnlyEmailEnabled(e.target.checked)}
+                        className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <label htmlFor="showOnlyEmailEnabled" className="text-sm text-gray-700">
+                        Show only users with email notifications enabled
+                      </label>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {showOnlyEmailEnabled
+                        ? `Showing ${filteredUsers.length} users with email notifications enabled`
+                        : `Showing all ${filteredUsers.length} users (some may have notifications disabled)`
+                      }
+                    </p>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {showOnlyEmailEnabled
-                      ? `Showing ${filteredUsers.length} users with email notifications enabled`
-                      : `Showing all ${filteredUsers.length} users (some may have notifications disabled)`
-                    }
-                  </p>
-                </div>
+                )}
+
+                {/* Info message when email sending is disabled */}
+                {!sendAsEmail && (
+                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-700">
+                      ℹ️ All users are shown since only in-app notifications will be sent (no email filtering needed)
+                    </p>
+                  </div>
+                )}
 
                 {/* Bulk Actions */}
                 <div className="flex items-center justify-between mb-4">
@@ -479,10 +491,16 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
                             </span>
                           )}
                         </div>
-                        {sendAsEmail && user.emailNotifications === true && (
-                          <div title="Will receive email notification">
-                            <Mail className="w-4 h-4 text-green-600" />
-                          </div>
+                        {sendAsEmail && (
+                          user.emailNotifications === true ? (
+                            <div title="Will receive email notification">
+                              <Mail className="w-4 h-4 text-green-600" />
+                            </div>
+                          ) : (
+                            <div title="Email notifications disabled - will only receive in-app notification">
+                              <Mail className="w-4 h-4 text-gray-400" />
+                            </div>
+                          )
                         )}
                       </div>
                     ))
