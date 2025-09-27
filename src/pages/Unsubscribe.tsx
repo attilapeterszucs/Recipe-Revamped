@@ -322,7 +322,6 @@ export const Unsubscribe: React.FC = () => {
                               {unsubscribeStatus.status === 'success' || unsubscribeStatus.status === 'already_unsubscribed' ? (
                                 <Button
                                   onClick={handleResubscribe}
-                                  disabled={unsubscribeStatus.status === 'processing'}
                                   variant="outline"
                                   className="border-green-600 text-green-600 hover:bg-green-50"
                                 >
