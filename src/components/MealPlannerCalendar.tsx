@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';\nimport DOMPurify from 'dompurify';
 import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple, Sparkles } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
@@ -263,7 +263,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
   const generateShoppingList = (): ShoppingListItem[] => {
     const ingredients: { [key: string]: ShoppingListItem } = {};
 
-    Object.entries(mealPlan).forEach(([date, meals]) => {
+    Object.entries(mealPlan).forEach(([_, meals]) => {
       // Process regular meals (now supporting arrays)
       ['breakfast', 'lunch', 'dinner'].forEach(mealType => {
         const recipes = meals[mealType as keyof typeof meals] as SavedRecipe[];
@@ -336,7 +336,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       if (jsonData.ingredients && Array.isArray(jsonData.ingredients)) {
         ingredientList = jsonData.ingredients.filter(ingredient => ingredient && typeof ingredient === 'string');
       }
-    } catch (error) {
+    } catch {
       // Not JSON, fall back to markdown parsing
       const lines = recipe.convertedRecipe.split('\n');
       let inIngredientsSection = false;
@@ -638,7 +638,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       setMealPlan({});
       setHasUnsavedChanges(true);
       showSuccess('Calendar Cleared', 'All meals have been removed from this week');
-    } catch (error) {
+    } catch {
       showError('Clear Failed', 'Could not clear the calendar. Please try again.');
     } finally {
       setIsClearing(false);
@@ -692,7 +692,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       setHasUnsavedChanges(true);
       showSuccess('Weekly Plan Generated', `Created a ${selectedWeekType} meal plan for the week`);
 
-    } catch (error) {
+    } catch {
       showError('Generation Failed', 'Could not generate meal plan. Please try again.');
     } finally {
       setIsGenerating(false);
@@ -991,7 +991,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
     };
   };
 
-  const getNutritionRecommendations = (dailyAvg: any) => {
+  const getNutritionRecommendations = (dailyAvg: { calories: number; protein: number; carbs: number; fat: number }) => {
     const recommendations = [];
 
     if (dailyAvg.calories < 1200) {
@@ -1032,7 +1032,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
     
     const printWindow = window.open('', '_blank');
     if (printWindow) {
-      printWindow.document.write(`
+      const htmlContent = `
         <html>
           <head>
             <title>Shopping List - Week of ${weekDates[0].toLocaleDateString()}</title>
@@ -1142,7 +1142,17 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
             </div>
           </body>
         </html>
-      `);
+      `;
+
+      // Sanitize HTML content to prevent XSS attacks before writing to print window
+      const sanitizedContent = DOMPurify.sanitize(htmlContent, {
+        ALLOWED_TAGS: ['html', 'head', 'body', 'title', 'style', 'h1', 'div', 'br', 'strong', 'span'],
+        ALLOWED_ATTR: ['class'],
+        ALLOW_DATA_ATTR: false
+      });
+
+      printWindow.document.open();
+      printWindow.document.write(sanitizedContent);
       printWindow.document.close();
       printWindow.print();
     }
@@ -1807,7 +1817,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
               Meals
             </div>
           </div>
-          {weekDates.map((date, index) => {
+          {weekDates.map((date) => {
             const dateStr = formatDate(date);
             const dayNutrition = getDayNutrition(dateStr);
             const isToday = date.toDateString() === new Date().toDateString();
@@ -1842,7 +1852,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
         {/* Desktop Grid Body */}
         <div className="hidden md:block">
-        {['breakfast', 'lunch', 'dinner', 'snacks'].map((mealType, mealIndex) => {
+        {['breakfast', 'lunch', 'dinner', 'snacks'].map((mealType) => {
           const mealIcons = {
             breakfast: '🥞',
             lunch: '🥗', 
@@ -1872,7 +1882,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
               </div>
             
             {/* Day Columns */}
-            {weekDates.map((date, dayIndex) => {
+            {weekDates.map((date) => {
               const dateStr = formatDate(date);
               const dayMeals = mealPlan[dateStr] || {};
               

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { SerializedEditorState, $getRoot, $createParagraphNode, $createTextNode, EditorState, LexicalEditor } from 'lexical';
+import { $getRoot, $createParagraphNode, $createTextNode, EditorState, LexicalEditor } from 'lexical';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { ParagraphNode, TextNode } from 'lexical';
-import { $generateNodesFromDOM, $generateHtmlFromNodes } from '@lexical/html';
+import { $generateHtmlFromNodes } from '@lexical/html';
+import DOMPurify from 'dompurify';
 import {
   InitialConfigType,
   LexicalComposer,
@@ -60,7 +61,11 @@ function InitializeContentPlugin({ htmlContent }: { htmlContent: string }) {
           // Simple approach: just extract text content and create paragraph nodes
           // This avoids complex HTML parsing issues while still loading content
           const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = htmlContent;
+          // Sanitize HTML content before setting innerHTML to prevent XSS
+          tempDiv.innerHTML = DOMPurify.sanitize(htmlContent, {
+            ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+            ALLOWED_ATTR: []
+          });
 
           // Get all text content and split by common block elements
           const textContent = tempDiv.textContent || tempDiv.innerText || '';

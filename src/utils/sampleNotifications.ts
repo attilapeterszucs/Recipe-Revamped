@@ -1,5 +1,6 @@
 import { createNotification } from '../lib/notifications';
 import type { NotificationData } from '../types/notifications';
+import { logger } from '../lib/logger';
 
 // Sample notifications for demo purposes
 export const sampleNotifications: NotificationData[] = [
@@ -32,7 +33,7 @@ export const createSampleNotifications = async (userId: string) => {
       await createNotification(userId, notification);
     }
   } catch (error) {
-    console.error('Error creating sample notifications:', error);
+    logger.error('Error creating sample notifications:', { error });
   }
 };
 
@@ -41,6 +42,6 @@ export const createWelcomeNotification = async (userId: string) => {
   try {
     await createNotification(userId, sampleNotifications[0]);
   } catch (error) {
-    console.error('Error creating welcome notification:', error);
+    logger.error('Error creating welcome notification:', { error });
   }
 };

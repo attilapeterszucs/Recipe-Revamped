@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 
 interface MarkdownRendererProps {
   content: string;
@@ -174,10 +175,16 @@ ${formatted}`;
 
   const formattedContent = formatContent(content);
 
+  // Sanitize the HTML content to prevent XSS attacks
+  const sanitizedContent = DOMPurify.sanitize(formattedContent, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a'],
+    ALLOWED_ATTR: ['href', 'target', 'rel']
+  });
+
   return (
-    <div 
+    <div
       className={`prose prose-sm max-w-none ${className}`}
-      dangerouslySetInnerHTML={{ __html: formattedContent }}
+      dangerouslySetInnerHTML={{ __html: sanitizedContent }}
     />
   );
 };

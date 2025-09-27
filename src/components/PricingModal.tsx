@@ -6,6 +6,7 @@ import { useStripeCheckout } from '../hooks/useStripeCheckout';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
 import { calculateLocalizedPrice } from '../lib/pricing';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
+import { logger } from '../lib/logger';
 import type { SubscriptionPlan } from '../types/subscription';
 
 interface PricingModalProps {
@@ -27,8 +28,6 @@ const STRIPE_PAYMENT_LINKS = {
   }
 };
 
-// Stripe Customer Portal for existing subscribers
-const STRIPE_CUSTOMER_PORTAL = 'https://billing.stripe.com/p/login/7sY3cw2kdezE4F2acGawo00';
 
 export const PricingModal: React.FC<PricingModalProps> = ({
   isOpen,
@@ -106,7 +105,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
         const portalUrl = await createPortalSession();
         window.open(portalUrl, '_blank');
       } catch (error) {
-        console.error('Failed to open customer portal:', error);
+        logger.error('Failed to open customer portal:', { error });
         alert('Failed to open billing portal. Please try again.');
       }
       return;
@@ -115,7 +114,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
     // For new subscriptions, use payment links
     const paymentLink = STRIPE_PAYMENT_LINKS[plan as keyof typeof STRIPE_PAYMENT_LINKS]?.[period];
     if (!paymentLink) {
-      console.error('Payment link not found for plan:', plan, period);
+      logger.error('Payment link not found for plan:', { plan, period });
       return;
     }
 

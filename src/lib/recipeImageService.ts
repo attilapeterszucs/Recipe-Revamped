@@ -2,6 +2,7 @@
 // Using Pexels API for high-quality food images with improved precision and duplicate prevention
 
 import { getAuth } from 'firebase/auth';
+import { logger } from './logger';
 
 interface PexelsPhoto {
   id: number;
@@ -194,7 +195,7 @@ export const getRecipeImageFromPexels = async (recipeContent: string, userId?: s
     
     return null;
   } catch (error) {
-    console.warn('Failed to fetch image through secure API');
+    logger.warn('Failed to fetch image through secure API');
     return null;
   }
 };

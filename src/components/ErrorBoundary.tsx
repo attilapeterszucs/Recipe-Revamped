@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertTriangle, RefreshCcw } from 'lucide-react';
+import { logger } from '../lib/logger';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -25,7 +26,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     if (!error.message.includes('net::ERR_BLOCKED_BY_CLIENT') && 
         !error.message.includes('ERR_BLOCKED_BY_CLIENT') &&
         !error.message.includes('Failed to fetch')) {
-      console.error('Error Boundary caught an error:', error, errorInfo);
+      logger.error('Error Boundary caught an error:', { error, errorInfo });
     }
   }
 

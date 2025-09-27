@@ -21,6 +21,7 @@ import type {
 } from '../types/subscription';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import { isUserAdmin } from './adminManagement';
+import { logger } from './logger';
 
 const SUBSCRIPTIONS_COLLECTION = 'subscriptions';
 
@@ -62,7 +63,7 @@ export class SubscriptionService {
                           errorMsg.includes('firestore');
       
       if (!isKnownError) {
-        console.error('Error getting user subscription:', error);
+        logger.error('Error getting user subscription:', { error });
       }
       // Return default free subscription on any error (including permissions/network)
       return {
@@ -105,7 +106,7 @@ export class SubscriptionService {
         // Create a timeout promise that will reject after 8 seconds
         const timeoutPromise = new Promise<never>((_, reject) => {
           timeoutId = setTimeout(() => {
-            console.error('[setUserSubscription] Write operation timed out after 8 seconds');
+            logger.error('[setUserSubscription] Write operation timed out after 8 seconds');
             reject(new Error('Write operation timeout: setDoc took longer than 8 seconds'));
           }, 8000);
         });
@@ -116,7 +117,7 @@ export class SubscriptionService {
             await setDoc(subscriptionRef, subscriptionData, { merge: true });
             resolve();
           } catch (error) {
-            console.error('[setUserSubscription] setDoc operation failed:', error);
+            logger.error('[setUserSubscription] setDoc operation failed:', { error });
             reject(error);
           }
         });
@@ -129,7 +130,7 @@ export class SubscriptionService {
             clearTimeout(timeoutId);
           }
         } catch (error) {
-          console.error('[setUserSubscription] Write failed or timed out:', error);
+          logger.error('[setUserSubscription] Write failed or timed out:', { error });
           // Clear timeout on any error
           if (timeoutId) {
             clearTimeout(timeoutId);
@@ -150,7 +151,7 @@ export class SubscriptionService {
         try {
           verifyDoc = await Promise.race([verifyPromise, verifyTimeoutPromise]);
         } catch (error) {
-          console.error('[setUserSubscription] Verification read failed:', error);
+          logger.error('[setUserSubscription] Verification read failed:', { error });
           throw error;
         }
         
@@ -158,12 +159,12 @@ export class SubscriptionService {
           const writtenData = verifyDoc.data();
           return true;
         } else {
-          console.error('[setUserSubscription] Write failed: Document does not exist after write');
+          logger.error('[setUserSubscription] Write failed: Document does not exist after write');
           throw new Error('Write verification failed: Document not found after write operation');
         }
         
       } catch (error) {
-        console.error(`[setUserSubscription] Attempt ${attempt + 1} failed:`, error);
+        logger.error(`[setUserSubscription] Attempt ${attempt + 1} failed:`, { error, attempt: attempt + 1 });
         
         const errorMsg = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
         const isNetworkError = errorMsg.includes('blocked') || 
@@ -191,7 +192,7 @@ export class SubscriptionService {
                             errorMsg.includes('firestore');
         
         if (!isKnownError) {
-          console.error('Error setting user subscription:', error);
+          logger.error('Error setting user subscription:', { error });
         }
         
         // For network errors, throw them so they can be handled properly upstream
@@ -242,7 +243,7 @@ export class SubscriptionService {
                           errorMsg.includes('firestore');
       
       if (!isKnownError) {
-        console.error('Error checking recipe limit:', error);
+        logger.error('Error checking recipe limit:', { error });
       }
       // Default to free plan limits on error
       const freePlan = this.getPlanDetails('free');
@@ -266,7 +267,7 @@ export class SubscriptionService {
       const isAdmin = await this.isUserAdmin(userEmail, adminUserId);
       if (!isAdmin) {
         const error = 'Unauthorized: Admin access required';
-        console.error('[AdminSetUserPlan] Authorization failed:', error);
+        logger.error('[AdminSetUserPlan] Authorization failed:', { error });
         throw new Error(error);
       }
 
@@ -285,12 +286,12 @@ export class SubscriptionService {
         return { success: true };
       } else {
         const error = 'Failed to update subscription in Firestore';
-        console.error('[AdminSetUserPlan] Subscription update failed');
+        logger.error('[AdminSetUserPlan] Subscription update failed');
         return { success: false, error };
       }
 
     } catch (error) {
-      console.error('[AdminSetUserPlan] Error setting admin plan:', error);
+      logger.error('[AdminSetUserPlan] Error setting admin plan:', { error });
       
       // Handle specific error types
       if (error instanceof Error) {
@@ -343,7 +344,7 @@ export class SubscriptionService {
       // Ensure user is authenticated
       const currentUser = auth.currentUser;
       if (!currentUser || currentUser.uid !== userId) {
-        console.warn('Feature access denied: User not authenticated or ID mismatch');
+        logger.warn('Feature access denied: User not authenticated or ID mismatch');
         return false;
       }
 
@@ -353,7 +354,7 @@ export class SubscriptionService {
 
       return requiredPlan.includes(subscription.plan);
     } catch (error) {
-      console.error('Error validating feature access:', error);
+      logger.error('Error validating feature access:', { error });
       return false;
     }
   }
@@ -364,26 +365,26 @@ export class SubscriptionService {
       // Verify current user matches requested user
       const currentUser = auth.currentUser;
       if (!currentUser) {
-        console.warn('Access denied: No authenticated user');
+        logger.warn('Access denied: No authenticated user');
         return null;
       }
       
       if (currentUser.uid !== userId) {
-        console.warn('Access denied: User ID mismatch');
+        logger.warn('Access denied: User ID mismatch');
         return null;
       }
 
       // Get fresh auth token to ensure user is still valid
       const token = await currentUser.getIdToken(true);
       if (!token) {
-        console.warn('Access denied: Invalid auth token');
+        logger.warn('Access denied: Invalid auth token');
         return null;
       }
 
       // Now get subscription data with expiry checking
       return await this.getUserSubscriptionWithExpiryCheck(userId);
     } catch (error) {
-      console.error('Error getting secure subscription:', error);
+      logger.error('Error getting secure subscription:', { error });
       return null;
     }
   }
@@ -400,7 +401,7 @@ export class SubscriptionService {
 
       return await this.setUserSubscription(userId, subscription);
     } catch (error) {
-      console.error('Error canceling subscription:', error);
+      logger.error('Error canceling subscription:', { error });
       return false;
     }
   }
@@ -441,7 +442,7 @@ export class SubscriptionService {
           return false;
       }
     } catch (error) {
-      console.error('Error checking feature access:', error);
+      logger.error('Error checking feature access:', { error });
       return false;
     }
   }
@@ -458,7 +459,7 @@ export class SubscriptionService {
       // Then get the updated subscription
       return await this.getUserSubscription(userId, true);
     } catch (error) {
-      console.error('Error getting subscription with expiry check:', error);
+      logger.error('Error getting subscription with expiry check:', { error });
       // Fallback to regular subscription check
       return await this.getUserSubscription(userId, true);
     }

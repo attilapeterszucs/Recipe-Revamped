@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import DOMPurify from 'dompurify';
 import { Calendar, Clock, ArrowRight, Tag, ChefHat, ArrowLeft, Share2 } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { useParams, useNavigate, Link } from 'react-router-dom';
@@ -455,7 +456,10 @@ export const Blog: React.FC = () => {
         {/* Apple-style Content */}
         <article className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
           <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h1:text-3xl prose-h1:leading-tight prose-h1:mb-8 prose-h2:text-2xl prose-h2:leading-tight prose-h2:mt-12 prose-h2:mb-6 prose-h3:text-xl prose-h3:leading-tight prose-h3:mt-8 prose-h3:mb-4 prose-p:text-gray-600 prose-p:leading-relaxed prose-p:mb-6 prose-p:text-lg prose-strong:text-gray-900 prose-ul:my-6 prose-li:text-gray-600 prose-li:leading-relaxed prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-gray-300 prose-blockquote:pl-6 prose-blockquote:text-gray-600 prose-blockquote:font-normal prose-code:bg-gray-100 prose-code:text-gray-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm">
-            <div dangerouslySetInnerHTML={{ __html: formatBlogContent(post.content, post.id) }} />
+            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(formatBlogContent(post.content, post.id), {
+              ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img'],
+              ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class']
+            }) }} />
           </div>
 
           {/* Apple-style Footer */}

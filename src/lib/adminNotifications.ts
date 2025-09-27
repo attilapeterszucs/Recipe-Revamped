@@ -12,6 +12,7 @@ import { db } from './firebase';
 import type { NotificationData } from '../types/notifications';
 import { logAdminAction, isUserAdmin, getAllAdmins } from './adminManagement';
 import { getAllUserProfiles } from './userService';
+import { logger } from './logger';
 
 // Get all registered users (only actual user IDs with valid Firebase Auth UID format)
 export const getAllUsers = async (): Promise<string[]> => {
@@ -43,7 +44,7 @@ export const getAllUsers = async (): Promise<string[]> => {
         }
       });
     } catch (error) {
-      console.error('[Admin Debug] Error accessing users collection:', error);
+      logger.error('[Admin Debug] Error accessing users collection:', { error });
     }
 
     try {
@@ -112,7 +113,7 @@ export const getAllUsers = async (): Promise<string[]> => {
     
     return Array.from(userIds);
   } catch (error) {
-    console.error('[getAllUsers] Error getting all users:', error);
+    logger.error('[getAllUsers] Error getting all users:', { error });
     throw error;
   }
 };
@@ -146,7 +147,7 @@ export const getAllUsersWithEmails = async (): Promise<Array<{
           emailNotifications: userSettings?.emailNotifications !== false  // Default to true unless explicitly set to false
         };
       } catch (error) {
-        console.error(`Error fetching settings for user ${profile.uid}:`, error);
+        logger.error(`Error fetching settings for user ${profile.uid}:`, { error, userId: profile.uid });
         return {
           uid: profile.uid,
           email: profile.email,
@@ -161,7 +162,7 @@ export const getAllUsersWithEmails = async (): Promise<Array<{
     const usersWithSettings = await Promise.all(userSettingsPromises);
     return usersWithSettings;
   } catch (error) {
-    console.error('Error getting users with emails:', error);
+    logger.error('Error getting users with emails:', { error });
     return [];
   }
 };
@@ -191,9 +192,9 @@ const sendEmailNotification = async (
       throw new Error(`Email service responded with status: ${response.status}`);
     }
 
-    console.log(`Email notifications sent to ${userEmails.length} users`);
+    logger.info(`Email notifications sent to ${userEmails.length} users`, { recipientCount: userEmails.length });
   } catch (error) {
-    console.error('Error sending email notifications:', error);
+    logger.error('Error sending email notifications:', { error });
     throw error;
   }
 };
@@ -231,7 +232,7 @@ export const createNotificationForAllUsers = async (
         });
         successCount++;
       } catch (error) {
-        console.error(`Failed to create notification for user ${userId}:`, error);
+        logger.error(`Failed to create notification for user ${userId}:`, { error, userId });
       }
     });
     
@@ -250,7 +251,7 @@ export const createNotificationForAllUsers = async (
           await sendEmailNotification(notificationData, userEmails);
         }
       } catch (emailError) {
-        console.error('Error sending email notifications:', emailError);
+        logger.error('Error sending email notifications:', { error: emailError });
         // Don't fail the entire operation if email fails
       }
     }
@@ -272,7 +273,7 @@ export const createNotificationForAllUsers = async (
 
     return successCount;
   } catch (error) {
-    console.error('Error creating notifications for all users:', error);
+    logger.error('Error creating notifications for all users:', { error });
     throw error;
   }
 };
@@ -314,7 +315,7 @@ export const createNotificationForSelectedUsers = async (
         });
         successCount++;
       } catch (error) {
-        console.error(`Failed to create notification for user ${userId}:`, error);
+        logger.error(`Failed to create notification for user ${userId}:`, { error, userId });
       }
     });
 
@@ -324,26 +325,26 @@ export const createNotificationForSelectedUsers = async (
     if (sendAsEmail) {
       try {
         const usersWithEmails = await getAllUsersWithEmails();
-        console.log(`[ADMIN_NOTIFICATIONS] Checking ${usersWithEmails.length} users for email notifications`);
+        logger.info(`[ADMIN_NOTIFICATIONS] Checking ${usersWithEmails.length} users for email notifications`, { userCount: usersWithEmails.length });
 
         const selectedUsersWithEmails = usersWithEmails.filter(user => {
           const isSelected = selectedUserIds.includes(user.uid);
           const hasEmailNotifications = user.emailNotifications === true;
 
-          console.log(`[ADMIN_NOTIFICATIONS] User ${user.uid}: selected=${isSelected}, emailNotifications=${hasEmailNotifications}, email=${user.email}`);
+          logger.debug(`[ADMIN_NOTIFICATIONS] User ${user.uid}: selected=${isSelected}, emailNotifications=${hasEmailNotifications}, email=${user.email}`, { userId: user.uid, isSelected, hasEmailNotifications, email: user.email });
 
           return isSelected && hasEmailNotifications;
         });
 
         const userEmails = selectedUsersWithEmails.map(user => user.email);
 
-        console.log(`[ADMIN_NOTIFICATIONS] Filtered to ${selectedUsersWithEmails.length} users for email notifications: [${userEmails.join(', ')}]`);
+        logger.info(`[ADMIN_NOTIFICATIONS] Filtered to ${selectedUsersWithEmails.length} users for email notifications`, { selectedCount: selectedUsersWithEmails.length, userEmails });
 
         if (userEmails.length > 0) {
           await sendEmailNotification(notificationData, userEmails);
         }
       } catch (emailError) {
-        console.error('Error sending email notifications:', emailError);
+        logger.error('Error sending email notifications:', { error: emailError });
         // Don't fail the entire operation if email fails
       }
     }
@@ -366,7 +367,7 @@ export const createNotificationForSelectedUsers = async (
 
     return successCount;
   } catch (error) {
-    console.error('Error creating notifications for selected users:', error);
+    logger.error('Error creating notifications for selected users:', { error });
     throw error;
   }
 };
@@ -413,7 +414,7 @@ export const getAdminStats = async (): Promise<{
       totalNotifications: notificationsSnapshot.size
     };
   } catch (error) {
-    console.error('Error getting admin stats:', error);
+    logger.error('Error getting admin stats:', { error });
     return { totalUsers: 0, totalNotifications: 0 };
   }
 };

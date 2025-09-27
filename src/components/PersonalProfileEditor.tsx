@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { User, Activity, Clock, DollarSign, AlertTriangle, Pill, Scale, Ruler } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
+import { User, Activity, AlertTriangle, Scale } from 'lucide-react';
 import type { PersonalProfile } from '../types/userSettings';
-import { DEFAULT_PERSONAL_PROFILE } from '../types/userSettings';
 
 interface PersonalProfileEditorProps {
   personalProfile: PersonalProfile;
@@ -21,6 +20,14 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
   const [newCondition, setNewCondition] = useState('');
   const [newMedication, setNewMedication] = useState('');
 
+  const updateProfile = useCallback((updates: Partial<PersonalProfile>) => {
+    onUpdateProfile({
+      ...personalProfile,
+      ...updates,
+      updatedAt: new Date()
+    });
+  }, [personalProfile, onUpdateProfile]);
+
   // Sync units with user's preferred measurement system
   React.useEffect(() => {
     const shouldUpdateUnits =
@@ -33,15 +40,7 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
         weightUnit: preferredUnits === 'metric' ? 'kg' : 'lbs'
       });
     }
-  }, [preferredUnits]);
-
-  const updateProfile = (updates: Partial<PersonalProfile>) => {
-    onUpdateProfile({
-      ...personalProfile,
-      ...updates,
-      updatedAt: new Date()
-    });
-  };
+  }, [preferredUnits, personalProfile.heightUnit, personalProfile.weightUnit, updateProfile]);
 
   const addItem = (field: 'allergies' | 'medicalConditions' | 'medications', value: string) => {
     if (!value.trim()) return;

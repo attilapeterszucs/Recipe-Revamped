@@ -1,6 +1,7 @@
 import { UsageTracker } from './usageTracking';
 import { SubscriptionService } from './subscriptionService';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
+import { logger } from './logger';
 
 export interface DailyConversionData {
   conversionsUsed: number;
@@ -29,7 +30,7 @@ export class DailyConversionService {
         planName: planDetails.name
       };
     } catch (error) {
-      console.error('Error getting daily conversion data:', error);
+      logger.error('Error getting daily conversion data:', { error });
       // Return safe defaults on error
       return {
         conversionsUsed: 0,
@@ -67,7 +68,7 @@ export class DailyConversionService {
         conversionLimit: data.conversionLimit
       };
     } catch (error) {
-      console.error('Error checking conversion permission:', error);
+      logger.error('Error checking conversion permission:', { error });
       // Allow conversion on error to avoid blocking users
       return {
         canConvert: true,
@@ -88,7 +89,7 @@ export class DailyConversionService {
       // Return updated data
       return await this.getDailyConversionData(userId);
     } catch (error) {
-      console.error('Error recording conversion:', error);
+      logger.error('Error recording conversion:', { error });
       // Return current data even if recording failed
       return await this.getDailyConversionData(userId);
     }

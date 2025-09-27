@@ -4,6 +4,7 @@ import type { HealthGoal, PersonalProfile } from '../types/userSettings';
 import { createHealthGoal, HEALTH_GOAL_TEMPLATES } from '../types/userSettings';
 import { updateUserSettings } from '../lib/userSettings';
 import { useToast } from './ToastContainer';
+import { logger } from '../lib/logger';
 
 interface HealthGoalsManagerProps {
   personalProfile: PersonalProfile;
@@ -26,7 +27,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
   const { showSuccess, showError } = useToast();
 
   // Helper function to recursively remove undefined values from objects
-  const cleanUndefinedValues = (obj: any): any => {
+  const cleanUndefinedValues = (obj: unknown): unknown => {
     if (obj === null || obj === undefined) {
       return null;
     }
@@ -40,7 +41,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
     }
 
     if (typeof obj === 'object') {
-      const cleaned: any = {};
+      const cleaned: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(obj)) {
         if (value !== undefined) {
           const cleanedValue = cleanUndefinedValues(value);
@@ -107,7 +108,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       // Show success notification
       showSuccess('Health Goal Added', `"${goal.title}" has been successfully added to your health goals.`, 'settings');
     } catch (error) {
-      console.error('Failed to save health goal:', error);
+      logger.error('Failed to save health goal:', { error });
       showError('Failed to Add Goal', 'Unable to save your health goal. Please try again.', 'settings');
     }
   };
@@ -135,7 +136,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       const updatedGoal = updatedProfile.healthGoals.find(g => g.id === goalId);
       showSuccess('Health Goal Updated', `"${updatedGoal?.title || 'Goal'}" has been successfully updated.`, 'settings');
     } catch (error) {
-      console.error('Failed to update health goal:', error);
+      logger.error('Failed to update health goal:', { error });
       showError('Failed to Update Goal', 'Unable to update your health goal. Please try again.', 'settings');
     }
   };
@@ -160,7 +161,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       // Show success notification
       showSuccess('Health Goal Deleted', `"${goalToDelete?.title || 'Goal'}" has been successfully deleted.`, 'delete');
     } catch (error) {
-      console.error('Failed to delete health goal:', error);
+      logger.error('Failed to delete health goal:', { error });
       showError('Failed to Delete Goal', 'Unable to delete your health goal. Please try again.', 'delete');
     }
   };
@@ -212,7 +213,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
           showSuccess('Goal Completed', `"${goal.title}" has been marked as completed. Great job!`, 'settings');
         }
       } catch (error) {
-        console.error('Failed to toggle health goal:', error);
+        logger.error('Failed to toggle health goal:', { error });
         showError('Failed to Update Goal', 'Unable to update your health goal status. Please try again.', 'settings');
       }
     }

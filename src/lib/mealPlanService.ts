@@ -8,6 +8,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import type { SavedRecipe } from './validation';
+import { logger } from './logger';
 
 const MEAL_PLANS_COLLECTION = 'mealPlans';
 
@@ -67,7 +68,7 @@ export class MealPlanService {
                           errorMsg.includes('firestore');
       
       if (!isKnownError) {
-        console.error('Error getting meal plan:', error);
+        logger.error('Error getting meal plan:', { error });
       }
       return null;
     }
@@ -128,7 +129,7 @@ export class MealPlanService {
                           errorMsg.includes('firestore');
       
       if (!isKnownError) {
-        console.error('Error saving meal plan:', error);
+        logger.error('Error saving meal plan:', { error });
       }
       return false;
     }

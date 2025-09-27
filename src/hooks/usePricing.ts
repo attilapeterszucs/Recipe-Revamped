@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { LocationData, LocalizedPrice } from '../types/pricing';
 import { calculateLocalizedPrice, basePlans } from '../lib/pricing';
+import { logger } from '../lib/logger';
 
 interface UsePricingOptions {
   location: LocationData;
@@ -63,7 +64,7 @@ export const usePricing = ({ location, isYearly, loading: locationLoading = fals
           lastUpdated: Date.now()
         });
       } catch (error) {
-        console.error('Failed to calculate prices:', error);
+        logger.error('Failed to calculate prices:', { error });
         setState(prev => ({
           ...prev,
           loading: false,
@@ -110,7 +111,7 @@ export const usePricing = ({ location, isYearly, loading: locationLoading = fals
         lastUpdated: Date.now()
       });
     } catch (error) {
-      console.error('Failed to refresh prices:', error);
+      logger.error('Failed to refresh prices:', { error });
       setState(prev => ({
         ...prev,
         loading: false,

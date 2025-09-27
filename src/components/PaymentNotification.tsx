@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { CheckCircle, Clock, AlertTriangle, X, Sparkles } from 'lucide-react';
 
 interface PaymentNotificationProps {
@@ -16,9 +16,14 @@ export const PaymentNotification: React.FC<PaymentNotificationProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
+  const handleClose = useCallback(() => {
+    setIsVisible(false);
+    setTimeout(onClose, 300); // Wait for animation to complete
+  }, [onClose]);
+
   useEffect(() => {
     setIsVisible(true);
-    
+
     // Auto-close after 5 seconds for success, 6 seconds for others
     const timeoutMs = type === 'success' ? 5000 : 6000;
     const timer = setTimeout(() => {
@@ -26,12 +31,7 @@ export const PaymentNotification: React.FC<PaymentNotificationProps> = ({
     }, timeoutMs);
 
     return () => clearTimeout(timer);
-  }, [type]);
-
-  const handleClose = () => {
-    setIsVisible(false);
-    setTimeout(onClose, 300); // Wait for animation to complete
-  };
+  }, [type, handleClose]);
 
   const getConfig = () => {
     switch (type) {

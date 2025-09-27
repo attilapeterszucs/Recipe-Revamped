@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import DOMPurify from 'dompurify';
 import {
   Plus,
   Edit,
@@ -35,6 +36,7 @@ import {
   getDownloadURL
 } from 'firebase/storage';
 import { db, storage } from '../lib/firebase';
+import { logger } from '../lib/logger';
 
 interface BlogPost {
   id: string;
@@ -132,7 +134,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
 
       setPosts(postsData);
     } catch (error) {
-      console.error('Error loading posts:', error);
+      logger.error('Error loading posts:', { error });
       showError(`Failed to load blog posts: ${error.message}`);
       setPosts([]);
     } finally {
@@ -234,7 +236,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
       setShowEditor(false);
       loadPosts();
     } catch (error) {
-      console.error('Error saving post:', error);
+      logger.error('Error saving post:', { error });
       showError(`Failed to save post: ${error.message}`);
     } finally {
       setSaving(false);
@@ -264,7 +266,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
       setShowDeleteConfirm(false);
       setPostToDelete(null);
     } catch (error) {
-      console.error('Error deleting post:', error);
+      logger.error('Error deleting post:', { error });
       showError('Failed to delete post');
     } finally {
       setIsDeleting(false);
@@ -312,7 +314,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
       setPostForm(prev => ({ ...prev, featuredImage: downloadURL }));
       showSuccess('Image uploaded successfully!');
     } catch (error) {
-      console.error('Error uploading image:', error);
+      logger.error('Error uploading image:', { error });
       showError('Failed to upload image');
     } finally {
       setUploading(false);
@@ -653,9 +655,15 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                       <div
                         className="prose prose-sm max-w-none"
                         dangerouslySetInnerHTML={{
-                          __html: postForm.content.length > 200
-                            ? postForm.content.substring(0, 200) + '...'
-                            : postForm.content
+                          __html: DOMPurify.sanitize(
+                            postForm.content.length > 200
+                              ? postForm.content.substring(0, 200) + '...'
+                              : postForm.content,
+                            {
+                              ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                              ALLOWED_ATTR: []
+                            }
+                          )
                         }}
                       />
                     </div>
@@ -1000,7 +1008,13 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                 <div
                   className="prose prose-lg max-w-none"
                   dangerouslySetInnerHTML={{
-                    __html: postForm.content || '<p>No content yet. Start writing in the editor!</p>'
+                    __html: DOMPurify.sanitize(
+                      postForm.content || '<p>No content yet. Start writing in the editor!</p>',
+                      {
+                        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img'],
+                        ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class']
+                      }
+                    )
                   }}
                 />
               </article>

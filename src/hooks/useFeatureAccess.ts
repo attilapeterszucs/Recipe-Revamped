@@ -4,6 +4,7 @@ import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan } from '../types/subscription';
 import { UsageTracker } from '../lib/usageTracking';
 import { SubscriptionService } from '../lib/subscriptionService';
+import { logger } from '../lib/logger';
 
 interface FeatureAccess {
   // Recipe features
@@ -127,7 +128,7 @@ export const useFeatureAccess = (
       }
       return success;
     } catch (error) {
-      console.error('Error recording conversion:', error);
+      logger.error('Error recording conversion:', { error });
       return false;
     }
   };

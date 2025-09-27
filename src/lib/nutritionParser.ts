@@ -1,4 +1,5 @@
 import type { SavedRecipe } from './validation';
+import { logger } from './logger';
 
 export interface NutritionInfo {
   calories: number;
@@ -64,7 +65,7 @@ export const parseNutritionFromRecipe = (recipeContent: string): NutritionInfo =
 
     // Validate that we have at least calories
     if (nutrition.calories === 0) {
-      console.warn('No calorie information found in recipe nutrition section, attempting estimation');
+      logger.warn('No calorie information found in recipe nutrition section, attempting estimation');
       // Try to estimate from ingredients as fallback
       const ingredients = extractIngredientsFromRecipe(recipeContent);
       if (ingredients.length > 0) {
@@ -75,7 +76,7 @@ export const parseNutritionFromRecipe = (recipeContent: string): NutritionInfo =
 
     return nutrition;
   } catch (error) {
-    console.error('Error parsing nutrition information:', error);
+    logger.error('Error parsing nutrition information:', { error });
     return defaultNutrition;
   }
 };

@@ -15,6 +15,7 @@ import { db } from './firebase';
 import type { SavedRecipe } from './validation';
 import { SubscriptionService } from './subscriptionService';
 import { getDefaultRecipeImage } from './recipeImageService';
+import { logger } from './logger';
 
 const RECIPES_COLLECTION = 'recipes';
 
@@ -198,7 +199,7 @@ export const saveRecipe = async (
     try {
       recipeImageUrl = await getDefaultRecipeImage(convertedRecipe, userId);
     } catch (error) {
-      console.error('Failed to get fallback recipe image:', error);
+      logger.error('Failed to get fallback recipe image:', { error });
       // Continue without image
     }
   }

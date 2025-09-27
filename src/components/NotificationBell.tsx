@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bell, X, CheckCircle, Info, AlertTriangle, AlertCircle } from 'lucide-react';
-import { subscribeToUserNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '../lib/notifications';
+import { Bell, CheckCircle, Info, AlertTriangle, AlertCircle } from 'lucide-react';
+import { subscribeToUserNotifications, markNotificationAsRead } from '../lib/notifications';
 import type { Notification } from '../types/notifications';
 import { NotificationPopup } from './NotificationPopup';
 

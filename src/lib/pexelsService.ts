@@ -1,5 +1,7 @@
 // Pexels API service for fetching food images
-const PEXELS_API_KEY = 'YOUR_PEXELS_API_KEY'; // This would normally come from environment variables
+import { logger } from './logger';
+
+const PEXELS_API_KEY = import.meta.env.VITE_PEXELS_API_KEY || '';
 const PEXELS_API_URL = 'https://api.pexels.com/v1/search';
 
 interface PexelsPhoto {
@@ -89,7 +91,7 @@ export const fetchFoodImage = async (recipeName: string): Promise<string | null>
     });
 
     if (!response.ok) {
-      console.error('Pexels API error:', response.statusText);
+      logger.error('Pexels API error:', { statusText: response.statusText, status: response.status });
       return null;
     }
 
@@ -108,7 +110,7 @@ export const fetchFoodImage = async (recipeName: string): Promise<string | null>
     
     return null;
   } catch (error) {
-    console.error('Error fetching image from Pexels:', error);
+    logger.error('Error fetching image from Pexels:', { error });
     return null;
   }
   */

@@ -14,8 +14,9 @@ import { cn } from '../../lib/utils';
 
 // Function to convert Firebase error codes to user-friendly messages
 const getAuthErrorMessage = (error: unknown): string => {
-  const errorCode = (error as any)?.code || '';
-  const errorMessage = (error as any)?.message || '';
+  const firebaseError = error as { code?: string; message?: string };
+  const errorCode = firebaseError?.code || '';
+  const errorMessage = firebaseError?.message || '';
 
   switch (errorCode) {
     case 'auth/invalid-credential':

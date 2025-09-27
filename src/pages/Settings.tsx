@@ -47,6 +47,7 @@ import { checkAdminAccess, initializeAdminSystem } from '../utils/adminUtils';
 import { useSubscriptionRefresh } from '../contexts/SubscriptionContext';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
 import { CancelSubscriptionButton } from '../components/SubscriptionCancellation/CancelSubscriptionButton';
+import { logger } from '../lib/logger';
 
 interface SettingsProps {
   user: User;
@@ -75,7 +76,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   // Debug logging and handle prop changes
   useEffect(() => {
     if (initialActiveSection) {
-      console.log('Settings received initialActiveSection:', initialActiveSection);
+      logger.debug('Settings received initialActiveSection:', { initialActiveSection });
       setActiveSection(initialActiveSection);
 
       // Clean up URL search params after setting the section
@@ -144,7 +145,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         // Return cleanup function
         return unsubscribe;
       } catch (error) {
-        console.error('Error setting up settings listener:', error);
+        logger.error('Error setting up settings listener:', { error });
       }
     };
 
@@ -183,7 +184,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       // Refresh subscription status after initialization to ensure admin privileges are detected
       refreshSubscriptionStatus();
     } catch (error) {
-      console.error('Error initializing admin system:', error);
+      logger.error('Error initializing admin system:', { error });
     }
   };
 
@@ -193,7 +194,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       const userSettings = await getUserSettings(user.uid);
       setSettings(userSettings);
     } catch (error) {
-      console.error('Failed to load user settings:', error);
+      logger.error('Failed to load user settings:', { error });
     } finally {
       setLoading(false);
     }
@@ -204,7 +205,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       const recipes = await getUserRecipes(user.uid, 1000); // Get all recipes to count
       setRecipeCount(recipes.length);
     } catch (error) {
-      console.error('Failed to load recipe count:', error);
+      logger.error('Failed to load recipe count:', { error });
       // Don't show error to user as this is not critical
     }
   };
@@ -278,10 +279,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           if (cancellationResult.success) {
             // Subscription cancelled successfully
           } else {
-            console.warn('⚠️ Could not automatically cancel subscription:', cancellationResult.error);
+            logger.warn('⚠️ Could not automatically cancel subscription:', { error: cancellationResult.error });
           }
         } catch (error) {
-          console.warn('⚠️ Could not cancel subscription during account action:', error);
+          logger.warn('⚠️ Could not cancel subscription during account action:', { error });
           // Continue with account action even if subscription cancellation fails
         }
       }
@@ -352,7 +353,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       }
       
     } catch (error) {
-      console.error('Failed to delete/deactivate account:', error);
+      logger.error('Failed to delete/deactivate account:', { error });
       
       if (error.code === 'auth/requires-recent-login') {
         showError('Authentication Required', 'For security reasons, you need to sign in again before deleting your account. Please sign out, sign back in, and try again.');
@@ -406,7 +407,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       
       showSuccess('Password Updated', 'Your password has been successfully changed');
     } catch (error: any) {
-      console.error('Password change error:', error);
+      logger.error('Password change error:', { error });
       if (error.code === 'auth/wrong-password') {
         showError('Invalid Password', 'Current password is incorrect');
       } else if (error.code === 'auth/too-many-requests') {
@@ -485,7 +486,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       showSuccess('Settings Saved', 'Your preferences have been successfully updated', 'settings');
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
-      console.error('Failed to save settings:', error);
+      logger.error('Failed to save settings:', { error });
       setSaveStatus('error');
       showError('Settings Save Failed', 'Could not save your preferences. Please try again.', 'settings');
       setTimeout(() => setSaveStatus('idle'), 3000);
@@ -529,7 +530,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       await loadBackups();
       showSuccess('Backup Created', 'Your data has been successfully backed up to the cloud', 'backup');
     } catch (error) {
-      console.error('Failed to create backup:', error);
+      logger.error('Failed to create backup:', { error });
       if (error.message && error.message.includes('net::ERR_BLOCKED_BY_CLIENT')) {
         showError('Network Blocked', 'Your ad blocker or network settings are preventing backup creation. Please disable ad blockers for this site.', 'backup');
       } else {
@@ -545,7 +546,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       const userBackups = await getUserBackups(user.uid);
       setBackups(userBackups);
     } catch (error) {
-      console.error('Failed to load backups:', error);
+      logger.error('Failed to load backups:', { error });
     }
   };
 
@@ -577,7 +578,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       
       showSuccess('Restore Complete', message, 'restore');
     } catch (error) {
-      console.error('Failed to restore backup:', error);
+      logger.error('Failed to restore backup:', { error });
       if (error.message && error.message.includes('net::ERR_BLOCKED_BY_CLIENT')) {
         showError('Network Blocked', 'Your ad blocker or network settings are preventing data restoration. Please disable ad blockers for this site.', 'restore');
       } else {
@@ -608,7 +609,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       setBackups(prev => prev.filter(backup => backup.id !== backupId));
       showSuccess('Backup Deleted', 'The recovery point has been permanently deleted', 'delete');
     } catch (error) {
-      console.error('Failed to delete backup:', error);
+      logger.error('Failed to delete backup:', { error });
       if (error.message && error.message.includes('net::ERR_BLOCKED_BY_CLIENT')) {
         showError('Network Blocked', 'Your ad blocker or network settings are preventing this action. Please disable ad blockers for this site.', 'delete');
       } else {
@@ -655,7 +656,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       
       showSuccess('Profile Picture Updated', 'Your profile picture has been successfully changed');
     } catch (error) {
-      console.error('Failed to upload profile picture:', error);
+      logger.error('Failed to upload profile picture:', { error });
       showError('Upload Failed', 'Could not upload profile picture. Please try again.');
     } finally {
       setUploadingProfilePicture(false);
@@ -672,7 +673,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       
       showSuccess('Profile Picture Removed', 'Your profile picture has been removed');
     } catch (error) {
-      console.error('Failed to delete profile picture:', error);
+      logger.error('Failed to delete profile picture:', { error });
       showError('Delete Failed', 'Could not remove profile picture. Please try again.');
     } finally {
       setUploadingProfilePicture(false);

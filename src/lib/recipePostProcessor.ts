@@ -1,3 +1,5 @@
+import { logger } from './logger';
+
 export const cleanupRecipeFormat = (rawRecipe: string): string => {
   if (!rawRecipe) return rawRecipe;
 
@@ -7,7 +9,7 @@ export const cleanupRecipeFormat = (rawRecipe: string): string => {
   if (cleaned.includes('## Nutrition Information') && 
       !cleaned.includes('## Ingredients') && 
       !cleaned.includes('## Instructions')) {
-    console.warn('AI generated incomplete recipe (only nutrition), providing fallback structure');
+    logger.warn('AI generated incomplete recipe (only nutrition), providing fallback structure');
     
     // Create a basic fallback recipe structure
     cleaned = `**Recipe Name:** Recipe

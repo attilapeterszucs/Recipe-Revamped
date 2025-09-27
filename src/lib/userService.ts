@@ -9,6 +9,7 @@ import {
   where
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { logger } from './logger';
 
 export interface UserProfile {
   uid: string;
@@ -68,7 +69,7 @@ export const createOrUpdateUserProfile = async (
     
     await setDoc(userRef, userData, { merge: true });
   } catch (error) {
-    console.error('Error creating/updating user profile:', error);
+    logger.error('Error creating/updating user profile:', { error });
   }
 };
 
@@ -84,7 +85,7 @@ export const getUserProfile = async (uid: string): Promise<UserProfile | null> =
     
     return null;
   } catch (error) {
-    console.error('Error getting user profile:', error);
+    logger.error('Error getting user profile:', { error });
     return null;
   }
 };
@@ -103,7 +104,7 @@ export const getUserProfileByEmail = async (email: string): Promise<UserProfile 
     
     return null;
   } catch (error) {
-    console.error('Error getting user profile by email:', error);
+    logger.error('Error getting user profile by email:', { error });
     return null;
   }
 };
@@ -119,7 +120,7 @@ export const getAllUserProfiles = async (): Promise<UserProfile[]> => {
       ...doc.data()
     } as UserProfile));
   } catch (error) {
-    console.error('Error getting all user profiles:', error);
+    logger.error('Error getting all user profiles:', { error });
     return [];
   }
 };
@@ -135,7 +136,7 @@ export const searchUsers = async (searchTerm: string): Promise<UserProfile[]> =>
       user.uid.includes(searchTerm)
     );
   } catch (error) {
-    console.error('Error searching users:', error);
+    logger.error('Error searching users:', { error });
     return [];
   }
 };

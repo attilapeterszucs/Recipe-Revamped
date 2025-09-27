@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { auth } from '../lib/firebase';
+import { logger } from '../lib/logger';
 
 interface CheckoutSessionOptions {
   customerEmail: string;
@@ -76,7 +77,7 @@ export const useStripeCheckout = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
-      console.error('Checkout session creation failed:', err);
+      logger.error('Checkout session creation failed:', { error: err });
       throw err;
     } finally {
       setLoading(false);

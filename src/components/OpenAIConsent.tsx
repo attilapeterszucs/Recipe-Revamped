@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { X, AlertTriangle, Shield, BookOpen } from 'lucide-react';
+import React from 'react';
+import { AlertTriangle, Shield, BookOpen } from 'lucide-react';
 
 interface OpenAIConsentProps {
   isOpen: boolean;

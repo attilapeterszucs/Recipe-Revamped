@@ -1,6 +1,7 @@
 import { isUserAdmin, getAdminUser, initializeFirstAdmin } from '../lib/adminManagement';
 import { cleanupDuplicateUserSettings } from '../lib/userSettings';
 import { type User } from 'firebase/auth';
+import { logger } from '../lib/logger';
 
 // Check if a user is an admin (async Firebase check)
 export const isAdmin = async (userEmail: string, userUid: string): Promise<boolean> => {
@@ -23,7 +24,7 @@ export const checkAdminAccess = async (user: User | null): Promise<boolean> => {
     
     return firestoreResult;
   } catch (error) {
-    console.error('Error checking admin access:', error);
+    logger.error('Error checking admin access:', { error });
     
     // Only provide fallback for super admin if there's an error
     if (user.email.toLowerCase() === 'attilaszucs2002@gmail.com') {
@@ -54,7 +55,7 @@ export const initializeAdminSystem = async (user: User | null): Promise<boolean>
       try {
         await cleanupDuplicateUserSettings();
       } catch (error) {
-        console.error('Failed to cleanup duplicate userSettings:', error);
+        logger.error('Failed to cleanup duplicate userSettings:', { error });
         // Don't fail admin initialization if cleanup fails
       }
     }

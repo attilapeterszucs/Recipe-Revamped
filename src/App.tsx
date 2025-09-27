@@ -30,7 +30,7 @@ import './lib/consentStorage'; // Initialize consent storage
 
 // Inner App component that uses cookie context
 const AppContent: React.FC = () => {
-  const { needsConsent, acceptAll, rejectAll, saveCurrentPreferences, showConsentPopup } = useCookieContext();
+  const { needsConsent, acceptAll, rejectAll, saveCurrentPreferences } = useCookieContext();
   
   // Track page views with consent-based analytics
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Send,
   Users,
@@ -10,12 +10,12 @@ import {
   BarChart3,
   Shield,
   Mail,
-  UserCheck,
   Search,
 } from 'lucide-react';
 import { createNotificationForAllUsers, createNotificationForSelectedUsers, getAdminStats, getAllUsersWithEmails } from '../lib/adminNotifications';
 import type { NotificationData } from '../types/notifications';
 import { useToast } from './ToastContainer';
+import { logger } from '../lib/logger';
 
 interface AdminNotificationCreatorProps {
   adminUserId: string;
@@ -58,41 +58,32 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
 
   const { showSuccess, showError } = useToast();
 
-  useEffect(() => {
-    loadStats();
-    loadUsers();
-  }, []);
-
-  useEffect(() => {
-    filterUsers();
-  }, [availableUsers, userSearchTerm, showOnlyEmailEnabled, sendAsEmail]);
-
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     try {
       const adminStats = await getAdminStats();
       setStats(adminStats);
     } catch (error) {
-      console.error('Error loading admin stats:', error);
+      logger.error('Error loading admin stats', { error });
     } finally {
       setLoadingStats(false);
     }
-  };
+  }, []);
 
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     setLoadingUsers(true);
     try {
       const users = await getAllUsersWithEmails();
       setAvailableUsers(users);
-      console.log(`[ADMIN_NOTIFICATIONS] Loaded ${users.length} total users`);
+      logger.info(`Admin notifications: Loaded ${users.length} total users`);
     } catch (error) {
-      console.error('Error loading users:', error);
+      logger.error('Error loading users', { error });
       showError('Error', 'Failed to load users');
     } finally {
       setLoadingUsers(false);
     }
-  };
+  }, [showError]);
 
-  const filterUsers = () => {
+  const filterUsers = useCallback(() => {
     let filtered = availableUsers;
 
     // Only filter by email notifications when "Send as Email" is enabled
@@ -109,7 +100,16 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
     }
 
     setFilteredUsers(filtered);
-  };
+  }, [availableUsers, sendAsEmail, showOnlyEmailEnabled, userSearchTerm]);
+
+  useEffect(() => {
+    loadStats();
+    loadUsers();
+  }, [loadStats, loadUsers]);
+
+  useEffect(() => {
+    filterUsers();
+  }, [filterUsers]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -180,7 +180,7 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
       await loadStats();
 
     } catch (error) {
-      console.error('Error sending notifications:', error);
+      logger.error('Error sending notifications', { error });
       showError('Send Failed', 'Failed to send notifications. Please try again.');
     } finally {
       setIsSubmitting(false);

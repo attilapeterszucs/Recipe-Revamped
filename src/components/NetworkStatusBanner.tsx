@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Wifi, WifiOff, X, RefreshCw } from 'lucide-react';
+import { AlertTriangle, WifiOff, X, RefreshCw } from 'lucide-react';
 
 interface NetworkStatusBannerProps {
   onRetry?: () => void;

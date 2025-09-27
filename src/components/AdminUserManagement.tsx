@@ -21,6 +21,7 @@ import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan } from '../types/subscription';
 import { useToast } from './ToastContainer';
 import { useSubscriptionRefresh } from '../contexts/SubscriptionContext';
+import { logger } from '../lib/logger';
 
 interface AdminUserManagementProps {
   currentAdminUid: string;
@@ -65,7 +66,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
       const isCurrentUserAdmin = await isUserAdmin(currentAdminEmail, currentAdminUid);
       
       if (!isCurrentUserAdmin) {
-        console.error('[AdminUserManagement] Current user is not an admin - cannot access admin functions');
+        logger.error('[AdminUserManagement] Current user is not an admin - cannot access admin functions');
         showError('Access Denied', 'You do not have admin privileges');
         setLoading(false);
         return;
@@ -88,7 +89,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         const currentSub = await SubscriptionService.getUserSubscription(currentAdminUid);
         setCurrentUserPlan(currentSub?.plan || 'free');
       } catch (error) {
-        console.error('Error loading current admin subscription:', error);
+        logger.error('Error loading current admin subscription:', { error });
       }
       
       // Combine user IDs from all sources
@@ -109,7 +110,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
           const subscription = await SubscriptionService.getUserSubscription(uid);
           subscriptionPlan = subscription?.plan || 'free';
         } catch (error) {
-          console.error(`Error loading subscription for ${uid}:`, error);
+          logger.error(`Error loading subscription for ${uid}:`, { error, uid });
         }
         
         // Only include users with valid email addresses (filter out fake users)
@@ -140,7 +141,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
       }));
       
     } catch (error) {
-      console.error('Error loading admin data:', error);
+      logger.error('Error loading admin data:', { error });
       showError('Load Failed', 'Failed to load user data');
     } finally {
       setLoading(false);
@@ -201,7 +202,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         showError('Failed', 'Could not grant admin privileges');
       }
     } catch (error) {
-      console.error('Error granting admin:', error);
+      logger.error('Error granting admin:', { error });
       showError('Error', 'An error occurred while granting admin privileges');
     } finally {
       setActionLoading(null);
@@ -238,7 +239,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         showError('Failed', 'Could not revoke admin privileges');
       }
     } catch (error) {
-      console.error('Error revoking admin:', error);
+      logger.error('Error revoking admin:', { error });
       showError('Error', 'An error occurred while revoking admin privileges');
     } finally {
       setActionLoading(null);
@@ -286,7 +287,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         showError('Update Failed', errorMessage);
       }
     } catch (error) {
-      console.error('Error changing plan:', error);
+      logger.error('Error changing plan:', { error });
       
       // Handle specific error types
       if (error instanceof Error) {

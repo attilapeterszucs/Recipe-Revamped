@@ -4,6 +4,7 @@ import { app } from './firebase';
 import type { UserSettings } from '../types/userSettings';
 import { ImageService } from './imageService';
 import { buildProfileContext, getGoalSpecificPrompts } from './profileContext';
+import { logger } from './logger';
 
 // Initialize Firebase Functions
 const functions = getFunctions(app);
@@ -206,7 +207,7 @@ export const convertRecipeLocal = async (
     return JSON.stringify(recipeData, null, 2);
 
   } catch (error: any) {
-    console.error('Recipe conversion error:', error);
+    logger.error('Recipe conversion error:', { error });
     
     // Handle specific error types
     if (error.message?.includes('User must be authenticated')) {

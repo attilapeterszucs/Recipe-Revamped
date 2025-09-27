@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { User, AlertTriangle, CheckCircle } from 'lucide-react';
 import { updateDoc, doc } from 'firebase/firestore';
-import { updateProfile } from 'firebase/auth';
+import { updateProfile, User as FirebaseUser } from 'firebase/auth';
 import { db } from '../lib/firebase';
 
 interface ReactivationModalProps {
   isOpen: boolean;
-  user: any; // Firebase User
+  user: FirebaseUser;
   onReactivate: () => void;
   onDecline: () => void;
 }

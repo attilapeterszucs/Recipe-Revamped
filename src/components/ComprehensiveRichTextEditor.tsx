@@ -59,8 +59,6 @@ interface ComprehensiveRichTextEditorProps {
 
 // Temporarily disabled - use EnhancedRichTextEditor instead
 export const ComprehensiveRichTextEditor: React.FC<ComprehensiveRichTextEditorProps> = ({
-  content,
-  onSave,
   onCancel,
 }) => {
   return (

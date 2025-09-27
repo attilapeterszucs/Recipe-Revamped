@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Edit3, Filter, ChefHat, Clock, Users, Plus, Trash2, Heart, Lightbulb, Minus, Image, Upload, Camera } from 'lucide-react';
+import { X, Save, Edit3, Filter, ChefHat, Clock, Users, Plus, Trash2, Heart, Lightbulb, Minus, Image, Upload } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import { updateRecipe } from '../lib/firestore';
 import { useToast } from './ToastContainer';
@@ -85,7 +85,7 @@ const parseRecipe = (content: string): ParsedRecipe => {
       tips: jsonData.tips || [],
       isJsonFormat: true
     };
-  } catch (error) {
+  } catch {
     // Fall back to markdown parsing
   }
 

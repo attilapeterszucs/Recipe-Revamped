@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import type { Notification, NotificationData } from '../types/notifications';
+import { logger } from './logger';
 
 const COLLECTION_NAME = 'notifications';
 
@@ -29,7 +30,7 @@ export const createNotification = async (userId: string, data: NotificationData)
     });
     return notificationRef.id;
   } catch (error) {
-    console.error('Error creating notification:', error);
+    logger.error('Error creating notification:', { error });
     throw error;
   }
 };
@@ -43,7 +44,7 @@ export const markNotificationAsRead = async (notificationId: string): Promise<vo
       updatedAt: serverTimestamp()
     });
   } catch (error) {
-    console.error('Error marking notification as read:', error);
+    logger.error('Error marking notification as read:', { error });
     throw error;
   }
 };
@@ -86,7 +87,7 @@ export const subscribeToUserNotifications = (
     });
     callback(notifications);
   }, (error) => {
-    console.error('Error subscribing to notifications:', error);
+    logger.error('Error subscribing to notifications:', { error });
   });
 };
 

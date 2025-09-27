@@ -99,8 +99,6 @@ class ExchangeRateService {
 
   private async fetchFromAPIs(): Promise<Record<string, number>> {
     // Exchange rates functionality removed - using USD only for payments
-    // Return fallback rates which are hardcoded USD-based rates
-    console.info('Using hardcoded USD-based exchange rates (exchange rate API removed)');
     return fallbackRates;
   }
 

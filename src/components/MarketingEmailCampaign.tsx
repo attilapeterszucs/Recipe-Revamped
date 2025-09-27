@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -6,9 +6,10 @@ import { Label } from './ui/label';
 import { Badge } from './ui/badge';
 import { Alert, AlertDescription } from './ui/alert';
 import { Separator } from './ui/separator';
-import { Mail, Users, Send, Search, Filter, Clock, AlertCircle, CheckCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Mail, Users, Send, Search, Clock, AlertCircle, CheckCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 import { getAllUsersWithEmails } from '../lib/adminNotifications';
 import { useAuth } from '../hooks/useAuth';
+import { logger } from '../lib/logger';
 
 interface User {
   uid: string;
@@ -52,21 +53,13 @@ export const MarketingEmailCampaign: React.FC = () => {
   const adminUserId = user?.uid || '';
   const adminEmail = user?.email || '';
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
-
-  useEffect(() => {
-    filterUsers();
-  }, [allUsers, userSearchTerm, showOnlyEmailEnabled]);
-
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     setLoadingUsers(true);
     try {
       const users = await getAllUsersWithEmails();
       setAllUsers(users);
     } catch (error) {
-      console.error('Error loading users:', error);
+      logger.error('Error loading users:', { error });
       setMarketingSubmissionStatus({
         type: 'error',
         message: 'Failed to load users. Please refresh the page.'
@@ -74,9 +67,9 @@ export const MarketingEmailCampaign: React.FC = () => {
     } finally {
       setLoadingUsers(false);
     }
-  };
+  }, []);
 
-  const filterUsers = () => {
+  const filterUsers = useCallback(() => {
     let filtered = allUsers;
 
     if (showOnlyEmailEnabled) {
@@ -92,7 +85,15 @@ export const MarketingEmailCampaign: React.FC = () => {
     }
 
     setFilteredUsers(filtered);
-  };
+  }, [allUsers, showOnlyEmailEnabled, userSearchTerm]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
+
+  useEffect(() => {
+    filterUsers();
+  }, [filterUsers]);
 
   const handleMarketingUserToggle = (userId: string) => {
     setSelectedMarketingUsers(prev =>
@@ -146,7 +147,7 @@ export const MarketingEmailCampaign: React.FC = () => {
         ...(sendMarketingToAllUsers ? {} : { targetUserIds: selectedMarketingUsers })
       };
 
-      console.log('[MARKETING_DEBUG] Sending request with admin credentials:', {
+      logger.debug('[MARKETING_DEBUG] Sending request with admin credentials:', {
         adminUserId,
         adminEmail,
         userUid: user?.uid,
@@ -184,7 +185,7 @@ export const MarketingEmailCampaign: React.FC = () => {
       setSelectedMarketingUsers([]);
 
     } catch (error) {
-      console.error('Marketing email error:', error);
+      logger.error('Marketing email error:', { error });
       setMarketingSubmissionStatus({
         type: 'error',
         message: error instanceof Error ? error.message : 'An unexpected error occurred while sending the marketing email.'
