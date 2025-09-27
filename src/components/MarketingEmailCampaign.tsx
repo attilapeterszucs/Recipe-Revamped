@@ -17,6 +17,7 @@ interface User {
   emailPreferences?: {
     notifications?: boolean;
   };
+  marketingEmails?: boolean;
 }
 
 interface MarketingEmailData {
@@ -79,7 +80,7 @@ export const MarketingEmailCampaign: React.FC = () => {
     let filtered = allUsers;
 
     if (showOnlyEmailEnabled) {
-      filtered = filtered.filter(user => user.emailPreferences?.notifications !== false);
+      filtered = filtered.filter(user => user.marketingEmails === true);
     }
 
     if (userSearchTerm.trim()) {
@@ -202,7 +203,7 @@ export const MarketingEmailCampaign: React.FC = () => {
             Marketing Email Campaign
           </CardTitle>
           <CardDescription>
-            Send recipe newsletters and marketing content to users with customizable frequency settings.
+            Send recipe newsletters and marketing content to users who have enabled "Marketing Emails" in their Settings &gt; Notifications preferences.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -411,7 +412,7 @@ export const MarketingEmailCampaign: React.FC = () => {
                             onChange={(e) => setShowOnlyEmailEnabled(e.target.checked)}
                             className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                           />
-                          <Label htmlFor="emailEnabled" className="text-sm">Email notifications enabled</Label>
+                          <Label htmlFor="emailEnabled" className="text-sm">Marketing emails enabled (Settings &gt; Notifications)</Label>
                         </div>
                       </div>
 
@@ -453,9 +454,9 @@ export const MarketingEmailCampaign: React.FC = () => {
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center space-x-2">
                                       <span className="text-sm font-medium truncate">{user.email}</span>
-                                      {user.emailPreferences?.notifications === false && (
+                                      {user.marketingEmails !== true && (
                                         <Badge variant="secondary" className="text-xs">
-                                          Email disabled
+                                          Marketing disabled
                                         </Badge>
                                       )}
                                     </div>
@@ -514,14 +515,14 @@ export const MarketingEmailCampaign: React.FC = () => {
             </div>
             <div className="text-center p-4 border rounded-lg">
               <div className="text-2xl font-bold text-green-600">
-                {allUsers.filter(user => user.emailPreferences?.notifications !== false).length}
+                {allUsers.filter(user => user.marketingEmails === true).length}
               </div>
-              <div className="text-sm text-muted-foreground">Email Enabled</div>
+              <div className="text-sm text-muted-foreground">Marketing Enabled</div>
             </div>
             <div className="text-center p-4 border rounded-lg">
               <div className="text-2xl font-bold text-green-600">
                 {sendMarketingToAllUsers ?
-                  allUsers.filter(user => user.emailPreferences?.notifications !== false).length :
+                  allUsers.filter(user => user.marketingEmails === true).length :
                   selectedMarketingUsers.length
                 }
               </div>

@@ -1,7 +1,9 @@
-import { 
-  collection, 
-  getDocs, 
+import {
+  collection,
+  getDocs,
   addDoc,
+  getDoc,
+  doc,
   serverTimestamp,
   query,
   where
@@ -114,7 +116,7 @@ export const getAllUsers = async (): Promise<string[]> => {
   }
 };
 
-// Get all users with email data
+// Get all users with email data and their marketing email preferences
 export const getAllUsersWithEmails = async (): Promise<Array<{
   uid: string;
   email: string;
@@ -122,17 +124,39 @@ export const getAllUsersWithEmails = async (): Promise<Array<{
   emailPreferences?: {
     notifications?: boolean;
   };
+  marketingEmails?: boolean;
 }>> => {
   try {
     const { getAllUserProfiles } = await import('./userService');
     const userProfiles = await getAllUserProfiles();
 
-    return userProfiles.map(profile => ({
-      uid: profile.uid,
-      email: profile.email,
-      displayName: profile.displayName,
-      emailPreferences: profile.emailPreferences
-    }));
+    // Fetch user settings to get marketing email preferences
+    const userSettingsPromises = userProfiles.map(async (profile) => {
+      try {
+        const userSettingsDoc = await getDoc(doc(db, 'userSettings', profile.uid));
+        const userSettings = userSettingsDoc.exists() ? userSettingsDoc.data() : null;
+
+        return {
+          uid: profile.uid,
+          email: profile.email,
+          displayName: profile.displayName,
+          emailPreferences: profile.emailPreferences,
+          marketingEmails: userSettings?.marketingEmails || false
+        };
+      } catch (error) {
+        console.error(`Error fetching settings for user ${profile.uid}:`, error);
+        return {
+          uid: profile.uid,
+          email: profile.email,
+          displayName: profile.displayName,
+          emailPreferences: profile.emailPreferences,
+          marketingEmails: false
+        };
+      }
+    });
+
+    const usersWithSettings = await Promise.all(userSettingsPromises);
+    return usersWithSettings;
   } catch (error) {
     console.error('Error getting users with emails:', error);
     return [];
@@ -215,7 +239,7 @@ export const createNotificationForAllUsers = async (
       try {
         const usersWithEmails = await getAllUsersWithEmails();
         const emailEnabledUsers = usersWithEmails.filter(user =>
-          user.emailPreferences?.notifications !== false
+          user.marketingEmails === true
         );
         const userEmails = emailEnabledUsers.map(user => user.email);
 
@@ -299,7 +323,7 @@ export const createNotificationForSelectedUsers = async (
         const usersWithEmails = await getAllUsersWithEmails();
         const selectedUsersWithEmails = usersWithEmails.filter(user =>
           selectedUserIds.includes(user.uid) &&
-          user.emailPreferences?.notifications !== false
+          user.marketingEmails === true
         );
         const userEmails = selectedUsersWithEmails.map(user => user.email);
 
