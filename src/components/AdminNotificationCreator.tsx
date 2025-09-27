@@ -75,7 +75,12 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
     setLoadingUsers(true);
     try {
       const users = await getAllUsersWithEmails();
-      setAvailableUsers(users);
+      // Filter to only show users who can receive notification emails
+      const notificationEnabledUsers = users.filter(user =>
+        user.emailPreferences?.notifications !== false
+      );
+      setAvailableUsers(notificationEnabledUsers);
+      console.log(`[ADMIN_NOTIFICATIONS] Loaded ${notificationEnabledUsers.length} users with notifications enabled (filtered from ${users.length} total users)`);
     } catch (error) {
       console.error('Error loading users:', error);
       showError('Error', 'Failed to load users');
@@ -319,9 +324,12 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
 
           {/* User Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Select Recipients
             </label>
+            <p className="text-xs text-gray-500 mb-3">
+              ℹ️ Only users with email notifications enabled are shown
+            </p>
 
             {/* Send to All Users Toggle */}
             <div className="mb-4">
