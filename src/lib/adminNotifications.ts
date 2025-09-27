@@ -10,7 +10,8 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import type { NotificationData } from '../types/notifications';
-import { logAdminAction, isUserAdmin } from './adminManagement';
+import { logAdminAction, isUserAdmin, getAllAdmins } from './adminManagement';
+import { getAllUserProfiles } from './userService';
 
 // Get all registered users (only actual user IDs with valid Firebase Auth UID format)
 export const getAllUsers = async (): Promise<string[]> => {
@@ -128,7 +129,6 @@ export const getAllUsersWithEmails = async (): Promise<Array<{
   emailNotifications?: boolean;
 }>> => {
   try {
-    const { getAllUserProfiles } = await import('./userService');
     const userProfiles = await getAllUserProfiles();
 
     // Fetch user settings to get marketing email preferences
@@ -377,10 +377,7 @@ export const getAdminStats = async (): Promise<{
   totalNotifications: number;
 }> => {
   try {
-    // Import the functions we need for user filtering
-    const { getAllAdmins } = await import('./adminManagement');
-    const { getAllUserProfiles } = await import('./userService');
-
+    // Get all data needed for user filtering
     const [allUserIds, adminUsers, userProfiles] = await Promise.all([
       getAllUsers(),
       getAllAdmins(),
