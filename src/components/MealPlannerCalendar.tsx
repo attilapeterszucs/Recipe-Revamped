@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';\nimport DOMPurify from 'dompurify';
+import React, { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple, Sparkles } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
