@@ -125,6 +125,7 @@ export const getAllUsersWithEmails = async (): Promise<Array<{
     notifications?: boolean;
   };
   marketingEmails?: boolean;
+  emailNotifications?: boolean;
 }>> => {
   try {
     const { getAllUserProfiles } = await import('./userService');
@@ -141,7 +142,8 @@ export const getAllUsersWithEmails = async (): Promise<Array<{
           email: profile.email,
           displayName: profile.displayName,
           emailPreferences: profile.emailPreferences,
-          marketingEmails: userSettings?.marketingEmails || false
+          marketingEmails: userSettings?.marketingEmails || false,
+          emailNotifications: userSettings?.emailNotifications !== false  // Default to true unless explicitly set to false
         };
       } catch (error) {
         console.error(`Error fetching settings for user ${profile.uid}:`, error);
@@ -150,7 +152,8 @@ export const getAllUsersWithEmails = async (): Promise<Array<{
           email: profile.email,
           displayName: profile.displayName,
           emailPreferences: profile.emailPreferences,
-          marketingEmails: false
+          marketingEmails: false,
+          emailNotifications: true  // Default to true on error
         };
       }
     });
@@ -239,7 +242,7 @@ export const createNotificationForAllUsers = async (
       try {
         const usersWithEmails = await getAllUsersWithEmails();
         const emailEnabledUsers = usersWithEmails.filter(user =>
-          user.emailPreferences?.notifications !== false  // Use notification preferences, not marketing emails
+          user.emailNotifications === true  // Use emailNotifications field from userSettings
         );
         const userEmails = emailEnabledUsers.map(user => user.email);
 
@@ -325,7 +328,7 @@ export const createNotificationForSelectedUsers = async (
 
         const selectedUsersWithEmails = usersWithEmails.filter(user => {
           const isSelected = selectedUserIds.includes(user.uid);
-          const hasEmailNotifications = user.emailPreferences?.notifications !== false;
+          const hasEmailNotifications = user.emailNotifications === true;
 
           console.log(`[ADMIN_NOTIFICATIONS] User ${user.uid}: selected=${isSelected}, emailNotifications=${hasEmailNotifications}, email=${user.email}`);
 

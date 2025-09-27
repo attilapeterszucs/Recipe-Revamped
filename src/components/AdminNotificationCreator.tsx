@@ -29,6 +29,7 @@ interface UserData {
   emailPreferences?: {
     notifications?: boolean;
   };
+  emailNotifications?: boolean;
 }
 
 export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> = ({
@@ -45,7 +46,9 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
   const [sendToAllUsers, setSendToAllUsers] = useState(true);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [availableUsers, setAvailableUsers] = useState<UserData[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
   const [userSearchTerm, setUserSearchTerm] = useState('');
+  const [showOnlyEmailEnabled, setShowOnlyEmailEnabled] = useState(true);
   const [loadingUsers, setLoadingUsers] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,6 +62,10 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
     loadStats();
     loadUsers();
   }, []);
+
+  useEffect(() => {
+    filterUsers();
+  }, [availableUsers, userSearchTerm, showOnlyEmailEnabled]);
 
   const loadStats = async () => {
     try {
@@ -75,12 +82,8 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
     setLoadingUsers(true);
     try {
       const users = await getAllUsersWithEmails();
-      // Filter to only show users who can receive notification emails
-      const notificationEnabledUsers = users.filter(user =>
-        user.emailPreferences?.notifications !== false
-      );
-      setAvailableUsers(notificationEnabledUsers);
-      console.log(`[ADMIN_NOTIFICATIONS] Loaded ${notificationEnabledUsers.length} users with notifications enabled (filtered from ${users.length} total users)`);
+      setAvailableUsers(users);
+      console.log(`[ADMIN_NOTIFICATIONS] Loaded ${users.length} total users`);
     } catch (error) {
       console.error('Error loading users:', error);
       showError('Error', 'Failed to load users');
@@ -89,9 +92,48 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
     }
   };
 
+  const filterUsers = () => {
+    let filtered = availableUsers;
+
+    if (showOnlyEmailEnabled) {
+      filtered = filtered.filter(user => user.emailNotifications === true);
+    }
+
+    if (userSearchTerm.trim()) {
+      const searchLower = userSearchTerm.toLowerCase();
+      filtered = filtered.filter(user =>
+        user.email.toLowerCase().includes(searchLower) ||
+        (user.displayName && user.displayName.toLowerCase().includes(searchLower))
+      );
+    }
+
+    setFilteredUsers(filtered);
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleUserToggle = (userId: string) => {
+    setSelectedUsers(prev =>
+      prev.includes(userId)
+        ? prev.filter(id => id !== userId)
+        : [...prev, userId]
+    );
+  };
+
+  const handleSelectAllUsers = () => {
+    const currentlySelected = selectedUsers.length === filteredUsers.length;
+    if (currentlySelected) {
+      setSelectedUsers([]);
+    } else {
+      setSelectedUsers(filteredUsers.map(user => user.uid));
+    }
+  };
+
+  const handleDeselectAllUsers = () => {
+    setSelectedUsers([]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -328,7 +370,7 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
               Select Recipients
             </label>
             <p className="text-xs text-gray-500 mb-3">
-              ℹ️ Only users with email notifications enabled are shown
+              ℹ️ Filter options available below to show/hide users based on their email notification preferences
             </p>
 
             {/* Send to All Users Toggle */}
@@ -377,6 +419,28 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
+                </div>
+
+                {/* Filter Toggle */}
+                <div className="mb-4">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="showOnlyEmailEnabled"
+                      checked={showOnlyEmailEnabled}
+                      onChange={(e) => setShowOnlyEmailEnabled(e.target.checked)}
+                      className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="showOnlyEmailEnabled" className="text-sm text-gray-700">
+                      Show only users with email notifications enabled
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {showOnlyEmailEnabled
+                      ? `Showing ${filteredUsers.length} users with email notifications enabled`
+                      : `Showing all ${filteredUsers.length} users (some may have notifications disabled)`
+                    }
+                  </p>
                 </div>
 
                 {/* Bulk Actions */}
