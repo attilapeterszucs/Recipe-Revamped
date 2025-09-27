@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { type User, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Home, Zap, BookOpen, Calendar, Menu, X } from 'lucide-react';
-import { auth, logOut } from '../lib/firebase';
+import { auth, logOut, db } from '../lib/firebase';
 import { SignIn } from '../components/Auth/SignIn';
 import { SignUp } from '../components/Auth/SignUp';
 import { EmailVerificationPrompt } from '../components/Auth/EmailVerificationPrompt';
@@ -127,8 +128,7 @@ export function RecipeApp() {
       setIsCheckingAccountStatus(true);
       
       // Import Firestore functions
-      const { doc, getDoc } = await import('firebase/firestore');
-      const { db } = await import('../lib/firebase');
+      // Using static imports now
       
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       

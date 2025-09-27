@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { type User } from 'firebase/auth';
+import { type User, updateProfile, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, signOut, getAuth } from 'firebase/auth';
+import { doc, onSnapshot, updateDoc, deleteDoc, collection, query, where, getDocs, writeBatch } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { SubscriptionService } from '../lib/subscriptionService';
+import { SubscriptionCancellationService } from '../lib/subscriptionCancellationService';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Save,
@@ -131,8 +135,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     // Set up real-time listener for user settings changes
     const setupSettingsListener = async () => {
       try {
-        const { doc, onSnapshot } = await import('firebase/firestore');
-        const { db } = await import('../lib/firebase');
+        // Using static imports now
 
         const userDocRef = doc(db, 'userSettings', user.uid);
         const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
@@ -253,11 +256,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       }
 
       // Import necessary services
-      const { SubscriptionService } = await import('../lib/subscriptionService');
-      const { SubscriptionCancellationService } = await import('../lib/subscriptionCancellationService');
-      const { updateProfile, deleteUser } = await import('firebase/auth');
-      const { doc, updateDoc, deleteDoc, collection, query, where, getDocs, writeBatch } = await import('firebase/firestore');
-      const { db } = await import('../lib/firebase');
+      // Using static imports now
 
       // First cancel any active subscription
       const currentPlan = featureAccess?.currentPlan;
@@ -305,7 +304,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         
         // Sign out user after a delay
         setTimeout(() => {
-          import('firebase/auth').then(({ signOut, getAuth }) => {
+          Promise.resolve().then(() => {
             signOut(getAuth());
           });
         }, 2000);
@@ -387,7 +386,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       setChangingPassword(true);
       
       // Import Firebase auth functions
-      const { updatePassword, reauthenticateWithCredential, EmailAuthProvider } = await import('firebase/auth');
+      // Using static imports now
       
       if (!user) throw new Error('User not authenticated');
       

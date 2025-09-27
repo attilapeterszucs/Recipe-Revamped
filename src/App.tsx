@@ -3,8 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { initializeAppCheckService } from './lib/appCheck';
 import { logger } from './lib/logger';
 import { LandingPage } from './pages/LandingPage';
+// Import critical pages statically to prevent module federation issues
+import { RecipeApp } from './pages/RecipeApp';
+import { Settings } from './pages/Settings';
 
-// Lazy load components for better code splitting
+// Lazy load non-critical components for better code splitting
 const TermsOfUse = lazy(() => import('./pages/TermsOfUse').then(module => ({ default: module.TermsOfUse })));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(module => ({ default: module.PrivacyPolicy })));
 const CookiePolicy = lazy(() => import('./pages/CookiePolicy').then(module => ({ default: module.CookiePolicy })));
@@ -12,7 +15,6 @@ const AboutUs = lazy(() => import('./pages/AboutUs').then(module => ({ default: 
 const Blog = lazy(() => import('./pages/Blog').then(module => ({ default: module.Blog })));
 const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
 const Unsubscribe = lazy(() => import('./pages/Unsubscribe').then(module => ({ default: module.Unsubscribe })));
-const RecipeApp = lazy(() => import('./pages/RecipeApp').then(module => ({ default: module.RecipeApp })));
 const SignInPage = lazy(() => import('./pages/SignInPage').then(module => ({ default: module.SignInPage })));
 const SignUpPage = lazy(() => import('./pages/SignUpPage').then(module => ({ default: module.SignUpPage })));
 const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
