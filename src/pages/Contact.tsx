@@ -217,54 +217,57 @@ export const Contact: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
       <SEOHead pageKey="contact" />
       {/* Header */}
       <AuthAwareNavigation />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         {/* Hero Section */}
-        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
-          <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-12 text-white mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 leading-tight">Contact Us</h1>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-green-100 max-w-3xl mx-auto leading-relaxed">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-green-500 rounded-2xl sm:rounded-3xl p-8 sm:p-12 lg:p-16 text-white mb-6 sm:mb-8 relative overflow-hidden shadow-2xl shadow-green-200/50 border-4 border-white/20">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20 animate-pulse" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full -ml-16 -mb-16 animate-pulse animation-delay-2000" />
+            <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-white/5 rounded-full animate-pulse animation-delay-4000" />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 leading-tight relative z-10 drop-shadow-lg">Contact Us</h1>
+            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/95 max-w-4xl mx-auto leading-relaxed relative z-10 font-semibold drop-shadow-md">
               We'd love to hear from you. Get in touch with our team for support, feedback, or partnership inquiries.
             </p>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
           {/* Contact Information */}
           <div className="lg:col-span-1 order-2 lg:order-1">
-            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 h-fit">
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Get In Touch</h2>
-              
-              <div className="space-y-4 sm:space-y-6">
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl shadow-2xl shadow-green-200/50 border-2 border-green-100 p-6 sm:p-8 lg:p-10 h-fit">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 mb-6 sm:mb-8">Get In Touch</h2>
+
+              <div className="space-y-5 sm:space-y-7">
                 <div className="flex items-start sm:items-center">
-                  <div className="bg-green-100 rounded-full p-2 sm:p-3 mr-3 sm:mr-4 flex-shrink-0">
-                    <Mail className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-green-600" />
+                  <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-3 sm:p-4 mr-4 sm:mr-5 flex-shrink-0 shadow-lg shadow-green-500/30">
+                    <Mail className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Email Us</h3>
-                    <p className="text-gray-600 text-sm sm:text-base break-all">info@reciperevamped.com</p>
+                    <h3 className="font-black text-gray-900 text-base sm:text-lg">Email Us</h3>
+                    <p className="text-gray-700 text-sm sm:text-base break-all font-medium">info@reciperevamped.com</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start sm:items-center">
-                  <div className="bg-orange-100 rounded-full p-2 sm:p-3 mr-3 sm:mr-4 flex-shrink-0">
-                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-orange-600" />
+                  <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-3 sm:p-4 mr-4 sm:mr-5 flex-shrink-0 shadow-lg shadow-green-500/30">
+                    <MapPin className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Office</h3>
-                    <p className="text-gray-600 text-sm sm:text-base">Besnyő, Akácfa utca 8<br />2456 Hungary</p>
+                    <h3 className="font-black text-gray-900 text-base sm:text-lg">Office</h3>
+                    <p className="text-gray-700 text-sm sm:text-base font-medium">Besnyő, Akácfa utca 8<br />2456 Hungary</p>
                   </div>
                 </div>
               </div>
-              
+
               {/* Response Time */}
-              <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-green-50 rounded-lg border border-green-200">
-                <h4 className="font-semibold text-green-800 mb-1 sm:mb-2 text-sm sm:text-base">Response Time</h4>
-                <p className="text-xs sm:text-sm text-green-700 leading-relaxed">
+              <div className="mt-6 sm:mt-8 p-4 sm:p-5 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200 shadow-md">
+                <h4 className="font-black text-green-800 mb-2 sm:mb-3 text-base sm:text-lg">Response Time</h4>
+                <p className="text-sm sm:text-base text-green-700 leading-relaxed font-medium">
                   We typically respond to all inquiries within 24 hours during business days.
                 </p>
               </div>
@@ -273,27 +276,27 @@ export const Contact: React.FC = () => {
 
           {/* Contact Form */}
           <div className="lg:col-span-2 order-1 lg:order-2">
-            <div id="contact-form" className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Send us a message</h2>
+            <div id="contact-form" className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl shadow-2xl shadow-green-200/50 border-2 border-green-100 p-6 sm:p-8 lg:p-10">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 mb-6 sm:mb-8">Send us a message</h2>
               
               {submitStatus === 'success' && (
-                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg flex items-start sm:items-center">
-                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 mr-2 flex-shrink-0 mt-0.5 sm:mt-0" />
-                  <p className="text-green-800 text-sm sm:text-base">Thank you! Your message has been sent successfully.</p>
+                <div className="mb-6 sm:mb-8 p-4 sm:p-5 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl flex items-start sm:items-center shadow-md">
+                  <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mr-3 flex-shrink-0 mt-0.5 sm:mt-0" />
+                  <p className="text-green-800 text-base sm:text-lg font-bold">Thank you! Your message has been sent successfully.</p>
                 </div>
               )}
-              
+
               {submitStatus === 'error' && (
-                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg flex items-start sm:items-center">
-                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5 sm:mt-0" />
-                  <p className="text-red-800 text-sm sm:text-base">Sorry, there was an error sending your message. Please try again.</p>
+                <div className="mb-6 sm:mb-8 p-4 sm:p-5 bg-gradient-to-r from-red-50 to-rose-50 border-2 border-red-200 rounded-xl flex items-start sm:items-center shadow-md">
+                  <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 mr-3 flex-shrink-0 mt-0.5 sm:mt-0" />
+                  <p className="text-red-800 text-base sm:text-lg font-bold">Sorry, there was an error sending your message. Please try again.</p>
                 </div>
               )}
               
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                    <label htmlFor="name" className="block text-base font-bold text-gray-900 mb-2 sm:mb-3">
                       Full Name *
                     </label>
                     <input
@@ -302,16 +305,16 @@ export const Contact: React.FC = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base ${
-                        errors.name ? 'border-red-300' : 'border-gray-300'
+                      className={`w-full px-4 py-3 sm:px-5 sm:py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 text-base sm:text-lg font-medium transition-all duration-300 ${
+                        errors.name ? 'border-red-300' : 'border-gray-300 hover:border-green-300'
                       }`}
                       placeholder="Your full name"
                     />
-                    {errors.name && <p className="mt-1 text-xs sm:text-xs sm:text-sm text-red-600">{errors.name}</p>}
+                    {errors.name && <p className="mt-2 text-sm sm:text-base text-red-600 font-medium">{errors.name}</p>}
                   </div>
-                  
+
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                    <label htmlFor="email" className="block text-base font-bold text-gray-900 mb-2 sm:mb-3">
                       Email Address *
                     </label>
                     <input
@@ -320,17 +323,17 @@ export const Contact: React.FC = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base ${
-                        errors.email ? 'border-red-300' : 'border-gray-300'
+                      className={`w-full px-4 py-3 sm:px-5 sm:py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 text-base sm:text-lg font-medium transition-all duration-300 ${
+                        errors.email ? 'border-red-300' : 'border-gray-300 hover:border-green-300'
                       }`}
                       placeholder="your@email.com"
                     />
-                    {errors.email && <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.email}</p>}
+                    {errors.email && <p className="mt-2 text-sm sm:text-base text-red-600 font-medium">{errors.email}</p>}
                   </div>
                 </div>
-                
+
                 <div>
-                  <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                  <label htmlFor="category" className="block text-base font-bold text-gray-900 mb-2 sm:mb-3">
                     Category
                   </label>
                   <select
@@ -338,7 +341,7 @@ export const Contact: React.FC = () => {
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-3 sm:px-5 sm:py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 text-base sm:text-lg font-medium hover:border-green-300 transition-all duration-300"
                   >
                     <option value="general">General Inquiry</option>
                     <option value="support">Technical Support</option>
@@ -349,9 +352,9 @@ export const Contact: React.FC = () => {
                     <option value="dpo">Data Protection Officer</option>
                   </select>
                 </div>
-                
+
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                  <label htmlFor="subject" className="block text-base font-bold text-gray-900 mb-2 sm:mb-3">
                     Subject *
                   </label>
                   <input
@@ -360,16 +363,16 @@ export const Contact: React.FC = () => {
                     name="subject"
                     value={formData.subject}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base ${
-                      errors.subject ? 'border-red-300' : 'border-gray-300'
+                    className={`w-full px-4 py-3 sm:px-5 sm:py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 text-base sm:text-lg font-medium transition-all duration-300 ${
+                      errors.subject ? 'border-red-300' : 'border-gray-300 hover:border-green-300'
                     }`}
                     placeholder="Brief description of your inquiry"
                   />
-                  {errors.subject && <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.subject}</p>}
+                  {errors.subject && <p className="mt-2 text-sm sm:text-base text-red-600 font-medium">{errors.subject}</p>}
                 </div>
-                
+
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                  <label htmlFor="message" className="block text-base font-bold text-gray-900 mb-2 sm:mb-3">
                     Message *
                   </label>
                   <textarea
@@ -378,31 +381,31 @@ export const Contact: React.FC = () => {
                     value={formData.message}
                     onChange={handleInputChange}
                     rows={6}
-                    className={`w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base ${
-                      errors.message ? 'border-red-300' : 'border-gray-300'
+                    className={`w-full px-4 py-3 sm:px-5 sm:py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 text-base sm:text-lg font-medium transition-all duration-300 ${
+                      errors.message ? 'border-red-300' : 'border-gray-300 hover:border-green-300'
                     }`}
                     placeholder="Please provide details about your inquiry..."
                   />
-                  {errors.message && <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.message}</p>}
-                  <p className="mt-1 text-sm text-gray-500">
+                  {errors.message && <p className="mt-2 text-sm sm:text-base text-red-600 font-medium">{errors.message}</p>}
+                  <p className="mt-2 text-base text-gray-600 font-medium">
                     {formData.message.length}/500 characters
                   </p>
                 </div>
-                
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-green-600 text-white py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-4 px-6 sm:py-5 sm:px-8 rounded-xl text-base sm:text-lg font-black focus:outline-none focus:ring-4 focus:ring-green-400/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center shadow-lg shadow-green-500/30 hover:scale-105"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3" />
                       Sending...
                     </>
                   ) : (
                     <>
                       Send Message
-                      <Send className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
+                      <Send className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3" />
                     </>
                   )}
                 </button>
@@ -412,10 +415,12 @@ export const Contact: React.FC = () => {
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-16 bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="bg-gradient-to-r from-green-600 to-blue-600 p-6 sm:p-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white text-center">Frequently Asked Questions</h2>
-            <p className="text-green-100 text-center mt-2">Everything you need to know about Recipe Revamped</p>
+        <div className="mt-16 sm:mt-20 bg-gradient-to-br from-white to-green-50/30 rounded-2xl shadow-2xl shadow-green-200/50 border-2 border-green-100 overflow-hidden">
+          <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-green-500 p-8 sm:p-12 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12" />
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white text-center relative z-10 drop-shadow-lg">Frequently Asked Questions</h2>
+            <p className="text-white/95 text-center mt-3 text-base sm:text-lg relative z-10 font-semibold drop-shadow-md">Everything you need to know about Recipe Revamped</p>
           </div>
 
           <div className="p-6 sm:p-8 space-y-8">
@@ -544,11 +549,11 @@ export const Contact: React.FC = () => {
             </div>
 
             {/* Contact Support Button */}
-            <div className="text-center pt-6 border-t border-gray-200">
-              <p className="text-gray-600 mb-4">Still have questions? We're here to help!</p>
+            <div className="text-center pt-8 border-t-2 border-green-200">
+              <p className="text-gray-700 mb-5 text-base sm:text-lg font-bold">Still have questions? We're here to help!</p>
               <button
                 onClick={() => document.querySelector('#contact-form')?.scrollIntoView({ behavior: 'smooth' })}
-                className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-700 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-4 rounded-xl font-black text-base sm:text-lg transition-all duration-300 shadow-lg shadow-green-500/30 hover:scale-105 hover:shadow-xl"
               >
                 Contact Support
               </button>
