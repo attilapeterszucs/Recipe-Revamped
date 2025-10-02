@@ -155,21 +155,21 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
   // Show email verification sent screen
   if (emailSent) {
     return (
-      <Card className="w-full max-w-lg">
+      <Card className="w-full max-w-lg shadow-2xl shadow-green-100 border-2 border-green-100 backdrop-blur-sm bg-white/95">
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 mb-4">
-            <Mail className="h-8 w-8 text-primary" />
+          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 mb-4">
+            <Mail className="h-8 w-8 text-green-600" />
           </div>
-          <CardTitle className="text-xl">Check Your Email</CardTitle>
-          <CardDescription className="mt-2">
-            We've sent a verification email to <strong>{formData.email}</strong>.
+          <CardTitle className="text-2xl font-black text-gray-900">Check Your Email</CardTitle>
+          <CardDescription className="mt-2 text-base">
+            We've sent a verification email to <strong className="text-green-700">{formData.email}</strong>.
             Please check your inbox and click the verification link to activate your account.
           </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <Alert className="border-blue-200 bg-blue-50">
-            <AlertDescription className="text-blue-600">
+          <Alert className="border-2 border-green-200 bg-green-50">
+            <AlertDescription className="text-green-700">
               <strong>Can't find the email?</strong> Check your spam folder.
               The email may take a few minutes to arrive.
             </AlertDescription>
@@ -179,7 +179,7 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
         <CardFooter>
           <Button
             onClick={onSwitchToSignIn}
-            className="w-full"
+            className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
           >
             Back to Sign In
           </Button>
@@ -189,10 +189,14 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
   }
 
   return (
-    <Card className="w-full max-w-lg">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Create Account</CardTitle>
-        <CardDescription>
+    <Card className="w-full max-w-lg shadow-2xl shadow-green-100 border-2 border-green-100 backdrop-blur-sm bg-white/95">
+      <CardHeader className="text-center pb-4">
+        <Link to="/" className="flex items-center justify-center mb-6 group">
+          <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-10 w-10 mr-3 transition-transform duration-300 group-hover:scale-110" />
+          <span className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
+        </Link>
+        <CardTitle className="text-3xl font-black text-gray-900">Create Account</CardTitle>
+        <CardDescription className="text-base mt-2">
           Join Recipe Revamped to start converting recipes with AI.
         </CardDescription>
       </CardHeader>
@@ -200,7 +204,7 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email address</Label>
+            <Label htmlFor="email" className="font-semibold text-gray-900">Email address</Label>
             <Input
               type="email"
               id="email"
@@ -209,15 +213,15 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
               onChange={handleChange}
               placeholder="Enter your email address"
               disabled={loading}
-              className={cn(errors.email && "border-destructive")}
+              className={cn("h-12 border-2 focus:border-green-400 focus:ring-green-400", errors.email && "border-destructive")}
             />
             {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
+              <p className="text-sm text-destructive font-medium">{errors.email}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="font-semibold text-gray-900">Password</Label>
             <div className="relative">
               <Input
                 type={showPassword ? 'text' : 'password'}
@@ -227,7 +231,7 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
                 onChange={handleChange}
                 placeholder="Create a password"
                 disabled={loading}
-                className={cn(errors.password && "border-destructive")}
+                className={cn("h-12 border-2 focus:border-green-400 focus:ring-green-400", errors.password && "border-destructive")}
               />
               <Button
                 type="button"
@@ -238,19 +242,19 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  <EyeOff className="h-5 w-5 text-gray-500" />
                 ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
+                  <Eye className="h-5 w-5 text-gray-500" />
                 )}
               </Button>
             </div>
             {errors.password && (
-              <p className="text-sm text-destructive">{errors.password}</p>
+              <p className="text-sm text-destructive font-medium">{errors.password}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm password</Label>
+            <Label htmlFor="confirmPassword" className="font-semibold text-gray-900">Confirm password</Label>
             <div className="relative">
               <Input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -260,7 +264,7 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
                 onChange={handleChange}
                 placeholder="Confirm your password"
                 disabled={loading}
-                className={cn(errors.confirmPassword && "border-destructive")}
+                className={cn("h-12 border-2 focus:border-green-400 focus:ring-green-400", errors.confirmPassword && "border-destructive")}
               />
               <Button
                 type="button"
@@ -271,33 +275,33 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               >
                 {showConfirmPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  <EyeOff className="h-5 w-5 text-gray-500" />
                 ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
+                  <Eye className="h-5 w-5 text-gray-500" />
                 )}
               </Button>
             </div>
             {errors.confirmPassword && (
-              <p className="text-sm text-destructive">{errors.confirmPassword}</p>
+              <p className="text-sm text-destructive font-medium">{errors.confirmPassword}</p>
             )}
           </div>
 
           {/* Password Requirements Visual */}
-          <Card className="bg-muted/30">
+          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-100">
             <CardContent className="p-4">
-              <h4 className="text-sm font-medium text-foreground mb-3">Password Requirements</h4>
+              <h4 className="text-sm font-bold text-gray-900 mb-3">Password Requirements</h4>
               <div className="space-y-2">
                 {passwordRequirements.map((req, index) => (
                   <div key={index} className="flex items-center text-sm">
                     <CheckCircle
                       className={cn(
-                        "w-4 h-4 mr-2 transition-colors",
-                        req.test(formData.password) ? 'text-primary' : 'text-muted-foreground'
+                        "w-5 h-5 mr-3 transition-colors",
+                        req.test(formData.password) ? 'text-green-600' : 'text-gray-400'
                       )}
                     />
                     <span className={cn(
                       "transition-colors",
-                      req.test(formData.password) ? 'text-primary font-medium' : 'text-muted-foreground'
+                      req.test(formData.password) ? 'text-green-700 font-semibold' : 'text-gray-600'
                     )}>
                       {req.text}
                     </span>
@@ -318,24 +322,24 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
           <Button
             type="submit"
             disabled={loading}
-            className="w-full"
+            className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
           >
             {loading ? (
-              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
                 Create Account
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </>
             )}
           </Button>
 
-          <div className="text-center text-sm text-muted-foreground">
+          <div className="text-center text-sm text-gray-600">
             Already have an account?{' '}
             <Button
               variant="link"
               onClick={onSwitchToSignIn}
-              className="h-auto p-0 text-sm font-medium"
+              className="h-auto p-0 text-sm font-bold text-green-600 hover:text-green-700"
             >
               Sign in
             </Button>
@@ -353,9 +357,9 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
             variant="outline"
             onClick={handleGoogleSignUp}
             disabled={loading}
-            className="w-full"
+            className="w-full h-12 border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 font-semibold transition-all duration-300"
           >
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -365,18 +369,18 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
           </Button>
 
           {/* Consent Statement */}
-          <div className="text-xs text-muted-foreground text-center space-y-1">
-            <p>By signing up, you automatically consent to:</p>
+          <div className="text-xs text-gray-500 text-center space-y-1 pt-2">
+            <p className="font-medium">By signing up, you automatically consent to:</p>
             <p>• Sharing your recipe data with OpenAI for AI-powered recipe generation</p>
             <p>• Processing of your dietary preferences and recipe requests</p>
             <p>• Data usage for improving our AI recipe services</p>
             <p>
               See our{' '}
-              <Button variant="link" asChild className="h-auto p-0 text-xs underline">
+              <Button variant="link" asChild className="h-auto p-0 text-xs underline text-green-600 hover:text-green-700 font-medium">
                 <Link to="/terms">Terms of Use</Link>
               </Button>
               {' '}and{' '}
-              <Button variant="link" asChild className="h-auto p-0 text-xs underline">
+              <Button variant="link" asChild className="h-auto p-0 text-xs underline text-green-600 hover:text-green-700 font-medium">
                 <Link to="/privacy">Privacy Policy</Link>
               </Button>
               {' '}for details.
