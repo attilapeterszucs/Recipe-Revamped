@@ -213,21 +213,21 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
   // Show password reset success screen
   if (resetSuccess) {
     return (
-      <Card className="w-full max-w-lg">
+      <Card className="w-full max-w-lg shadow-2xl shadow-green-100 border-2 border-green-100 backdrop-blur-sm bg-white/95">
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 mb-4">
-            <Mail className="h-8 w-8 text-primary" />
+          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 mb-4">
+            <Mail className="h-8 w-8 text-green-600" />
           </div>
-          <CardTitle className="text-xl">Password Reset Email Sent</CardTitle>
-          <CardDescription className="mt-2">
-            We've sent a password reset link to <strong>{resetEmail}</strong>.
+          <CardTitle className="text-2xl font-black text-gray-900">Password Reset Email Sent</CardTitle>
+          <CardDescription className="mt-2 text-base">
+            We've sent a password reset link to <strong className="text-green-700">{resetEmail}</strong>.
             Please check your inbox and follow the instructions to reset your password.
           </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <Alert className="border-blue-200 bg-blue-50">
-            <AlertDescription className="text-blue-600">
+          <Alert className="border-2 border-green-200 bg-green-50">
+            <AlertDescription className="text-green-700">
               <strong>Can't find the email?</strong> Check your spam folder.
               The email comes from Recipe Revamped and may take a few minutes to arrive.
             </AlertDescription>
@@ -241,7 +241,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
               setShowPasswordReset(false);
               setResetEmail('');
             }}
-            className="w-full"
+            className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
           >
             Back to Sign In
           </Button>
@@ -253,10 +253,10 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
   // Show password reset form
   if (showPasswordReset) {
     return (
-      <Card className="w-full max-w-lg">
+      <Card className="w-full max-w-lg shadow-2xl shadow-green-100 border-2 border-green-100 backdrop-blur-sm bg-white/95">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Reset Password</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-3xl font-black text-gray-900">Reset Password</CardTitle>
+          <CardDescription className="text-base mt-2">
             Enter your email address and we'll send you a link to reset your password.
           </CardDescription>
         </CardHeader>
@@ -264,7 +264,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
         <form onSubmit={handlePasswordReset}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="reset-email">Email address</Label>
+              <Label htmlFor="reset-email" className="font-semibold text-gray-900">Email address</Label>
               <Input
                 id="reset-email"
                 type="email"
@@ -273,7 +273,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
                 placeholder="Enter your email address"
                 disabled={resetLoading}
                 required
-                className="w-full"
+                className="w-full h-12 border-2 focus:border-green-400 focus:ring-green-400"
               />
             </div>
 
@@ -288,10 +288,10 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
             <Button
               type="submit"
               disabled={resetLoading}
-              className="w-full"
+              className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
             >
               {resetLoading ? (
-                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
               ) : (
                 'Send Reset Email'
               )}
@@ -305,7 +305,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
                 setResetEmail('');
                 setAuthError('');
               }}
-              className="w-full"
+              className="w-full h-12 border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 font-semibold transition-all duration-300"
             >
               Back to Sign In
             </Button>
@@ -317,14 +317,14 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
 
 
   return (
-    <Card className="w-full max-w-lg">
-      <CardHeader className="text-center">
-        <Link to="/" className="flex items-center justify-center mb-4 hover:opacity-75 transition-opacity">
-          <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-8 w-8 mr-2" />
-          <span className="text-xl font-bold text-foreground">Recipe Revamped</span>
+    <Card className="w-full max-w-lg shadow-2xl shadow-green-100 border-2 border-green-100 backdrop-blur-sm bg-white/95">
+      <CardHeader className="text-center pb-4">
+        <Link to="/" className="flex items-center justify-center mb-6 group">
+          <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-10 w-10 mr-3 transition-transform duration-300 group-hover:scale-110" />
+          <span className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
         </Link>
-        <CardTitle className="text-2xl">Sign In</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-3xl font-black text-gray-900">Sign In</CardTitle>
+        <CardDescription className="text-base mt-2">
           Welcome back! Please sign in to your account.
         </CardDescription>
       </CardHeader>
@@ -332,7 +332,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email address</Label>
+            <Label htmlFor="email" className="font-semibold text-gray-900">Email address</Label>
             <Input
               type="email"
               id="email"
@@ -341,15 +341,15 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
               onChange={handleChange}
               placeholder="Enter your email address"
               disabled={loading}
-              className={cn(errors.email && "border-destructive")}
+              className={cn("h-12 border-2 focus:border-green-400 focus:ring-green-400", errors.email && "border-destructive")}
             />
             {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
+              <p className="text-sm text-destructive font-medium">{errors.email}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="font-semibold text-gray-900">Password</Label>
             <div className="relative">
               <Input
                 type={showPassword ? 'text' : 'password'}
@@ -359,7 +359,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
                 onChange={handleChange}
                 placeholder="Enter your password"
                 disabled={loading}
-                className={cn(errors.password && "border-destructive")}
+                className={cn("h-12 border-2 focus:border-green-400 focus:ring-green-400", errors.password && "border-destructive")}
               />
               <Button
                 type="button"
@@ -370,14 +370,14 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  <EyeOff className="h-5 w-5 text-gray-500" />
                 ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
+                  <Eye className="h-5 w-5 text-gray-500" />
                 )}
               </Button>
             </div>
             {errors.password && (
-              <p className="text-sm text-destructive">{errors.password}</p>
+              <p className="text-sm text-destructive font-medium">{errors.password}</p>
             )}
           </div>
 
@@ -421,7 +421,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
                 setShowPasswordReset(true);
                 setResetEmail(formData.email);
               }}
-              className="h-auto p-0 text-sm"
+              className="h-auto p-0 text-sm font-medium text-green-600 hover:text-green-700"
             >
               Forgot password?
             </Button>
@@ -432,24 +432,24 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
           <Button
             type="submit"
             disabled={loading}
-            className="w-full"
+            className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
           >
             {loading ? (
-              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
                 Sign In
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </>
             )}
           </Button>
 
-          <div className="text-center text-sm text-muted-foreground">
+          <div className="text-center text-sm text-gray-600">
             Don't have an account?{' '}
             <Button
               variant="link"
               onClick={onSwitchToSignUp}
-              className="h-auto p-0 text-sm font-medium"
+              className="h-auto p-0 text-sm font-bold text-green-600 hover:text-green-700"
             >
               Sign up
             </Button>
@@ -467,9 +467,9 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
             variant="outline"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full"
+            className="w-full h-12 border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 font-semibold transition-all duration-300"
           >
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -479,18 +479,18 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
           </Button>
 
           {/* Consent Statement */}
-          <div className="text-xs text-muted-foreground text-center space-y-1">
-            <p>By signing in, you automatically consent to:</p>
+          <div className="text-xs text-gray-500 text-center space-y-1 pt-2">
+            <p className="font-medium">By signing in, you automatically consent to:</p>
             <p>• Sharing your recipe data with OpenAI for AI-powered recipe generation</p>
             <p>• Processing of your dietary preferences and recipe requests</p>
             <p>• Data usage for improving our AI recipe services</p>
             <p>
               See our{' '}
-              <Button variant="link" asChild className="h-auto p-0 text-xs underline">
+              <Button variant="link" asChild className="h-auto p-0 text-xs underline text-green-600 hover:text-green-700 font-medium">
                 <Link to="/terms">Terms of Use</Link>
               </Button>
               {' '}and{' '}
-              <Button variant="link" asChild className="h-auto p-0 text-xs underline">
+              <Button variant="link" asChild className="h-auto p-0 text-xs underline text-green-600 hover:text-green-700 font-medium">
                 <Link to="/privacy">Privacy Policy</Link>
               </Button>
               {' '}for details.
