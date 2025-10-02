@@ -59,12 +59,12 @@ export const CookieSettings: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center">
-        <div className="bg-orange-100 rounded-full p-3 mr-4">
-          <Cookie className="w-6 h-6 text-orange-600" />
+        <div className="bg-gradient-to-br from-green-100 to-emerald-100 rounded-full p-3 mr-4">
+          <Cookie className="w-6 h-6 text-green-600" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Cookie Settings</h2>
-          <p className="text-muted-foreground">Manage your privacy preferences</p>
+          <h2 className="text-2xl font-black text-gray-900">Cookie Settings</h2>
+          <p className="text-gray-600">Manage your privacy preferences</p>
         </div>
       </div>
 
@@ -198,21 +198,21 @@ export const CookieSettings: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={handleSave}
-            className="flex-1"
+            className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
           >
             Save Preferences
           </Button>
           <Button
             onClick={acceptAll}
             variant="default"
-            className="flex-1 bg-green-600 hover:bg-green-700"
+            className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
           >
             Accept All
           </Button>
           <Button
             onClick={rejectAll}
             variant="outline"
-            className="flex-1"
+            className="flex-1 border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 font-semibold transition-all duration-300"
           >
             Essential Only
           </Button>
@@ -245,9 +245,9 @@ export const CookieSettings: React.FC = () => {
               <li>• All recipe processing happens locally in your browser</li>
             </ul>
             <div className="mt-3 flex flex-wrap gap-3 text-xs">
-              <Link to="/privacy" className="text-blue-600 hover:text-blue-700 underline">Privacy Policy</Link>
-              <Link to="/cookies" className="text-blue-600 hover:text-blue-700 underline">Cookie Policy</Link>
-              <Link to="/terms" className="text-blue-600 hover:text-blue-700 underline">Terms of Service</Link>
+              <Link to="/privacy" className="text-green-600 hover:text-green-700 underline font-medium">Privacy Policy</Link>
+              <Link to="/cookies" className="text-green-600 hover:text-green-700 underline font-medium">Cookie Policy</Link>
+              <Link to="/terms" className="text-green-600 hover:text-green-700 underline font-medium">Terms of Service</Link>
             </div>
           </div>
         </AlertDescription>

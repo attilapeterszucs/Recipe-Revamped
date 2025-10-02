@@ -92,12 +92,12 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center">
-                  <div className="bg-orange-100 rounded-full p-2 mr-3">
-                    <Cookie className="w-6 h-6 text-orange-600" />
+                  <div className="bg-gradient-to-br from-green-100 to-emerald-100 rounded-full p-2 mr-3">
+                    <Cookie className="w-6 h-6 text-green-600" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-foreground">We value your privacy</h2>
-                    <p className="text-sm text-muted-foreground">Choose how we use cookies to improve your experience</p>
+                    <h2 className="text-xl font-black text-gray-900">We value your privacy</h2>
+                    <p className="text-sm text-gray-600">Choose how we use cookies to improve your experience</p>
                   </div>
                 </div>
                 {/* Removed dismiss button - consent is required */}
@@ -143,7 +143,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                   <Button
                     variant="link"
                     onClick={() => setCurrentView('detailed')}
-                    className="h-auto p-0 text-blue-600 hover:text-blue-700 font-medium"
+                    className="h-auto p-0 text-green-600 hover:text-green-700 font-bold"
                   >
                     Customize settings
                     <Settings className="w-4 h-4 ml-1" />
@@ -155,14 +155,14 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   onClick={handleAcceptAll}
-                  className="flex-1 bg-green-600 hover:bg-green-700"
+                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
                 >
                   Accept all cookies
                 </Button>
                 <Button
                   onClick={handleRejectAll}
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 font-semibold transition-all duration-300"
                 >
                   Reject optional cookies
                 </Button>
@@ -171,9 +171,9 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
               {/* Legal Links */}
               <Separator className="mt-4" />
               <div className="flex flex-wrap gap-4 mt-4 text-xs text-muted-foreground">
-                <Link to="/privacy" className="hover:text-foreground transition-colors underline">Privacy Policy</Link>
-                <Link to="/cookies" className="hover:text-foreground transition-colors underline">Cookie Policy</Link>
-                <Link to="/terms" className="hover:text-foreground transition-colors underline">Terms of Service</Link>
+                <Link to="/privacy" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Privacy Policy</Link>
+                <Link to="/cookies" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Cookie Policy</Link>
+                <Link to="/terms" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Terms of Service</Link>
                 <span>•</span>
                 <span>Your choices will be saved for 6 months</span>
               </div>
@@ -359,20 +359,20 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button
                     onClick={handleSavePreferences}
-                    className="flex-1"
+                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
                   >
                     Save my preferences
                   </Button>
                   <Button
                     onClick={handleAcceptAll}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
                   >
                     Accept all
                   </Button>
                   <Button
                     onClick={handleRejectAll}
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 font-semibold transition-all duration-300"
                   >
                     Reject optional
                   </Button>
@@ -383,9 +383,9 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 <div className="mt-4">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-muted-foreground">
                     <div className="flex flex-wrap gap-3">
-                      <Link to="/privacy" className="hover:text-foreground transition-colors underline">Privacy Policy</Link>
-                      <Link to="/cookies" className="hover:text-foreground transition-colors underline">Cookie Policy</Link>
-                      <Link to="/terms" className="hover:text-foreground transition-colors underline">Terms of Service</Link>
+                      <Link to="/privacy" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Privacy Policy</Link>
+                      <Link to="/cookies" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Cookie Policy</Link>
+                      <Link to="/terms" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Terms of Service</Link>
                     </div>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                       <Badge variant="outline" className="text-xs">
