@@ -280,7 +280,7 @@ export const LandingPage: React.FC = () => {
               </span>
             </h1>
             <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Convert recipes instantly for 12+ dietary needs with AI-powered intelligence.
+              Convert recipes instantly for 24+ dietary needs with AI-powered intelligence.
               <span className="block mt-2 font-semibold text-gray-900">Vegan • Gluten-Free • Keto • Low-Carb & More</span>
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -387,7 +387,7 @@ export const LandingPage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-100 text-purple-600 mb-4 group-hover:scale-110 transition-transform duration-300">
                 <Zap className="w-8 h-8" />
               </div>
-              <div className="text-4xl font-black text-gray-900 mb-2">12+</div>
+              <div className="text-4xl font-black text-gray-900 mb-2">24+</div>
               <div className="text-sm font-semibold text-gray-600">Diet Filters</div>
             </div>
           </div>
@@ -823,7 +823,7 @@ export const LandingPage: React.FC = () => {
                 <Zap className="w-5 h-5 ml-2" />
               </Link>
             </Button>
-            <Button variant="outline" size="lg" onClick={() => scrollToSection('pricing')} className="text-lg px-8 py-6 border-2 border-white text-white hover:bg-white hover:text-green-600 transition-all duration-300">
+            <Button variant="outline" size="lg" onClick={() => scrollToSection('pricing')} className="text-lg px-8 py-6 border-2 border-white bg-transparent text-white hover:bg-white hover:text-green-600 transition-all duration-300">
               View Pricing
             </Button>
           </div>
