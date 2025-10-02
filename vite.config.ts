@@ -75,7 +75,8 @@ export default defineConfig({
   server: {
     headers: {
       'Cross-Origin-Embedder-Policy': 'unsafe-none',
-      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups'
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+      'Content-Security-Policy': "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://apis.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://r2cdn.perplexity.ai; font-src 'self' https://fonts.gstatic.com https://r2cdn.perplexity.ai data: blob:; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; frame-src 'self' https:; object-src 'none';"
     }
   },
   test: {

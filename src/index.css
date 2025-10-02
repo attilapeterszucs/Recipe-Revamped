@@ -78,6 +78,47 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Browser-specific compatibility fixes */
+@supports (-webkit-appearance: none) {
+  /* Safari/WebKit specific fixes */
+  input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+}
+
+@supports (-moz-appearance: none) {
+  /* Firefox specific fixes */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+/* Comet Browser and Chromium-based browser fixes */
+@supports (backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px)) {
+  .backdrop-blur-sm {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+
+  .backdrop-blur-md {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+}
+
+/* Fallback for browsers that don't support backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) and not (-webkit-backdrop-filter: blur(10px)) {
+  .backdrop-blur-sm,
+  .backdrop-blur-md {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  .dark .backdrop-blur-sm,
+  .dark .backdrop-blur-md {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -169,4 +210,222 @@ body {
     line-height: 1.6;
     letter-spacing: 0.01em;
   }
+}
+
+/* ============================================================================
+   CROSS-BROWSER COMPATIBILITY FIXES
+   ============================================================================ */
+
+/* Grid layout fallback for older browsers */
+@supports not (display: grid) {
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+/* Flexbox gap fallback */
+@supports not (gap: 1rem) {
+  .flex.space-x-2 > * + *,
+  .flex.space-x-4 > * + *,
+  .flex.space-x-6 > * + * {
+    margin-left: var(--gap, 1rem);
+  }
+
+  .flex.space-y-2 > * + *,
+  .flex.space-y-4 > * + *,
+  .flex.space-y-6 > * + * {
+    margin-top: var(--gap, 1rem);
+  }
+}
+
+/* Smooth scrolling for all browsers */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Fix for Comet and Chromium-based browsers */
+select,
+textarea,
+input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-clip: padding-box;
+}
+
+/* Better focus states for accessibility across browsers */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Prevent text size adjustment on mobile browsers */
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Fix animation performance on all browsers */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Ensure proper rendering of emojis */
+.emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+}
+
+/* Fix for gradient backgrounds in older browsers */
+.gradient-bg {
+  background: linear-gradient(135deg, #f97316, #eab308);
+  background: -webkit-linear-gradient(135deg, #f97316, #eab308);
+  background: -moz-linear-gradient(135deg, #f97316, #eab308);
+  background: -o-linear-gradient(135deg, #f97316, #eab308);
+}
+
+/* Shadow fallback for browsers with limited shadow support */
+@supports not (box-shadow: 0 0 10px rgba(0, 0, 0, 0.1)) {
+  .shadow,
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg {
+    border: 1px solid hsl(var(--border));
+  }
+}
+
+/* Sticky positioning fallback */
+@supports not (position: sticky) {
+  .sticky {
+    position: fixed;
+    top: 0;
+    z-index: 50;
+  }
+}
+
+/* Object-fit fallback for older browsers */
+@supports not (object-fit: cover) {
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* CSS Grid auto-fill fallback */
+@supports not (grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))) {
+  .grid-auto-fill {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .grid-auto-fill > * {
+    flex: 1 1 250px;
+    max-width: 100%;
+  }
+}
+
+/* Transform origin fix for Safari */
+.transform {
+  -webkit-transform-origin: center;
+  -moz-transform-origin: center;
+  -ms-transform-origin: center;
+  transform-origin: center;
+}
+
+/* Prevent webkit auto-zoom on focus */
+@media screen and (max-width: 767px) {
+  input[type="color"],
+  input[type="date"],
+  input[type="datetime"],
+  input[type="datetime-local"],
+  input[type="email"],
+  input[type="month"],
+  input[type="number"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="text"],
+  input[type="time"],
+  input[type="url"],
+  input[type="week"],
+  select:focus,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Fix for Safari date/time inputs */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  min-height: 2.5rem;
+}
+
+/* Comet Browser specific fixes */
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  .modal-overlay {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+}
+
+/* Fix for rounded corners in all browsers */
+.rounded-lg,
+.rounded-md,
+.rounded-sm {
+  -webkit-border-radius: var(--radius);
+  -moz-border-radius: var(--radius);
+  border-radius: var(--radius);
+}
+
+/* Ensure proper z-index stacking */
+.modal,
+.dialog,
+.dropdown,
+.tooltip {
+  isolation: isolate;
+}
+
+/* Fix scrollbar styling for Chromium-based browsers */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.3) hsl(var(--muted));
 }
