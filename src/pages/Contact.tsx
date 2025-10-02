@@ -423,25 +423,25 @@ export const Contact: React.FC = () => {
             <p className="text-white/95 text-center mt-3 text-base sm:text-lg relative z-10 font-semibold drop-shadow-md">Everything you need to know about Recipe Revamped</p>
           </div>
 
-          <div className="p-6 sm:p-8 space-y-8">
+          <div className="p-8 sm:p-10 lg:p-12 space-y-6">
             {/* Getting Started */}
-            <div className="border-l-4 border-green-500 pl-6">
-              <h3 className="text-xl font-bold text-green-600 mb-4 flex items-center">
-                <span className="text-2xl mr-2">🚀</span>
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 rounded-2xl p-6 sm:p-8 border-2 border-green-200 shadow-md hover:shadow-lg transition-shadow duration-300">
+              <h3 className="text-xl sm:text-2xl font-black text-green-700 mb-6 flex items-center">
+                <span className="text-3xl mr-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-2">🚀</span>
                 Getting Started
               </h3>
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">How does the AI recipe conversion work?</h4>
-                  <p className="text-gray-600">
+              <div className="space-y-5">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">How does the AI recipe conversion work?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     Our AI analyzes recipe ingredients and instructions, then intelligently substitutes ingredients
                     based on your dietary requirements while maintaining flavor and texture. Simply paste any recipe
                     on the Convert page and select your dietary filters.
                   </p>
                 </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Where do I convert recipes?</h4>
-                  <p className="text-gray-600">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">Where do I convert recipes?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     Go to the "Convert" page using the navigation menu. You can paste any recipe text or URL,
                     select your dietary filters (keto, gluten-free, etc.), and click "Generate Recipe" to get
                     your personalized version.
@@ -451,30 +451,30 @@ export const Contact: React.FC = () => {
             </div>
 
             {/* Settings & Personalization */}
-            <div className="border-l-4 border-blue-500 pl-6">
-              <h3 className="text-xl font-bold text-blue-600 mb-4 flex items-center">
-                <span className="text-2xl mr-2">⚙️</span>
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl p-6 sm:p-8 border-2 border-blue-200 shadow-md hover:shadow-lg transition-shadow duration-300">
+              <h3 className="text-xl sm:text-2xl font-black text-blue-700 mb-6 flex items-center">
+                <span className="text-3xl mr-3 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl p-2">⚙️</span>
                 Settings & Personalization
               </h3>
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Where can I set my health goals?</h4>
-                  <p className="text-gray-600">
+              <div className="space-y-5">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">Where can I set my health goals?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     Visit the "Settings" page to configure your health goals, dietary preferences, and personal profile.
                     You can set weight goals, activity levels, food allergies, and dietary restrictions to get
                     personalized recipe recommendations.
                   </p>
                 </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">How do I save my favorite recipes?</h4>
-                  <p className="text-gray-600">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">How do I save my favorite recipes?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     After converting a recipe, click the "Save Recipe" button. All your saved recipes can be
                     accessed from the "Saved Recipes" section in the navigation menu for easy reference.
                   </p>
                 </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Can I customize dietary filters?</h4>
-                  <p className="text-gray-600">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">Can I customize dietary filters?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     Yes! On the Convert page, you can select multiple dietary filters like Keto, Gluten-Free,
                     Vegan, Low-Carb, and many more. The AI will adapt recipes to meet all your selected requirements.
                   </p>
@@ -483,31 +483,31 @@ export const Contact: React.FC = () => {
             </div>
 
             {/* Features & Plans */}
-            <div className="border-l-4 border-purple-500 pl-6">
-              <h3 className="text-xl font-bold text-purple-600 mb-4 flex items-center">
-                <span className="text-2xl mr-2">💎</span>
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50/50 rounded-2xl p-6 sm:p-8 border-2 border-purple-200 shadow-md hover:shadow-lg transition-shadow duration-300">
+              <h3 className="text-xl sm:text-2xl font-black text-purple-700 mb-6 flex items-center">
+                <span className="text-3xl mr-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl p-2">💎</span>
                 Features & Plans
               </h3>
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">What is the Meal Planner feature?</h4>
-                  <p className="text-gray-600">
+              <div className="space-y-5">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">What is the Meal Planner feature?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     The Meal Planner helps you organize your weekly meals using a calendar interface.
                     You can drag and drop saved recipes to specific days and meals, making meal prep
                     and grocery shopping much easier.
                   </p>
                 </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Do you offer different subscription plans?</h4>
-                  <p className="text-gray-600">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">Do you offer different subscription plans?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     Yes, we offer multiple plans including Free, Pro, and Enterprise options. Each plan provides
                     different limits on recipe conversions, storage, and advanced features. Check our pricing
                     page for detailed comparisons.
                   </p>
                 </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Can I cancel my subscription anytime?</h4>
-                  <p className="text-gray-600">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">Can I cancel my subscription anytime?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     Absolutely! You can cancel your subscription at any time from your account settings.
                     You'll retain access to all features until the end of your current billing period.
                   </p>
@@ -516,30 +516,30 @@ export const Contact: React.FC = () => {
             </div>
 
             {/* Privacy & Technical */}
-            <div className="border-l-4 border-orange-500 pl-6">
-              <h3 className="text-xl font-bold text-orange-600 mb-4 flex items-center">
-                <span className="text-2xl mr-2">🔒</span>
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50/50 rounded-2xl p-6 sm:p-8 border-2 border-orange-200 shadow-md hover:shadow-lg transition-shadow duration-300">
+              <h3 className="text-xl sm:text-2xl font-black text-orange-700 mb-6 flex items-center">
+                <span className="text-3xl mr-3 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl p-2">🔒</span>
                 Privacy & Technical
               </h3>
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Is my recipe data kept private?</h4>
-                  <p className="text-gray-600">
+              <div className="space-y-5">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">Is my recipe data kept private?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     We use your recipe data only for AI processing and service improvement. All data is
                     encrypted and stored securely. See our Privacy Policy for detailed information about
                     data handling and your rights.
                   </p>
                 </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">What browsers are supported?</h4>
-                  <p className="text-gray-600">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">What browsers are supported?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     Recipe Revamped works on all modern browsers including Chrome, Firefox, Safari, and Edge.
                     For the best experience, we recommend using the latest version of your preferred browser.
                   </p>
                 </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Do you offer enterprise solutions?</h4>
-                  <p className="text-gray-600">
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h4 className="text-base sm:text-lg font-black text-gray-900 mb-3">Do you offer enterprise solutions?</h4>
+                  <p className="text-gray-700 leading-relaxed font-medium">
                     Yes, we offer custom enterprise solutions for restaurants, meal planning services,
                     and nutrition companies. Enterprise plans include API access, bulk processing,
                     and dedicated support. Contact us to discuss your needs.
