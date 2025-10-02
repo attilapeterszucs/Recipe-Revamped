@@ -105,34 +105,34 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
 
               {/* Content */}
               <div className="mb-6">
-                <p className="text-foreground mb-3">
+                <p className="text-gray-700 mb-3 leading-relaxed">
                   We use cookies for essential functionality, preferences, analytics, and advertising. Recipe processing uses OpenAI with automatic consent for AI data sharing.
-                  <strong className="text-red-600"> We also share analytics data with Google Ads for personalized advertising.</strong>
+                  <strong className="text-green-700 font-bold"> We also share analytics data with Google Ads for personalized advertising.</strong>
                 </p>
 
                 {/* Privacy Highlights */}
                 <div className="space-y-3 mb-4">
-                  <Alert className="bg-green-50 border-green-200">
+                  <Alert className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 shadow-sm">
                     <Shield className="w-4 h-4 text-green-600" />
                     <AlertDescription className="text-green-800 text-sm">
-                      <span className="font-medium">Privacy compliance:</span>
-                      <span className="ml-1">GDPR, CCPA, VCDPA & US state privacy laws</span>
+                      <span className="font-bold">Privacy compliance:</span>
+                      <span className="ml-1 font-medium">GDPR, CCPA, VCDPA & US state privacy laws</span>
                     </AlertDescription>
                   </Alert>
 
-                  <Alert className="bg-blue-50 border-blue-200">
+                  <Alert className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 shadow-sm">
                     <Info className="w-4 h-4 text-blue-600" />
                     <AlertDescription className="text-blue-800 text-sm">
-                      <span className="font-medium">Data sharing:</span>
-                      <span className="ml-1">Google Analytics + Ads for personalized advertising • OpenAI for recipe generation</span>
+                      <span className="font-bold">Data sharing:</span>
+                      <span className="ml-1 font-medium">Google Analytics + Ads for personalized advertising • OpenAI for recipe generation</span>
                     </AlertDescription>
                   </Alert>
 
-                  <Alert className="bg-amber-50 border-amber-200">
+                  <Alert className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 shadow-sm">
                     <AlertTriangle className="w-4 h-4 text-amber-600" />
                     <AlertDescription className="text-amber-800 text-sm">
-                      <span className="font-medium">US residents:</span>
-                      <span className="ml-1">This may constitute "sale/sharing" under CCPA • You can opt-out anytime</span>
+                      <span className="font-bold">US residents:</span>
+                      <span className="ml-1 font-medium">This may constitute "sale/sharing" under CCPA • You can opt-out anytime</span>
                     </AlertDescription>
                   </Alert>
                 </div>
@@ -208,24 +208,24 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
               {/* Cookie Categories */}
               <CardContent className="p-6 space-y-6">
                 {/* Essential Cookies */}
-                <Card className="bg-green-50 border-green-200">
+                <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 shadow-md hover:shadow-lg transition-shadow duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start flex-1">
                         <Shield className="w-6 h-6 text-green-600 mr-3 mt-0.5" />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <CardTitle className="text-lg">Essential Cookies</CardTitle>
-                            <Badge className="bg-green-600 hover:bg-green-700">
+                            <CardTitle className="text-lg font-bold">Essential Cookies</CardTitle>
+                            <Badge className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-md">
                               <CheckCircle className="w-4 h-4 mr-1" />
                               Always Active
                             </Badge>
                           </div>
-                          <CardDescription className="text-sm mt-1 mb-3">
+                          <CardDescription className="text-sm mt-1 mb-3 text-gray-700">
                             Required for authentication, security, and basic website functionality. Cannot be disabled.
                           </CardDescription>
-                          <div className="text-xs text-muted-foreground">
-                            <strong>Examples:</strong> Login sessions, security tokens, form submissions
+                          <div className="text-xs text-gray-600">
+                            <strong className="font-bold">Examples:</strong> Login sessions, security tokens, form submissions
                           </div>
                         </div>
                       </div>
@@ -234,28 +234,28 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 </Card>
 
                 {/* Analytics Cookies */}
-                <Card>
+                <Card className="border-2 border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start flex-1">
                         <Eye className="w-6 h-6 text-purple-600 mr-3 mt-0.5" />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <CardTitle className="text-lg">Analytics Cookies</CardTitle>
+                            <CardTitle className="text-lg font-bold">Analytics Cookies</CardTitle>
                             <Switch
                               checked={preferences.analytics}
                               onCheckedChange={() => togglePreference('analytics')}
                             />
                           </div>
-                          <CardDescription className="text-sm mt-1 mb-3">
+                          <CardDescription className="text-sm mt-1 mb-3 text-gray-700">
                             Help us understand how you use our service to improve performance and user experience.
                           </CardDescription>
-                          <div className="text-xs text-muted-foreground mb-2">
-                            <strong>Google Analytics + Ads:</strong> Page views, user behavior, demographics, advertising measurement
+                          <div className="text-xs text-gray-600 mb-2">
+                            <strong className="font-bold">Google Analytics + Ads:</strong> Page views, user behavior, demographics, advertising measurement
                           </div>
-                          <Alert className="border-muted">
-                            <AlertDescription className="text-xs">
-                              <strong>Data sharing:</strong> Analytics data shared with Google Ads for personalized advertising • You can opt-out anytime
+                          <Alert className="border-2 border-gray-200 bg-gray-50">
+                            <AlertDescription className="text-xs text-gray-700">
+                              <strong className="font-bold">Data sharing:</strong> Analytics data shared with Google Ads for personalized advertising • You can opt-out anytime
                             </AlertDescription>
                           </Alert>
                         </div>
@@ -265,28 +265,28 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 </Card>
 
                 {/* Preference Cookies */}
-                <Card>
+                <Card className="border-2 border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start flex-1">
                         <Settings className="w-6 h-6 text-blue-600 mr-3 mt-0.5" />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <CardTitle className="text-lg">Preference Cookies</CardTitle>
+                            <CardTitle className="text-lg font-bold">Preference Cookies</CardTitle>
                             <Switch
                               checked={preferences.preferences}
                               onCheckedChange={() => togglePreference('preferences')}
                             />
                           </div>
-                          <CardDescription className="text-sm mt-1 mb-3">
+                          <CardDescription className="text-sm mt-1 mb-3 text-gray-700">
                             Remember your settings, preferences, and choices to provide a personalized experience.
                           </CardDescription>
-                          <div className="text-xs text-muted-foreground mb-2">
-                            <strong>What we remember:</strong> Theme preferences, dietary filter selections, UI settings
+                          <div className="text-xs text-gray-600 mb-2">
+                            <strong className="font-bold">What we remember:</strong> Theme preferences, dietary filter selections, UI settings
                           </div>
-                          <Alert className="bg-blue-50 border-blue-200">
+                          <Alert className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 shadow-sm">
                             <AlertDescription className="text-xs text-blue-700">
-                              <strong>Recommended:</strong> Enables a more personalized and convenient experience
+                              <strong className="font-bold">Recommended:</strong> Enables a more personalized and convenient experience
                             </AlertDescription>
                           </Alert>
                         </div>
@@ -296,28 +296,28 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 </Card>
 
                 {/* Marketing/Advertising Cookies */}
-                <Card className="bg-red-50 border-red-200">
+                <Card className="bg-gradient-to-br from-red-50 to-rose-50 border-2 border-red-200 shadow-md hover:shadow-lg transition-shadow duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start flex-1">
                         <AlertTriangle className="w-6 h-6 text-red-600 mr-3 mt-0.5" />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <CardTitle className="text-lg">Marketing/Advertising Cookies</CardTitle>
+                            <CardTitle className="text-lg font-bold">Marketing/Advertising Cookies</CardTitle>
                             <Switch
                               checked={preferences.marketing}
                               onCheckedChange={() => togglePreference('marketing')}
                             />
                           </div>
-                          <CardDescription className="text-sm mt-1 mb-3">
+                          <CardDescription className="text-sm mt-1 mb-3 text-gray-700">
                             Enable personalized advertising and measurement through Google Ads integration.
                           </CardDescription>
-                          <div className="text-xs text-muted-foreground mb-2">
-                            <strong>Google Ads Features:</strong> Remarketing, audience targeting, conversion tracking, personalized ads
+                          <div className="text-xs text-gray-600 mb-2">
+                            <strong className="font-bold">Google Ads Features:</strong> Remarketing, audience targeting, conversion tracking, personalized ads
                           </div>
-                          <Alert className="bg-amber-50 border-amber-200">
+                          <Alert className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 shadow-sm">
                             <AlertDescription className="text-xs text-amber-700">
-                              <strong>US residents:</strong> This constitutes "sale/sharing" under CCPA • You have the right to opt-out • Affects ads you see on Google services
+                              <strong className="font-bold">US residents:</strong> This constitutes "sale/sharing" under CCPA • You have the right to opt-out • Affects ads you see on Google services
                             </AlertDescription>
                           </Alert>
                         </div>
@@ -327,27 +327,27 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 </Card>
 
                 {/* Third-Party Services Info */}
-                <Alert className="bg-yellow-50 border-yellow-200">
+                <Alert className="bg-gradient-to-r from-yellow-50 to-amber-50 border-2 border-yellow-200 shadow-md">
                   <Info className="w-4 h-4 text-yellow-600" />
                   <AlertDescription>
-                    <h4 className="font-semibold text-foreground mb-2">
+                    <h4 className="font-bold text-gray-900 mb-2">
                       Third-Party Services
                     </h4>
-                    <p className="text-foreground text-sm mb-3">
+                    <p className="text-gray-700 text-sm mb-3 font-medium">
                       We use select third-party services, each with their own privacy policies:
                     </p>
                     <div className="grid md:grid-cols-2 gap-3 text-xs">
-                      <Card className="p-2">
-                        <strong>Firebase (Google):</strong> Authentication & secure data storage
+                      <Card className="p-2 border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <strong className="font-bold text-gray-900">Firebase (Google):</strong> <span className="text-gray-700">Authentication & secure data storage</span>
                       </Card>
-                      <Card className="p-2">
-                        <strong>Google Analytics & Ads:</strong> Usage analytics & personalized advertising
+                      <Card className="p-2 border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <strong className="font-bold text-gray-900">Google Analytics & Ads:</strong> <span className="text-gray-700">Usage analytics & personalized advertising</span>
                       </Card>
-                      <Card className="p-2">
-                        <strong>OpenAI:</strong> AI-powered recipe generation & processing
+                      <Card className="p-2 border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <strong className="font-bold text-gray-900">OpenAI:</strong> <span className="text-gray-700">AI-powered recipe generation & processing</span>
                       </Card>
-                      <Card className="p-2">
-                        <strong>Netlify:</strong> Website hosting & content delivery
+                      <Card className="p-2 border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <strong className="font-bold text-gray-900">Netlify:</strong> <span className="text-gray-700">Website hosting & content delivery</span>
                       </Card>
                     </div>
                   </AlertDescription>
