@@ -425,7 +425,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                           </div>
                         ) : isPopular ? (
                           <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                            <span className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-xl border-2 border-white flex items-center gap-1 animate-pulse">
+                            <span className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-xl border-2 border-white flex items-center gap-1">
                               <Crown className="w-3 h-3" />
                               Most Popular
                             </span>
@@ -447,9 +447,10 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                               </div>
                             ) : (
                               <>
-                                <div className={`text-4xl font-black transition-all duration-500 ${
+                                <div className={`text-4xl font-black ${
                                   isPopular ? 'text-green-600' : 'text-gray-900'
-                                } ${isYearly ? 'animate-price-change' : ''}`}>
+                                } animate-price-change`}
+                                  key={isYearly ? 'yearly' : 'monthly'}>
                                   {planId === 'free' ? '$0' :
                                    isYearly && plan.yearlyDiscount > 0 ?
                                      `$${(plan.basePrice * 12 * (1 - plan.yearlyDiscount / 100)).toFixed(0)}` :
@@ -473,7 +474,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                         </div>
                         {/* Features */}
                         <ul className="space-y-2.5 flex-grow mb-6">
-                          {plan.features.slice(0, 6).map((feature, index) => {
+                          {plan.features.map((feature, index) => {
                             const isExcluded = feature.startsWith('✗');
                             const displayText = isExcluded ? feature.replace('✗ ', '') : feature;
 
@@ -490,11 +491,6 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                               </li>
                             );
                           })}
-                          {plan.features.length > 6 && (
-                            <li className="text-xs text-gray-500 pl-6 font-semibold">
-                              +{plan.features.length - 6} more features
-                            </li>
-                          )}
                         </ul>
 
                         {/* CTA Button */}
