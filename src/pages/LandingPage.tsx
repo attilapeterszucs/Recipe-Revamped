@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Zap, Check, Star, Menu, X, Brain, Lock, Utensils, Globe } from 'lucide-react';
+import { Shield, Zap, Check, Star, Menu, X, Brain, Lock, Utensils, Globe, Crown } from 'lucide-react';
 import { basePlans } from '../lib/pricing';
 import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
@@ -438,44 +438,62 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
+      <section id="pricing" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-xl text-muted-foreground mb-8">Choose the plan that works for you</p>
-            
-            {/* Billing Toggle */}
-            <div className="flex items-center justify-center mb-8">
-              <span className={cn("text-sm font-medium mr-3",
-                !isYearly ? 'text-foreground' : 'text-muted-foreground'
-              )}>
-                Monthly
-              </span>
-              <Switch
-                checked={isYearly}
-                onCheckedChange={handleBillingToggle}
-                aria-label="Toggle between monthly and yearly billing"
-              />
-              <span className={cn("text-sm font-medium ml-3",
-                isYearly ? 'text-foreground' : 'text-muted-foreground'
-              )}>
-                Yearly
-              </span>
+          {/* Green Gradient Header */}
+          <div className="bg-gradient-to-r from-green-600 via-green-500 to-emerald-500 px-6 py-12 rounded-t-3xl relative overflow-hidden mb-0">
+            {/* Decorative pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+              <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full translate-x-1/3 translate-y-1/3"></div>
+            </div>
+
+            <div className="relative text-center">
+              <h2 className="text-3xl font-bold text-white mb-4">Simple, Transparent Pricing</h2>
+              <p className="text-xl text-white/90 mb-8">Choose the plan that works for you</p>
+
+              {/* Enhanced Billing Toggle */}
+              <div className="flex items-center justify-center">
+                <div className="bg-white/20 backdrop-blur-md p-1.5 rounded-full flex items-center gap-3">
+                  <span className={cn("text-sm font-medium px-3 transition-colors",
+                    !isYearly ? 'text-white' : 'text-white/60'
+                  )}>
+                    Monthly
+                  </span>
+                  <button
+                    onClick={() => handleBillingToggle(!isYearly)}
+                    className={`relative inline-flex h-8 w-16 items-center rounded-full transition-all duration-300 ${
+                      isYearly ? 'bg-yellow-400 shadow-lg shadow-yellow-400/50' : 'bg-white/40'
+                    }`}
+                  >
+                    <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                      isYearly ? 'translate-x-9' : 'translate-x-1'
+                    }`} />
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <span className={cn("text-sm font-medium transition-colors",
+                      isYearly ? 'text-white' : 'text-white/60'
+                    )}>
+                      Yearly
+                    </span>
+                    <span className="bg-yellow-400 text-yellow-900 text-xs font-black px-3 py-1.5 rounded-full shadow-lg">
+                      Save 20%
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="px-8 py-10">
+          <div className="bg-white px-8 py-10 rounded-b-3xl shadow-xl">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
               {/* Free Plan */}
-              <Card className="relative border-2 border-blue-500 bg-blue-50/50 hover:shadow-lg transition-all duration-300 hover:scale-105 flex flex-col h-full">
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge variant="secondary" className="bg-muted text-muted-foreground">Current Plan</Badge>
-                </div>
+              <Card className="relative border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-xl transition-all duration-500 hover:scale-105 flex flex-col h-full">
                 <CardHeader className="text-center">
                   <CardTitle className="text-lg">Free</CardTitle>
-                  <div className="mt-4">
-                    <span className="text-3xl font-bold text-foreground">$0</span>
-                    <span className="text-muted-foreground">/month</span>
+                  <div className="mt-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
+                    <span className="text-3xl font-bold text-gray-900">$0</span>
+                    <span className="text-gray-600">/month</span>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow">
@@ -509,23 +527,23 @@ export const LandingPage: React.FC = () => {
               </Card>
 
               {/* Chef Plan */}
-              <Card className="relative hover:shadow-lg transition-all duration-300 hover:scale-105 flex flex-col h-full">
+              <Card className="relative border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-xl transition-all duration-500 hover:scale-105 flex flex-col h-full">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-lg text-blue-900">Chef</CardTitle>
-                  <div className="mt-4">
+                  <CardTitle className="text-lg text-green-700">Chef</CardTitle>
+                  <div className="mt-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
                     <AnimatedPrice
                       planIndex={1}
-                      spanClassName="text-blue-900"
+                      spanClassName="text-green-700"
                     />
                   </div>
-                  <div className={`mt-2 text-sm transition-all duration-300 overflow-hidden ${
-                    isYearly ? 'max-h-10 opacity-100' : 'max-h-0 opacity-0'
-                  }`}>
-                    <span className="text-green-600 font-medium">
-                      Save ${(basePlans[1].basePrice * 12 * 0.2).toFixed(0)}
-                    </span>
-                    <span className="text-muted-foreground"> (20% off)</span>
-                  </div>
+                  {isYearly && getSavingsInfo(1) && (
+                    <div className="mt-3 animate-fade-in">
+                      <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
+                        <Check className="w-3 h-3" />
+                        Save {getSavingsInfo(1)?.savingsAmount} ({getSavingsInfo(1)?.savingsPercentage}%)
+                      </div>
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <ul className="space-y-3">
@@ -543,7 +561,7 @@ export const LandingPage: React.FC = () => {
                     </li>
                     <li className="flex items-start">
                       <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">All diet filters (12+ options)</span>
+                      <span className="text-sm text-muted-foreground">Unlock up to 12 dietary filters</span>
                     </li>
                     <li className="flex items-start">
                       <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
@@ -568,7 +586,7 @@ export const LandingPage: React.FC = () => {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                  <Button asChild className="w-full bg-gray-900 hover:bg-gray-800">
                     <Link to="/signin">
                       Upgrade to Chef
                     </Link>
@@ -577,28 +595,29 @@ export const LandingPage: React.FC = () => {
               </Card>
 
               {/* Master Chef Plan - Most Popular */}
-              <Card className="relative shadow-xl ring-4 ring-primary/30 bg-gradient-to-b from-primary/5 to-background hover:ring-primary/40 hover:shadow-2xl transition-all duration-300 hover:scale-105 flex flex-col h-full">
+              <Card className="relative border-2 border-green-400 bg-gradient-to-b from-green-50 via-emerald-50 to-white shadow-xl ring-4 ring-green-300 hover:ring-green-400 hover:shadow-2xl transition-all duration-500 transform scale-105 flex flex-col h-full">
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-gradient-to-r from-primary to-emerald-500 text-primary-foreground shadow-lg border-2 border-background whitespace-nowrap">
+                  <Badge className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-xl border-2 border-white flex items-center gap-1 whitespace-nowrap">
+                    <Crown className="w-3 h-3" />
                     Most Popular
                   </Badge>
                 </div>
                 <CardHeader className="text-center">
-                  <CardTitle className="text-lg text-primary">Master Chef</CardTitle>
-                  <div className="mt-4">
+                  <CardTitle className="text-lg text-green-600">Master Chef</CardTitle>
+                  <div className="mt-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
                     <AnimatedPrice
                       planIndex={2}
-                      spanClassName="text-primary"
+                      spanClassName="text-green-600"
                     />
                   </div>
-                  <div className={`mt-2 text-sm transition-all duration-300 overflow-hidden ${
-                    isYearly ? 'max-h-10 opacity-100' : 'max-h-0 opacity-0'
-                  }`}>
-                    <span className="text-green-600 font-medium">
-                      Save ${(basePlans[2].basePrice * 12 * 0.2).toFixed(0)}
-                    </span>
-                    <span className="text-muted-foreground"> (20% off)</span>
-                  </div>
+                  {isYearly && getSavingsInfo(2) && (
+                    <div className="mt-3 animate-fade-in">
+                      <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
+                        <Check className="w-3 h-3" />
+                        Save {getSavingsInfo(2)?.savingsAmount} ({getSavingsInfo(2)?.savingsPercentage}%)
+                      </div>
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <ul className="space-y-3">
@@ -633,7 +652,7 @@ export const LandingPage: React.FC = () => {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button asChild className="w-full">
+                  <Button asChild className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30">
                     <Link to="/signin">
                       Upgrade to Master Chef
                     </Link>
@@ -642,11 +661,11 @@ export const LandingPage: React.FC = () => {
               </Card>
 
               {/* Enterprise Plan */}
-              <Card className="relative hover:shadow-lg transition-all duration-300 hover:scale-105 flex flex-col h-full">
+              <Card className="relative border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-xl transition-all duration-500 hover:scale-105 flex flex-col h-full">
                 <CardHeader className="text-center">
                   <CardTitle className="text-lg">Enterprise</CardTitle>
-                  <div className="mt-4">
-                    <div className="text-xl font-bold text-foreground">Custom Pricing</div>
+                  <div className="mt-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
+                    <div className="text-xl font-bold text-gray-900">Custom Pricing</div>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow">
