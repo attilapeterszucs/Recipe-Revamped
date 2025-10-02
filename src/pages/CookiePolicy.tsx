@@ -33,7 +33,7 @@ export const CookiePolicy: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
       {/* Header */}
       <AuthAwareNavigation />
 
@@ -41,7 +41,7 @@ export const CookiePolicy: React.FC = () => {
         <div className="grid lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1 order-2 lg:order-1">
-            <Card className="sticky top-20 sm:top-24">
+            <Card className="sticky top-20 sm:top-24 shadow-lg shadow-green-100 border-2 border-green-100">
               <CardHeader>
                 <CardTitle className="text-base sm:text-lg">Contents</CardTitle>
               </CardHeader>
@@ -62,7 +62,7 @@ export const CookiePolicy: React.FC = () => {
                       key={id}
                       variant="ghost"
                       onClick={() => scrollToSection(id)}
-                      className="flex items-center w-full justify-start text-xs sm:text-sm h-auto py-2 px-2 sm:px-3"
+                      className="flex items-center w-full justify-start text-xs sm:text-sm h-auto py-2 px-2 sm:px-3 hover:bg-green-50 hover:text-green-700"
                     >
                       <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0" />
                       <span className="truncate">{title}</span>
@@ -75,22 +75,26 @@ export const CookiePolicy: React.FC = () => {
 
           {/* Main Content */}
           <div className="lg:col-span-3 order-1 lg:order-2">
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden shadow-2xl shadow-green-100 border-2 border-green-100">
               {/* Hero Section */}
-              <CardHeader className="bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 text-white">
-                <div className="flex items-start sm:items-center mb-3 sm:mb-4">
+              <CardHeader className="bg-gradient-to-r from-green-600 via-emerald-600 to-green-500 text-white relative overflow-hidden">
+                {/* Decorative circles */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12" />
+
+                <div className="flex items-start sm:items-center mb-3 sm:mb-4 relative z-10">
                   <Cookie className="w-5 h-5 sm:w-6 sm:h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 mr-2 sm:mr-3 flex-shrink-0" />
-                  <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-white">Cookie Policy</CardTitle>
+                  <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-white">Cookie Policy</CardTitle>
                 </div>
-                <CardDescription className="text-base sm:text-lg lg:text-xl text-orange-100 mb-4 sm:mb-6 leading-relaxed">
+                <CardDescription className="text-base sm:text-lg lg:text-xl text-white/90 mb-4 sm:mb-6 leading-relaxed relative z-10 font-medium">
                   Transparent cookie usage for enhanced user experience
                 </CardDescription>
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6">
-                  <Badge variant="secondary" className="bg-orange-100/20 text-orange-100 hover:bg-orange-100/30 w-fit">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6 relative z-10">
+                  <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 w-fit border-white/30">
                     <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                     Effective: January 1, 2025
                   </Badge>
-                  <Badge variant="secondary" className="bg-orange-100/20 text-orange-100 hover:bg-orange-100/30 w-fit">
+                  <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 w-fit border-white/30">
                     <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                     Last Updated: January 1, 2025
                   </Badge>
