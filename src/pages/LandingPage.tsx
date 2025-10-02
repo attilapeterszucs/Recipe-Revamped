@@ -175,10 +175,10 @@ export const LandingPage: React.FC = () => {
       <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <div className="flex items-center gap-3">
-              <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-10 w-10" />
+            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 group">
+              <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-10 w-10 transition-transform duration-300 group-hover:scale-110" />
               <span className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
-            </div>
+            </button>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-2">
@@ -835,85 +835,92 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-secondary text-muted-foreground py-12 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gradient-to-b from-gray-50 to-white border-t border-gray-200 py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center mb-4">
-                <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-6 w-6 mr-2" />
-                <span className="text-lg font-semibold text-foreground">Recipe Revamped</span>
-              </div>
-              <p className="text-sm">
-                The AI-powered recipe converter with transparent data practices.
+          <div className="grid md:grid-cols-4 gap-12 mb-12">
+            <div className="md:col-span-1">
+              <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 mb-4 group">
+                <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                <span className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
+              </button>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                AI-powered recipe conversion for 24+ dietary needs. Transform any recipe instantly.
               </p>
             </div>
 
             <div>
-              <h4 className="text-foreground font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm">
+              <h4 className="text-gray-900 font-bold mb-4">Product</h4>
+              <ul className="space-y-3">
                 <li>
-                  <Button variant="link" asChild className="p-0 h-auto text-muted-foreground hover:text-foreground">
-                    <Link to={user ? "/app" : "/signin"}>{user ? "Go to App" : "Get Started"}</Link>
-                  </Button>
+                  <Link to={user ? "/app" : "/signin"} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    {user ? "Go to App" : "Get Started Free"}
+                  </Link>
                 </li>
                 <li>
-                  <Button variant="link" onClick={() => scrollToSection('features')} className="p-0 h-auto text-muted-foreground hover:text-foreground">
+                  <button onClick={() => scrollToSection('features')} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                     Features
-                  </Button>
+                  </button>
                 </li>
                 <li>
-                  <Button variant="link" onClick={() => scrollToSection('pricing')} className="p-0 h-auto text-muted-foreground hover:text-foreground">
+                  <button onClick={() => scrollToSection('pricing')} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                     Pricing
-                  </Button>
+                  </button>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-foreground font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm">
+              <h4 className="text-gray-900 font-bold mb-4">Company</h4>
+              <ul className="space-y-3">
                 <li>
-                  <Button variant="link" asChild className="p-0 h-auto text-muted-foreground hover:text-foreground">
-                    <Link to="/about">About Us</Link>
-                  </Button>
+                  <Link to="/about" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    About Us
+                  </Link>
                 </li>
                 <li>
-                  <Button variant="link" asChild className="p-0 h-auto text-muted-foreground hover:text-foreground">
-                    <Link to="/blog">Blog</Link>
-                  </Button>
+                  <Link to="/blog" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    Blog
+                  </Link>
                 </li>
                 <li>
-                  <Button variant="link" asChild className="p-0 h-auto text-muted-foreground hover:text-foreground">
-                    <Link to="/contact">Contact</Link>
-                  </Button>
+                  <Link to="/contact" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    Contact
+                  </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-foreground font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm">
+              <h4 className="text-gray-900 font-bold mb-4">Legal</h4>
+              <ul className="space-y-3">
                 <li>
-                  <Button variant="link" asChild className="p-0 h-auto text-muted-foreground hover:text-foreground">
-                    <Link to="/privacy">Privacy Policy</Link>
-                  </Button>
+                  <Link to="/privacy" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    Privacy Policy
+                  </Link>
                 </li>
                 <li>
-                  <Button variant="link" asChild className="p-0 h-auto text-muted-foreground hover:text-foreground">
-                    <Link to="/terms">Terms of Use</Link>
-                  </Button>
+                  <Link to="/terms" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    Terms of Use
+                  </Link>
                 </li>
                 <li>
-                  <Button variant="link" asChild className="p-0 h-auto text-muted-foreground hover:text-foreground">
-                    <Link to="/cookies">Cookie Policy</Link>
-                  </Button>
+                  <Link to="/cookies" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    Cookie Policy
+                  </Link>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-border mt-8 pt-8 text-center text-sm">
-            <p>&copy; 2025 Recipe Revamped. All rights reserved.</p>
+          <div className="border-t border-gray-200 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-sm text-gray-600">&copy; 2025 Recipe Revamped. All rights reserved.</p>
+              <div className="flex items-center gap-6">
+                <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-sm text-gray-600 hover:text-green-600 transition-colors font-medium">
+                  Back to Top ↑
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
