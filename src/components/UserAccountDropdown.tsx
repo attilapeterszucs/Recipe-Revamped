@@ -457,7 +457,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                                      `$${plan.basePrice.toFixed(2)}`
                                   }
                                 </div>
-                                <div className="text-sm font-semibold text-gray-500 mt-1">
+                                <div className="text-xs font-semibold text-gray-500 mt-1">
                                   {planId === 'free' ? '' : isYearly ? 'per year' : 'per month'}
                                 </div>
                                 {isYearly && getSavingsInfo(planId) && (

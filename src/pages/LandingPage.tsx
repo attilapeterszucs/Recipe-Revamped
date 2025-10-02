@@ -494,9 +494,11 @@ export const LandingPage: React.FC = () => {
                     <Star className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl font-bold text-gray-900 mb-2">Free</CardTitle>
-                  <div className="mb-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
-                    <div className="text-3xl font-bold text-gray-900">$0</div>
-                    <div className="text-sm text-gray-600">per month</div>
+                  <div className="mb-4">
+                    <div className="text-4xl font-black text-gray-900 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
+                      $0
+                    </div>
+                    <div className="text-xs font-semibold text-gray-500 mt-1">per month</div>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow p-0">
@@ -544,22 +546,25 @@ export const LandingPage: React.FC = () => {
                     <Zap className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl font-bold text-gray-900 mb-2">Chef</CardTitle>
-                  <div className="mb-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
-                    <div className="text-4xl font-black text-green-600">
-                      <AnimatedPrice
-                        planIndex={1}
-                        spanClassName="text-green-600"
-                      />
+                  <div className="mb-4">
+                    <div className="text-4xl font-black text-green-600 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
+                      {isYearly && basePlans[1].yearlyDiscount > 0 ?
+                        `$${(basePlans[1].basePrice * 12 * (1 - basePlans[1].yearlyDiscount / 100)).toFixed(0)}` :
+                        `$${basePlans[1].basePrice.toFixed(2)}`
+                      }
                     </div>
-                  </div>
-                  {isYearly && getSavingsInfo(1) && (
-                    <div className="animate-fade-in">
-                      <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
-                        <Check className="w-3 h-3" />
-                        Save {getSavingsInfo(1)?.savingsAmount} ({getSavingsInfo(1)?.savingsPercentage}%)
+                    <div className="text-xs font-semibold text-gray-500 mt-1">
+                      {isYearly ? 'per year' : 'per month'}
+                    </div>
+                    {isYearly && getSavingsInfo(1) && (
+                      <div className="mt-3 animate-fade-in">
+                        <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
+                          <Check className="w-3 h-3" />
+                          Save {getSavingsInfo(1)?.savingsAmount} ({getSavingsInfo(1)?.savingsPercentage}%)
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent className="flex-grow p-0">
                   <ul className="space-y-2.5 mb-6">
@@ -617,22 +622,25 @@ export const LandingPage: React.FC = () => {
                     <Crown className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl font-bold text-gray-900 mb-2">Master Chef</CardTitle>
-                  <div className="mb-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
-                    <div className="text-3xl font-bold text-gray-900">
-                      <AnimatedPrice
-                        planIndex={2}
-                        spanClassName="text-gray-900"
-                      />
+                  <div className="mb-4">
+                    <div className="text-4xl font-black text-gray-900 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
+                      {isYearly && basePlans[2].yearlyDiscount > 0 ?
+                        `$${(basePlans[2].basePrice * 12 * (1 - basePlans[2].yearlyDiscount / 100)).toFixed(0)}` :
+                        `$${basePlans[2].basePrice.toFixed(2)}`
+                      }
                     </div>
-                  </div>
-                  {isYearly && getSavingsInfo(2) && (
-                    <div className="animate-fade-in">
-                      <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
-                        <Check className="w-3 h-3" />
-                        Save {getSavingsInfo(2)?.savingsAmount} ({getSavingsInfo(2)?.savingsPercentage}%)
+                    <div className="text-xs font-semibold text-gray-500 mt-1">
+                      {isYearly ? 'per year' : 'per month'}
+                    </div>
+                    {isYearly && getSavingsInfo(2) && (
+                      <div className="mt-3 animate-fade-in">
+                        <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
+                          <Check className="w-3 h-3" />
+                          Save {getSavingsInfo(2)?.savingsAmount} ({getSavingsInfo(2)?.savingsPercentage}%)
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent className="flex-grow p-0">
                   <ul className="space-y-2.5 mb-6">
