@@ -486,58 +486,74 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <div className="bg-white px-8 py-10 rounded-b-3xl shadow-xl">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {/* Free Plan */}
-              <Card className="relative border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-xl transition-all duration-500 hover:scale-105 flex flex-col h-full">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-lg">Free</CardTitle>
-                  <div className="mt-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
-                    <span className="text-3xl font-bold text-gray-900">$0</span>
-                    <span className="text-gray-600">/month</span>
+              <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-green-100 transition-all duration-500 hover:scale-105 hover:shadow-2xl flex flex-col h-full group p-6">
+                <CardHeader className="text-center p-0 mb-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 text-gray-600 mb-4 mx-auto">
+                    <Star className="w-8 h-8" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-gray-900 mb-2">Free</CardTitle>
+                  <div className="mb-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
+                    <div className="text-3xl font-bold text-gray-900">$0</div>
+                    <div className="text-sm text-gray-600">per month</div>
                   </div>
                 </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-3">
+                <CardContent className="flex-grow p-0">
+                  <ul className="space-y-2.5">
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">5 recipes in Recipe Book</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">5 recipes in Recipe Book</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">3 recipe conversions per day</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">3 recipe conversions per day</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Basic diet filters (Vegan, Gluten-Free, Vegetarian, Dairy-Free)</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Basic diet filters</span>
                     </li>
                     <li className="flex items-start">
-                      <X className="h-4 w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">No meal planning</span>
+                      <X className="h-4 w-4 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-500 line-through">Meal planning</span>
                     </li>
                     <li className="flex items-start">
-                      <X className="h-4 w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">No default preferences</span>
+                      <X className="h-4 w-4 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-500 line-through">Default preferences</span>
                     </li>
                     <li className="flex items-start">
-                      <X className="h-4 w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">No backup/restore</span>
+                      <X className="h-4 w-4 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-500 line-through">Backup/restore</span>
                     </li>
                   </ul>
                 </CardContent>
               </Card>
 
-              {/* Chef Plan */}
-              <Card className="relative border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-xl transition-all duration-500 hover:scale-105 flex flex-col h-full">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-lg text-green-700">Chef</CardTitle>
-                  <div className="mt-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
-                    <AnimatedPrice
-                      planIndex={1}
-                      spanClassName="text-green-700"
-                    />
+              {/* Chef Plan - Most Popular */}
+              <Card className="relative rounded-2xl border-2 border-green-400 bg-gradient-to-b from-green-50 via-emerald-50 to-white shadow-xl ring-4 ring-green-300 hover:ring-green-400 hover:shadow-2xl transition-all duration-500 transform scale-105 flex flex-col h-full p-6">
+                {/* Most Popular Badge */}
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-xl border-2 border-white flex items-center gap-1">
+                    <Crown className="w-3 h-3" />
+                    Most Popular
+                  </span>
+                </div>
+
+                <CardHeader className="text-center p-0 mb-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-600 mb-4 mx-auto">
+                    <Zap className="w-8 h-8" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-gray-900 mb-2">Chef</CardTitle>
+                  <div className="mb-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
+                    <div className="text-4xl font-black text-green-600">
+                      <AnimatedPrice
+                        planIndex={1}
+                        spanClassName="text-green-600"
+                      />
+                    </div>
                   </div>
                   {isYearly && getSavingsInfo(1) && (
-                    <div className="mt-3 animate-fade-in">
+                    <div className="animate-fade-in">
                       <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
                         <Check className="w-3 h-3" />
                         Save {getSavingsInfo(1)?.savingsAmount} ({getSavingsInfo(1)?.savingsPercentage}%)
@@ -545,73 +561,72 @@ export const LandingPage: React.FC = () => {
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-3">
+                <CardContent className="flex-grow p-0">
+                  <ul className="space-y-2.5 mb-6">
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Everything in Free</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Everything in Free</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">100 recipes in Recipe Book</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">100 recipes in Recipe Book</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">100 conversions per day</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">100 conversions per day</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Unlock up to 12 dietary filters</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Unlock up to 12 dietary filters</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Meal planning calendar</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Meal planning calendar</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Default recipe preferences</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Default recipe preferences</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Custom profile pictures</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Custom profile pictures</span>
                     </li>
                     <li className="flex items-start">
-                      <X className="h-4 w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Backup & restore recipes</span>
+                      <X className="h-4 w-4 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-500 line-through">Backup & restore recipes</span>
                     </li>
                     <li className="flex items-start">
-                      <X className="h-4 w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Health Conditions</span>
+                      <X className="h-4 w-4 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-500 line-through">Health Conditions</span>
                     </li>
                   </ul>
                 </CardContent>
-                <CardFooter>
-                  <Button asChild className="w-full bg-gray-900 hover:bg-gray-800">
+                <CardFooter className="p-0">
+                  <Button asChild className="w-full py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30">
                     <Link to="/signin">
-                      Upgrade to Chef
+                      Upgrade Now
                     </Link>
                   </Button>
                 </CardFooter>
               </Card>
 
-              {/* Master Chef Plan - Most Popular */}
-              <Card className="relative border-2 border-green-400 bg-gradient-to-b from-green-50 via-emerald-50 to-white shadow-xl ring-4 ring-green-300 hover:ring-green-400 hover:shadow-2xl transition-all duration-500 transform scale-105 flex flex-col h-full">
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-xl border-2 border-white flex items-center gap-1 whitespace-nowrap">
-                    <Crown className="w-3 h-3" />
-                    Most Popular
-                  </Badge>
-                </div>
-                <CardHeader className="text-center">
-                  <CardTitle className="text-lg text-green-600">Master Chef</CardTitle>
-                  <div className="mt-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
-                    <AnimatedPrice
-                      planIndex={2}
-                      spanClassName="text-green-600"
-                    />
+              {/* Master Chef Plan */}
+              <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-green-100 transition-all duration-500 hover:scale-105 hover:shadow-2xl flex flex-col h-full group p-6">
+                <CardHeader className="text-center p-0 mb-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-50 text-purple-600 mb-4 mx-auto">
+                    <Crown className="w-8 h-8" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-gray-900 mb-2">Master Chef</CardTitle>
+                  <div className="mb-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
+                    <div className="text-3xl font-bold text-gray-900">
+                      <AnimatedPrice
+                        planIndex={2}
+                        spanClassName="text-gray-900"
+                      />
+                    </div>
                   </div>
                   {isYearly && getSavingsInfo(2) && (
-                    <div className="mt-3 animate-fade-in">
+                    <div className="animate-fade-in">
                       <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
                         <Check className="w-3 h-3" />
                         Save {getSavingsInfo(2)?.savingsAmount} ({getSavingsInfo(2)?.savingsPercentage}%)
@@ -619,98 +634,43 @@ export const LandingPage: React.FC = () => {
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-3">
+                <CardContent className="flex-grow p-0">
+                  <ul className="space-y-2.5 mb-6">
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Everything in Chef plan</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Everything in Chef plan</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">1,000 recipes in Recipe Book</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">1,000 recipes in Recipe Book</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Advanced nutrition analysis</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Advanced nutrition analysis</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Recipe collections & tags</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Recipe collections & tags</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Health Conditions</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Health Conditions</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Backup & restore recipes</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Backup & restore recipes</span>
                     </li>
                     <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Priority support</span>
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Priority support</span>
                     </li>
                   </ul>
                 </CardContent>
-                <CardFooter>
-                  <Button asChild className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30">
+                <CardFooter className="p-0">
+                  <Button asChild className="w-full py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-gray-900 text-white hover:bg-gray-800">
                     <Link to="/signin">
-                      Upgrade to Master Chef
+                      Upgrade Now
                     </Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-
-              {/* Enterprise Plan */}
-              <Card className="relative border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-xl transition-all duration-500 hover:scale-105 flex flex-col h-full">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-lg">Enterprise</CardTitle>
-                  <div className="mt-4 animate-price-change" key={isYearly ? 'yearly' : 'monthly'}>
-                    <div className="text-xl font-bold text-gray-900">Custom Pricing</div>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-3">
-                    <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">2,500 recipes per user</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Everything in Master Chef</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Team meal planning</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Organization-wide preferences</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Enterprise backup/restore</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Unlimited cloud storage</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">Team collaboration</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">API access</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">24/7 phone support</span>
-                    </li>
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button disabled className="w-full">
-                    Coming Soon
                   </Button>
                 </CardFooter>
               </Card>

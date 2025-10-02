@@ -402,11 +402,11 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
 
               {/* Plans Content */}
               <div className="px-8 py-12 bg-gradient-to-b from-gray-50 to-white">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-7xl mx-auto">
-                  {Object.entries(SUBSCRIPTION_PLANS).map(([planId, plan]) => {
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                  {Object.entries(SUBSCRIPTION_PLANS).filter(([planId]) => planId !== 'enterprise').map(([planId, plan]) => {
                     const typedPlanId = planId as SubscriptionPlan;
                     const isCurrentPlan = userSubscription?.plan === typedPlanId;
-                    const isPopular = planId === 'master-chef';
+                    const isPopular = planId === 'chef';
 
                     return (
                       <div key={planId} className={`relative rounded-2xl border-2 p-6 transition-all duration-500 hover:scale-105 hover:shadow-2xl flex flex-col h-full group ${

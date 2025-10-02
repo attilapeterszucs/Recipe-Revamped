@@ -157,7 +157,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
 
   if (!isOpen) return null;
 
-  const paidPlans = Object.entries(SUBSCRIPTION_PLANS).filter(([id]) => id !== 'free');
+  const paidPlans = Object.entries(SUBSCRIPTION_PLANS).filter(([id]) => id !== 'free' && id !== 'enterprise');
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
