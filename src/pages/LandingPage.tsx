@@ -172,40 +172,40 @@ export const LandingPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background">
       <SEOHead pageKey="home" />
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50">
+      <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-8 w-8 mr-2" />
-              <span className="text-xl font-bold text-foreground">Recipe Revamped</span>
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center gap-3">
+              <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-10 w-10" />
+              <span className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center gap-2">
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('features')}
-                className="text-muted-foreground hover:text-primary"
+                className="text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold transition-colors px-4"
               >
                 Features
               </Button>
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('pricing')}
-                className="text-muted-foreground hover:text-primary"
+                className="text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold transition-colors px-4"
               >
                 Pricing
               </Button>
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('testimonials')}
-                className="text-muted-foreground hover:text-primary"
+                className="text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold transition-colors px-4"
               >
                 Testimonials
               </Button>
-              <Button asChild>
+              <Button asChild className="ml-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105">
                 <Link to={user ? "/app" : "/signin"}>
-                  {user ? "Go to App" : "Get Started"}
+                  {user ? "Go to App" : "Get Started Free"}
                 </Link>
               </Button>
             </div>
@@ -215,7 +215,7 @@ export const LandingPage: React.FC = () => {
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden"
+              className="md:hidden text-gray-700 hover:bg-green-50 hover:text-green-600"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
@@ -224,32 +224,32 @@ export const LandingPage: React.FC = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-background border-t">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+          <div className="md:hidden bg-white border-t border-gray-200">
+            <div className="px-4 pt-2 pb-4 space-y-2">
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('features')}
-                className="w-full justify-start"
+                className="w-full justify-start text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold"
               >
                 Features
               </Button>
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('pricing')}
-                className="w-full justify-start"
+                className="w-full justify-start text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold"
               >
                 Pricing
               </Button>
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('testimonials')}
-                className="w-full justify-start"
+                className="w-full justify-start text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold"
               >
                 Testimonials
               </Button>
-              <Button asChild className="w-full">
+              <Button asChild className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 mt-2">
                 <Link to={user ? "/app" : "/signin"}>
-                  {user ? "Go to App" : "Get Started"}
+                  {user ? "Go to App" : "Get Started Free"}
                 </Link>
               </Button>
             </div>
@@ -287,7 +287,7 @@ export const LandingPage: React.FC = () => {
               <Button asChild size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105">
                 <Link to={user ? "/app" : "/signin"}>
                   <Zap className="w-5 h-5 mr-2" />
-                  {user ? "Go to App" : "Start Free Trial"}
+                  {user ? "Go to App" : "Get Started Free"}
                 </Link>
               </Button>
               <Button
@@ -819,7 +819,7 @@ export const LandingPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button asChild size="lg" className="text-lg px-8 py-6 bg-white text-green-600 hover:bg-gray-50 shadow-2xl transition-all duration-300 hover:scale-105 font-bold">
               <Link to={user ? "/app" : "/signin"}>
-                {user ? "Go to App" : "Start Free Trial"}
+                {user ? "Go to App" : "Get Started Free"}
                 <Zap className="w-5 h-5 ml-2" />
               </Link>
             </Button>
