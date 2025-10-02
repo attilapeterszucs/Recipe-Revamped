@@ -258,181 +258,214 @@ export const LandingPage: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50/30 to-white -z-10" />
+        <div className="absolute inset-0 opacity-30 -z-10">
+          <div className="absolute top-0 -left-4 w-96 h-96 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
+          <div className="absolute top-0 -right-4 w-96 h-96 bg-emerald-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute -bottom-8 left-20 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative">
           <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6">
-              Transform Any Recipe to Match
-              <span className="text-primary"> Your Diet</span>
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6 shadow-sm">
+              <Zap className="w-4 h-4" />
+              AI-Powered Recipe Conversion
+            </div>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black text-gray-900 mb-6 leading-tight">
+              Transform Any Recipe to
+              <span className="block bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                Match Your Diet
+              </span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              AI-powered recipe conversion that runs entirely in your browser.
-              No data leaves your device. Convert recipes to Vegan, Gluten-Free, Keto, and more instantly.
+            <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+              Convert recipes instantly for 12+ dietary needs with AI-powered intelligence.
+              <span className="block mt-2 font-semibold text-gray-900">Vegan • Gluten-Free • Keto • Low-Carb & More</span>
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="text-lg">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button asChild size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105">
                 <Link to={user ? "/app" : "/signin"}>
-                  {user ? "Go to App" : "Get Started"}
+                  <Zap className="w-5 h-5 mr-2" />
+                  {user ? "Go to App" : "Start Free Trial"}
                 </Link>
               </Button>
               <Button
                 variant="outline"
                 size="lg"
                 onClick={() => scrollToSection('features')}
-                className="text-lg"
+                className="text-lg px-8 py-6 border-2 border-gray-300 hover:border-green-500 hover:bg-green-50 transition-all duration-300"
               >
-                Learn More
+                See How It Works
               </Button>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">No credit card required • Start cooking today</p>
+            <p className="mt-6 text-sm text-gray-500 flex items-center justify-center gap-2">
+              <Check className="w-4 h-4 text-green-600" />
+              No credit card required • Free plan available forever
+            </p>
           </div>
 
-          {/* Hero Image/Demo */}
-          <Card className="mt-12 max-w-4xl mx-auto">
-            <CardContent className="p-8">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="font-semibold text-foreground mb-3">Original Recipe</h3>
-                  <div className="bg-muted p-4 rounded-lg text-sm text-muted-foreground">
-                    <p className="font-medium mb-2">Classic Beef Lasagna</p>
-                    <p>• 1 lb ground beef</p>
-                    <p>• Ricotta cheese</p>
-                    <p>• Mozzarella cheese</p>
-                    <p>• Traditional pasta sheets</p>
-                  </div>
+          {/* Hero Demo Card */}
+          <div className="mt-16 max-w-5xl mx-auto">
+            <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 flex items-center gap-2">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-white/30" />
+                  <div className="w-3 h-3 rounded-full bg-white/30" />
+                  <div className="w-3 h-3 rounded-full bg-white/30" />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-3">Converted to Vegan & Gluten-Free</h3>
-                  <div className="bg-primary/10 p-4 rounded-lg text-sm text-muted-foreground">
-                    <p className="font-medium mb-2 text-primary">Plant-Based Lasagna</p>
-                    <p>• 1 lb plant-based ground</p>
-                    <p>• Cashew ricotta</p>
-                    <p>• Vegan mozzarella</p>
-                    <p>• Gluten-free lasagna sheets</p>
+                <div className="flex-1 text-center text-white text-sm font-semibold">Recipe Converter</div>
+              </div>
+              <div className="p-8 md:p-10">
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-gray-500 text-sm font-semibold uppercase tracking-wide">
+                      <div className="w-2 h-2 rounded-full bg-gray-400" />
+                      Original Recipe
+                    </div>
+                    <div className="bg-gray-50 border-2 border-gray-200 p-6 rounded-2xl">
+                      <p className="font-bold text-lg text-gray-900 mb-4">Classic Beef Lasagna</p>
+                      <div className="space-y-2 text-gray-700">
+                        <p className="flex items-start"><span className="text-gray-400 mr-2">•</span>1 lb ground beef</p>
+                        <p className="flex items-start"><span className="text-gray-400 mr-2">•</span>Ricotta cheese</p>
+                        <p className="flex items-start"><span className="text-gray-400 mr-2">•</span>Mozzarella cheese</p>
+                        <p className="flex items-start"><span className="text-gray-400 mr-2">•</span>Traditional pasta sheets</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-green-600 text-sm font-semibold uppercase tracking-wide">
+                      <div className="w-2 h-2 rounded-full bg-green-600 animate-pulse" />
+                      Converted Recipe
+                    </div>
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 p-6 rounded-2xl relative overflow-hidden">
+                      <div className="absolute top-2 right-2">
+                        <div className="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">Vegan • GF</div>
+                      </div>
+                      <p className="font-bold text-lg text-green-700 mb-4">Plant-Based Lasagna</p>
+                      <div className="space-y-2 text-gray-700">
+                        <p className="flex items-start"><Check className="w-4 h-4 text-green-600 mr-2 mt-0.5" />1 lb plant-based ground</p>
+                        <p className="flex items-start"><Check className="w-4 h-4 text-green-600 mr-2 mt-0.5" />Cashew ricotta</p>
+                        <p className="flex items-start"><Check className="w-4 h-4 text-green-600 mr-2 mt-0.5" />Vegan mozzarella</p>
+                        <p className="flex items-start"><Check className="w-4 h-4 text-green-600 mr-2 mt-0.5" />Gluten-free lasagna sheets</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Trust Indicators */}
-      <section className="py-8 bg-background">
+      <section className="py-16 bg-white border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-foreground">100%</div>
-              <div className="text-sm text-muted-foreground">Privacy Guaranteed</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center group">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-green-100 text-green-600 mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Shield className="w-8 h-8" />
+              </div>
+              <div className="text-4xl font-black text-gray-900 mb-2">100%</div>
+              <div className="text-sm font-semibold text-gray-600">Privacy Guaranteed</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-foreground">50K+</div>
-              <div className="text-sm text-muted-foreground">Recipes Converted</div>
+            <div className="text-center group">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Utensils className="w-8 h-8" />
+              </div>
+              <div className="text-4xl font-black text-gray-900 mb-2">50K+</div>
+              <div className="text-sm font-semibold text-gray-600">Recipes Converted</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-foreground">4.9★</div>
-              <div className="text-sm text-muted-foreground">User Rating</div>
+            <div className="text-center group">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-yellow-100 text-yellow-600 mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Star className="w-8 h-8 fill-current" />
+              </div>
+              <div className="text-4xl font-black text-gray-900 mb-2">4.9★</div>
+              <div className="text-sm font-semibold text-gray-600">User Rating</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-foreground">24+</div>
-              <div className="text-sm text-muted-foreground">Diet Filters</div>
+            <div className="text-center group">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-100 text-purple-600 mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Zap className="w-8 h-8" />
+              </div>
+              <div className="text-4xl font-black text-gray-900 mb-2">12+</div>
+              <div className="text-sm font-semibold text-gray-600">Diet Filters</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 px-4 sm:px-6 lg:px-8">
+      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Why Choose Recipe Revamped?</h2>
-            <p className="text-xl text-muted-foreground">The most secure and intelligent recipe converter available</p>
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+              <Star className="w-4 h-4" />
+              Powerful Features
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">Why Choose Recipe Revamped?</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">The most secure and intelligent recipe converter for your dietary needs</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                  <Brain className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">AI-Powered Conversion</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Convert any recipe to match your dietary needs and health conditions with intelligent ingredient substitutions powered by OpenAI.
-                </CardDescription>
-              </CardContent>
-            </Card>
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Brain className="h-7 w-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">AI-Powered Conversion</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Convert any recipe to match your dietary needs and health conditions with intelligent ingredient substitutions powered by OpenAI.
+              </p>
+            </div>
 
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                  <Utensils className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Recipe Management</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Save, organize, and manage your converted recipes with a beautiful recipe book. Export recipes and plan meals with calendar integration.
-                </CardDescription>
-              </CardContent>
-            </Card>
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-blue-300 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100 hover:-translate-y-1">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Utensils className="h-7 w-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Recipe Management</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Save, organize, and manage your converted recipes with a beautiful recipe book. Export recipes and plan meals with calendar integration.
+              </p>
+            </div>
 
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                  <Shield className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Multiple Diet Filters</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Support for 24+ dietary preferences including vegan, gluten-free, keto, paleo, and specific health conditions like diabetes and heart disease.
-                </CardDescription>
-              </CardContent>
-            </Card>
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-purple-300 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-100 hover:-translate-y-1">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Shield className="h-7 w-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">12+ Diet Filters</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Support for 12+ dietary preferences including vegan, gluten-free, keto, paleo, and specific health conditions like diabetes and heart disease.
+              </p>
+            </div>
 
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                  <Lock className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Secure & Private</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Your data is protected with Firebase authentication and secure cloud storage. Only you have access to your saved recipes.
-                </CardDescription>
-              </CardContent>
-            </Card>
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-red-300 transition-all duration-500 hover:shadow-2xl hover:shadow-red-100 hover:-translate-y-1">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-red-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Lock className="h-7 w-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Secure & Private</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Your data is protected with Firebase authentication and secure cloud storage. Only you have access to your saved recipes.
+              </p>
+            </div>
 
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                  <Zap className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Fast Conversion</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Get perfectly formatted, structured recipes with ingredients, instructions, and nutrition information in seconds - not minutes.
-                </CardDescription>
-              </CardContent>
-            </Card>
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-yellow-300 transition-all duration-500 hover:shadow-2xl hover:shadow-yellow-100 hover:-translate-y-1">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Zap className="h-7 w-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Fast Conversion</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Get perfectly formatted, structured recipes with ingredients, instructions, and nutrition information in seconds - not minutes.
+              </p>
+            </div>
 
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                  <Globe className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Multi-Format Input</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Convert recipes from text, URLs, images, or paste directly from websites. Works with any format you have.
-                </CardDescription>
-              </CardContent>
-            </Card>
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-indigo-300 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-1">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Globe className="h-7 w-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Multi-Format Input</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Convert recipes from text, URLs, images, or paste directly from websites. Works with any format you have.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -688,98 +721,116 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-16 px-4 sm:px-6 lg:px-8">
+      <section id="testimonials" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Loved by Home Cooks & Professionals</h2>
-            <p className="text-xl text-muted-foreground">See what our users have to say</p>
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+              <Star className="w-4 h-4 fill-current" />
+              Testimonials
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">Loved by Home Cooks & Professionals</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Join thousands of happy users transforming their cooking</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                  ))}
+            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1">
+              <div className="flex gap-1 mb-6">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-gray-700 text-lg mb-6 leading-relaxed italic">
+                "Recipe Revamped has been a game-changer for my vegan journey. I can finally enjoy all my family's traditional recipes!"
+              </p>
+              <div className="flex items-center pt-6 border-t border-gray-200">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center mr-4">
+                  <span className="text-white font-bold text-lg">SM</span>
                 </div>
-                <p className="text-muted-foreground mb-4">
-                  "Recipe Revamped has been a game-changer for my vegan journey. I can finally enjoy all my family's traditional recipes!"
-                </p>
-                <div className="flex items-center">
-                  <div className="bg-primary/10 w-10 h-10 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-primary font-semibold">SM</span>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-foreground">Sarah Mitchell</div>
-                    <div className="text-sm text-muted-foreground">Home Cook</div>
-                  </div>
+                <div>
+                  <div className="font-bold text-gray-900">Sarah Mitchell</div>
+                  <div className="text-sm text-gray-500">Home Cook</div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                  ))}
+            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-blue-300 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100 hover:-translate-y-1">
+              <div className="flex gap-1 mb-6">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-gray-700 text-lg mb-6 leading-relaxed italic">
+                "As a chef with celiac disease, this tool helps me quickly adapt recipes for my dietary needs. The AI is impressively accurate!"
+              </p>
+              <div className="flex items-center pt-6 border-t border-gray-200">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mr-4">
+                  <span className="text-white font-bold text-lg">JR</span>
                 </div>
-                <p className="text-muted-foreground mb-4">
-                  "As a chef with celiac disease, this tool helps me quickly adapt recipes for my dietary needs. The AI is impressively accurate!"
-                </p>
-                <div className="flex items-center">
-                  <div className="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-blue-600 font-semibold">JR</span>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-foreground">James Rodriguez</div>
-                    <div className="text-sm text-muted-foreground">Professional Chef</div>
-                  </div>
+                <div>
+                  <div className="font-bold text-gray-900">James Rodriguez</div>
+                  <div className="text-sm text-gray-500">Professional Chef</div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                  ))}
+            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-purple-300 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-100 hover:-translate-y-1">
+              <div className="flex gap-1 mb-6">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-gray-700 text-lg mb-6 leading-relaxed italic">
+                "The AI-powered recipe conversion is amazing! I love how it adapts my family recipes to my dietary needs perfectly."
+              </p>
+              <div className="flex items-center pt-6 border-t border-gray-200">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center mr-4">
+                  <span className="text-white font-bold text-lg">EC</span>
                 </div>
-                <p className="text-muted-foreground mb-4">
-                  "The AI-powered recipe conversion is amazing! I love how it adapts my family recipes to my dietary needs perfectly."
-                </p>
-                <div className="flex items-center">
-                  <div className="bg-purple-100 w-10 h-10 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-purple-600 font-semibold">EC</span>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-foreground">Emily Chen</div>
-                    <div className="text-sm text-muted-foreground">Food Blogger</div>
-                  </div>
+                <div>
+                  <div className="font-bold text-gray-900">Emily Chen</div>
+                  <div className="text-sm text-gray-500">Food Blogger</div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-primary">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-primary-foreground mb-4">
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-green-600 via-emerald-600 to-green-700" />
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-blob" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-300 rounded-full mix-blend-overlay filter blur-3xl animate-blob animation-delay-2000" />
+        </div>
+
+        <div className="max-w-4xl mx-auto text-center relative">
+          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold mb-6">
+            <Zap className="w-4 h-4" />
+            Join 50,000+ Happy Users
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
             Ready to Transform Your Cooking?
           </h2>
-          <p className="text-xl text-primary-foreground/80 mb-8">
-            Join thousands of users who've revolutionized their meal planning
+          <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+            Start converting recipes for free today. No credit card required, cancel anytime.
           </p>
-          <Button asChild size="lg" variant="secondary" className="text-lg">
-            <Link to={user ? "/app" : "/signin"}>
-              {user ? "Go to App" : "Get Started Free"}
-            </Link>
-          </Button>
-          <p className="mt-4 text-primary-foreground/80">No credit card required • Start instantly</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button asChild size="lg" className="text-lg px-8 py-6 bg-white text-green-600 hover:bg-gray-50 shadow-2xl transition-all duration-300 hover:scale-105 font-bold">
+              <Link to={user ? "/app" : "/signin"}>
+                {user ? "Go to App" : "Start Free Trial"}
+                <Zap className="w-5 h-5 ml-2" />
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" onClick={() => scrollToSection('pricing')} className="text-lg px-8 py-6 border-2 border-white text-white hover:bg-white hover:text-green-600 transition-all duration-300">
+              View Pricing
+            </Button>
+          </div>
+          <p className="mt-6 text-white/80 text-sm flex items-center justify-center gap-2">
+            <Check className="w-4 h-4" />
+            Free forever plan • Upgrade anytime
+          </p>
         </div>
       </section>
 
