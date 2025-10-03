@@ -458,11 +458,13 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
               <div className={`relative ${
                 featureAccess?.currentPlan === 'free' ? 'sm:flex-[1]' : 'sm:flex-1'
               }`}>
-                <Filter className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
+                <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center justify-center">
+                  <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
+                </div>
                 <select
                   value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 cursor-pointer"
+                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 cursor-pointer h-[46px] sm:h-[50px]"
                   aria-label="Filter by dietary restriction"
                 >
                   <option value="">All Dietary Filters</option>
@@ -508,17 +510,19 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
               </div>
             )}
 
-            {/* Enhanced Pro Filter Notice for Free Users */}
+            {/* Enhanced Pro Filter Notice for Free Users - Matches Dropdown Height */}
             {!featureAccess?.canUseAdvancedFilters && (
-              <div className={`bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 border-2 border-orange-200 rounded-xl p-3 sm:p-4 flex items-center shadow-sm ${
+              <div className={`bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 border-2 border-orange-200 rounded-xl flex items-center shadow-sm h-[46px] sm:h-[50px] ${
                 featureAccess?.currentPlan === 'free' ? 'sm:flex-[2]' : 'sm:flex-1'
               }`}>
-                <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg p-2 mr-2 sm:mr-3 flex-shrink-0">
-                  <Crown className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                <div className="flex items-center w-full px-3 sm:px-4">
+                  <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg p-1.5 sm:p-2 mr-2 sm:mr-3 flex-shrink-0">
+                    <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-orange-800">
+                    <span className="hidden sm:inline">Chef+ Filters:</span> Health conditions, advanced categories & more
+                  </span>
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-orange-800">
-                  <span className="hidden sm:inline">Chef+ Filters:</span> Health conditions, advanced categories & more
-                </span>
               </div>
             )}
           </div>
