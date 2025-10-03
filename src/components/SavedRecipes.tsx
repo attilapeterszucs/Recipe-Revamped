@@ -479,7 +479,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         )}
 
         {/* Enhanced Search and Filter Bar with animation */}
-        <div className={`bg-gradient-to-br from-white to-green-50/20 rounded-2xl shadow-lg border-2 border-green-100 p-4 sm:p-5 mb-4 sm:mb-6 ${isPageLoaded ? 'animate-filter-bar-slide' : 'opacity-0'} ${filterApplied ? 'animate-filter-pulse' : ''}`}>
+        <div className={`relative z-40 bg-gradient-to-br from-white to-green-50/20 rounded-2xl shadow-lg border-2 border-green-100 p-4 sm:p-5 mb-4 sm:mb-6 ${isPageLoaded ? 'animate-filter-bar-slide' : 'opacity-0'} ${filterApplied ? 'animate-filter-pulse' : ''}`}>
           {/* First Row: Search and Sort */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
             {/* Search Input - 2/3 width on desktop */}
@@ -610,7 +610,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         {/* Recipe Cards - Grid or List View */}
         <div
           data-recipes-grid
-          className={`transition-all duration-300 ${
+          className={`relative z-10 transition-all duration-300 ${
             viewMode === 'grid'
               ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6'
               : 'flex flex-col gap-4'
