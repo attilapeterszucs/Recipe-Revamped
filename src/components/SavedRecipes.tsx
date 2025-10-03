@@ -412,22 +412,23 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
           </div>
         )}
 
-        {/* Search and Filter Bar */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 mb-4 sm:mb-6">
+        {/* Enhanced Search and Filter Bar */}
+        <div className="bg-gradient-to-br from-white to-green-50/20 rounded-2xl shadow-lg border-2 border-green-100 p-4 sm:p-5 mb-4 sm:mb-6">
           {/* First Row: Search and Sort */}
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
             {/* Search Input - 2/3 width on desktop */}
             <div className="relative flex-1 sm:flex-[2]">
-              <Search className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" />
+              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
               <input
                 type="text"
                 placeholder="Search recipes..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm h-10 sm:h-11"
+                className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-medium shadow-sm transition-all duration-200 hover:border-green-300"
+                aria-label="Search recipes"
               />
             </div>
-            
+
             {/* Sort Options - 1/3 width on desktop */}
             <div className="sm:flex-1">
               <select
@@ -437,7 +438,8 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                   setSortBy(newSortBy as 'date' | 'name' | 'rating');
                   setSortOrder(newSortOrder as 'asc' | 'desc');
                 }}
-                className="w-full px-2.5 sm:px-3 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-xs sm:text-sm h-10 sm:h-11"
+                className="w-full px-3 sm:px-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 cursor-pointer"
+                aria-label="Sort recipes"
               >
                 <option value="date-desc">📅 Newest First</option>
                 <option value="date-asc">📅 Oldest First</option>
@@ -450,17 +452,18 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
           </div>
 
           {/* Second Row: Filters - Each takes 1/3 width on desktop */}
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             {/* Dietary Filter - 1/3 width for free users, full width for others when no locked filters */}
             {availableFilters.length > 0 && (
               <div className={`relative ${
                 featureAccess?.currentPlan === 'free' ? 'sm:flex-[1]' : 'sm:flex-1'
               }`}>
-                <Filter className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" />
+                <Filter className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                 <select
                   value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white text-xs sm:text-sm h-10 sm:h-11"
+                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 cursor-pointer"
+                  aria-label="Filter by dietary restriction"
                 >
                   <option value="">All Dietary Filters</option>
                   {availableFilters.map(filter => (
@@ -473,11 +476,12 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             {/* Health Condition Filter - 1/3 width - Only for Master Chef+ plans */}
             {userSettings?.healthConditions && userSettings.healthConditions.length > 0 && featureAccess?.canUseHealthConditions && (
               <div className="relative sm:flex-1">
-                <Heart className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" />
+                <Heart className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                 <select
                   value={selectedHealthCondition}
                   onChange={(e) => setSelectedHealthCondition(e.target.value)}
-                  className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white text-xs sm:text-sm h-10 sm:h-11"
+                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 cursor-pointer"
+                  aria-label="Filter by health condition"
                 >
                   <option value="">All Health Conditions</option>
                   {userSettings.healthConditions.map(condition => (
@@ -490,11 +494,12 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             {/* Advanced Category Filter - 1/3 width - Only for Chef+ plans */}
             {featureAccess?.canUseAdvancedFilters && (
               <div className="relative sm:flex-1">
-                <ChefHat className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" />
+                <ChefHat className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white text-xs sm:text-sm h-10 sm:h-11"
+                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 cursor-pointer"
+                  aria-label="Filter by category"
                 >
                   {categoryFilters.map(category => (
                     <option key={category.value} value={category.value}>{category.label}</option>
@@ -503,29 +508,37 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
               </div>
             )}
 
-            {/* Pro Filter Notice for Free Users - 2/3 width */}
+            {/* Enhanced Pro Filter Notice for Free Users */}
             {!featureAccess?.canUseAdvancedFilters && (
-              <div className={`bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-2.5 sm:p-3 flex items-center ${
+              <div className={`bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 border-2 border-orange-200 rounded-xl p-3 sm:p-4 flex items-center shadow-sm ${
                 featureAccess?.currentPlan === 'free' ? 'sm:flex-[2]' : 'sm:flex-1'
               }`}>
-                <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-yellow-500 mr-1.5 sm:mr-2 flex-shrink-0" />
-                <span className="text-xs sm:text-sm text-yellow-700">
-                  <strong>Chef+ Filters:</strong> Health conditions, advanced categories & more
+                <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg p-2 mr-2 sm:mr-3 flex-shrink-0">
+                  <Crown className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                </div>
+                <span className="text-xs sm:text-sm font-bold text-orange-800">
+                  <span className="hidden sm:inline">Chef+ Filters:</span> Health conditions, advanced categories & more
                 </span>
               </div>
             )}
           </div>
           
-          {/* Results Counter */}
+          {/* Enhanced Results Counter */}
           {(searchTerm || selectedFilter || selectedHealthCondition || selectedCategory) && (
-            <div className="mt-4 pt-3 border-t border-gray-200">
-              <p className="text-sm text-gray-600">
-                Showing {filteredRecipes.length} of {recipes.length} recipes
-                {searchTerm && <span className="font-medium"> matching "{searchTerm}"</span>}
-                {selectedFilter && <span className="font-medium"> with {selectedFilter} filter</span>}
-                {selectedHealthCondition && <span className="font-medium"> suitable for {selectedHealthCondition}</span>}
-                {selectedCategory && <span className="font-medium"> in {categoryFilters.find(c => c.value === selectedCategory)?.label} category</span>}
-              </p>
+            <div className="mt-4 pt-4 border-t-2 border-green-100">
+              <div className="flex items-center gap-2">
+                <div className="bg-green-100 rounded-lg px-3 py-1.5">
+                  <p className="text-sm font-bold text-green-800">
+                    {filteredRecipes.length} of {recipes.length}
+                  </p>
+                </div>
+                <p className="text-sm text-gray-700 font-medium">
+                  {searchTerm && <span>matching "<span className="text-green-600 font-bold">{searchTerm}</span>"</span>}
+                  {selectedFilter && <span>{searchTerm ? ' • ' : ''}with <span className="text-green-600 font-bold">{selectedFilter}</span></span>}
+                  {selectedHealthCondition && <span>{(searchTerm || selectedFilter) ? ' • ' : ''}for <span className="text-green-600 font-bold">{selectedHealthCondition}</span></span>}
+                  {selectedCategory && <span>{(searchTerm || selectedFilter || selectedHealthCondition) ? ' • ' : ''}in <span className="text-green-600 font-bold">{categoryFilters.find(c => c.value === selectedCategory)?.label}</span></span>}
+                </p>
+              </div>
             </div>
           )}
         </div>
