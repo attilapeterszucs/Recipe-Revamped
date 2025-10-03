@@ -3,7 +3,7 @@ import { getUserRecipes, deleteRecipe } from '../lib/firestore';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
 import { useToast } from './ToastContainer';
-import { Search, Trash2, Calendar, Filter, ChefHat, RefreshCcw, Edit, Clock, Users, Image, Star, Crown, Heart, ArrowUpDown } from 'lucide-react';
+import { Search, Trash2, Calendar, Filter, ChefHat, RefreshCcw, Edit, Clock, Users, Image, Star, Crown, Heart, ArrowUpDown, Grid3x3, List } from 'lucide-react';
 import { RecipeEditor } from './RecipeEditor';
 import { CustomDropdown } from './CustomDropdown';
 
@@ -71,6 +71,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [filterApplied, setFilterApplied] = useState(false);
   const [sortChanged, setSortChanged] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const recipesPerPage = 8;
   const { showSuccess, showError } = useToast();
 
@@ -382,18 +383,45 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             </div>
             <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
           </div>
-          {featureAccess && (
-            <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border-2 shadow-sm transition-all duration-300 ${
-              featureAccess.canSaveRecipes
-                ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border-green-300'
-                : 'bg-gradient-to-r from-orange-50 to-red-50 text-orange-800 border-orange-300'
-            }`}>
-              <ChefHat className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="font-extrabold">{featureAccess.currentRecipeCount}</span>
-              <span className="text-gray-400 font-bold">/</span>
-              <span className="opacity-75">{featureAccess.recipeLimit === 999999 ? '∞' : featureAccess.recipeLimit}</span>
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* View Toggle Buttons */}
+            <div className="flex items-center bg-white border-2 border-gray-300 rounded-lg sm:rounded-xl p-0.5 sm:p-1">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all duration-300 ${
+                  viewMode === 'grid'
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                }`}
+                aria-label="Grid view"
+              >
+                <Grid3x3 className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all duration-300 ${
+                  viewMode === 'list'
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                }`}
+                aria-label="List view"
+              >
+                <List className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
             </div>
-          )}
+            {featureAccess && (
+              <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border-2 shadow-sm transition-all duration-300 ${
+                featureAccess.canSaveRecipes
+                  ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border-green-300'
+                  : 'bg-gradient-to-r from-orange-50 to-red-50 text-orange-800 border-orange-300'
+              }`}>
+                <ChefHat className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="font-extrabold">{featureAccess.currentRecipeCount}</span>
+                <span className="text-gray-400 font-bold">/</span>
+                <span className="opacity-75">{featureAccess.recipeLimit === 999999 ? '∞' : featureAccess.recipeLimit}</span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Recipe Limit Warning */}
@@ -560,16 +588,124 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
           )}
         </div>
 
-        {/* Recipe Cards Grid with enhanced animations */}
+        {/* Recipe Cards - Grid or List View */}
         <div
           data-recipes-grid
-          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 transition-all duration-300 ${
-            isTransitioning ? 'animate-page-out' : 'animate-page-in'
-          }`}
+          className={`transition-all duration-300 ${
+            viewMode === 'grid'
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6'
+              : 'flex flex-col gap-4'
+          } ${isTransitioning ? 'animate-page-out' : 'animate-page-in'}`}
         >
           {currentRecipes.map((recipe, index) => {
             const recipeInfo = extractRecipeInfo(recipe.convertedRecipe);
             const staggerClass = `stagger-${(index % 8) + 1}`;
+
+            // List View Layout
+            if (viewMode === 'list') {
+              return (
+                <div
+                  key={recipe.id}
+                  className={`bg-white rounded-xl shadow-md border-2 border-gray-200 overflow-hidden group transform recipe-card-3d transition-all duration-500 ${
+                    isPageLoaded && !isTransitioning ? `animate-recipe-card-enter ${staggerClass}` : 'opacity-0'
+                  } ${filterApplied ? 'animate-filter-change' : ''}`}
+                >
+                  <div className="flex flex-col sm:flex-row">
+                    {/* List View Image */}
+                    <div
+                      className="relative h-48 sm:h-auto sm:w-64 flex-shrink-0 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 cursor-pointer overflow-hidden group/image"
+                      onClick={() => onViewRecipe && onViewRecipe(recipe)}
+                    >
+                      {recipe.imageUrl ? (
+                        <img
+                          src={recipe.imageUrl}
+                          alt={recipe.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover/image:scale-110"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ChefHat className="h-16 w-16 text-white opacity-80 transition-transform duration-300 group-hover/image:scale-110 group-hover/image:rotate-12" />
+                        </div>
+                      )}
+                      {!recipe.imageUrl && (
+                        <div className="absolute top-3 right-3">
+                          <div className="bg-black/50 rounded-full p-2">
+                            <Image className="h-4 w-4 text-white" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* List View Content */}
+                    <div className="flex-1 flex flex-col">
+                      <div
+                        className="p-4 sm:p-5 cursor-pointer flex-1"
+                        onClick={() => onViewRecipe && onViewRecipe(recipe)}
+                      >
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">{recipe.title}</h3>
+
+                        <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-3 text-sm text-gray-600">
+                          <div className="flex items-center">
+                            <Calendar className="w-4 h-4 mr-2 text-gray-400" />
+                            <span>{recipe.createdAt?.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Clock className="w-4 h-4 mr-2 text-green-500" />
+                            <span>{recipeInfo.totalTime || 'N/A'}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Users className="w-4 h-4 mr-2 text-blue-500" />
+                            <span>{recipeInfo.servings} servings</span>
+                          </div>
+                        </div>
+
+                        {recipe.dietaryFilters.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {recipe.dietaryFilters.map(filter => (
+                              <span
+                                key={filter}
+                                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200"
+                              >
+                                {filter}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* List View Actions */}
+                      <div className="bg-gradient-to-r from-gray-50 to-slate-50 px-4 sm:px-5 py-3 sm:py-3.5 flex justify-end items-center border-t border-gray-200 gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditRecipe(recipe);
+                          }}
+                          className="inline-flex items-center justify-center min-h-[44px] px-4 py-2 text-green-700 font-semibold bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg hover:border-green-400 hover:shadow-lg transition-all duration-300 text-sm sm:hover:scale-105 touch-manipulation active:scale-95"
+                        >
+                          <Edit className="w-4 h-4 mr-2" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(recipe.id);
+                          }}
+                          className="inline-flex items-center justify-center min-h-[44px] px-4 py-2 text-white font-semibold bg-gradient-to-r from-red-600 to-red-500 border-2 border-transparent rounded-lg hover:from-red-700 hover:to-red-600 transition-all duration-300 text-sm sm:hover:scale-105 hover:shadow-lg shadow-red-500/20 touch-manipulation active:scale-95"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            // Grid View Layout (existing)
             return (
               <div
                 key={recipe.id}
