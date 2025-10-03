@@ -714,12 +714,21 @@ export function RecipeApp() {
           ? 'w-full'
           : 'max-w-7xl mx-auto'
       }`}>
-        {/* Decorative Background Elements */}
+        {/* Decorative Background Elements for Convert Page */}
         {!showSaved && !showSettings && !showMealPlanner && (
           <>
             <div className="absolute top-0 left-0 w-64 h-64 bg-green-200/20 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '4s' }} />
             <div className="absolute top-32 right-0 w-96 h-96 bg-emerald-200/20 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
             <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-green-100/30 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+          </>
+        )}
+
+        {/* Decorative Background Elements for Recipe Book Page */}
+        {showSaved && !showSettings && !showMealPlanner && (
+          <>
+            <div className="absolute top-10 right-10 w-72 h-72 bg-purple-200/20 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '5s' }} />
+            <div className="absolute top-40 left-0 w-96 h-96 bg-green-200/20 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '7s', animationDelay: '1.5s' }} />
+            <div className="absolute bottom-20 right-1/3 w-80 h-80 bg-emerald-100/30 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '6s', animationDelay: '3s' }} />
           </>
         )}
         {!user ? (

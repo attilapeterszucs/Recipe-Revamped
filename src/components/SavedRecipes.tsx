@@ -271,17 +271,19 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-lg p-8">
+        <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-8 border-2 border-green-100">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
-              <ChefHat className="h-8 w-8 text-green-600" />
-              <h2 className="text-3xl font-bold text-gray-900">My Saved Recipes</h2>
+              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-3 shadow-lg">
+                <ChefHat className="h-8 w-8 text-white" />
+              </div>
+              <h2 className="text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
             </div>
           </div>
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-200 border-t-green-600"></div>
-              <p className="mt-4 text-gray-600 font-medium">Loading your delicious recipes...</p>
+              <p className="mt-4 text-gray-600 font-bold">Loading your delicious recipes...</p>
             </div>
           </div>
         </div>
@@ -292,19 +294,21 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   if (error) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-lg p-8">
+        <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-8 border-2 border-green-100">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
-              <ChefHat className="h-8 w-8 text-green-600" />
-              <h2 className="text-3xl font-bold text-gray-900">My Saved Recipes</h2>
+              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-3 shadow-lg">
+                <ChefHat className="h-8 w-8 text-white" />
+              </div>
+              <h2 className="text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
             </div>
           </div>
           <div className="text-center py-12">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-              <p className="text-red-600 font-medium mb-4">{error}</p>
-              <button 
+            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 max-w-md mx-auto shadow-lg">
+              <p className="text-red-600 font-bold mb-4">{error}</p>
+              <button
                 onClick={loadRecipes}
-                className="inline-flex items-center px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-bold rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 <RefreshCcw className="w-4 h-4 mr-2" />
                 Try Again
@@ -319,17 +323,21 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   if (recipes.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-lg p-8">
+        <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-8 border-2 border-green-100">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
-              <ChefHat className="h-8 w-8 text-green-600" />
-              <h2 className="text-3xl font-bold text-gray-900">My Saved Recipes</h2>
+              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-3 shadow-lg">
+                <ChefHat className="h-8 w-8 text-white" />
+              </div>
+              <h2 className="text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
             </div>
           </div>
           <div className="text-center py-16">
-            <ChefHat className="mx-auto h-24 w-24 text-gray-300 mb-6" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No recipes saved yet</h3>
-            <p className="text-gray-600 max-w-md mx-auto">
+            <div className="bg-gray-100 rounded-full p-8 w-32 h-32 mx-auto mb-6 flex items-center justify-center">
+              <ChefHat className="h-16 w-16 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-black text-gray-900 mb-2">No recipes saved yet</h3>
+            <p className="text-gray-600 max-w-md mx-auto font-medium">
               Start converting or creating recipes to build your personal collection of delicious dishes!
             </p>
           </div>
@@ -340,12 +348,14 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-      <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
+      <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border-2 border-green-100">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <ChefHat className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 text-green-600 flex-shrink-0" />
-            <h2 className="text-lg sm:text-xl lg:text-3xl font-bold text-gray-900">My Saved Recipes</h2>
+            <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-2 sm:p-2.5 lg:p-3 shadow-lg">
+              <ChefHat className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 text-white flex-shrink-0" />
+            </div>
+            <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
           </div>
           <div className="flex items-center space-x-2 sm:space-x-3">
             {featureAccess && (
@@ -359,7 +369,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             )}
             <button
               onClick={loadRecipes}
-              className="inline-flex items-center justify-center px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-green-600 bg-white border border-green-200 rounded-lg hover:bg-green-50 transition-colors"
+              className="inline-flex items-center justify-center px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-green-600 to-emerald-600 border-2 border-green-200 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
             >
               <RefreshCcw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Refresh</span>
