@@ -106,7 +106,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
 
   // Filter and sort recipes
   useEffect(() => {
-    let filtered = recipes;
+    let filtered = [...recipes];
 
     // Apply search filter
     if (searchTerm) {
@@ -133,7 +133,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         // Filter recipes that are suitable for the health condition
         switch (selectedHealthCondition.toLowerCase()) {
           case 'diabetes':
-            return recipeContent.includes('low sugar') || recipeContent.includes('sugar-free') || 
+            return recipeContent.includes('low sugar') || recipeContent.includes('sugar-free') ||
                    recipeContent.includes('diabetic') || recipeContent.includes('low carb') ||
                    !recipeContent.includes('high sugar') && !recipeContent.includes('dessert');
           case 'heart disease':
@@ -161,8 +161,8 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         const recipeContent = recipe.convertedRecipe.toLowerCase();
         switch (selectedCategory) {
           case 'appetizer':
-            return recipeContent.includes('appetizer') || recipeContent.includes('starter') || 
-                   recipeContent.includes('hors d\'oeuvre') || recipeContent.includes('canapé') || 
+            return recipeContent.includes('appetizer') || recipeContent.includes('starter') ||
+                   recipeContent.includes('hors d\'oeuvre') || recipeContent.includes('canapé') ||
                    recipeContent.includes('antipasto') || recipeContent.includes('bruschetta');
           case 'main-dish':
             return recipeContent.includes('main') || recipeContent.includes('entree') ||
@@ -174,7 +174,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                    recipeContent.includes('rice') || recipeContent.includes('potato');
           case 'dessert':
             return recipeContent.includes('dessert') || recipeContent.includes('sweet') ||
-                   recipeContent.includes('cake') || recipeContent.includes('cookie') || 
+                   recipeContent.includes('cake') || recipeContent.includes('cookie') ||
                    recipeContent.includes('ice cream') || recipeContent.includes('pie') ||
                    recipeContent.includes('pudding') || recipeContent.includes('tart');
           default:
@@ -182,11 +182,11 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         }
       });
     }
-    
+
     // Apply sorting
     filtered.sort((a, b) => {
       let comparison = 0;
-      
+
       switch (sortBy) {
         case 'name':
           comparison = a.title.localeCompare(b.title);
@@ -201,10 +201,10 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         default:
           comparison = (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0);
       }
-      
+
       return sortOrder === 'asc' ? comparison : -comparison;
     });
-    
+
     setFilteredRecipes(filtered);
   }, [recipes, searchTerm, selectedFilter, selectedHealthCondition, selectedCategory, sortBy, sortOrder, featureAccess, userSettings]);
 
