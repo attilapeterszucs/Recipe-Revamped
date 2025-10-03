@@ -919,6 +919,59 @@ select[size] option:hover {
   animation: no-results-fade 0.4s ease-out forwards;
 }
 
+/* ============================================================================
+   MOBILE OPTIMIZATIONS - Recipe Book Page
+   ============================================================================ */
+
+/* Mobile-specific touch optimizations */
+@media (max-width: 640px) {
+  /* Improve touch targets on mobile */
+  .recipe-card-3d {
+    min-height: 320px;
+  }
+
+  /* Disable hover effects on mobile to prevent sticky states */
+  .recipe-card-3d:hover {
+    transform: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Better spacing for mobile cards */
+  [data-recipes-grid] {
+    gap: 1rem !important;
+  }
+
+  /* Optimize button touch targets */
+  button {
+    min-height: 44px; /* iOS recommended minimum touch target */
+  }
+
+  /* Prevent text selection during touch interactions */
+  .recipe-card-3d {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Smoother scrolling on mobile */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Optimize pagination for mobile */
+  .pagination-mobile-optimized button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .recipe-card-3d:hover {
+    transform: translateY(-8px);
+  }
+}
+
 /* Custom scrollbar for dropdown */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
