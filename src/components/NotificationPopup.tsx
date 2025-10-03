@@ -77,8 +77,14 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+    <div
+      className="fixed top-0 left-0 right-0 bottom-0 bg-black/60 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className={`${colors.header} px-6 py-5 flex items-center justify-between relative overflow-hidden`}>
           {/* Decorative pattern */}
