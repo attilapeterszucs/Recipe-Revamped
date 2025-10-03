@@ -647,3 +647,67 @@ select[size] option:hover {
   transform: translateX(4px) !important;
   background: linear-gradient(90deg, #f0fdf4 0%, #dcfce7 100%) !important;
 }
+
+/* ============================================================================
+   CUSTOM DROPDOWN ANIMATIONS
+   ============================================================================ */
+
+/* Dropdown open animation - slides down and fades in */
+@keyframes dropdown-open {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-dropdown-open {
+  animation: dropdown-open 0.25s ease-out forwards;
+}
+
+/* Check icon animation - scales in with bounce */
+@keyframes check-in {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-45deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.animate-check-in {
+  animation: check-in 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* Custom scrollbar for dropdown */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f0fdf4;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #10b981, #059669);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #059669, #047857);
+}
+
+/* Firefox scrollbar for dropdown */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #10b981 #f0fdf4;
+}

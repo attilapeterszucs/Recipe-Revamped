@@ -5,6 +5,7 @@ import type { UserSettings } from '../types/userSettings';
 import { useToast } from './ToastContainer';
 import { Search, Eye, Trash2, Calendar, Filter, ChefHat, RefreshCcw, Edit, Clock, Users, Image, Star, Crown, Heart } from 'lucide-react';
 import { RecipeEditor } from './RecipeEditor';
+import { CustomDropdown } from './CustomDropdown';
 
 interface SavedRecipesProps {
   userId: string;
@@ -430,29 +431,25 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             </div>
 
             {/* Sort Options - 1/3 width on desktop */}
-            <div className="sm:flex-1 relative">
-              <select
+            <div className="sm:flex-1">
+              <CustomDropdown
                 value={`${sortBy}-${sortOrder}`}
-                onChange={(e) => {
-                  const [newSortBy, newSortOrder] = e.target.value.split('-');
+                onChange={(value) => {
+                  const [newSortBy, newSortOrder] = value.split('-');
                   setSortBy(newSortBy as 'date' | 'name' | 'rating');
                   setSortOrder(newSortOrder as 'asc' | 'desc');
                 }}
-                className="w-full px-3 sm:px-4 py-3 sm:py-3.5 pr-10 sm:pr-12 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 hover:shadow-md cursor-pointer appearance-none"
-                aria-label="Sort recipes"
-              >
-                <option value="date-desc">📅 Newest First</option>
-                <option value="date-asc">📅 Oldest First</option>
-                <option value="name-asc">🔤 A-Z</option>
-                <option value="name-desc">🔤 Z-A</option>
-                <option value="rating-desc">⭐ Most Popular</option>
-                <option value="rating-asc">⭐ Least Popular</option>
-              </select>
-              <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
+                options={[
+                  { value: 'date-desc', label: 'Newest First', icon: '📅' },
+                  { value: 'date-asc', label: 'Oldest First', icon: '📅' },
+                  { value: 'name-asc', label: 'A-Z', icon: '🔤' },
+                  { value: 'name-desc', label: 'Z-A', icon: '🔤' },
+                  { value: 'rating-desc', label: 'Most Popular', icon: '⭐' },
+                  { value: 'rating-asc', label: 'Least Popular', icon: '⭐' }
+                ]}
+                placeholder="Sort by..."
+                ariaLabel="Sort recipes"
+              />
             </div>
           </div>
 
@@ -460,77 +457,50 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Dietary Filter - 1/3 width for free users, full width for others when no locked filters */}
             {availableFilters.length > 0 && (
-              <div className={`relative ${
-                featureAccess?.currentPlan === 'free' ? 'sm:flex-[1]' : 'sm:flex-1'
-              }`}>
-                <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center justify-center">
-                  <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
-                </div>
-                <select
+              <div className={featureAccess?.currentPlan === 'free' ? 'sm:flex-[1]' : 'sm:flex-1'}>
+                <CustomDropdown
                   value={selectedFilter}
-                  onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 hover:shadow-md cursor-pointer h-[46px] sm:h-[50px]"
-                  aria-label="Filter by dietary restriction"
-                >
-                  <option value="">All Dietary Filters</option>
-                  {availableFilters.map(filter => (
-                    <option key={filter} value={filter}>{filter}</option>
-                  ))}
-                </select>
-                <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
+                  onChange={setSelectedFilter}
+                  options={[
+                    { value: '', label: 'All Dietary Filters', icon: '🍽️' },
+                    ...availableFilters.map(filter => ({ value: filter, label: filter, icon: '🥗' }))
+                  ]}
+                  icon={<Filter className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />}
+                  ariaLabel="Filter by dietary restriction"
+                />
               </div>
             )}
 
             {/* Health Condition Filter - 1/3 width - Only for Master Chef+ plans */}
             {userSettings?.healthConditions && userSettings.healthConditions.length > 0 && featureAccess?.canUseHealthConditions && (
-              <div className="relative sm:flex-1">
-                <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center justify-center">
-                  <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
-                </div>
-                <select
+              <div className="sm:flex-1">
+                <CustomDropdown
                   value={selectedHealthCondition}
-                  onChange={(e) => setSelectedHealthCondition(e.target.value)}
-                  className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 hover:shadow-md cursor-pointer"
-                  aria-label="Filter by health condition"
-                >
-                  <option value="">All Health Conditions</option>
-                  {userSettings.healthConditions.map(condition => (
-                    <option key={condition} value={condition}>{condition}</option>
-                  ))}
-                </select>
-                <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
+                  onChange={setSelectedHealthCondition}
+                  options={[
+                    { value: '', label: 'All Health Conditions', icon: '💚' },
+                    ...userSettings.healthConditions.map(condition => ({ value: condition, label: condition, icon: '❤️' }))
+                  ]}
+                  icon={<Heart className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />}
+                  ariaLabel="Filter by health condition"
+                />
               </div>
             )}
 
             {/* Advanced Category Filter - 1/3 width - Only for Chef+ plans */}
             {featureAccess?.canUseAdvancedFilters && (
-              <div className="relative sm:flex-1">
-                <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center justify-center">
-                  <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
-                </div>
-                <select
+              <div className="sm:flex-1">
+                <CustomDropdown
                   value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 hover:shadow-md cursor-pointer"
-                  aria-label="Filter by category"
-                >
-                  {categoryFilters.map(category => (
-                    <option key={category.value} value={category.value}>{category.label}</option>
-                  ))}
-                </select>
-                <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
+                  onChange={setSelectedCategory}
+                  options={categoryFilters.map(cat => ({
+                    value: cat.value,
+                    label: cat.label.replace(/^.+?\s/, ''), // Remove emoji from label for cleaner display
+                    icon: cat.label.match(/^(.+?)\s/)?.[1] || '📂' // Extract emoji
+                  }))}
+                  icon={<ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />}
+                  ariaLabel="Filter by category"
+                />
               </div>
             )}
 
