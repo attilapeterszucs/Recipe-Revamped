@@ -430,7 +430,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             </div>
 
             {/* Sort Options - 1/3 width on desktop */}
-            <div className="sm:flex-1">
+            <div className="sm:flex-1 relative">
               <select
                 value={`${sortBy}-${sortOrder}`}
                 onChange={(e) => {
@@ -438,7 +438,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                   setSortBy(newSortBy as 'date' | 'name' | 'rating');
                   setSortOrder(newSortOrder as 'asc' | 'desc');
                 }}
-                className="w-full px-3 sm:px-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 cursor-pointer"
+                className="w-full px-3 sm:px-4 py-3 sm:py-3.5 pr-10 sm:pr-12 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 hover:shadow-md cursor-pointer appearance-none"
                 aria-label="Sort recipes"
               >
                 <option value="date-desc">📅 Newest First</option>
@@ -448,6 +448,11 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                 <option value="rating-desc">⭐ Most Popular</option>
                 <option value="rating-asc">⭐ Least Popular</option>
               </select>
+              <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
           </div>
 
@@ -464,7 +469,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                 <select
                   value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 cursor-pointer h-[46px] sm:h-[50px]"
+                  className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 hover:shadow-md cursor-pointer h-[46px] sm:h-[50px]"
                   aria-label="Filter by dietary restriction"
                 >
                   <option value="">All Dietary Filters</option>
@@ -472,17 +477,24 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                     <option key={filter} value={filter}>{filter}</option>
                   ))}
                 </select>
+                <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
             )}
 
             {/* Health Condition Filter - 1/3 width - Only for Master Chef+ plans */}
             {userSettings?.healthConditions && userSettings.healthConditions.length > 0 && featureAccess?.canUseHealthConditions && (
               <div className="relative sm:flex-1">
-                <Heart className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
+                <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center justify-center">
+                  <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
+                </div>
                 <select
                   value={selectedHealthCondition}
                   onChange={(e) => setSelectedHealthCondition(e.target.value)}
-                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 cursor-pointer"
+                  className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 hover:shadow-md cursor-pointer"
                   aria-label="Filter by health condition"
                 >
                   <option value="">All Health Conditions</option>
@@ -490,23 +502,35 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                     <option key={condition} value={condition}>{condition}</option>
                   ))}
                 </select>
+                <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
             )}
 
             {/* Advanced Category Filter - 1/3 width - Only for Chef+ plans */}
             {featureAccess?.canUseAdvancedFilters && (
               <div className="relative sm:flex-1">
-                <ChefHat className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
+                <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center justify-center">
+                  <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
+                </div>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 cursor-pointer"
+                  className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none bg-white text-sm font-semibold shadow-sm transition-all duration-200 hover:border-green-300 hover:shadow-md cursor-pointer"
                   aria-label="Filter by category"
                 >
                   {categoryFilters.map(category => (
                     <option key={category.value} value={category.value}>{category.label}</option>
                   ))}
                 </select>
+                <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
             )}
 
