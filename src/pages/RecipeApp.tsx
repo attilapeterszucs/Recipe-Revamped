@@ -500,7 +500,7 @@ export function RecipeApp() {
 
   return (
     <SubscriptionProvider>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen bg-gradient-to-b from-green-50/30 via-emerald-50/20 to-white">
       <SEOHead pageKey="app" />
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
@@ -709,11 +709,19 @@ export function RecipeApp() {
       </header>
 
       {/* Main Content */}
-      <main className={`px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 ${
+      <main className={`relative px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 ${
         !showSaved && !showSettings && !showMealPlanner
           ? 'w-full'
           : 'max-w-7xl mx-auto'
       }`}>
+        {/* Decorative Background Elements */}
+        {!showSaved && !showSettings && !showMealPlanner && (
+          <>
+            <div className="absolute top-0 left-0 w-64 h-64 bg-green-200/20 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '4s' }} />
+            <div className="absolute top-32 right-0 w-96 h-96 bg-emerald-200/20 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
+            <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-green-100/30 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+          </>
+        )}
         {!user ? (
           <div className="flex justify-center py-6 sm:py-8 lg:py-12">
             {authMode === 'signin' ? (

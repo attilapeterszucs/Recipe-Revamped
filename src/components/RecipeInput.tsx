@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RecipeSchema } from '../lib/validation';
 import { z } from 'zod';
-import { Shuffle, Wand2, Search, ChevronLeft, ChevronRight, Filter, Trash2 } from 'lucide-react';
+import { Shuffle, Wand2, Search, ChevronLeft, ChevronRight, Filter, Trash2, Utensils } from 'lucide-react';
 import type { UserSettings } from '../types/userSettings';
 
 interface RecipeInputProps {
@@ -76,6 +76,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
 
   // State for locked filters pagination
   const [lockedCurrentPage, setLockedCurrentPage] = useState(0);
+  const [showPremiumDetails, setShowPremiumDetails] = useState(false);
   const filtersPerPage = 8;
 
   // Use provided dietary filters or fall back to basic filters
@@ -190,56 +191,114 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Mode Toggle */}
-      <div className="flex bg-gray-100 rounded-lg p-1">
-        <button
-          type="button"
-          onClick={() => {
-            setMode('convert');
-            setErrors({});
-          }}
-          className={`flex-1 py-1.5 sm:py-2 px-2 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-            mode === 'convert'
-              ? 'bg-white text-blue-600 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-          disabled={disabled}
-        >
-          <Wand2 className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
-          <span className="hidden sm:inline">Convert Recipe</span>
-          <span className="sm:hidden">Convert</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setMode('create');
-            setRecipe('');
-            setErrors({});
-          }}
-          className={`flex-1 py-1.5 sm:py-2 px-2 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-            mode === 'create'
-              ? 'bg-white text-blue-600 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-          disabled={disabled}
-        >
-          <Shuffle className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
-          <span className="hidden sm:inline">Create Recipe</span>
-          <span className="sm:hidden">Create</span>
-        </button>
+      {/* Enhanced Mode Toggle with Gradient Indicator */}
+      <div className="relative bg-gradient-to-r from-gray-100 to-gray-50 rounded-xl p-1.5 shadow-inner">
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={() => {
+              setMode('convert');
+              setErrors({});
+            }}
+            className={`flex-1 py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-300 transform ${
+              mode === 'convert'
+                ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg scale-105'
+                : 'bg-transparent text-gray-600 hover:text-gray-900 hover:bg-white/50'
+            }`}
+            disabled={disabled}
+            aria-label="Convert existing recipe"
+            aria-pressed={mode === 'convert'}
+          >
+            <Wand2 className={`w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2 ${mode === 'convert' ? 'animate-pulse' : ''}`} />
+            <span className="hidden sm:inline">Convert Recipe</span>
+            <span className="sm:hidden">Convert</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setMode('create');
+              setRecipe('');
+              setErrors({});
+            }}
+            className={`flex-1 py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-300 transform ${
+              mode === 'create'
+                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105'
+                : 'bg-transparent text-gray-600 hover:text-gray-900 hover:bg-white/50'
+            }`}
+            disabled={disabled}
+            aria-label="Create new recipe from scratch"
+            aria-pressed={mode === 'create'}
+          >
+            <Shuffle className={`w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2 ${mode === 'create' ? 'animate-pulse' : ''}`} />
+            <span className="hidden sm:inline">Create Recipe</span>
+            <span className="sm:hidden">Create</span>
+          </button>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+      {/* Enhanced Usage Meter with Gradient Progress Bar */}
+      {dailyUsage && (
+        <div className="mb-4 bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="text-sm font-semibold text-gray-700">Daily Conversions</h4>
+            <span className="text-xs font-medium text-gray-600">
+              {dailyUsage.used}/{dailyUsage.limit === -1 ? '∞' : dailyUsage.limit}
+            </span>
+          </div>
+
+          {dailyUsage.limit !== -1 && (
+            <>
+              <div className="relative w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+                {(() => {
+                  const percentage = Math.min((dailyUsage.used / dailyUsage.limit) * 100, 100);
+                  const getGradientColor = () => {
+                    if (percentage < 60) return 'bg-gradient-to-r from-green-500 to-emerald-500';
+                    if (percentage < 85) return 'bg-gradient-to-r from-yellow-500 to-amber-500';
+                    return 'bg-gradient-to-r from-red-500 to-rose-500';
+                  };
+
+                  return (
+                    <div
+                      className={`h-full ${getGradientColor()} transition-all duration-500 ease-out rounded-full`}
+                      style={{ width: `${percentage}%` }}
+                      role="progressbar"
+                      aria-valuenow={dailyUsage.used}
+                      aria-valuemin={0}
+                      aria-valuemax={dailyUsage.limit}
+                      aria-label={`${dailyUsage.used} of ${dailyUsage.limit} daily conversions used`}
+                    />
+                  );
+                })()}
+              </div>
+
+              {(() => {
+                const percentage = (dailyUsage.used / dailyUsage.limit) * 100;
+                if (percentage >= 90) {
+                  return (
+                    <p className="text-xs text-red-600 mt-2 font-medium">
+                      ⚠️ Almost at limit! Upgrade for unlimited conversions
+                    </p>
+                  );
+                } else if (percentage >= 75) {
+                  return (
+                    <p className="text-xs text-amber-600 mt-2 font-medium">
+                      ⚡ {dailyUsage.limit - dailyUsage.used} conversions remaining today
+                    </p>
+                  );
+                }
+                return null;
+              })()}
+            </>
+          )}
+        </div>
+      )}
+
       <div>
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 space-y-1 sm:space-y-0">
           <label htmlFor="recipe" className="block text-xs sm:text-sm font-medium text-gray-700">
             {mode === 'convert' ? 'Paste Your Recipe' : 'Enter Food Name or Dish Type'}
           </label>
-          {dailyUsage && (
-            <div className="text-xs sm:text-sm text-gray-600 font-medium bg-gray-100 px-2 py-1 rounded-full">
-              {dailyUsage.used}/{dailyUsage.limit === -1 ? '∞' : dailyUsage.limit} today
-            </div>
-          )}
         </div>
         {mode === 'convert' ? (
           <textarea
@@ -249,9 +308,10 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
               setRecipe(e.target.value);
               setErrors(prev => ({ ...prev, recipe: '' }));
             }}
-            placeholder="Paste your recipe here..."
-            className="w-full h-48 sm:h-64 px-2.5 sm:px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
+            placeholder="Paste your recipe here... Include ingredients, instructions, and any other details you have."
+            className="w-full h-48 sm:h-64 px-3 sm:px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none text-sm shadow-sm transition-all duration-200"
             disabled={disabled}
+            aria-label="Recipe input text area"
           />
         ) : (
           <input
@@ -263,17 +323,36 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
               setErrors(prev => ({ ...prev, recipe: '' }));
             }}
             placeholder="e.g., Pasta Carbonara, Chicken Tacos, Chocolate Cake"
-            className="w-full px-2.5 sm:px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="w-full px-3 sm:px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm shadow-sm transition-all duration-200"
             disabled={disabled}
+            aria-label="Food name or dish type input"
           />
         )}
         {errors.recipe && (
           <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.recipe}</p>
         )}
         {mode === 'convert' && (
-          <p className="mt-1 text-xs text-gray-500">
-            {recipe.length} / 20,000 characters
-          </p>
+          <div className="mt-2 flex items-center justify-between">
+            <p className={`text-xs font-medium ${
+              recipe.length > 18000 ? 'text-red-600' :
+              recipe.length > 15000 ? 'text-amber-600' :
+              'text-gray-500'
+            }`}>
+              {recipe.length.toLocaleString()} / 20,000 characters
+            </p>
+            {recipe.length > 0 && (
+              <div className="h-1.5 w-32 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-300 ${
+                    recipe.length > 18000 ? 'bg-red-500' :
+                    recipe.length > 15000 ? 'bg-amber-500' :
+                    'bg-green-500'
+                  }`}
+                  style={{ width: `${Math.min((recipe.length / 20000) * 100, 100)}%` }}
+                />
+              </div>
+            )}
+          </div>
         )}
         {mode === 'create' && (
           <p className="mt-1 text-xs text-gray-500">
@@ -281,6 +360,54 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
           </p>
         )}
       </div>
+
+      {/* Active Filters Badge - Display at Top */}
+      {selectedFilters.length > 0 && (
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-sm font-bold text-green-900 flex items-center">
+              <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full mr-2">
+                {selectedFilters.length}
+              </span>
+              Active Dietary Filters
+            </h4>
+            {selectedFilters.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setSelectedFilters([])}
+                className="text-xs font-medium text-red-600 hover:text-red-700 hover:underline transition-colors"
+                aria-label="Clear all filters"
+              >
+                Clear All
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {selectedFilters.map(filter => {
+              const option = dietaryOptions.find(opt => opt.name === filter);
+              return (
+                <div
+                  key={filter}
+                  className="inline-flex items-center bg-white border-2 border-green-300 rounded-full px-3 py-1.5 shadow-sm hover:shadow-md transition-all duration-200 group"
+                >
+                  <span className="text-sm mr-1.5">{option?.icon || '🔹'}</span>
+                  <span className="text-xs font-semibold text-gray-800">{filter}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleFilterToggle(filter)}
+                    className="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                    aria-label={`Remove ${filter} filter`}
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div>
         <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
@@ -298,52 +425,65 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
         </label>
         {/* Enhanced Filter System with Search, Categories, and Pagination */}
 
-        {/* Search Bar and Category Filter Row */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-4">
-          {/* Search Bar (2/3 of row) */}
-          <div className="flex-1 sm:w-2/3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search dietary filters..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(0); // Reset to first page when searching
-                }}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                disabled={disabled}
-              />
-            </div>
+        {/* Search Bar */}
+        <div className="mb-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search dietary filters..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(0); // Reset to first page when searching
+              }}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm shadow-sm"
+              disabled={disabled}
+              aria-label="Search dietary filters"
+            />
           </div>
+        </div>
 
-          {/* Category Filter (1/3 of row) */}
-          <div className="sm:w-1/3">
-            <div className="relative">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => {
-                  setSelectedCategory(e.target.value);
-                  setCurrentPage(0); // Reset to first page when changing category
+        {/* Category Tabs - Horizontal Scrollable */}
+        <div className="mb-4 -mx-2 px-2 overflow-x-auto">
+          <div className="flex gap-2 min-w-max pb-2">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategory('all');
+                setCurrentPage(0);
+              }}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
+                selectedCategory === 'all'
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md transform scale-105'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+              disabled={disabled}
+              aria-label="Show all categories"
+              aria-pressed={selectedCategory === 'all'}
+            >
+              All Filters
+            </button>
+            {Object.entries(categoryLabels).map(([key, value]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => {
+                  setSelectedCategory(key);
+                  setCurrentPage(0);
                 }}
-                className="w-full pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white appearance-none"
+                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
+                  selectedCategory === key
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md transform scale-105'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
                 disabled={disabled}
+                aria-label={`Filter by ${value.label}`}
+                aria-pressed={selectedCategory === key}
               >
-                <option value="all">All Categories</option>
-                {Object.entries(categoryLabels).map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value.label}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
+                {value.label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -438,69 +578,6 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
         })()}
         {errors.filters && (
           <p className="mt-2 text-xs sm:text-sm text-red-600">{errors.filters}</p>
-        )}
-
-        {/* Selected Filters Display */}
-        {userSettingsLoading ? (
-          <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center">
-                <div className="w-6 h-6 bg-blue-200 rounded animate-pulse mr-2"></div>
-                <div className="h-4 bg-blue-200 rounded animate-pulse w-48"></div>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-8 bg-blue-200 rounded-full animate-pulse" style={{ width: `${60 + Math.random() * 40}px` }}></div>
-              ))}
-            </div>
-          </div>
-        ) : selectedFilters.length > 0 && (
-          <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-semibold text-blue-900 flex items-center">
-                <span className="text-base mr-2">✅</span>
-                Selected Dietary Filters ({selectedFilters.length})
-              </h4>
-              {selectedFilters.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setSelectedFilters([])}
-                  className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200 group"
-                  title="Clear all filters"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {selectedFilters.map(filter => {
-                const option = dietaryOptions.find(opt => opt.name === filter);
-                return (
-                  <div
-                    key={filter}
-                    className="flex items-center bg-white border border-blue-200 rounded-full px-3 py-1.5 shadow-sm hover:shadow-md transition-all duration-200 group"
-                  >
-                    <span className="text-sm mr-1.5">{option?.icon || '🔹'}</span>
-                    <span className="text-xs font-medium text-gray-800">{filter}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleFilterToggle(filter)}
-                      className="ml-2 text-gray-400 hover:text-red-500 transition-colors group-hover:text-gray-600"
-                      title={`Remove ${filter}`}
-                    >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="mt-3 text-xs text-blue-600">
-              💡 These filters will be applied to your recipe conversion
-            </div>
-          </div>
         )}
 
         {/* Custom Ingredient Preferences for Chef+ Users */}
@@ -644,80 +721,151 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
       </div>
 
 
-      {/* Default Serving Size and Units Display */}
-      {userSettingsLoading ? (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              <div className="flex items-center">
-                <div className="h-4 bg-blue-200 rounded animate-pulse w-28 sm:w-32"></div>
-                <div className="ml-2 h-4 bg-blue-200 rounded animate-pulse w-16 sm:w-20"></div>
-              </div>
-              <div className="flex items-center">
-                <div className="h-4 bg-blue-200 rounded animate-pulse w-20 sm:w-24"></div>
-                <div className="ml-2 h-4 bg-blue-200 rounded animate-pulse w-12 sm:w-16"></div>
-              </div>
-            </div>
-            <div className="h-3 bg-blue-200 rounded animate-pulse w-40 sm:w-32"></div>
-          </div>
-        </div>
-      ) : userSettings && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              <div className="flex flex-col xs:flex-row xs:items-center">
-                <span className="text-xs sm:text-sm font-medium text-blue-800">Default Serving Size:</span>
-                <span className="ml-0 xs:ml-2 text-xs sm:text-sm text-blue-700">{userSettings.defaultServingSize} servings</span>
-              </div>
-              <div className="flex flex-col xs:flex-row xs:items-center">
-                <span className="text-xs sm:text-sm font-medium text-blue-800">Unit System:</span>
-                <span className="ml-0 xs:ml-2 text-xs sm:text-sm text-blue-700 capitalize">{userSettings.preferredUnits}</span>
-              </div>
-            </div>
-            <div className="text-xs text-blue-600">
-              From your preferences
-            </div>
-          </div>
-        </div>
-      )}
-
-        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+        <div className="flex flex-col sm:flex-row gap-3">
+          {/* Primary Action Button with Enhanced Styling */}
           <button
             type="submit"
             disabled={disabled}
-            className="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
+            className="flex-1 relative overflow-hidden py-3.5 sm:py-4 px-4 sm:px-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base group"
+            aria-label={mode === 'convert' ? 'Convert recipe with selected filters' : 'Create new recipe'}
           >
-            {mode === 'convert' ? 'Convert Recipe' : 'Create Recipe'}
+            <span className="relative z-10 flex items-center justify-center">
+              {mode === 'convert' ? (
+                <>
+                  <Wand2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:animate-pulse" />
+                  Convert Recipe
+                  <span className="hidden lg:inline ml-2 text-xs opacity-75">(Enter ↵)</span>
+                </>
+              ) : (
+                <>
+                  <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:animate-pulse" />
+                  Create Recipe
+                  <span className="hidden lg:inline ml-2 text-xs opacity-75">(Enter ↵)</span>
+                </>
+              )}
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-700" />
           </button>
-          
+
+          {/* Secondary Action Button */}
           <button
             type="button"
             onClick={handleSurpriseMe}
             disabled={disabled}
-            className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium rounded-md hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 text-sm sm:text-base"
+            className="sm:w-auto px-5 sm:px-7 py-3.5 sm:py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base group"
             title="Generate a random recipe with selected dietary preferences"
+            aria-label="Generate surprise recipe"
           >
-            <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 inline mr-1 sm:mr-2" />
+            <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 inline mr-2 group-hover:rotate-180 transition-transform duration-500" />
             <span className="hidden sm:inline">Surprise Me!</span>
             <span className="sm:hidden">Surprise!</span>
           </button>
         </div>
       </form>
-      
-      {/* Premium Features Section - Matching regular design */}
-      {availableFilters.length < allFilters.length && (
-        <div className="mt-4 sm:mt-6 bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-4 sm:p-6" style={{ filter: 'drop-shadow(0 0 12px rgba(251, 146, 60, 0.2))' }}>
-          {/* Header matching regular section */}
-          <div className="mb-4">
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-              🚀 Premium Dietary Filters
-              <span className="text-xs text-orange-600 ml-2 font-normal block sm:inline mt-1 sm:mt-0">
-                ({allFilters.length - availableFilters.length} more filters available with upgrade)
-              </span>
-            </label>
+
+      {/* Enhanced Default Serving Size and Units Display - Moved After Action Buttons */}
+      {userSettingsLoading ? (
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 shadow-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 bg-green-200 rounded-lg animate-pulse"></div>
+            <div className="flex-1">
+              <div className="h-4 bg-green-200 rounded animate-pulse w-32 mb-2"></div>
+              <div className="h-3 bg-green-200 rounded animate-pulse w-40"></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white/60 rounded-lg p-3">
+              <div className="h-3 bg-green-200 rounded animate-pulse w-20 mb-2"></div>
+              <div className="h-4 bg-green-200 rounded animate-pulse w-16"></div>
+            </div>
+            <div className="bg-white/60 rounded-lg p-3">
+              <div className="h-3 bg-green-200 rounded animate-pulse w-20 mb-2"></div>
+              <div className="h-4 bg-green-200 rounded animate-pulse w-16"></div>
+            </div>
+          </div>
+        </div>
+      ) : userSettings && (
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="bg-green-500 rounded-lg p-2">
+                <Utensils className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-gray-900">Recipe Preferences</h4>
+                <p className="text-xs text-green-600 font-medium">From your settings</p>
+              </div>
+            </div>
           </div>
 
-          {(() => {
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white rounded-lg p-3 border border-green-100 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">👥</span>
+                <span className="text-xs font-semibold text-gray-600">Serving Size</span>
+              </div>
+              <p className="text-lg font-bold text-gray-900">{userSettings.defaultServingSize}</p>
+            </div>
+
+            <div className="bg-white rounded-lg p-3 border border-green-100 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">📏</span>
+                <span className="text-xs font-semibold text-gray-600">Unit System</span>
+              </div>
+              <p className="text-lg font-bold text-gray-900 capitalize">{userSettings.preferredUnits}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Compact Premium Features Section with Collapsible Details */}
+      {availableFilters.length < allFilters.length && (
+        <div className="mt-4 sm:mt-6 bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-4 sm:p-5 shadow-lg">
+          {/* Compact Header with Toggle */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🚀</span>
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-gray-900">Unlock Premium Filters</h3>
+                <p className="text-xs text-orange-600 font-medium">
+                  {allFilters.length - availableFilters.length} more filters + custom ingredients
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowPremiumDetails(!showPremiumDetails)}
+              className="text-xs font-semibold text-orange-600 hover:text-orange-700 underline"
+              aria-label={showPremiumDetails ? "Hide premium details" : "Show premium details"}
+            >
+              {showPremiumDetails ? 'Hide Details' : 'View All'}
+            </button>
+          </div>
+
+          {/* Preview: Show 4-6 locked filters */}
+          {!showPremiumDetails && (() => {
+            const lockedFilters = dietaryOptions.filter(option => !availableFilters.includes(option.name));
+            const previewFilters = lockedFilters.slice(0, 6);
+
+            return (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
+                {previewFilters.map(option => (
+                  <div
+                    key={option.name}
+                    className={`relative flex items-center justify-center px-2 py-2 rounded-lg text-xs font-medium border opacity-50 cursor-not-allowed ${option.color} border-transparent`}
+                    title="Requires premium subscription"
+                  >
+                    <span className="text-sm mr-1">{option.icon}</span>
+                    <span className="text-xs truncate">{option.name}</span>
+                    <span className="text-xs ml-1">🔒</span>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
+
+          {/* Expandable Details */}
+          {showPremiumDetails && (() => {
             const lockedFilters = dietaryOptions.filter(option => !availableFilters.includes(option.name));
             const lockedFiltersPerPage = 8;
             const lockedTotalPages = Math.ceil(lockedFilters.length / lockedFiltersPerPage);
@@ -815,35 +963,34 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             </div>
           )}
 
-          {/* CTA Button - Integrated naturally */}
-          <div className="mt-4">
-            <button
-              type="button"
-              className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg text-sm"
-              onClick={() => {
-                // Try direct global function first
-                if ((window as any).showUpgradeModal) {
-                  (window as any).showUpgradeModal('chef', 'convert-filters');
-                  return;
-                }
+          {/* Compact CTA Button */}
+          <button
+            type="button"
+            className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm"
+            onClick={() => {
+              // Try direct global function first
+              if ((window as any).showUpgradeModal) {
+                (window as any).showUpgradeModal('chef', 'convert-filters');
+                return;
+              }
 
-                // Fallback to clicking the upgrade button
-                const upgradeButton = document.querySelector('[data-upgrade-plan]') as HTMLButtonElement;
-                if (upgradeButton) {
-                  upgradeButton.click();
-                }
-              }}
-            >
-              <span className="mr-2">✨</span>
-              <span>Upgrade Plan to Access All Filters</span>
-              <span className="ml-2">→</span>
-            </button>
-            {currentPlan !== 'chef' && (
-              <p className="text-xs text-gray-500 mt-2 text-center">
-                Starting at $14.99/month • Cancel anytime
-              </p>
-            )}
-          </div>
+              // Fallback to clicking the upgrade button
+              const upgradeButton = document.querySelector('[data-upgrade-plan]') as HTMLButtonElement;
+              if (upgradeButton) {
+                upgradeButton.click();
+              }
+            }}
+            aria-label="Upgrade to access all premium filters"
+          >
+            <span className="mr-2">✨</span>
+            <span>Upgrade to Unlock All Filters</span>
+            <span className="ml-2">→</span>
+          </button>
+          {currentPlan !== 'chef' && (
+            <p className="text-xs text-gray-600 mt-2 text-center font-medium">
+              Starting at $14.99/month • Cancel anytime
+            </p>
+          )}
         </div>
       )}
     </div>
