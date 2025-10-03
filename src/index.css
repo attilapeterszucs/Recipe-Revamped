@@ -652,11 +652,11 @@ select[size] option:hover {
    CUSTOM DROPDOWN ANIMATIONS
    ============================================================================ */
 
-/* Dropdown open animation - slides up and fades in (opens above button) */
+/* Dropdown open animation - slides down and fades in (opens below button) */
 @keyframes dropdown-open {
   0% {
     opacity: 0;
-    transform: translateY(10px) scale(0.95);
+    transform: translateY(-10px) scale(0.95);
   }
   100% {
     opacity: 1;

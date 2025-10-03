@@ -91,7 +91,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
         </span>
 
         {/* Chevron Icon */}
-        <div className={`absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 transition-transform duration-300 ${isOpen ? '' : 'rotate-180'}`}>
+        <div className={`absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
           <ChevronDown className="w-5 h-5 text-green-500" strokeWidth={2.5} />
         </div>
       </button>
@@ -104,7 +104,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
           {/* Options List */}
           <div
-            className="absolute z-40 w-full bottom-full mb-2 bg-white border-2 border-green-200 rounded-xl shadow-2xl overflow-hidden animate-dropdown-open"
+            className="absolute z-50 w-full top-full mt-2 bg-white border-2 border-green-200 rounded-xl shadow-2xl overflow-hidden animate-dropdown-open"
             role="listbox"
             aria-label={ariaLabel}
           >
