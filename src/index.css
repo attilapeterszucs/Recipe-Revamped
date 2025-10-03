@@ -927,13 +927,29 @@ select[size] option:hover {
 @media (max-width: 640px) {
   /* Improve touch targets on mobile */
   .recipe-card-3d {
-    min-height: 320px;
+    min-height: 340px;
+    border-radius: 1rem; /* Slightly smaller border radius for mobile */
+  }
+
+  /* Enhanced card design for mobile */
+  .recipe-card-3d {
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -2px rgba(0, 0, 0, 0.1);
   }
 
   /* Disable hover effects on mobile to prevent sticky states */
   .recipe-card-3d:hover {
     transform: none;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Active state for mobile touch feedback */
+  .recipe-card-3d:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
   }
 
   /* Better spacing for mobile cards */
@@ -962,6 +978,16 @@ select[size] option:hover {
   .pagination-mobile-optimized button {
     min-width: 44px;
     min-height: 44px;
+  }
+
+  /* Mobile card image optimization */
+  .recipe-card-3d .group\/image {
+    min-height: 160px;
+  }
+
+  /* Better badge layout on mobile */
+  .recipe-card-3d .dietary-badges {
+    gap: 0.375rem;
   }
 }
 

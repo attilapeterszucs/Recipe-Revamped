@@ -375,34 +375,25 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border-2 border-green-100">
         {/* Header with animation */}
-        <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0 ${isPageLoaded ? 'animate-header-slide-in' : 'opacity-0'}`}>
+        <div className={`flex items-center justify-between mb-4 sm:mb-6 ${isPageLoaded ? 'animate-header-slide-in' : 'opacity-0'}`}>
           <div className="flex items-center space-x-2 sm:space-x-3">
             <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-2 sm:p-2.5 lg:p-3 shadow-lg transform transition-transform duration-300 hover:scale-110">
               <ChefHat className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 text-white flex-shrink-0" />
             </div>
             <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
           </div>
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            {featureAccess && (
-              <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border-2 shadow-sm transition-all duration-300 ${
-                featureAccess.canSaveRecipes
-                  ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border-green-300'
-                  : 'bg-gradient-to-r from-orange-50 to-red-50 text-orange-800 border-orange-300'
-              }`}>
-                <ChefHat className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                <span className="font-extrabold">{featureAccess.currentRecipeCount}</span>
-                <span className="text-gray-400 font-bold">/</span>
-                <span className="opacity-75">{featureAccess.recipeLimit === 999999 ? '∞' : featureAccess.recipeLimit}</span>
-              </div>
-            )}
-            <button
-              onClick={loadRecipes}
-              className="inline-flex items-center justify-center px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-green-600 to-emerald-600 border-2 border-green-200 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
-            >
-              <RefreshCcw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Refresh</span>
-            </button>
-          </div>
+          {featureAccess && (
+            <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border-2 shadow-sm transition-all duration-300 ${
+              featureAccess.canSaveRecipes
+                ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border-green-300'
+                : 'bg-gradient-to-r from-orange-50 to-red-50 text-orange-800 border-orange-300'
+            }`}>
+              <ChefHat className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="font-extrabold">{featureAccess.currentRecipeCount}</span>
+              <span className="text-gray-400 font-bold">/</span>
+              <span className="opacity-75">{featureAccess.recipeLimit === 999999 ? '∞' : featureAccess.recipeLimit}</span>
+            </div>
+          )}
         </div>
 
         {/* Recipe Limit Warning */}
@@ -625,32 +616,32 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                 </div>
                 
                 {/* Recipe Metadata */}
-                <div 
+                <div
                   className="p-3 sm:p-4 cursor-pointer"
                   onClick={() => onViewRecipe && onViewRecipe(recipe)}
                 >
-                  <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <div className="flex items-center justify-between mb-2.5 sm:mb-3">
                     <div className="flex items-center text-xs sm:text-sm text-gray-500">
-                      <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                      <span className="hidden sm:inline">{recipe.createdAt?.toLocaleDateString('en-US', { 
-                        month: 'short', 
+                      <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
+                      <span className="hidden sm:inline">{recipe.createdAt?.toLocaleDateString('en-US', {
+                        month: 'short',
                         day: 'numeric',
                         year: 'numeric'
                       })}</span>
-                      <span className="sm:hidden">{recipe.createdAt?.toLocaleDateString('en-US', { 
-                        month: 'short', 
+                      <span className="sm:hidden">{recipe.createdAt?.toLocaleDateString('en-US', {
+                        month: 'short',
                         day: 'numeric'
                       })}</span>
                     </div>
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-2 sm:mb-3 text-xs sm:text-sm text-gray-600">
+
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2.5 sm:mb-3 text-xs sm:text-sm text-gray-600">
                     <div className="flex items-center">
-                      <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-green-500" />
+                      <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 text-green-500 flex-shrink-0" />
                       <span className="truncate">{recipeInfo.totalTime || 'N/A'}</span>
                     </div>
                     <div className="flex items-center">
-                      <Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-blue-500" />
+                      <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 text-blue-500 flex-shrink-0" />
                       <span className="truncate">{recipeInfo.servings} <span className="hidden sm:inline">servings</span></span>
                     </div>
                   </div>
@@ -658,7 +649,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                   {/* Dietary Filters - Enhanced badges matching landing page */}
                   {recipe.dietaryFilters.length > 0 && (
                     <div className="mb-2 sm:mb-3">
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-1.5 dietary-badges">
                         {recipe.dietaryFilters.slice(0, 2).map(filter => (
                           <span
                             key={filter}
