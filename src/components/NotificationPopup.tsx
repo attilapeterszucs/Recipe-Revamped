@@ -95,7 +95,7 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
             }} />
           </div>
 
-          <div className="flex items-center space-x-3 relative z-10">
+          <div className="flex items-center gap-3 relative z-10">
             <div className="text-white bg-white/20 p-2 rounded-xl backdrop-blur-sm">
               {getNotificationIcon(notification.type)}
             </div>
@@ -112,7 +112,7 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
         {/* Content */}
         <div className="p-6">
           <div className={`${colors.bg} ${colors.border} border-2 rounded-2xl p-5 sm:p-6 mb-4 shadow-lg`}>
-            <div className="flex items-start space-x-4">
+            <div className="flex items-start gap-4">
               <div className={`flex-shrink-0 ${colors.iconBg} p-3 rounded-xl`}>
                 {getNotificationIcon(notification.type)}
               </div>
@@ -132,7 +132,7 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
           {/* Metadata */}
           <div className="border-t-2 border-gray-100 pt-4">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                 <Calendar className="w-4 h-4" />
                 <span className="font-medium">{formatDate(notification.createdAt)}</span>
               </div>
