@@ -79,8 +79,14 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
       setLoading(true);
       setError('');
       const userRecipes = await getUserRecipes(userId);
-      setRecipes(userRecipes);
-      setFilteredRecipes(userRecipes);
+
+      // Apply default sorting (newest first) before setting recipes
+      const sortedRecipes = [...userRecipes].sort((a, b) => {
+        return (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0);
+      });
+
+      setRecipes(sortedRecipes);
+      setFilteredRecipes(sortedRecipes);
     } catch (err) {
       setError('Failed to load recipes');
       console.error(err);
