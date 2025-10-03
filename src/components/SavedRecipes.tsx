@@ -3,7 +3,7 @@ import { getUserRecipes, deleteRecipe } from '../lib/firestore';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
 import { useToast } from './ToastContainer';
-import { Search, Eye, Trash2, Calendar, Filter, ChefHat, RefreshCcw, Edit, Clock, Users, Image, Star, Crown, Heart } from 'lucide-react';
+import { Search, Eye, Trash2, Calendar, Filter, ChefHat, RefreshCcw, Edit, Clock, Users, Image, Star, Crown, Heart, ArrowUpDown } from 'lucide-react';
 import { RecipeEditor } from './RecipeEditor';
 import { CustomDropdown } from './CustomDropdown';
 
@@ -447,6 +447,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                   { value: 'rating-desc', label: 'Most Popular', icon: '⭐' },
                   { value: 'rating-asc', label: 'Least Popular', icon: '⭐' }
                 ]}
+                icon={<ArrowUpDown className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />}
                 placeholder="Sort by..."
                 ariaLabel="Sort recipes"
               />
