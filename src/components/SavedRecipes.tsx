@@ -504,9 +504,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                   { value: 'date-desc', label: 'Newest First', icon: '📅' },
                   { value: 'date-asc', label: 'Oldest First', icon: '📅' },
                   { value: 'name-asc', label: 'A-Z', icon: '🔤' },
-                  { value: 'name-desc', label: 'Z-A', icon: '🔤' },
-                  { value: 'rating-desc', label: 'Most Popular', icon: '⭐' },
-                  { value: 'rating-asc', label: 'Least Popular', icon: '⭐' }
+                  { value: 'name-desc', label: 'Z-A', icon: '🔤' }
                 ]}
                 icon={<ArrowUpDown className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />}
                 placeholder="Sort by..."
