@@ -497,3 +497,95 @@ input[type="datetime-local"] {
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+
+/* ============================================================================
+   DROPDOWN MENU STYLING
+   ============================================================================ */
+
+/* Enhanced dropdown option styling for modern browsers */
+select option {
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 14px;
+  background-color: white;
+  color: #1f2937;
+  transition: all 0.2s ease;
+}
+
+/* Hover state for dropdown options */
+select option:hover {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  color: #059669;
+  cursor: pointer;
+}
+
+/* Selected/checked option state */
+select option:checked {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  font-weight: 700;
+}
+
+/* Focus state for keyboard navigation */
+select option:focus {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  outline: 2px solid #10b981;
+  outline-offset: -2px;
+}
+
+/* Firefox-specific dropdown styling */
+@-moz-document url-prefix() {
+  select option {
+    padding: 8px 10px;
+  }
+
+  select option:checked {
+    background-color: #10b981;
+    color: white;
+  }
+}
+
+/* WebKit/Chromium-specific dropdown styling */
+@supports (-webkit-appearance: none) {
+  select option {
+    padding: 10px 12px;
+    min-height: 44px;
+  }
+
+  select option:hover {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  }
+}
+
+/* Disabled option styling */
+select option:disabled {
+  color: #9ca3af;
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  font-style: italic;
+}
+
+/* Option group (optgroup) styling */
+select optgroup {
+  font-weight: 700;
+  font-size: 13px;
+  color: #059669;
+  background-color: #f0fdf4;
+  padding: 8px 10px;
+  margin-top: 4px;
+}
+
+/* Enhance dropdown list container appearance */
+select:focus {
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+}
+
+/* Custom styling for dropdown when opened (limited browser support) */
+select[size]:not([size="1"]) option {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f0fdf4;
+}
+
+select[size]:not([size="1"]) option:last-child {
+  border-bottom: none;
+}
