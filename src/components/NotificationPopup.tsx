@@ -78,7 +78,7 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 bottom-0 bg-black/60 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200"
+      className="fixed top-0 left-0 right-0 bottom-0 bg-black/30 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
