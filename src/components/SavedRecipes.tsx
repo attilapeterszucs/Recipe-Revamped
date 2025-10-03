@@ -400,6 +400,18 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
+            {featureAccess && (
+              <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border-2 shadow-sm transition-all duration-300 ${
+                featureAccess.canSaveRecipes
+                  ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border-green-300'
+                  : 'bg-gradient-to-r from-orange-50 to-red-50 text-orange-800 border-orange-300'
+              }`}>
+                <ChefHat className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="font-extrabold">{featureAccess.currentRecipeCount}</span>
+                <span className="text-gray-400 font-bold">/</span>
+                <span className="opacity-75">{featureAccess.recipeLimit === 999999 ? '∞' : featureAccess.recipeLimit}</span>
+              </div>
+            )}
             {/* View Toggle Buttons - Hidden on mobile */}
             <div className="hidden sm:flex items-center bg-white border-2 border-gray-300 rounded-xl p-1">
               <button
@@ -425,18 +437,6 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                 <List className="w-5 h-5" />
               </button>
             </div>
-            {featureAccess && (
-              <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border-2 shadow-sm transition-all duration-300 ${
-                featureAccess.canSaveRecipes
-                  ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border-green-300'
-                  : 'bg-gradient-to-r from-orange-50 to-red-50 text-orange-800 border-orange-300'
-              }`}>
-                <ChefHat className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="font-extrabold">{featureAccess.currentRecipeCount}</span>
-                <span className="text-gray-400 font-bold">/</span>
-                <span className="opacity-75">{featureAccess.recipeLimit === 999999 ? '∞' : featureAccess.recipeLimit}</span>
-              </div>
-            )}
           </div>
         </div>
 
