@@ -210,9 +210,12 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     });
     
     setFilteredRecipes(filtered);
-    // Reset to first page when filters change
-    setCurrentPage(1);
   }, [recipes, searchTerm, selectedFilter, selectedHealthCondition, selectedCategory, sortBy, sortOrder, featureAccess, userSettings]);
+
+  // Reset to first page only when filters change (not when recipes change)
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedFilter, selectedHealthCondition, selectedCategory, sortBy, sortOrder]);
 
   // Get all unique dietary filters from recipes
   const availableFilters = [...new Set(recipes.flatMap(recipe => recipe.dietaryFilters))].sort();
