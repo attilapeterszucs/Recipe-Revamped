@@ -239,6 +239,22 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     return () => clearTimeout(timer);
   }, [loadRecipes]);
 
+  // Force grid view on mobile screens
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640 && viewMode === 'list') {
+        setViewMode('grid');
+      }
+    };
+
+    // Check on mount
+    handleResize();
+
+    // Listen for window resize
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [viewMode]);
+
   const handlePageChange = (newPage: number) => {
     if (newPage === currentPage || isTransitioning) return;
 
@@ -384,29 +400,29 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* View Toggle Buttons */}
-            <div className="flex items-center bg-white border-2 border-gray-300 rounded-lg sm:rounded-xl p-0.5 sm:p-1">
+            {/* View Toggle Buttons - Hidden on mobile */}
+            <div className="hidden sm:flex items-center bg-white border-2 border-gray-300 rounded-xl p-1">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all duration-300 ${
+                className={`p-2 rounded-lg transition-all duration-300 ${
                   viewMode === 'grid'
                     ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                 }`}
                 aria-label="Grid view"
               >
-                <Grid3x3 className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Grid3x3 className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all duration-300 ${
+                className={`p-2 rounded-lg transition-all duration-300 ${
                   viewMode === 'list'
                     ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                 }`}
                 aria-label="List view"
               >
-                <List className="w-4 h-4 sm:w-5 sm:h-5" />
+                <List className="w-5 h-5" />
               </button>
             </div>
             {featureAccess && (
