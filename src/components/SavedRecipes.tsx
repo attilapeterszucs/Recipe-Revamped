@@ -3,7 +3,7 @@ import { getUserRecipes, deleteRecipe } from '../lib/firestore';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
 import { useToast } from './ToastContainer';
-import { Search, Eye, Trash2, Calendar, Filter, ChefHat, RefreshCcw, Edit, Clock, Users, Image, Star, Crown, Heart, ArrowUpDown } from 'lucide-react';
+import { Search, Trash2, Calendar, Filter, ChefHat, RefreshCcw, Edit, Clock, Users, Image, Star, Crown, Heart, ArrowUpDown } from 'lucide-react';
 import { RecipeEditor } from './RecipeEditor';
 import { CustomDropdown } from './CustomDropdown';
 
@@ -68,6 +68,9 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   const [editingRecipe, setEditingRecipe] = useState<SavedRecipe | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [filterApplied, setFilterApplied] = useState(false);
+  const [sortChanged, setSortChanged] = useState(false);
   const recipesPerPage = 8;
   const { showSuccess, showError } = useToast();
 
@@ -86,21 +89,39 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     }
   }, [userId]);
 
+  // Trigger animation when filters are applied
+  useEffect(() => {
+    if (searchTerm || selectedFilter || selectedHealthCondition || selectedCategory) {
+      setFilterApplied(true);
+      const timer = setTimeout(() => setFilterApplied(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [searchTerm, selectedFilter, selectedHealthCondition, selectedCategory]);
+
+  // Trigger animation when sort changes
+  useEffect(() => {
+    if (sortBy || sortOrder) {
+      setSortChanged(true);
+      const timer = setTimeout(() => setSortChanged(false), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [sortBy, sortOrder]);
+
   // Filter and sort recipes
   useEffect(() => {
     let filtered = recipes;
-    
+
     // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(recipe => 
+      filtered = filtered.filter(recipe =>
         recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         recipe.convertedRecipe.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipe.dietaryFilters.some(filter => 
+        recipe.dietaryFilters.some(filter =>
           filter.toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
     }
-    
+
     // Apply dietary filter
     if (selectedFilter) {
       filtered = filtered.filter(recipe =>
@@ -212,6 +233,9 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
 
   useEffect(() => {
     loadRecipes();
+    // Trigger page load animation
+    const timer = setTimeout(() => setIsPageLoaded(true), 100);
+    return () => clearTimeout(timer);
   }, [loadRecipes]);
 
   const handlePageChange = (newPage: number) => {
@@ -350,23 +374,26 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border-2 border-green-100">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+        {/* Header with animation */}
+        <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0 ${isPageLoaded ? 'animate-header-slide-in' : 'opacity-0'}`}>
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-2 sm:p-2.5 lg:p-3 shadow-lg">
+            <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-2 sm:p-2.5 lg:p-3 shadow-lg transform transition-transform duration-300 hover:scale-110">
               <ChefHat className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 text-white flex-shrink-0" />
             </div>
             <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
           </div>
           <div className="flex items-center space-x-2 sm:space-x-3">
             {featureAccess && (
-              <span className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full ${
-                featureAccess.canSaveRecipes 
-                  ? 'bg-blue-100 text-blue-800' 
-                  : 'bg-orange-100 text-orange-800'
+              <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border-2 shadow-sm transition-all duration-300 ${
+                featureAccess.canSaveRecipes
+                  ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border-green-300'
+                  : 'bg-gradient-to-r from-orange-50 to-red-50 text-orange-800 border-orange-300'
               }`}>
-                {featureAccess.currentRecipeCount}/{featureAccess.recipeLimit}
-              </span>
+                <ChefHat className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="font-extrabold">{featureAccess.currentRecipeCount}</span>
+                <span className="text-gray-400 font-bold">/</span>
+                <span className="opacity-75">{featureAccess.recipeLimit === 999999 ? '∞' : featureAccess.recipeLimit}</span>
+              </div>
             )}
             <button
               onClick={loadRecipes}
@@ -413,8 +440,8 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
           </div>
         )}
 
-        {/* Enhanced Search and Filter Bar */}
-        <div className="bg-gradient-to-br from-white to-green-50/20 rounded-2xl shadow-lg border-2 border-green-100 p-4 sm:p-5 mb-4 sm:mb-6">
+        {/* Enhanced Search and Filter Bar with animation */}
+        <div className={`bg-gradient-to-br from-white to-green-50/20 rounded-2xl shadow-lg border-2 border-green-100 p-4 sm:p-5 mb-4 sm:mb-6 ${isPageLoaded ? 'animate-filter-bar-slide' : 'opacity-0'} ${filterApplied ? 'animate-filter-pulse' : ''}`}>
           {/* First Row: Search and Sort */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
             {/* Search Input - 2/3 width on desktop */}
@@ -430,7 +457,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
               />
             </div>
 
-            {/* Sort Options - 1/3 width on desktop */}
+            {/* Sort Options - 1/3 width on desktop with animation */}
             <div className="sm:flex-1">
               <CustomDropdown
                 value={`${sortBy}-${sortOrder}`}
@@ -447,7 +474,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                   { value: 'rating-desc', label: 'Most Popular', icon: '⭐' },
                   { value: 'rating-asc', label: 'Least Popular', icon: '⭐' }
                 ]}
-                icon={<ArrowUpDown className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />}
+                icon={<ArrowUpDown className={`h-4 w-4 sm:h-5 sm:w-5 text-green-500 ${sortChanged ? 'animate-sort-bounce' : ''}`} />}
                 placeholder="Sort by..."
                 ariaLabel="Sort recipes"
               />
@@ -542,30 +569,33 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
           )}
         </div>
 
-        {/* Recipe Cards Grid */}
+        {/* Recipe Cards Grid with enhanced animations */}
         <div
           data-recipes-grid
           className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 transition-all duration-300 ${
-            isTransitioning ? 'opacity-0 transform translate-y-2' : 'opacity-100 transform translate-y-0'
+            isTransitioning ? 'animate-page-out' : 'animate-page-in'
           }`}
         >
-          {currentRecipes.map(recipe => {
+          {currentRecipes.map((recipe, index) => {
             const recipeInfo = extractRecipeInfo(recipe.convertedRecipe);
+            const staggerClass = `stagger-${(index % 8) + 1}`;
             return (
-              <div 
-                key={recipe.id} 
-                className="bg-white rounded-xl shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border border-gray-200 overflow-hidden group transform"
+              <div
+                key={recipe.id}
+                className={`bg-white rounded-xl shadow-md border-2 border-gray-200 overflow-hidden group transform recipe-card-3d transition-all duration-500 ${
+                  isPageLoaded && !isTransitioning ? `animate-recipe-card-enter ${staggerClass}` : 'opacity-0'
+                } ${filterApplied ? 'animate-filter-change' : ''}`}
               >
-                {/* Recipe Image */}
-                <div 
-                  className="relative h-40 sm:h-48 bg-gradient-to-br from-green-400 to-blue-500 cursor-pointer"
+                {/* Recipe Image with hover effect */}
+                <div
+                  className="relative h-40 sm:h-48 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 cursor-pointer overflow-hidden group/image"
                   onClick={() => onViewRecipe && onViewRecipe(recipe)}
                 >
                   {recipe.imageUrl ? (
-                    <img 
-                      src={recipe.imageUrl} 
+                    <img
+                      src={recipe.imageUrl}
                       alt={recipe.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover/image:scale-110"
                       onError={(e) => {
                         // Fallback to default gradient background if image fails to load
                         e.currentTarget.style.display = 'none';
@@ -573,13 +603,13 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <ChefHat className="h-16 w-16 text-white opacity-80" />
+                      <ChefHat className="h-16 w-16 text-white opacity-80 transition-transform duration-300 group-hover/image:scale-110 group-hover/image:rotate-12" />
                     </div>
                   )}
                   
                   {/* Overlay with recipe name */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4">
-                    <h3 className="text-sm sm:text-lg font-bold text-white truncate" title={recipe.title}>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4 transition-all duration-300 group-hover/image:from-black/80">
+                    <h3 className="text-sm sm:text-lg font-bold text-white truncate transition-transform duration-300 group-hover/image:translate-x-1" title={recipe.title}>
                       {recipe.title}
                     </h3>
                   </div>
@@ -625,20 +655,20 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                     </div>
                   </div>
                   
-                  {/* Dietary Filters */}
+                  {/* Dietary Filters - Enhanced badges matching landing page */}
                   {recipe.dietaryFilters.length > 0 && (
                     <div className="mb-2 sm:mb-3">
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1.5">
                         {recipe.dietaryFilters.slice(0, 2).map(filter => (
-                          <span 
+                          <span
                             key={filter}
-                            className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium bg-green-100 text-green-700"
+                            className="inline-flex items-center px-2 sm:px-2.5 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200 transition-all duration-300 hover:border-green-400 hover:shadow-sm"
                           >
                             {filter.length > 8 ? filter.substring(0, 8) + '...' : filter}
                           </span>
                         ))}
                         {recipe.dietaryFilters.length > 2 && (
-                          <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                          <span className="inline-flex items-center px-2 sm:px-2.5 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-gray-50 to-slate-50 text-gray-700 border border-gray-300 transition-all duration-300 hover:border-gray-400 hover:shadow-sm">
                             +{recipe.dietaryFilters.length - 2}
                           </span>
                         )}
@@ -647,36 +677,24 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                   )}
                 </div>
                 
-                {/* Card Actions */}
-                <div className="bg-gray-50 px-3 sm:px-4 py-2 sm:py-3 flex justify-between items-center border-t border-gray-200">
-                  <div className="flex space-x-1 sm:space-x-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onViewRecipe && onViewRecipe(recipe);
-                      }}
-                      className="inline-flex items-center px-2 sm:px-3 py-1 text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors text-xs sm:text-sm"
-                    >
-                      <Eye className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
-                      <span className="hidden sm:inline">View</span>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditRecipe(recipe);
-                      }}
-                      className="inline-flex items-center px-2 sm:px-3 py-1 text-green-600 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 transition-colors text-xs sm:text-sm"
-                    >
-                      <Edit className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
-                      <span className="hidden sm:inline">Edit</span>
-                    </button>
-                  </div>
+                {/* Card Actions with enhanced hover effects - matching landing page */}
+                <div className="bg-gradient-to-r from-gray-50 to-slate-50 px-3 sm:px-4 py-3 sm:py-3.5 flex justify-between items-center border-t border-gray-200">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditRecipe(recipe);
+                    }}
+                    className="inline-flex items-center px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-green-700 font-semibold bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg hover:border-green-400 hover:shadow-lg transition-all duration-300 text-xs sm:text-sm hover:scale-105"
+                  >
+                    <Edit className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1.5" />
+                    <span className="hidden sm:inline">Edit</span>
+                  </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteClick(recipe.id);
                     }}
-                    className="inline-flex items-center px-2 sm:px-3 py-1 text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 transition-colors text-xs sm:text-sm"
+                    className="inline-flex items-center px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-white font-semibold bg-gradient-to-r from-red-600 to-red-500 border-2 border-transparent rounded-lg hover:from-red-700 hover:to-red-600 transition-all duration-300 text-xs sm:text-sm hover:scale-105 hover:shadow-lg shadow-red-500/20"
                   >
                     <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
@@ -686,12 +704,12 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
           })}
         </div>
 
-        {/* Pagination Controls */}
+        {/* Pagination Controls with enhanced design */}
         {totalPages > 1 && filteredRecipes.length > 0 && (
-          <div className="mt-8 flex items-center justify-between border-t border-gray-200 pt-6">
-            <div className="flex items-center text-sm text-gray-600">
+          <div className={`mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t-2 border-green-100 pt-6 ${isPageLoaded ? 'animate-fade-in' : 'opacity-0'}`}>
+            <div className="flex items-center text-sm text-gray-700 font-semibold bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-2 rounded-lg border border-green-200">
               <span>
-                Showing {startIndex + 1} to {Math.min(endIndex, filteredRecipes.length)} of {filteredRecipes.length} recipes
+                Showing {startIndex + 1} - {Math.min(endIndex, filteredRecipes.length)} of {filteredRecipes.length}
               </span>
             </div>
 
@@ -700,13 +718,13 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
               <button
                 onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1 || isTransitioning}
-                className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-green-600 to-emerald-600 border-2 border-green-500 rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:from-green-600 disabled:hover:to-emerald-600 transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-md"
               >
                 Previous
               </button>
 
               {/* Page Numbers */}
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-1.5">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
                   // Show first page, last page, current page, and pages around current page
                   if (
@@ -719,10 +737,10 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                         key={page}
                         onClick={() => handlePageChange(page)}
                         disabled={isTransitioning}
-                        className={`inline-flex items-center px-3 py-2 text-sm font-medium border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
+                        className={`inline-flex items-center justify-center min-w-[42px] px-3 py-2.5 text-sm font-bold border-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ${
                           currentPage === page
-                            ? 'bg-blue-50 text-blue-600 border-blue-200'
-                            : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-50 hover:text-gray-700'
+                            ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white border-green-400 shadow-lg scale-110 shadow-green-500/30'
+                            : 'text-gray-700 bg-white border-gray-300 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:border-green-300 hover:text-green-700 hover:scale-105 hover:shadow-md'
                         }`}
                       >
                         {page}
@@ -733,8 +751,8 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                     (page === currentPage + 3 && currentPage < totalPages - 3)
                   ) {
                     return (
-                      <span key={page} className="px-2 py-2 text-sm text-gray-400">
-                        ...
+                      <span key={page} className="px-2 py-2 text-sm font-bold text-gray-400">
+                        •••
                       </span>
                     );
                   }
@@ -746,7 +764,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
               <button
                 onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages || isTransitioning}
-                className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-green-600 to-emerald-600 border-2 border-green-500 rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:from-green-600 disabled:hover:to-emerald-600 transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-md"
               >
                 Next
               </button>
@@ -754,12 +772,14 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
           </div>
         )}
 
-        {/* No Results */}
+        {/* No Results with animation */}
         {filteredRecipes.length === 0 && recipes.length > 0 && (
-          <div className="text-center py-12">
-            <Search className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+          <div className="text-center py-12 animate-no-results">
+            <div className="inline-block p-4 bg-gray-100 rounded-full mb-4">
+              <Search className="h-12 w-12 text-gray-400" />
+            </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No recipes found</h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 max-w-md mx-auto">
               Try adjusting your search terms or filters to find what you're looking for.
             </p>
           </div>

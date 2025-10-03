@@ -687,6 +687,238 @@ select[size] option:hover {
   animation: check-in 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
+/* ============================================================================
+   RECIPE BOOK PAGE ANIMATIONS
+   ============================================================================ */
+
+/* Page load animation - smoother staggered card entrance */
+@keyframes recipe-card-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.92);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateY(-4px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-recipe-card-enter {
+  animation: recipe-card-enter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Filter change animation - smooth transition */
+@keyframes filter-change {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-filter-change {
+  animation: filter-change 0.3s ease-out forwards;
+}
+
+/* Page transition animation */
+@keyframes page-transition-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+}
+
+@keyframes page-transition-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-page-out {
+  animation: page-transition-out 0.25s ease-out forwards;
+}
+
+.animate-page-in {
+  animation: page-transition-in 0.3s ease-out forwards;
+}
+
+/* Recipe card 3D hover effect - lift animation without color change */
+.recipe-card-3d {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.recipe-card-3d:hover {
+  transform: translateY(-12px) translateZ(20px);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 15px 25px -8px rgba(0, 0, 0, 0.15),
+    0 8px 16px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* Shine effect animation for recipe cards */
+@keyframes card-shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(30deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(30deg);
+  }
+}
+
+.recipe-card-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.recipe-card-shine::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%) translateY(-100%) rotate(30deg);
+  transition: none;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.recipe-card-shine:hover::before {
+  animation: card-shine 0.8s ease-in-out;
+}
+
+/* Shimmer loading effect for recipe cards */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 1000px 100%;
+}
+
+/* Recipe Book header animation */
+@keyframes header-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-header-slide-in {
+  animation: header-slide-in 0.5s ease-out forwards;
+}
+
+/* Filter bar animation */
+@keyframes filter-bar-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-filter-bar-slide {
+  animation: filter-bar-slide 0.4s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+/* Stagger animation delays for recipe cards */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+.stagger-7 { animation-delay: 0.35s; }
+.stagger-8 { animation-delay: 0.4s; }
+
+/* Pulse animation for active filters */
+@keyframes filter-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+}
+
+.animate-filter-pulse {
+  animation: filter-pulse 2s ease-in-out infinite;
+}
+
+/* Sort indicator animation */
+@keyframes sort-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-sort-bounce {
+  animation: sort-bounce 0.6s ease-in-out;
+}
+
+/* No results animation */
+@keyframes no-results-fade {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-no-results {
+  animation: no-results-fade 0.4s ease-out forwards;
+}
+
 /* Custom scrollbar for dropdown */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
