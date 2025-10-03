@@ -77,14 +77,8 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
   };
 
   return (
-    <div
-      className="fixed top-0 left-0 right-0 bottom-0 bg-black/30 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
         {/* Header */}
         <div className={`${colors.header} px-6 py-5 flex items-center justify-between relative overflow-hidden`}>
           {/* Decorative pattern */}
@@ -95,15 +89,15 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
             }} />
           </div>
 
-          <div className="flex items-center gap-3 relative z-10">
-            <div className="text-white bg-white/20 p-2 rounded-xl">
+          <div className="flex items-center space-x-3 relative z-10">
+            <div className="text-white bg-white/20 p-2 rounded-xl backdrop-blur-sm">
               {getNotificationIcon(notification.type)}
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-white">Notification</h2>
           </div>
           <button
             onClick={onClose}
-            className="text-white/90 hover:text-white transition-all duration-200 p-2 rounded-xl hover:bg-white/20 relative z-10"
+            className="text-white/90 hover:text-white transition-all duration-200 p-2 rounded-xl hover:bg-white/20 backdrop-blur-sm relative z-10"
           >
             <X className="w-5 h-5" />
           </button>
@@ -112,7 +106,7 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
         {/* Content */}
         <div className="p-6">
           <div className={`${colors.bg} ${colors.border} border-2 rounded-2xl p-5 sm:p-6 mb-4 shadow-lg`}>
-            <div className="flex items-start gap-4">
+            <div className="flex items-start space-x-4">
               <div className={`flex-shrink-0 ${colors.iconBg} p-3 rounded-xl`}>
                 {getNotificationIcon(notification.type)}
               </div>
@@ -132,7 +126,7 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
           {/* Metadata */}
           <div className="border-t-2 border-gray-100 pt-4">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+              <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600">
                 <Calendar className="w-4 h-4" />
                 <span className="font-medium">{formatDate(notification.createdAt)}</span>
               </div>
