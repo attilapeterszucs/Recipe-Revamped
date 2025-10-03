@@ -70,7 +70,6 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [filterApplied, setFilterApplied] = useState(false);
-  const [sortChanged, setSortChanged] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const recipesPerPage = 8;
   const { showSuccess, showError } = useToast();
@@ -98,15 +97,6 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
       return () => clearTimeout(timer);
     }
   }, [searchTerm, selectedFilter, selectedHealthCondition, selectedCategory]);
-
-  // Trigger animation when sort changes
-  useEffect(() => {
-    if (sortBy || sortOrder) {
-      setSortChanged(true);
-      const timer = setTimeout(() => setSortChanged(false), 600);
-      return () => clearTimeout(timer);
-    }
-  }, [sortBy, sortOrder]);
 
   // Filter and sort recipes
   useEffect(() => {
@@ -479,7 +469,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         )}
 
         {/* Enhanced Search and Filter Bar with animation */}
-        <div className={`relative z-40 bg-gradient-to-br from-white to-green-50/20 rounded-2xl shadow-lg border-2 border-green-100 p-4 sm:p-5 mb-4 sm:mb-6 ${isPageLoaded ? 'animate-filter-bar-slide' : 'opacity-0'} ${filterApplied ? 'animate-filter-pulse' : ''}`}>
+        <div className={`relative z-40 bg-gradient-to-br from-white to-green-50/20 rounded-2xl shadow-lg border-2 border-green-100 p-4 sm:p-5 mb-4 sm:mb-6 ${isPageLoaded ? 'animate-filter-bar-slide' : 'opacity-0'}`}>
           {/* First Row: Search and Sort */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
             {/* Search Input - 2/3 width on desktop */}
@@ -512,7 +502,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                   { value: 'rating-desc', label: 'Most Popular', icon: '⭐' },
                   { value: 'rating-asc', label: 'Least Popular', icon: '⭐' }
                 ]}
-                icon={<ArrowUpDown className={`h-4 w-4 sm:h-5 sm:w-5 text-green-500 ${sortChanged ? 'animate-sort-bounce' : ''}`} />}
+                icon={<ArrowUpDown className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />}
                 placeholder="Sort by..."
                 ariaLabel="Sort recipes"
               />
