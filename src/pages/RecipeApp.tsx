@@ -503,57 +503,59 @@ export function RecipeApp() {
       <div className="min-h-screen bg-gradient-to-b from-green-50/30 via-emerald-50/20 to-white">
       <SEOHead pageKey="app" />
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex justify-between items-center">
-            <button 
+      <header className="bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <button
               onClick={() => {
                 setShowSaved(false);
                 setShowSettings(false);
               }}
-              className="flex items-center space-x-2 sm:space-x-3 hover:opacity-75 transition-opacity"
+              className="flex items-center gap-3 group"
             >
-              <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-7 w-7 sm:h-8 sm:w-8" />
-              <h1 className="hidden sm:block text-xl sm:text-2xl font-bold text-gray-900">Recipe Revamped</h1>
+              <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-10 w-10 transition-transform duration-300 group-hover:scale-110" />
+              <span className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
             </button>
-            
-            <div className="flex items-center space-x-2 sm:space-x-4">
+
+            <div className="flex items-center gap-2">
               {user ? (
                 <>
-                  {/* Navigation Buttons */}
-                  <nav className="hidden md:flex items-center space-x-2 lg:space-x-3">
+                  {/* Desktop Navigation */}
+                  <nav className="hidden md:flex items-center gap-2">
                     <button
                       onClick={() => {
+                        if (!showSaved && !showSettings && !showMealPlanner) return;
                         setShowSaved(false);
                         setShowSettings(false);
                         setShowMealPlanner(false);
                       }}
-                      className={`flex items-center space-x-1.5 sm:space-x-2 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg transition-colors text-sm sm:text-base ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
                         !showSaved && !showSettings && !showMealPlanner
-                          ? 'bg-blue-100 text-blue-700' 
-                          : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                          ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30'
+                          : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
                       }`}
                     >
-                      <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      <span className="hidden sm:inline">Convert</span>
+                      <Zap className="w-4 h-4" />
+                      <span>Convert</span>
                     </button>
-                    
+
                     <button
                       onClick={() => {
-                        setShowSaved(!showSaved);
+                        if (showSaved) return;
+                        setShowSaved(true);
                         setShowSettings(false);
                         setShowMealPlanner(false);
                       }}
-                      className={`flex items-center space-x-1.5 sm:space-x-2 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg transition-colors text-sm sm:text-base ${
-                        showSaved 
-                          ? 'bg-purple-100 text-purple-700' 
-                          : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
+                        showSaved
+                          ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30'
+                          : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
                       }`}
                     >
-                      <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      <span className="hidden sm:inline">Recipe Book</span>
+                      <BookOpen className="w-4 h-4" />
+                      <span>Recipe Book</span>
                     </button>
-                    
+
                     <button
                       onClick={() => {
                         if (!featureAccess.canUseMealPlanning) {
@@ -567,57 +569,57 @@ export function RecipeApp() {
                           }
                           return;
                         }
-                        setShowMealPlanner(!showMealPlanner);
+                        if (showMealPlanner) return;
+                        setShowMealPlanner(true);
                         setShowSaved(false);
                         setShowSettings(false);
                       }}
-                      className={`flex items-center space-x-1.5 sm:space-x-2 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg transition-colors text-sm sm:text-base ${
-                        !featureAccess.canUseMealPlanning 
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
+                        !featureAccess.canUseMealPlanning
                           ? 'text-gray-400 cursor-not-allowed opacity-60'
-                          : showMealPlanner 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'text-gray-600 hover:text-green-600 hover:bg-green-50'
+                          : showMealPlanner
+                            ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30'
+                            : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
                       }`}
                       disabled={!featureAccess.canUseMealPlanning}
                     >
-                      <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      <span className="hidden sm:inline">Meal Planning</span>
-                      <span className="sm:hidden">Meal</span>
+                      <Calendar className="w-4 h-4" />
+                      <span>Meal Planning</span>
                       {!featureAccess.canUseMealPlanning && (
-                        <span className="text-xs bg-orange-100 text-orange-700 px-1 py-0.5 rounded">
+                        <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-bold">
                           Chef+
                         </span>
                       )}
                     </button>
                   </nav>
-                  
-                  <div className="flex items-center space-x-3">
+
+                  <div className="flex items-center gap-3 ml-4">
                     <NotificationBell userId={user.uid} />
                     <UserAccountDropdown
-                    user={user}
-                    onShowSaved={() => {
-                      setShowSaved(!showSaved);
-                      setShowSettings(false);
-                      setShowMealPlanner(false);
-                    }}
-                    onShowSettings={() => {
-                      setShowSettings(!showSettings);
-                      setShowSaved(false);
-                      setShowMealPlanner(false);
-                    }}
-                    onSignOut={handleSignOut}
+                      user={user}
+                      onShowSaved={() => {
+                        setShowSaved(!showSaved);
+                        setShowSettings(false);
+                        setShowMealPlanner(false);
+                      }}
+                      onShowSettings={() => {
+                        setShowSettings(!showSettings);
+                        setShowSaved(false);
+                        setShowMealPlanner(false);
+                      }}
+                      onSignOut={handleSignOut}
                     />
-                    
+
                     {/* Mobile Menu Button */}
                     <button
                       onClick={() => setShowMobileMenu(!showMobileMenu)}
-                      className="md:hidden p-1.5 sm:p-2 text-gray-600 hover:text-green-600 transition-colors rounded-lg hover:bg-gray-100"
+                      className="md:hidden p-2 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-lg transition-colors"
                       aria-label="Toggle mobile menu"
                     >
                       {showMobileMenu ? (
-                        <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                        <X className="w-6 h-6" />
                       ) : (
-                        <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+                        <Menu className="w-6 h-6" />
                       )}
                     </button>
                   </div>
@@ -629,42 +631,50 @@ export function RecipeApp() {
         
         {/* Mobile Navigation Menu */}
         {showMobileMenu && (
-          <div className="md:hidden bg-white border-t border-gray-200 px-3 sm:px-4 py-2 sm:py-3">
-            <nav className="space-y-1 sm:space-y-2">
+          <div className="md:hidden bg-white border-t border-gray-200">
+            <div className="px-4 pt-2 pb-4 space-y-2">
               <button
                 onClick={() => {
+                  if (!showSaved && !showSettings && !showMealPlanner) {
+                    setShowMobileMenu(false);
+                    return;
+                  }
                   setShowSaved(false);
                   setShowSettings(false);
                   setShowMealPlanner(false);
                   setShowMobileMenu(false);
                 }}
-                className={`w-full flex items-center space-x-2 sm:space-x-3 px-2 py-2 sm:px-3 sm:py-3 rounded-lg transition-colors text-left text-sm sm:text-base ${
+                className={`w-full justify-start flex items-center gap-2 px-3 py-2.5 rounded-lg font-semibold transition-all duration-200 ${
                   !showSaved && !showSettings && !showMealPlanner
-                    ? 'bg-blue-100 text-blue-700' 
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                    ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30'
+                    : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
                 }`}
               >
-                <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="font-medium">Convert</span>
+                <Zap className="w-4 h-4" />
+                <span>Convert</span>
               </button>
-              
+
               <button
                 onClick={() => {
-                  setShowSaved(!showSaved);
+                  if (showSaved) {
+                    setShowMobileMenu(false);
+                    return;
+                  }
+                  setShowSaved(true);
                   setShowSettings(false);
                   setShowMealPlanner(false);
                   setShowMobileMenu(false);
                 }}
-                className={`w-full flex items-center space-x-2 sm:space-x-3 px-2 py-2 sm:px-3 sm:py-3 rounded-lg transition-colors text-left text-sm sm:text-base ${
-                  showSaved 
-                    ? 'bg-purple-100 text-purple-700' 
-                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                className={`w-full justify-start flex items-center gap-2 px-3 py-2.5 rounded-lg font-semibold transition-all duration-200 ${
+                  showSaved
+                    ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30'
+                    : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
                 }`}
               >
-                <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="font-medium">Recipe Book</span>
+                <BookOpen className="w-4 h-4" />
+                <span>Recipe Book</span>
               </button>
-              
+
               <button
                 onClick={() => {
                   if (!featureAccess.canUseMealPlanning) {
@@ -679,37 +689,39 @@ export function RecipeApp() {
                     setShowMobileMenu(false);
                     return;
                   }
-                  setShowMealPlanner(!showMealPlanner);
+                  if (showMealPlanner) {
+                    setShowMobileMenu(false);
+                    return;
+                  }
+                  setShowMealPlanner(true);
                   setShowSaved(false);
                   setShowSettings(false);
                   setShowMobileMenu(false);
                 }}
-                className={`w-full flex items-center justify-between px-2 py-2 sm:px-3 sm:py-3 rounded-lg transition-colors text-left text-sm sm:text-base ${
-                  !featureAccess.canUseMealPlanning 
+                className={`w-full justify-start flex items-center gap-2 px-3 py-2.5 rounded-lg font-semibold transition-all duration-200 ${
+                  !featureAccess.canUseMealPlanning
                     ? 'text-gray-400 cursor-not-allowed opacity-60'
-                    : showMealPlanner 
-                      ? 'bg-green-100 text-green-700' 
-                      : 'text-gray-600 hover:text-green-600 hover:bg-green-50'
+                    : showMealPlanner
+                      ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30'
+                      : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
                 }`}
                 disabled={!featureAccess.canUseMealPlanning}
               >
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span className="font-medium">Meal Planning Calendar</span>
-                </div>
+                <Calendar className="w-4 h-4" />
+                <span>Meal Planning</span>
                 {!featureAccess.canUseMealPlanning && (
-                  <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
+                  <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-bold ml-auto">
                     Chef+
                   </span>
                 )}
               </button>
-            </nav>
+            </div>
           </div>
         )}
       </header>
 
       {/* Main Content */}
-      <main className={`relative px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 ${
+      <main className={`relative px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 z-0 ${
         !showSaved && !showSettings && !showMealPlanner
           ? 'w-full'
           : 'max-w-7xl mx-auto'
@@ -825,7 +837,7 @@ export function RecipeApp() {
                 </div>
               )
             ) : (
-              <div className="space-y-4 sm:space-y-6">
+              <div className="space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 {/* Enhanced Conditional Layout with Smooth Transitions */}
                 <div
                   className={`transition-all duration-1000 ease-out transform ${
