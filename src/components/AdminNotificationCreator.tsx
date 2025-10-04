@@ -362,111 +362,129 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
 
           {/* User Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-gray-800 mb-2">
               Select Recipients
             </label>
-            <p className="text-xs text-gray-500 mb-3">
-              ℹ️ Email notification filters will appear when "Send as Email" is enabled
-            </p>
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-xl p-3 mb-4 shadow-sm">
+              <p className="text-xs text-blue-800 font-medium">
+                ℹ️ Email notification filters will appear when "Send as Email" is enabled
+              </p>
+            </div>
 
             {/* Send to All Users Toggle */}
-            <div className="mb-4">
-              <div className="flex items-center space-x-3">
-                <input
-                  type="radio"
-                  id="sendToAll"
-                  name="sendMode"
-                  checked={sendToAllUsers}
-                  onChange={() => setSendToAllUsers(true)}
-                  className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                />
-                <label htmlFor="sendToAll" className="text-sm font-medium text-gray-700">
-                  Send to all {stats.totalUsers} registered users
-                </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+              <div className="bg-white border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-indigo-300 hover:shadow-md">
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="radio"
+                    id="sendToAll"
+                    name="sendMode"
+                    checked={sendToAllUsers}
+                    onChange={() => setSendToAllUsers(true)}
+                    className="mt-1 h-5 w-5 text-purple-600 border-2 border-gray-300 focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="sendToAll" className="text-sm font-bold text-gray-800 cursor-pointer">
+                      Send to all registered users
+                    </label>
+                    <p className="text-xs text-gray-600 mt-1 font-medium">
+                      Targets all {stats.totalUsers} users
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="flex items-center space-x-3 mt-2">
-                <input
-                  type="radio"
-                  id="sendToSelected"
-                  name="sendMode"
-                  checked={!sendToAllUsers}
-                  onChange={() => setSendToAllUsers(false)}
-                  className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                />
-                <label htmlFor="sendToSelected" className="text-sm font-medium text-gray-700">
-                  Send to selected users only
-                </label>
+              <div className="bg-white border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-indigo-300 hover:shadow-md">
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="radio"
+                    id="sendToSelected"
+                    name="sendMode"
+                    checked={!sendToAllUsers}
+                    onChange={() => setSendToAllUsers(false)}
+                    className="mt-1 h-5 w-5 text-purple-600 border-2 border-gray-300 focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="sendToSelected" className="text-sm font-bold text-gray-800 cursor-pointer">
+                      Send to selected users
+                    </label>
+                    <p className="text-xs text-gray-600 mt-1 font-medium">
+                      Manually choose recipients
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* User Selection Interface */}
             {!sendToAllUsers && (
-              <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <div className="border-2 border-indigo-200 rounded-xl p-5 bg-gradient-to-br from-indigo-50 to-blue-50/50 shadow-md">
                 {/* Search */}
                 <div className="mb-4">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-indigo-500" />
                     <input
                       type="text"
                       placeholder="Search users by email or name..."
                       value={userSearchTerm}
                       onChange={(e) => setUserSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-indigo-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium"
                     />
                   </div>
                 </div>
 
                 {/* Filter Toggle - Only show when "Send as Email" is enabled */}
                 {sendAsEmail && (
-                  <div className="mb-4">
-                    <div className="flex items-center space-x-2">
+                  <div className="mb-4 bg-white border-2 border-indigo-200 rounded-xl p-3 shadow-sm">
+                    <div className="flex items-start space-x-3">
                       <input
                         type="checkbox"
                         id="showOnlyEmailEnabled"
                         checked={showOnlyEmailEnabled}
                         onChange={(e) => setShowOnlyEmailEnabled(e.target.checked)}
-                        className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        className="mt-0.5 h-5 w-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-purple-500 cursor-pointer"
                       />
-                      <label htmlFor="showOnlyEmailEnabled" className="text-sm text-gray-700">
-                        Show only users with email notifications enabled
-                      </label>
+                      <div className="flex-1">
+                        <label htmlFor="showOnlyEmailEnabled" className="text-sm font-bold text-gray-800 cursor-pointer">
+                          Show only users with email notifications enabled
+                        </label>
+                        <p className="text-xs text-indigo-700 mt-1 font-medium">
+                          {showOnlyEmailEnabled
+                            ? `Showing ${filteredUsers.length} users with email notifications enabled`
+                            : `Showing all ${filteredUsers.length} users (some may have notifications disabled)`
+                          }
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {showOnlyEmailEnabled
-                        ? `Showing ${filteredUsers.length} users with email notifications enabled`
-                        : `Showing all ${filteredUsers.length} users (some may have notifications disabled)`
-                      }
-                    </p>
                   </div>
                 )}
 
                 {/* Info message when email sending is disabled */}
                 {!sendAsEmail && (
-                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm text-blue-700">
+                  <div className="mb-4 p-4 bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-xl shadow-sm">
+                    <p className="text-sm text-blue-800 font-medium">
                       ℹ️ All users are shown since only in-app notifications will be sent (no email filtering needed)
                     </p>
                   </div>
                 )}
 
                 {/* Bulk Actions */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-sm text-gray-600">
-                    {selectedUsers.length} of {filteredUsers.length} users selected
-                  </div>
-                  <div className="space-x-2">
+                <div className="flex items-center justify-between mb-4 p-3 bg-white border-2 border-indigo-200 rounded-xl">
+                  <span className="px-3 py-1.5 bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-lg text-sm font-bold shadow-md">
+                    {selectedUsers.length} of {filteredUsers.length} selected
+                  </span>
+                  <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={handleSelectAllUsers}
-                      className="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                      className="px-4 py-2 bg-white border-2 border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-50 transition-all duration-200 font-bold text-sm"
                     >
                       Select All
                     </button>
                     <button
                       type="button"
                       onClick={handleDeselectAllUsers}
-                      className="text-xs px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                      className="px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 font-bold text-sm"
                     >
                       Deselect All
                     </button>
@@ -474,52 +492,55 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
                 </div>
 
                 {/* User List */}
-                <div className="max-h-60 overflow-y-auto space-y-2">
+                <div className="max-h-80 overflow-y-auto border-2 border-indigo-200 rounded-xl bg-white shadow-inner">
                   {loadingUsers ? (
-                    <div className="flex items-center justify-center py-4">
-                      <Loader className="w-4 h-4 animate-spin mr-2" />
-                      Loading users...
+                    <div className="flex items-center justify-center py-8">
+                      <Loader className="w-6 h-6 animate-spin text-indigo-600 mr-3" />
+                      <span className="text-indigo-700 font-bold">Loading users...</span>
                     </div>
                   ) : filteredUsers.length === 0 ? (
-                    <div className="text-center py-4 text-gray-500">
-                      No users found
+                    <div className="text-center py-8">
+                      <Users className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+                      <p className="text-gray-600 font-medium">No users found</p>
                     </div>
                   ) : (
-                    filteredUsers.map((user) => (
-                      <div
-                        key={user.uid}
-                        className="flex items-center space-x-3 p-2 bg-white rounded border"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedUsers.includes(user.uid)}
-                          onChange={() => handleUserToggle(user.uid)}
-                          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                        <div className="flex-1">
-                          <div className="text-sm font-medium text-gray-900">
-                            {user.displayName || 'No display name'}
+                    <div className="divide-y-2 divide-gray-100">
+                      {filteredUsers.map((user) => (
+                        <div
+                          key={user.uid}
+                          className="flex items-center space-x-3 p-4 hover:bg-indigo-50 transition-colors duration-150"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedUsers.includes(user.uid)}
+                            onChange={() => handleUserToggle(user.uid)}
+                            className="h-5 w-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-bold text-gray-900 truncate">
+                              {user.displayName || 'No display name'}
+                            </div>
+                            <div className="text-xs text-gray-600 truncate font-medium">{user.email}</div>
+                            {user.emailPreferences?.notifications === false && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-bold bg-red-100 text-red-700 border border-red-200 mt-1">
+                                Email notifications disabled
+                              </span>
+                            )}
                           </div>
-                          <div className="text-xs text-gray-500">{user.email}</div>
-                          {user.emailPreferences?.notifications === false && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
-                              Email notifications disabled
-                            </span>
+                          {sendAsEmail && (
+                            user.emailNotifications === true ? (
+                              <div title="Will receive email notification" className="flex-shrink-0">
+                                <Mail className="w-5 h-5 text-green-600" />
+                              </div>
+                            ) : (
+                              <div title="Email notifications disabled - will only receive in-app notification" className="flex-shrink-0">
+                                <Mail className="w-5 h-5 text-gray-400" />
+                              </div>
+                            )
                           )}
                         </div>
-                        {sendAsEmail && (
-                          user.emailNotifications === true ? (
-                            <div title="Will receive email notification">
-                              <Mail className="w-4 h-4 text-green-600" />
-                            </div>
-                          ) : (
-                            <div title="Email notifications disabled - will only receive in-app notification">
-                              <Mail className="w-4 h-4 text-gray-400" />
-                            </div>
-                          )
-                        )}
-                      </div>
-                    ))
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
@@ -527,20 +548,20 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
           </div>
 
           {/* Email Notification Option */}
-          <div className="border border-gray-200 rounded-lg p-4 bg-blue-50">
+          <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-xl p-4 shadow-md">
             <div className="flex items-start space-x-3">
               <input
                 type="checkbox"
                 id="sendAsEmail"
                 checked={sendAsEmail}
                 onChange={(e) => setSendAsEmail(e.target.checked)}
-                className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="mt-1 h-5 w-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-purple-500 cursor-pointer"
               />
               <div className="flex-1">
-                <label htmlFor="sendAsEmail" className="block text-sm font-medium text-blue-800">
+                <label htmlFor="sendAsEmail" className="block text-sm font-bold text-gray-800 cursor-pointer">
                   📧 Also send as email notification
                 </label>
-                <p className="text-xs text-blue-600 mt-1">
+                <p className="text-xs text-blue-800 mt-1 font-medium">
                   Send this notification via email to users who have email notifications enabled in their settings
                 </p>
               </div>
