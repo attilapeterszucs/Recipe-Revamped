@@ -523,13 +523,38 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                     <label className="block text-sm font-bold text-gray-800 mb-2">
                       Unit
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={newGoal.unit || ''}
                       onChange={(e) => setNewGoal({ ...newGoal, unit: e.target.value })}
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                      placeholder="kg, lbs, %"
-                    />
+                    >
+                      <option value="">Select unit</option>
+                      <optgroup label="Weight">
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="lbs">Pounds (lbs)</option>
+                        <option value="g">Grams (g)</option>
+                        <option value="oz">Ounces (oz)</option>
+                      </optgroup>
+                      <optgroup label="Body Measurements">
+                        <option value="cm">Centimeters (cm)</option>
+                        <option value="in">Inches (in)</option>
+                        <option value="%">Percentage (%)</option>
+                      </optgroup>
+                      <optgroup label="Performance">
+                        <option value="reps">Repetitions (reps)</option>
+                        <option value="sets">Sets</option>
+                        <option value="min">Minutes (min)</option>
+                        <option value="hrs">Hours (hrs)</option>
+                        <option value="km">Kilometers (km)</option>
+                        <option value="mi">Miles (mi)</option>
+                      </optgroup>
+                      <optgroup label="Other">
+                        <option value="days">Days</option>
+                        <option value="weeks">Weeks</option>
+                        <option value="calories">Calories (cal)</option>
+                        <option value="servings">Servings</option>
+                      </optgroup>
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-2">
@@ -706,13 +731,38 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                     <label className="block text-sm font-bold text-gray-800 mb-2">
                       Unit
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={editingGoal.unit || ''}
                       onChange={(e) => setEditingGoal({ ...editingGoal, unit: e.target.value })}
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                      placeholder="kg, lbs, %"
-                    />
+                    >
+                      <option value="">Select unit</option>
+                      <optgroup label="Weight">
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="lbs">Pounds (lbs)</option>
+                        <option value="g">Grams (g)</option>
+                        <option value="oz">Ounces (oz)</option>
+                      </optgroup>
+                      <optgroup label="Body Measurements">
+                        <option value="cm">Centimeters (cm)</option>
+                        <option value="in">Inches (in)</option>
+                        <option value="%">Percentage (%)</option>
+                      </optgroup>
+                      <optgroup label="Performance">
+                        <option value="reps">Repetitions (reps)</option>
+                        <option value="sets">Sets</option>
+                        <option value="min">Minutes (min)</option>
+                        <option value="hrs">Hours (hrs)</option>
+                        <option value="km">Kilometers (km)</option>
+                        <option value="mi">Miles (mi)</option>
+                      </optgroup>
+                      <optgroup label="Other">
+                        <option value="days">Days</option>
+                        <option value="weeks">Weeks</option>
+                        <option value="calories">Calories (cal)</option>
+                        <option value="servings">Servings</option>
+                      </optgroup>
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-2">
