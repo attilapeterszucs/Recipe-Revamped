@@ -2308,47 +2308,52 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'data':
         return (
           <div className="space-y-8">
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Data & Backup</h3>
-              <p className="text-gray-600 leading-relaxed">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Data & Backup</h3>
+              <p className="text-gray-700 leading-relaxed font-medium">
                 Protect your recipes and cooking data with secure cloud backups. Restore your collection anytime and keep your culinary creations safe.
               </p>
             </div>
-            
+
             {/* Backup features restricted to paid plans */}
             {featureAccess?.canBackupRestore ? (
               <>
                 {/* Manual Backup & Recovery */}
-                <div className="border-t pt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-md font-semibold text-gray-900">Backup & Recovery</h4>
+                <div className="bg-gradient-to-br from-white to-green-50/20 border-2 border-green-100 rounded-2xl p-5 shadow-lg">
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
+                        <Database className="w-5 h-5 text-green-600" />
+                      </div>
+                      <h4 className="text-base sm:text-lg font-black text-gray-900">Backup & Recovery</h4>
+                    </div>
                     <div className="text-sm">
                       {(() => {
                         const currentPlan = featureAccess?.currentPlan || 'free';
                         const { limit, planName } = getBackupLimits(currentPlan);
                         const isAtLimit = backups.length >= limit;
                         return (
-                          <span className={isAtLimit ? 'text-orange-600 font-semibold' : 'text-gray-500'}>
+                          <span className={`px-3 py-1.5 rounded-full font-bold ${isAtLimit ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}`}>
                             {backups.length}/{limit} backups ({planName})
                           </span>
                         );
                       })()}
                     </div>
                   </div>
-                  
+
                   {/* Recipe count indicator */}
-                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                  <div className="mb-4 p-4 bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-xl">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Recipes in your collection:</span>
-                      <span className="font-semibold text-gray-900">{recipeCount} recipes</span>
+                      <span className="text-gray-800 font-medium">Recipes in your collection:</span>
+                      <span className="font-black text-gray-900 text-lg">{recipeCount} recipes</span>
                     </div>
                     {recipeCount === 0 && (
-                      <p className="text-xs text-orange-600 mt-1">
-                        You need at least 1 recipe to create a backup
+                      <p className="text-xs text-orange-700 mt-2 font-medium">
+                        ⚠️ You need at least 1 recipe to create a backup
                       </p>
                     )}
                   </div>
-                  
+
                   <div className="space-y-3">
                     <button
                       onClick={handleCreateBackup}
@@ -2357,23 +2362,23 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         const { limit } = getBackupLimits(currentPlan);
                         return backups.length >= limit;
                       })()}
-                      className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
                     >
-                      <Download className="w-4 h-4 mr-2" />
+                      <Download className="w-5 h-5" />
                       {backupLoading ? 'Creating Backup...' : 'Create Manual Backup'}
                     </button>
-                    
+
                     {/* Show backup limit warning */}
                     {(() => {
                       const currentPlan = featureAccess?.currentPlan || 'free';
                       const { limit, planName } = getBackupLimits(currentPlan);
                       const isAtLimit = backups.length >= limit;
-                      
+
                       if (isAtLimit) {
                         return (
-                          <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                            <p className="text-sm text-orange-800">
-                              <strong>Backup limit reached!</strong> Your {planName} plan allows {limit} backups. 
+                          <div className="p-4 bg-gradient-to-br from-orange-50 to-amber-50/50 border-2 border-orange-200 rounded-xl">
+                            <p className="text-sm text-gray-800 font-medium">
+                              <span className="font-bold text-orange-700">⚠️ Backup limit reached!</span> Your {planName} plan allows {limit} backups.
                               Delete existing backups to create new ones.
                             </p>
                           </div>
@@ -2382,46 +2387,50 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       return null;
                     })()}
                   </div>
-                  
+
                   {/* Available Backups Section - Always Visible */}
-                  <div className="mt-6 border-t pt-6">
-                    <h4 className="text-md font-semibold text-gray-900 mb-4 flex items-center">
-                      <Clock className="w-5 h-5 mr-2" />
-                      Available Backups (90-day retention)
-                    </h4>
-                  
+                  <div className="mt-6 pt-6 border-t-2 border-gray-200">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center shadow-md">
+                        <Clock className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <h4 className="text-base sm:text-lg font-black text-gray-900">Available Backups (90-day retention)</h4>
+                    </div>
+
                   {backups.length === 0 ? (
-                    <p className="text-sm text-gray-500">No backups available</p>
+                    <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100/50 border-2 border-gray-200 rounded-xl text-center">
+                      <p className="text-sm text-gray-600 font-medium">📦 No backups available</p>
+                    </div>
                   ) : (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {backups.map((backup) => (
-                        <div key={backup.id} className="flex items-center justify-between p-3 bg-white rounded border">
+                        <div key={backup.id} className="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-green-300 hover:shadow-md transition-all duration-200">
                           <div>
-                            <p className="text-sm font-medium">
+                            <p className="text-sm font-bold text-gray-900">
                               {backup.createdAt?.toLocaleDateString()} at {backup.createdAt?.toLocaleTimeString()}
                             </p>
-                            <p className="text-xs text-gray-500">
-                              {backup.recipes?.length || 0} recipes • Expires: {backup.expiresAt?.toLocaleDateString()}
+                            <p className="text-xs text-gray-600 font-medium mt-1">
+                              📚 {backup.recipes?.length || 0} recipes • ⏰ Expires: {backup.expiresAt?.toLocaleDateString()}
                             </p>
                           </div>
-                          <div className="flex space-x-2">
+                          <div className="flex gap-2">
                             <button
                               onClick={() => handleRestoreClick(backup)}
                               disabled={restoringBackup === backup.id}
-                              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                              className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-xl transition-all duration-200 ${
                                 restoringBackup === backup.id
                                   ? 'bg-green-100 text-green-600 cursor-not-allowed'
-                                  : 'bg-green-600 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-1'
+                                  : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105'
                               }`}
                             >
                               {restoringBackup === backup.id ? (
                                 <>
-                                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-500 border-t-transparent mr-2"></div>
+                                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-500 border-t-transparent"></div>
                                   Restoring...
                                 </>
                               ) : (
                                 <>
-                                  <Upload className="w-4 h-4 mr-2" />
+                                  <Upload className="w-4 h-4" />
                                   Restore
                                 </>
                               )}
@@ -2429,9 +2438,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                             <button
                               onClick={() => handleDeleteClick(backup)}
                               disabled={restoringBackup === backup.id}
-                              className="inline-flex items-center px-4 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-red-700 bg-red-50 border-2 border-red-200 rounded-xl hover:bg-red-100 hover:border-red-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
                             >
-                              <Trash2 className="w-4 h-4 mr-2" />
+                              <Trash2 className="w-4 h-4" />
                               Delete
                             </button>
                           </div>
