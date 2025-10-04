@@ -1694,18 +1694,23 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
             {/* Right Side: Action Buttons */}
             <div className="flex flex-wrap items-center gap-3">
               {/* Week Type Selector */}
-              <select
-                value={selectedWeekType}
-                onChange={(e) => setSelectedWeekType(e.target.value)}
-                className="px-4 py-2.5 border-2 border-purple-300 rounded-xl bg-white text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm font-bold min-w-[150px] shadow-sm hover:border-purple-400 transition-all duration-200"
-              >
-                <option value="balanced">🌟 Balanced</option>
-                <option value="protein-focused">💪 Protein</option>
-                <option value="low-carb">🥩 Low Carb</option>
-                <option value="vegetarian">🌱 Vegetarian</option>
-                <option value="comfort-food">🍲 Comfort</option>
-                <option value="quick-easy">⚡ Quick</option>
-              </select>
+              <div className="min-w-[180px]">
+                <CustomDropdown
+                  value={selectedWeekType}
+                  onChange={(value) => setSelectedWeekType(value)}
+                  options={[
+                    { value: 'balanced', label: 'Balanced', icon: '🌟' },
+                    { value: 'protein-focused', label: 'Protein', icon: '💪' },
+                    { value: 'low-carb', label: 'Low Carb', icon: '🥩' },
+                    { value: 'vegetarian', label: 'Vegetarian', icon: '🌱' },
+                    { value: 'comfort-food', label: 'Comfort', icon: '🍲' },
+                    { value: 'quick-easy', label: 'Quick', icon: '⚡' }
+                  ]}
+                  placeholder="Select week type"
+                  icon={<Sparkles className="w-5 h-5 text-purple-500" strokeWidth={2.5} />}
+                  ariaLabel="Select week type"
+                />
+              </div>
 
               {/* Clear Calendar Button */}
               <button
