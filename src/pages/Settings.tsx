@@ -2063,13 +2063,13 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Health Conditions & Dietary Needs</h3>
-              <p className="text-gray-600 leading-relaxed">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Health Conditions & Dietary Needs</h3>
+              <p className="text-gray-700 leading-relaxed font-medium">
                 Tell us about your health conditions so we can suggest recipes that support your specific dietary requirements and wellness goals.
               </p>
             </div>
-            
+
             {!canAccessHealthConditions && (
               <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-8 text-center">
                 <div className="mb-6">
@@ -2083,7 +2083,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     Unlock personalized health condition tracking and dietary recommendations with Chef plan or higher. Get recipes tailored to your specific health needs.
                   </p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-lg mx-auto">
                   <div className="bg-white/50 rounded-lg p-4 text-left">
                     <div className="text-orange-600 font-semibold mb-2">🏥 Health Tracking</div>
@@ -2102,7 +2102,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     </ul>
                   </div>
                 </div>
-                
+
                 <button
                   data-upgrade-plan
                   className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg"
@@ -2113,110 +2113,118 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             )}
 
             {canAccessHealthConditions && (
-              <div className="space-y-6">
-                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 leading-relaxed">
-                  Select health conditions to get personalized recipe recommendations. These will help us suggest recipes that support your specific dietary requirements and wellness goals.
-                </p>
+              <div className="space-y-8">
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-4 sm:p-5 mb-6">
+                  <p className="text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
+                    <span className="font-bold text-blue-700">💡 Quick Tip:</span> Select health conditions to get personalized recipe recommendations. These will help us suggest recipes that support your specific dietary requirements and wellness goals.
+                  </p>
+                </div>
 
-                {Object.entries(categorizedConditions).map(([category, conditions]) => (
-                <div key={category} className="space-y-3">
-                  <h4 className="text-lg font-semibold text-gray-800 capitalize border-b pb-2">
-                    {category === 'metabolic' && '🧬 Metabolic Conditions'}
-                    {category === 'cardiovascular' && '💗 Heart Health'}
-                    {category === 'digestive' && '🌱 Digestive Health'}
-                    {category === 'hormonal' && '⚖️ Hormonal Health'}
-                    {category === 'lifestyle' && '🎯 Lifestyle Goals'}
-                  </h4>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                    {conditions.map((condition) => {
-                      const isSelected = settings.healthConditions?.includes(condition.name) || false;
-                      return (
-                        <label
-                          key={condition.name}
-                          className={`relative flex items-start p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
-                            isSelected 
-                              ? 'border-green-500 bg-green-50 shadow-md' 
-                              : `${categoryColors[condition.category]} border-dashed`
-                          }`}
-                        >
-                          <div className="flex items-center h-5">
-                            <div className="relative">
-                              <input
-                                type="checkbox"
-                                checked={isSelected}
-                                onChange={(e) => {
-                                  const currentConditions = settings.healthConditions || [];
-                                  const newConditions = e.target.checked
-                                    ? [...currentConditions, condition.name]
-                                    : currentConditions.filter(c => c !== condition.name);
+                <div className="space-y-6">
+                  {Object.entries(categorizedConditions).map(([category, conditions]) => (
+                    <div key={category} className="bg-gradient-to-br from-white to-green-50/20 border-2 border-green-100 rounded-2xl p-5 shadow-lg">
+                      <h5 className="text-base sm:text-lg font-black text-gray-900 capitalize mb-4 flex items-center gap-2">
+                        {category === 'metabolic' && <><span className="text-2xl">🧬</span> Metabolic Conditions</>}
+                        {category === 'cardiovascular' && <><span className="text-2xl">💗</span> Heart Health</>}
+                        {category === 'digestive' && <><span className="text-2xl">🌱</span> Digestive Health</>}
+                        {category === 'hormonal' && <><span className="text-2xl">⚖️</span> Hormonal Health</>}
+                        {category === 'lifestyle' && <><span className="text-2xl">🎯</span> Lifestyle Goals</>}
+                      </h5>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        {conditions.map((condition) => {
+                          const isSelected = settings.healthConditions?.includes(condition.name) || false;
+                          return (
+                            <label
+                              key={condition.name}
+                              className={`relative flex items-start p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer group ${
+                                isSelected
+                                  ? 'border-green-500 bg-gradient-to-br from-green-50 to-emerald-50/50 shadow-lg hover:shadow-xl transform scale-[1.02]'
+                                  : 'bg-white border-gray-200 hover:border-green-300 hover:bg-green-50/50 hover:shadow-md hover:scale-[1.01]'
+                              }`}
+                            >
+                              <div className="flex items-center h-6">
+                                <div className="relative">
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={(e) => {
+                                      const currentConditions = settings.healthConditions || [];
+                                      const newConditions = e.target.checked
+                                        ? [...currentConditions, condition.name]
+                                        : currentConditions.filter(c => c !== condition.name);
+                                      updateSetting('healthConditions', newConditions);
+                                    }}
+                                    className="sr-only"
+                                  />
+                                  <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
+                                    isSelected
+                                      ? 'bg-gradient-to-br from-green-600 to-emerald-600 border-green-600 shadow-md'
+                                      : 'bg-white border-gray-300 group-hover:border-green-500'
+                                  }`}>
+                                    {isSelected && (
+                                      <Check className="w-4 h-4 text-white stroke-[3]" />
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="ml-3 flex-1">
+                                <div className="flex items-center mb-1 flex-wrap gap-2">
+                                  <span className="text-xl flex-shrink-0">{condition.icon}</span>
+                                  <span className="font-bold text-sm sm:text-base text-gray-900 flex-1">{condition.name}</span>
+                                </div>
+                                <p className="text-xs sm:text-sm leading-relaxed text-gray-600 font-medium">{condition.description}</p>
+                              </div>
+                              {isSelected && (
+                                <div className="absolute -top-1 -right-1">
+                                  <div className="w-7 h-7 bg-gradient-to-br from-green-600 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                                    <Check className="w-4 h-4 text-white stroke-[3]" />
+                                  </div>
+                                </div>
+                              )}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {settings.healthConditions && settings.healthConditions.length > 0 && (
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-6 shadow-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-md">
+                        <Shield className="w-6 h-6 text-white stroke-[3]" />
+                      </div>
+                      <h5 className="text-lg font-black text-gray-900">Your Health Profile</h5>
+                    </div>
+                    <p className="text-gray-800 text-sm mb-4 font-medium">
+                      We'll prioritize recipes that align with <span className="font-bold text-green-700">{settings.healthConditions.length} health {settings.healthConditions.length === 1 ? 'consideration' : 'considerations'}</span>:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                        {settings.healthConditions.map((condition) => {
+                          const conditionData = healthConditions.find(c => c.name === condition);
+                          return (
+                            <span
+                              key={condition}
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-white border-2 border-green-200 text-gray-900 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105"
+                            >
+                              <span className="text-lg">{conditionData?.icon}</span>
+                              {condition}
+                              <button
+                                onClick={() => {
+                                  const newConditions = settings.healthConditions?.filter(c => c !== condition) || [];
                                   updateSetting('healthConditions', newConditions);
                                 }}
-                                className="sr-only"
-                              />
-                              <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                                isSelected 
-                                  ? 'bg-green-500 border-green-500 shadow-md' 
-                                  : 'bg-white border-gray-300 hover:border-green-400'
-                              }`}>
-                                {isSelected && (
-                                  <Check className="w-3 h-3 text-white stroke-[3]" />
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="ml-3 flex-1">
-                            <div className="flex items-center mb-1">
-                              <span className="text-lg mr-2">{condition.icon}</span>
-                              <span className="font-medium text-gray-900">{condition.name}</span>
-                            </div>
-                            <p className="text-sm text-gray-600">{condition.description}</p>
-                          </div>
-                          {isSelected && (
-                            <div className="absolute top-2 right-2">
-                              <Check className="w-5 h-5 text-green-600" />
-                            </div>
-                          )}
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-              
-              {settings.healthConditions && settings.healthConditions.length > 0 && (
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6">
-                  <div className="flex items-center mb-3">
-                    <Shield className="w-5 h-5 text-green-600 mr-2" />
-                    <h4 className="font-semibold text-green-900">Your Health Profile</h4>
-                  </div>
-                  <p className="text-green-800 text-sm mb-4">
-                    We'll prioritize recipes that align with these {settings.healthConditions.length} health considerations:
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                      {settings.healthConditions.map((condition) => {
-                        const conditionData = healthConditions.find(c => c.name === condition);
-                        return (
-                          <span
-                            key={condition}
-                            className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-green-200 text-green-800 shadow-sm"
-                          >
-                            <span className="mr-1">{conditionData?.icon}</span>
-                            {condition}
-                            <button
-                              onClick={() => {
-                                const newConditions = settings.healthConditions?.filter(c => c !== condition) || [];
-                                updateSetting('healthConditions', newConditions);
-                              }}
-                              className="ml-1.5 text-green-600 hover:text-green-800"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </span>
-                        );
-                      })}
+                                className="ml-1 w-5 h-5 bg-red-100 hover:bg-red-200 rounded-full flex items-center justify-center text-red-600 hover:text-red-700 transition-all duration-200"
+                              >
+                                <X className="w-3 h-3 stroke-[3]" />
+                              </button>
+                            </span>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
               </div>
             )}
