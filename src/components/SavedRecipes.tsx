@@ -309,6 +309,29 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     setEditingRecipe(null);
   };
 
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-8 border-2 border-green-100">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-3 shadow-lg">
+                <ChefHat className="h-8 w-8 text-white" />
+              </div>
+              <h2 className="text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
+            </div>
+          </div>
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-200 border-t-green-600"></div>
+              <p className="mt-4 text-gray-600 font-bold">Loading your delicious recipes...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -365,10 +388,10 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border-2 border-green-100">
         {/* Header with animation */}
-        <div className="flex items-center justify-between mb-4 sm:mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className={`flex items-center justify-between mb-4 sm:mb-6 ${isPageLoaded ? 'animate-header-slide-in' : 'opacity-0'}`}>
           <div className="flex items-center space-x-2 sm:space-x-3">
             <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-2 sm:p-2.5 lg:p-3 shadow-lg transform transition-transform duration-300 hover:scale-110">
               <ChefHat className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 text-white flex-shrink-0" />
@@ -452,7 +475,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         )}
 
         {/* Enhanced Search and Filter Bar with animation */}
-        <div className="relative z-40 bg-gradient-to-br from-white to-green-50/20 rounded-2xl shadow-lg border-2 border-green-100 p-4 sm:p-5 mb-4 sm:mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+        <div className={`relative z-40 bg-gradient-to-br from-white to-green-50/20 rounded-2xl shadow-lg border-2 border-green-100 p-4 sm:p-5 mb-4 sm:mb-6 ${isPageLoaded ? 'animate-filter-bar-slide' : 'opacity-0'}`}>
           {/* First Row: Search and Sort */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
             {/* Search Input - 2/3 width on desktop */}
@@ -587,51 +610,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
               : 'flex flex-col gap-4'
           } ${isTransitioning ? 'animate-page-out' : 'animate-page-in'}`}
         >
-          {loading ? (
-            // Skeleton loading cards
-            Array.from({ length: 8 }).map((_, index) => (
-              <div
-                key={`skeleton-${index}`}
-                className={`bg-white rounded-xl shadow-md border-2 border-gray-200 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500`}
-                style={{ animationDelay: `${300 + index * 50}ms` }}
-              >
-                {viewMode === 'grid' ? (
-                  // Grid skeleton
-                  <>
-                    <div className="relative h-48 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
-                    <div className="p-4 space-y-3">
-                      <div className="h-6 bg-gray-200 rounded animate-pulse" />
-                      <div className="space-y-2">
-                        <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
-                        <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse" />
-                      </div>
-                      <div className="flex gap-2 pt-2">
-                        <div className="h-8 bg-gray-200 rounded flex-1 animate-pulse" />
-                        <div className="h-8 bg-gray-200 rounded flex-1 animate-pulse" />
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  // List skeleton
-                  <div className="flex flex-col sm:flex-row">
-                    <div className="relative h-48 sm:h-auto sm:w-64 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
-                    <div className="flex-1 p-6 space-y-4">
-                      <div className="h-8 bg-gray-200 rounded w-2/3 animate-pulse" />
-                      <div className="space-y-2">
-                        <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
-                        <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse" />
-                      </div>
-                      <div className="flex gap-3">
-                        <div className="h-10 bg-gray-200 rounded px-6 animate-pulse" />
-                        <div className="h-10 bg-gray-200 rounded px-6 animate-pulse" />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))
-          ) : (
-            currentRecipes.map((recipe, index) => {
+          {currentRecipes.map((recipe, index) => {
             const recipeInfo = extractRecipeInfo(recipe.convertedRecipe);
             const staggerClass = `stagger-${(index % 8) + 1}`;
 
@@ -862,13 +841,12 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                 </div>
               </div>
             );
-          })
-          )}
+          })}
         </div>
 
         {/* Pagination Controls with enhanced design */}
-        {totalPages > 1 && filteredRecipes.length > 0 && !loading && (
-          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 border-t-2 border-green-100 pt-4 sm:pt-6 animate-in fade-in duration-500 delay-300">
+        {totalPages > 1 && filteredRecipes.length > 0 && (
+          <div className={`mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 border-t-2 border-green-100 pt-4 sm:pt-6 ${isPageLoaded ? 'animate-fade-in' : 'opacity-0'}`}>
             <div className="flex items-center text-xs sm:text-sm text-gray-700 font-semibold bg-gradient-to-r from-green-50 to-emerald-50 px-3 sm:px-4 py-2 rounded-lg border border-green-200 w-full sm:w-auto justify-center">
               <span>
                 <span className="hidden sm:inline">Showing </span>{startIndex + 1} - {Math.min(endIndex, filteredRecipes.length)} <span className="hidden sm:inline">of {filteredRecipes.length}</span>
