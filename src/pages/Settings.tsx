@@ -1369,9 +1369,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Dietary Filters</h3>
-              <p className="text-gray-600 leading-relaxed">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Dietary Filters</h3>
+              <p className="text-gray-700 leading-relaxed font-medium">
                 Customize your recipe experience with dietary filters that match your lifestyle. Set preferences to automatically show recipes that fit your nutritional needs and food choices.
               </p>
             </div>
@@ -1380,48 +1380,50 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               <div className="space-y-8">
                 {/* Dietary Preferences Section */}
                 <div>
-                  <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 leading-relaxed">
-                    Select dietary preferences to automatically filter recipes. These will be applied to all recipe searches and suggestions.
-                  </p>
-                  
-                  <div className="space-y-4 sm:space-y-6">
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-4 sm:p-5 mb-6">
+                    <p className="text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
+                      <span className="font-bold text-blue-700">💡 Quick Tip:</span> Select dietary preferences to automatically filter recipes. These will be applied to all recipe searches and suggestions.
+                    </p>
+                  </div>
+
+                  <div className="space-y-6">
                     {Object.entries(categorizedDietaryOptions).map(([category, options]) => (
-                      <div key={category} className="space-y-3 sm:space-y-4">
-                        <h5 className="text-sm sm:text-base font-medium text-gray-800 capitalize border-b border-gray-200 pb-2">
-                          {category === 'plant-based' && '🌱 Plant-Based Diets'}
-                          {category === 'allergen-free' && '⚠️ Allergen-Free Options'}
-                          {category === 'low-carb' && '🥩 Low-Carb Diets'}
-                          {category === 'fitness' && '💪 Fitness-Focused'}
-                          {category === 'whole-foods' && '🍎 Whole Foods'}
-                          {category === 'health' && '🩺 Health-Focused'}
-                          {category === 'regional' && '🌍 Regional Cuisines'}
-                          {category === 'religious' && '🕊️ Religious Requirements'}
+                      <div key={category} className="bg-gradient-to-br from-white to-green-50/20 border-2 border-green-100 rounded-2xl p-5 shadow-lg">
+                        <h5 className="text-base sm:text-lg font-black text-gray-900 capitalize mb-4 flex items-center gap-2">
+                          {category === 'plant-based' && <><span className="text-2xl">🌱</span> Plant-Based Diets</>}
+                          {category === 'allergen-free' && <><span className="text-2xl">⚠️</span> Allergen-Free Options</>}
+                          {category === 'low-carb' && <><span className="text-2xl">🥩</span> Low-Carb Diets</>}
+                          {category === 'fitness' && <><span className="text-2xl">💪</span> Fitness-Focused</>}
+                          {category === 'whole-foods' && <><span className="text-2xl">🍎</span> Whole Foods</>}
+                          {category === 'health' && <><span className="text-2xl">🩺</span> Health-Focused</>}
+                          {category === 'regional' && <><span className="text-2xl">🌍</span> Regional Cuisines</>}
+                          {category === 'religious' && <><span className="text-2xl">🕊️</span> Religious Requirements</>}
                         </h5>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                           {options.map((option) => {
                             const isSelected = settings.defaultDietaryFilters.includes(option.name);
                             const isLocked = option.isLocked;
                             const isUpgradeNeeded = option.isUpgradeNeeded;
-                            
+
                             return (
                               <label
                                 key={option.name}
-                                className={`relative flex items-start p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 touch-friendly ${
-                                  isLocked 
-                                    ? 'cursor-pointer opacity-60 bg-gray-50 border-gray-200 border-dashed hover:bg-gray-100'
-                                    : isSelected 
-                                    ? 'border-green-500 bg-green-50 shadow-md cursor-pointer' 
-                                    : `${option.color} border-dashed cursor-pointer hover:shadow-sm`
+                                className={`relative flex items-start p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer group ${
+                                  isLocked
+                                    ? 'opacity-60 bg-gray-50 border-gray-300 hover:bg-gray-100 hover:border-gray-400'
+                                    : isSelected
+                                    ? 'border-green-500 bg-gradient-to-br from-green-50 to-emerald-50/50 shadow-lg hover:shadow-xl transform scale-[1.02]'
+                                    : 'bg-white border-gray-200 hover:border-green-300 hover:bg-green-50/50 hover:shadow-md hover:scale-[1.01]'
                                 }`}
                                 onClick={isLocked && isUpgradeNeeded ? () => {
                                   showError(
-                                    'Premium Feature Required', 
-                                    `${option.name} dietary filtering is available with Master Chef+ plan. Upgrade to access all advanced dietary preferences.`, 
+                                    'Premium Feature Required',
+                                    `${option.name} dietary filtering is available with Master Chef+ plan. Upgrade to access all advanced dietary preferences.`,
                                     'dietary-preference'
                                   );
                                 } : undefined}
                               >
-                                <div className="flex items-center h-5">
+                                <div className="flex items-center h-6">
                                   <div className="relative">
                                     <input
                                       type="checkbox"
@@ -1436,43 +1438,47 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                                       }}
                                       className="sr-only"
                                     />
-                                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${
+                                    <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
                                       isLocked
-                                        ? 'bg-gray-100 border-gray-300 cursor-not-allowed'
-                                        : isSelected 
-                                        ? 'bg-green-500 border-green-500 shadow-md cursor-pointer' 
-                                        : 'bg-white border-gray-300 hover:border-green-400 cursor-pointer'
+                                        ? 'bg-gray-100 border-gray-300'
+                                        : isSelected
+                                        ? 'bg-gradient-to-br from-green-600 to-emerald-600 border-green-600 shadow-md'
+                                        : 'bg-white border-gray-300 group-hover:border-green-500'
                                     }`}>
                                       {isLocked ? (
-                                        <Lock className="w-3 h-3 text-gray-400" />
+                                        <Lock className="w-3.5 h-3.5 text-gray-400" />
                                       ) : isSelected ? (
-                                        <Check className="w-3 h-3 text-white stroke-[3]" />
+                                        <Check className="w-4 h-4 text-white stroke-[3]" />
                                       ) : null}
                                     </div>
                                   </div>
                                 </div>
                                 <div className="ml-3 flex-1">
                                   <div className="flex items-center mb-1 flex-wrap gap-2">
-                                    <span className={`text-base sm:text-lg mr-2 ${isLocked ? 'grayscale' : ''} flex-shrink-0`}>{option.icon}</span>
-                                    <span className={`font-medium text-sm sm:text-base ${isLocked ? 'text-gray-500' : 'text-gray-900'} flex-1`}>{option.name}</span>
+                                    <span className={`text-xl ${isLocked ? 'grayscale' : ''} flex-shrink-0`}>{option.icon}</span>
+                                    <span className={`font-bold text-sm sm:text-base ${isLocked ? 'text-gray-500' : 'text-gray-900'} flex-1`}>{option.name}</span>
                                     {isUpgradeNeeded && (
-                                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 flex-shrink-0">
+                                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-800 border border-orange-200 flex-shrink-0">
                                         Master Chef+
                                       </span>
                                     )}
                                   </div>
-                                  <p className={`text-xs sm:text-sm leading-relaxed ${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
+                                  <p className={`text-xs sm:text-sm leading-relaxed ${isLocked ? 'text-gray-400' : 'text-gray-600'} font-medium`}>
                                     {option.description}
                                   </p>
                                 </div>
                                 {!isLocked && isSelected && (
-                                  <div className="absolute top-2 right-2">
-                                    <Check className="w-5 h-5 text-green-600" />
+                                  <div className="absolute -top-1 -right-1">
+                                    <div className="w-7 h-7 bg-gradient-to-br from-green-600 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                                      <Check className="w-4 h-4 text-white stroke-[3]" />
+                                    </div>
                                   </div>
                                 )}
                                 {isLocked && (
-                                  <div className="absolute top-2 right-2">
-                                    <Lock className="w-4 h-4 text-gray-400" />
+                                  <div className="absolute -top-1 -right-1">
+                                    <div className="w-7 h-7 bg-gray-300 rounded-full flex items-center justify-center shadow-md">
+                                      <Lock className="w-4 h-4 text-gray-600" />
+                                    </div>
                                   </div>
                                 )}
                               </label>
@@ -1485,13 +1491,15 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
                   {/* Selected Filters Summary */}
                   {settings.defaultDietaryFilters && settings.defaultDietaryFilters.length > 0 && (
-                    <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6 mt-6">
-                      <div className="flex items-center mb-3">
-                        <Check className="w-5 h-5 text-green-600 mr-2" />
-                        <h5 className="font-semibold text-green-900">Active Default Filters</h5>
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-6 mt-6 shadow-lg">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-md">
+                          <Check className="w-6 h-6 text-white stroke-[3]" />
+                        </div>
+                        <h5 className="text-lg font-black text-gray-900">Active Default Filters</h5>
                       </div>
-                      <p className="text-green-800 text-sm mb-4">
-                        These {settings.defaultDietaryFilters.length} filters will be automatically applied to all recipe searches:
+                      <p className="text-gray-800 text-sm mb-4 font-medium">
+                        <span className="font-bold text-green-700">{settings.defaultDietaryFilters.length} {settings.defaultDietaryFilters.length === 1 ? 'filter' : 'filters'}</span> will be automatically applied to all recipe searches:
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {settings.defaultDietaryFilters.map((filter) => {
@@ -1499,18 +1507,18 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                           return (
                             <span
                               key={filter}
-                              className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-green-200 text-green-800 shadow-sm"
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-white border-2 border-green-200 text-gray-900 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105"
                             >
-                              <span className="mr-1">{filterData?.icon}</span>
+                              <span className="text-lg">{filterData?.icon}</span>
                               {filter}
                               <button
                                 onClick={() => {
                                   const newFilters = settings.defaultDietaryFilters.filter(f => f !== filter);
                                   updateSetting('defaultDietaryFilters', newFilters);
                                 }}
-                                className="ml-1.5 text-green-600 hover:text-green-800"
+                                className="ml-1 w-5 h-5 bg-red-100 hover:bg-red-200 rounded-full flex items-center justify-center text-red-600 hover:text-red-700 transition-all duration-200"
                               >
-                                <X className="w-3 h-3" />
+                                <X className="w-3 h-3 stroke-[3]" />
                               </button>
                             </span>
                           );
