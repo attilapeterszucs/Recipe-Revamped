@@ -30,66 +30,101 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        {/* Background overlay */}
-        <div 
-          className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity"
-          onClick={onClose}
-        ></div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      {/* Background overlay */}
+      <div
+        className="fixed inset-0"
+        onClick={onClose}
+      ></div>
 
-        {/* Modal */}
-        <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-          <div className="sm:flex sm:items-start">
-            {/* Warning Icon */}
-            <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${
-              isDestructive ? 'bg-red-100' : 'bg-yellow-100'
-            } sm:mx-0 sm:h-10 sm:w-10`}>
-              <AlertTriangle className={`h-6 w-6 ${
-                isDestructive ? 'text-red-600' : 'text-yellow-600'
-              }`} />
-            </div>
+      {/* Modal */}
+      <div className="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
 
-            {/* Content */}
-            <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
+        {/* Header with Gradient */}
+        <div className={`${
+          isDestructive
+            ? 'bg-gradient-to-r from-red-600 to-rose-600'
+            : 'bg-gradient-to-r from-yellow-500 to-orange-500'
+        } px-6 py-5 relative overflow-hidden`}>
+          {/* Decorative pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+              backgroundSize: '24px 24px'
+            }} />
+          </div>
+
+          <div className="flex items-center justify-between relative z-10">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
+                <AlertTriangle className="w-6 h-6 text-white" strokeWidth={2.5} />
+              </div>
+              <h3 className="text-2xl font-black text-white">
                 {title}
               </h3>
-              <div className="mt-2">
-                <p className="text-sm text-gray-500">
+            </div>
+            <button
+              onClick={onClose}
+              className="text-white/90 hover:text-white transition-all duration-200 p-2 rounded-xl hover:bg-white/20 backdrop-blur-sm"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          <div className={`${
+            isDestructive
+              ? 'bg-gradient-to-br from-red-50 to-rose-50/50 border-2 border-red-200'
+              : 'bg-gradient-to-br from-yellow-50 to-orange-50/50 border-2 border-yellow-200'
+          } rounded-2xl p-5 shadow-lg`}>
+            <div className="flex items-start gap-3">
+              <div className={`w-10 h-10 ${
+                isDestructive
+                  ? 'bg-gradient-to-br from-red-100 to-rose-100'
+                  : 'bg-gradient-to-br from-yellow-100 to-orange-100'
+              } rounded-xl flex items-center justify-center flex-shrink-0 shadow-md`}>
+                <AlertTriangle className={`w-5 h-5 ${
+                  isDestructive ? 'text-red-600' : 'text-yellow-600'
+                }`} />
+              </div>
+              <div className="flex-1">
+                <p className={`text-sm leading-relaxed font-medium ${
+                  isDestructive ? 'text-red-900' : 'text-yellow-900'
+                }`}>
                   {message}
                 </p>
               </div>
             </div>
-
-            {/* Close button */}
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
           </div>
+        </div>
 
-          {/* Action buttons */}
-          <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+        {/* Footer with Action Buttons */}
+        <div className={`px-6 py-4 border-t-2 border-gray-100 ${
+          isDestructive
+            ? 'bg-gradient-to-br from-gray-50 to-red-50/30'
+            : 'bg-gradient-to-br from-gray-50 to-yellow-50/30'
+        }`}>
+          <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
             <button
               type="button"
-              className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                isDestructive 
-                  ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' 
-                  : 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
-              }`}
-              onClick={handleConfirm}
-            >
-              {confirmText}
-            </button>
-            <button
-              type="button"
-              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 sm:mt-0 sm:w-auto sm:text-sm"
+              className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-bold shadow-sm hover:shadow-md hover:scale-105"
               onClick={onClose}
             >
               {cancelText}
+            </button>
+            <button
+              type="button"
+              className={`px-6 py-3 ${
+                isDestructive
+                  ? 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 shadow-red-500/30 hover:shadow-red-500/40'
+                  : 'bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 shadow-yellow-500/30 hover:shadow-yellow-500/40'
+              } text-white rounded-xl transition-all duration-200 font-bold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2`}
+              onClick={handleConfirm}
+            >
+              <AlertTriangle className="w-4 h-4" />
+              {confirmText}
             </button>
           </div>
         </div>
