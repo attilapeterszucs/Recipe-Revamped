@@ -175,64 +175,52 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-bold text-gray-800 mb-2">
+                <label className="block text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
                   Height
+                  <span className="text-xs font-semibold px-3 py-1 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 rounded-full border border-green-200">
+                    {personalProfile.heightUnit === 'cm' ? '📏 cm' : '📐 ft/in'}
+                  </span>
                 </label>
-                <div className="flex gap-2">
-                  <input
-                    type="number"
-                    value={personalProfile.height || ''}
-                    onChange={(e) => updateProfile({ height: parseFloat(e.target.value) || undefined })}
-                    disabled={disabled}
-                    className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                    placeholder="Height"
-                  />
-                  <CustomDropdown
-                    value={personalProfile.heightUnit}
-                    onChange={(value) => updateProfile({ heightUnit: value as PersonalProfile['heightUnit'] })}
-                    options={[
-                      { value: 'cm', label: 'cm', icon: '📏' },
-                      { value: 'ft_in', label: 'ft/in', icon: '📐' }
-                    ]}
-                    placeholder="Unit"
-                    className="w-32"
-                    ariaLabel="Height unit selection"
-                  />
-                </div>
+                <input
+                  type="number"
+                  value={personalProfile.height || ''}
+                  onChange={(e) => updateProfile({ height: parseFloat(e.target.value) || undefined })}
+                  disabled={disabled}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
+                  placeholder={`Enter height in ${personalProfile.heightUnit === 'cm' ? 'centimeters' : 'feet/inches'}`}
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-800 mb-2">
+                <label className="block text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
                   Weight
+                  <span className="text-xs font-semibold px-3 py-1 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 rounded-full border border-green-200">
+                    {personalProfile.weightUnit === 'kg' ? '⚖️ kg' : '📊 lbs'}
+                  </span>
                 </label>
-                <div className="flex gap-2">
-                  <input
-                    type="number"
-                    value={personalProfile.weight || ''}
-                    onChange={(e) => updateProfile({ weight: parseFloat(e.target.value) || undefined })}
-                    disabled={disabled}
-                    className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                    placeholder="Weight"
-                  />
-                  <CustomDropdown
-                    value={personalProfile.weightUnit}
-                    onChange={(value) => updateProfile({ weightUnit: value as PersonalProfile['weightUnit'] })}
-                    options={[
-                      { value: 'kg', label: 'kg', icon: '⚖️' },
-                      { value: 'lbs', label: 'lbs', icon: '📊' }
-                    ]}
-                    placeholder="Unit"
-                    className="w-32"
-                    ariaLabel="Weight unit selection"
-                  />
-                </div>
+                <input
+                  type="number"
+                  value={personalProfile.weight || ''}
+                  onChange={(e) => updateProfile({ weight: parseFloat(e.target.value) || undefined })}
+                  disabled={disabled}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
+                  placeholder={`Enter weight in ${personalProfile.weightUnit === 'kg' ? 'kilograms' : 'pounds'}`}
+                />
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 shadow-lg">
-              <p className="text-sm text-gray-800">
-                <strong className="text-green-700">Privacy Note:</strong> Your physical metrics are used only to provide personalized nutrition recommendations. This data is stored securely and never shared.
-              </p>
+            <div className="space-y-3">
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-4 shadow-lg">
+                <p className="text-sm text-blue-900 font-medium">
+                  <strong className="text-blue-700">💡 Tip:</strong> Units are automatically set based on your preference in Recipe Settings. Change between metric (cm/kg) and imperial (ft/in/lbs) there.
+                </p>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 shadow-lg">
+                <p className="text-sm text-gray-800">
+                  <strong className="text-green-700">🔒 Privacy Note:</strong> Your physical metrics are used only to provide personalized nutrition recommendations. This data is stored securely and never shared.
+                </p>
+              </div>
             </div>
           </div>
         )}
