@@ -506,10 +506,10 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                 <label className="block text-sm font-bold text-indigo-900 mb-3">
                   Results
                 </label>
-                <div className="bg-white border-2 border-indigo-300 rounded-xl px-4 py-3.5 text-center shadow-sm">
+                <div className="bg-white border-2 border-indigo-300 rounded-xl px-4 text-center shadow-sm h-[46px] sm:h-[50px] flex items-center justify-center">
                   <div className="flex items-center justify-center gap-2">
                     <FileText className="w-5 h-5 text-indigo-600" />
-                    <p className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    <p className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent leading-none">
                       {filteredPosts.length}
                     </p>
                     <p className="text-sm text-indigo-700 font-medium">
