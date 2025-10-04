@@ -99,14 +99,14 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
         {/* Demographics Section */}
         {activeSection === 'demographics' && (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <User className="w-5 h-5 mr-2" />
+            <h3 className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent flex items-center gap-2">
+              <User className="w-5 h-5 text-green-600" />
               Demographics
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-800 mb-2">
                   Age
                 </label>
                 <input
@@ -116,20 +116,20 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
                   value={personalProfile.age || ''}
                   onChange={(e) => updateProfile({ age: parseInt(e.target.value) || undefined })}
                   disabled={disabled}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                   placeholder="Enter your age"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-800 mb-2">
                   Gender
                 </label>
                 <select
                   value={personalProfile.gender || ''}
                   onChange={(e) => updateProfile({ gender: e.target.value as PersonalProfile['gender'] || undefined })}
                   disabled={disabled}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                 >
                   <option value="">Select gender</option>
                   <option value="male">Male</option>
@@ -140,14 +140,14 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-800 mb-2">
                   Activity Level
                 </label>
                 <select
                   value={personalProfile.activityLevel}
                   onChange={(e) => updateProfile({ activityLevel: e.target.value as PersonalProfile['activityLevel'] })}
                   disabled={disabled}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                 >
                   <option value="sedentary">Sedentary (little to no exercise)</option>
                   <option value="lightly_active">Lightly Active (light exercise 1-3 days/week)</option>
@@ -163,30 +163,30 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
         {/* Physical Section */}
         {activeSection === 'physical' && (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <Scale className="w-5 h-5 mr-2" />
+            <h3 className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent flex items-center gap-2">
+              <Scale className="w-5 h-5 text-green-600" />
               Physical Metrics
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-800 mb-2">
                   Height
                 </label>
-                <div className="flex space-x-2">
+                <div className="flex gap-2">
                   <input
                     type="number"
                     value={personalProfile.height || ''}
                     onChange={(e) => updateProfile({ height: parseFloat(e.target.value) || undefined })}
                     disabled={disabled}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                    className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                     placeholder="Height"
                   />
                   <select
                     value={personalProfile.heightUnit}
                     onChange={(e) => updateProfile({ heightUnit: e.target.value as PersonalProfile['heightUnit'] })}
                     disabled={disabled}
-                    className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                    className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                   >
                     <option value="cm">cm</option>
                     <option value="ft_in">ft/in</option>
@@ -195,23 +195,23 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-800 mb-2">
                   Weight
                 </label>
-                <div className="flex space-x-2">
+                <div className="flex gap-2">
                   <input
                     type="number"
                     value={personalProfile.weight || ''}
                     onChange={(e) => updateProfile({ weight: parseFloat(e.target.value) || undefined })}
                     disabled={disabled}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                    className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                     placeholder="Weight"
                   />
                   <select
                     value={personalProfile.weightUnit}
                     onChange={(e) => updateProfile({ weightUnit: e.target.value as PersonalProfile['weightUnit'] })}
                     disabled={disabled}
-                    className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                    className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                   >
                     <option value="kg">kg</option>
                     <option value="lbs">lbs</option>
@@ -220,9 +220,9 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-blue-800">
-                <strong>Privacy Note:</strong> Your physical metrics are used only to provide personalized nutrition recommendations. This data is stored securely and never shared.
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 shadow-lg">
+              <p className="text-sm text-gray-800">
+                <strong className="text-green-700">Privacy Note:</strong> Your physical metrics are used only to provide personalized nutrition recommendations. This data is stored securely and never shared.
               </p>
             </div>
           </div>
@@ -231,30 +231,30 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
         {/* Health Info Section */}
         {activeSection === 'health' && (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <AlertTriangle className="w-5 h-5 mr-2" />
+            <h3 className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-green-600" />
               Health Information
             </h3>
 
             {/* Allergies */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-800 mb-2">
                 Food Allergies & Intolerances
               </label>
-              <div className="flex space-x-2 mb-3">
+              <div className="flex gap-2 mb-3">
                 <input
                   type="text"
                   value={newAllergy}
                   onChange={(e) => setNewAllergy(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && addItem('allergies', newAllergy)}
                   disabled={disabled}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                  className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                   placeholder="Add allergy or intolerance"
                 />
                 <button
                   onClick={() => addItem('allergies', newAllergy)}
                   disabled={disabled || !newAllergy.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
                 >
                   Add
                 </button>
@@ -263,13 +263,13 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
                 {(personalProfile.allergies || []).map((allergy, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm"
+                    className="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-800 rounded-full text-sm font-semibold border-2 border-red-200"
                   >
                     {allergy}
                     <button
                       onClick={() => removeItem('allergies', allergy)}
                       disabled={disabled}
-                      className="ml-2 text-red-600 hover:text-red-800 disabled:opacity-50"
+                      className="ml-2 text-red-600 hover:text-red-800 disabled:opacity-50 font-bold text-lg"
                     >
                       ×
                     </button>
@@ -280,23 +280,23 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
 
             {/* Medical Conditions */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-800 mb-2">
                 Medical Conditions
               </label>
-              <div className="flex space-x-2 mb-3">
+              <div className="flex gap-2 mb-3">
                 <input
                   type="text"
                   value={newCondition}
                   onChange={(e) => setNewCondition(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && addItem('medicalConditions', newCondition)}
                   disabled={disabled}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                  className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                   placeholder="Add medical condition"
                 />
                 <button
                   onClick={() => addItem('medicalConditions', newCondition)}
                   disabled={disabled || !newCondition.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
                 >
                   Add
                 </button>
@@ -305,13 +305,13 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
                 {(personalProfile.medicalConditions || []).map((condition, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm"
+                    className="inline-flex items-center px-3 py-1.5 bg-orange-100 text-orange-800 rounded-full text-sm font-semibold border-2 border-orange-200"
                   >
                     {condition}
                     <button
                       onClick={() => removeItem('medicalConditions', condition)}
                       disabled={disabled}
-                      className="ml-2 text-orange-600 hover:text-orange-800 disabled:opacity-50"
+                      className="ml-2 text-orange-600 hover:text-orange-800 disabled:opacity-50 font-bold text-lg"
                     >
                       ×
                     </button>
@@ -322,23 +322,23 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
 
             {/* Medications */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-800 mb-2">
                 Medications
               </label>
-              <div className="flex space-x-2 mb-3">
+              <div className="flex gap-2 mb-3">
                 <input
                   type="text"
                   value={newMedication}
                   onChange={(e) => setNewMedication(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && addItem('medications', newMedication)}
                   disabled={disabled}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                  className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                   placeholder="Add medication"
                 />
                 <button
                   onClick={() => addItem('medications', newMedication)}
                   disabled={disabled || !newMedication.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
                 >
                   Add
                 </button>
@@ -347,13 +347,13 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
                 {(personalProfile.medications || []).map((medication, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm"
+                    className="inline-flex items-center px-3 py-1.5 bg-purple-100 text-purple-800 rounded-full text-sm font-semibold border-2 border-purple-200"
                   >
                     {medication}
                     <button
                       onClick={() => removeItem('medications', medication)}
                       disabled={disabled}
-                      className="ml-2 text-purple-600 hover:text-purple-800 disabled:opacity-50"
+                      className="ml-2 text-purple-600 hover:text-purple-800 disabled:opacity-50 font-bold text-lg"
                     >
                       ×
                     </button>
@@ -362,9 +362,9 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
               </div>
             </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-sm text-yellow-800">
-                <strong>Medical Disclaimer:</strong> This information is used only for recipe personalization. Always consult your healthcare provider for medical advice and dietary restrictions.
+            <div className="bg-gradient-to-br from-yellow-50 to-orange-50/50 border-2 border-yellow-200 rounded-2xl p-4 shadow-lg">
+              <p className="text-sm text-gray-800">
+                <strong className="text-yellow-700">Medical Disclaimer:</strong> This information is used only for recipe personalization. Always consult your healthcare provider for medical advice and dietary restrictions.
               </p>
             </div>
           </div>
@@ -373,21 +373,21 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
         {/* Lifestyle Section */}
         {activeSection === 'lifestyle' && (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <Activity className="w-5 h-5 mr-2" />
+            <h3 className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent flex items-center gap-2">
+              <Activity className="w-5 h-5 text-green-600" />
               Lifestyle Preferences
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-800 mb-2">
                   Cooking Skill Level
                 </label>
                 <select
                   value={personalProfile.cookingSkillLevel}
                   onChange={(e) => updateProfile({ cookingSkillLevel: e.target.value as PersonalProfile['cookingSkillLevel'] })}
                   disabled={disabled}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                 >
                   <option value="beginner">Beginner (basic recipes)</option>
                   <option value="intermediate">Intermediate (moderate complexity)</option>
@@ -397,14 +397,14 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-800 mb-2">
                   Available Cooking Time
                 </label>
                 <select
                   value={personalProfile.timeAvailableForCooking}
                   onChange={(e) => updateProfile({ timeAvailableForCooking: e.target.value as PersonalProfile['timeAvailableForCooking'] })}
                   disabled={disabled}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                 >
                   <option value="under_15_min">Under 15 minutes</option>
                   <option value="15_30_min">15-30 minutes</option>
@@ -414,14 +414,14 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-800 mb-2">
                   Budget Preference
                 </label>
                 <select
                   value={personalProfile.budgetPreference}
                   onChange={(e) => updateProfile({ budgetPreference: e.target.value as PersonalProfile['budgetPreference'] })}
                   disabled={disabled}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                 >
                   <option value="budget_friendly">Budget Friendly (affordable ingredients)</option>
                   <option value="moderate">Moderate (balanced cost and quality)</option>
@@ -430,12 +430,12 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
               </div>
             </div>
 
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <h4 className="font-medium text-green-900 mb-2">How This Helps</h4>
-              <ul className="text-sm text-green-800 space-y-1">
-                <li>• <strong>Cooking Level:</strong> Recipes matched to your skill and comfort level</li>
-                <li>• <strong>Time Available:</strong> Meal suggestions that fit your schedule</li>
-                <li>• <strong>Budget:</strong> Ingredient recommendations within your price range</li>
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 shadow-lg">
+              <h4 className="font-black text-green-800 mb-2">How This Helps</h4>
+              <ul className="text-sm text-gray-800 space-y-1">
+                <li>• <strong className="text-green-700">Cooking Level:</strong> Recipes matched to your skill and comfort level</li>
+                <li>• <strong className="text-green-700">Time Available:</strong> Meal suggestions that fit your schedule</li>
+                <li>• <strong className="text-green-700">Budget:</strong> Ingredient recommendations within your price range</li>
               </ul>
             </div>
           </div>
