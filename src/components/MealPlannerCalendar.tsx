@@ -48,7 +48,6 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
   const [showRecipeSelector, setShowRecipeSelector] = useState<{ date: string; meal: string } | null>(null);
   const [showShoppingList, setShowShoppingList] = useState(false);
   const [showRecipeList, setShowRecipeList] = useState(true);
-  const [loading, setLoading] = useState(true);
   const [draggedRecipe, setDraggedRecipe] = useState<SavedRecipe | null>(null);
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState(false);
@@ -119,13 +118,10 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
   useEffect(() => {
     const loadRecipes = async () => {
       try {
-        setLoading(true);
         const userRecipes = await getUserRecipes(userId, 100);
         setRecipes(userRecipes);
       } catch {
         showError('Failed to Load', 'Could not load your recipes');
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -1159,15 +1155,6 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       printWindow.print();
     }
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-        <p className="ml-4 text-gray-600">Loading meal planner...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
