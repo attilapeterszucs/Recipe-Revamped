@@ -73,23 +73,23 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
   ];
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200">
+    <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 shadow-lg">
       {/* Section Navigation */}
-      <div className="border-b border-gray-200">
+      <div className="border-b-2 border-green-100">
         <nav className="flex flex-wrap gap-2 sm:gap-4 md:space-x-8 md:gap-0 px-4 sm:px-6 py-4 overflow-x-auto">
           {sections.map((section) => (
             <button
               key={section.id}
               onClick={() => setActiveSection(section.id)}
               disabled={disabled}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors disabled:opacity-50 whitespace-nowrap min-w-fit ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 disabled:opacity-50 whitespace-nowrap min-w-fit ${
                 activeSection === section.id
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 font-bold scale-105'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-green-50 border-2 border-gray-200 hover:border-green-200 font-semibold'
               }`}
             >
               <section.icon className="w-4 h-4 flex-shrink-0" />
-              <span className="font-medium text-sm sm:text-base">{section.label}</span>
+              <span className="text-sm sm:text-base">{section.label}</span>
             </button>
           ))}
         </nav>

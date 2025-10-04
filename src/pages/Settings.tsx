@@ -1259,9 +1259,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-6">
-            <div className="mb-6">
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Personal Profile & Health Goals</h3>
-              <p className="text-gray-600">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 mb-6">
+              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Personal Profile & Health Goals</h3>
+              <p className="text-gray-700 leading-relaxed font-medium">
                 Set up your personal profile and health goals to get AI-powered recipe recommendations tailored specifically to your needs and objectives.
               </p>
             </div>
@@ -1284,19 +1284,19 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 userId={user.uid}
               />
             ) : (
-              <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-6">
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50/50 border-2 border-amber-200 rounded-2xl p-6 shadow-lg">
                 <div className="flex items-start">
-                  <div className="bg-amber-100 rounded-full p-3 mr-4 flex-shrink-0">
+                  <div className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl p-3 mr-4 flex-shrink-0 shadow-md">
                     <Crown className="w-6 h-6 text-amber-600" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-lg font-semibold text-amber-900 mb-2 flex items-center">
+                    <h4 className="text-lg font-black text-amber-900 mb-2 flex items-center">
                       Health Goals
-                      <span className="ml-2 bg-amber-200 text-amber-800 text-xs font-bold px-2 py-1 rounded-full">
+                      <span className="ml-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
                         CHEF PLAN+
                       </span>
                     </h4>
-                    <p className="text-amber-800 mb-4">
+                    <p className="text-amber-800 mb-4 font-medium">
                       Set personalized health goals like weight management, calorie targets, and nutritional objectives.
                       Track your progress and get AI-powered recipe recommendations tailored to your health journey.
                     </p>
@@ -1307,7 +1307,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                             (window as any).showUpgradeModal('chef', 'health-goals');
                           }
                         }}
-                        className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors flex items-center justify-center font-medium"
+                        className="bg-gradient-to-r from-amber-600 to-orange-600 text-white px-4 py-2 rounded-xl hover:from-amber-700 hover:to-orange-700 transition-all duration-200 flex items-center justify-center font-bold shadow-lg shadow-amber-500/30 hover:shadow-xl hover:scale-105"
                       >
                         <Crown className="w-4 h-4 mr-2" />
                         Upgrade Plan
@@ -1320,23 +1320,23 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             )}
 
             {/* AI Personalization Info */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h4 className="font-semibold text-blue-900 mb-3 flex items-center">
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-6 shadow-lg">
+              <h4 className="font-black text-blue-900 mb-3 flex items-center">
                 <Bot className="w-5 h-5 mr-2" />
                 AI Personalization
               </h4>
               <div className="text-blue-800 space-y-2">
-                <p className="text-sm">
+                <p className="text-sm font-medium">
                   Your personal profile and health goals are used to:
                 </p>
-                <ul className="text-sm space-y-1 ml-4">
+                <ul className="text-sm space-y-1 ml-4 font-medium">
                   <li>• Adjust recipe calorie content and portions for your goals</li>
                   <li>• Recommend ingredients that support your health objectives</li>
                   <li>• Suggest cooking times and complexity based on your availability</li>
                   <li>• Avoid ingredients you're allergic to or cannot consume</li>
                   <li>• Customize meal plans for your activity level and lifestyle</li>
                 </ul>
-                <p className="text-sm mt-3 font-medium">
+                <p className="text-sm mt-3 font-bold bg-gradient-to-r from-blue-700 to-cyan-700 bg-clip-text text-transparent">
                   The more complete your profile, the better our AI can personalize your recipes!
                 </p>
               </div>
