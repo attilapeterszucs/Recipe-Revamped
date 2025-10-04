@@ -940,16 +940,16 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         
         return (
           <div className="space-y-4 sm:space-y-6">
-            <div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Account</h3>
-              <p className="text-gray-600 leading-relaxed">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Account</h3>
+              <p className="text-gray-700 leading-relaxed font-medium">
                 Manage your account information, profile picture, and security settings. Update your personal details and control your Recipe Revamped experience.
               </p>
             </div>
 
             {/* Profile Picture Section */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
-              <label className="block text-sm sm:text-base font-semibold text-gray-800 mb-4">
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
+              <label className="block text-sm sm:text-base font-black text-gray-900 mb-4">
                 Profile Picture
               </label>
 
@@ -961,11 +961,11 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       <img
                         src={currentProfilePicture}
                         alt="Profile"
-                        className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-gray-200 shadow-md"
+                        className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-green-200 shadow-lg ring-2 ring-green-100"
                       />
                     ) : (
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-200 flex items-center justify-center border-4 border-gray-200 shadow-md">
-                        <UserIcon className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400" />
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center border-4 border-green-200 shadow-lg ring-2 ring-green-100">
+                        <UserIcon className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />
                       </div>
                     )}
 
@@ -997,7 +997,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 mb-3">
                       <label
                         htmlFor="profile-picture-upload"
-                        className={`cursor-pointer inline-flex items-center justify-center px-4 py-3 sm:py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors touch-friendly min-h-[44px] ${
+                        className={`cursor-pointer inline-flex items-center justify-center px-4 py-3 sm:py-2 border-2 border-green-200 rounded-xl text-sm font-bold text-green-700 bg-white hover:bg-green-50 transition-all duration-200 hover:shadow-lg hover:scale-105 touch-friendly min-h-[44px] ${
                           uploadingProfilePicture ? 'opacity-50 cursor-not-allowed' : ''
                         }`}
                       >
@@ -1008,7 +1008,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       {currentProfilePicture && !uploadingProfilePicture && (
                         <button
                           onClick={handleProfilePictureDelete}
-                          className="inline-flex items-center justify-center px-4 py-3 sm:py-2 border border-red-300 rounded-lg text-sm font-medium text-red-700 bg-white hover:bg-red-50 transition-colors touch-friendly min-h-[44px]"
+                          className="inline-flex items-center justify-center px-4 py-3 sm:py-2 border-2 border-red-200 rounded-xl text-sm font-bold text-red-700 bg-white hover:bg-red-50 transition-all duration-200 hover:shadow-lg hover:scale-105 touch-friendly min-h-[44px]"
                         >
                           <X className="w-4 h-4 mr-2" />
                           Remove
@@ -1062,12 +1062,12 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             </div>
             
             {/* Basic Information Section */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
-              <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">Basic Information</h4>
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
+              <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Basic Information</h4>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                  <label className="block text-sm sm:text-base font-bold text-gray-800 mb-2">
                     Display Name
                   </label>
                   <input
@@ -1075,12 +1075,12 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     value={settings.displayName || ''}
                     onChange={(e) => updateSetting('displayName', e.target.value)}
                     placeholder="Enter your display name"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base touch-friendly min-h-[44px] transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base touch-friendly min-h-[44px] transition-all duration-200 hover:border-green-300 shadow-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                  <label className="block text-sm sm:text-base font-bold text-gray-800 mb-2">
                     Email Address
                   </label>
                   <div className="relative">
@@ -1090,10 +1090,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       onChange={(e) => updateSetting('email', e.target.value)}
                       disabled={user.providerData.some(provider => provider.providerId === 'google.com')}
                       placeholder="Enter your email address"
-                      className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base touch-friendly min-h-[44px] transition-colors ${
+                      className={`w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base touch-friendly min-h-[44px] transition-all duration-200 shadow-sm ${
                         user.providerData.some(provider => provider.providerId === 'google.com')
                           ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
-                          : ''
+                          : 'hover:border-green-300'
                       }`}
                     />
                     {user.providerData.some(provider => provider.providerId === 'google.com') && (
@@ -1111,50 +1111,50 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             
             {/* Password Change Section - Only for email/password users */}
             {!isGoogleUser && (
-              <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
-                <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">Change Password</h4>
+              <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
+                <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Change Password</h4>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                    <label className="block text-sm sm:text-base font-bold text-gray-800 mb-2">
                       Current Password
                     </label>
                     <input
                       type="password"
                       value={passwordForm.currentPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base touch-friendly min-h-[44px] transition-colors"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base touch-friendly min-h-[44px] transition-all duration-200 hover:border-green-300 shadow-sm"
                       placeholder="Enter your current password"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                    <label className="block text-sm sm:text-base font-bold text-gray-800 mb-2">
                       New Password
                     </label>
                     <input
                       type="password"
                       value={passwordForm.newPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base touch-friendly min-h-[44px] transition-colors"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base touch-friendly min-h-[44px] transition-all duration-200 hover:border-green-300 shadow-sm"
                       placeholder="Enter your new password"
                     />
-                    <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-                      <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                    <div className="mt-2 p-3 bg-green-50 border-2 border-green-200 rounded-xl">
+                      <p className="text-xs sm:text-sm text-green-700 leading-relaxed font-medium">
                         Password must be at least 8 characters with uppercase, lowercase, number, and special character
                       </p>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                    <label className="block text-sm sm:text-base font-bold text-gray-800 mb-2">
                       Confirm New Password
                     </label>
                     <input
                       type="password"
                       value={passwordForm.confirmPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base touch-friendly min-h-[44px] transition-colors"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base touch-friendly min-h-[44px] transition-all duration-200 hover:border-green-300 shadow-sm"
                       placeholder="Confirm your new password"
                     />
                   </div>
@@ -1164,7 +1164,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       type="button"
                       onClick={handlePasswordChange}
                       disabled={changingPassword || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
-                      className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium touch-friendly min-h-[44px]"
+                      className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105 touch-friendly min-h-[44px]"
                     >
                       <Lock className="w-4 h-4 mr-2" />
                       {changingPassword ? 'Updating Password...' : 'Update Password'}
@@ -1175,8 +1175,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             )}
             
             {/* Account Management Section */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
-              <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">Account Management</h4>
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
+              <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Account Management</h4>
 
               <div className="space-y-4">
                 {/* Cancel Plan Button - Only show if user has an active subscription and section not hidden */}
