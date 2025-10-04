@@ -267,6 +267,9 @@ export function RecipeApp() {
 
 
   const handleRecipeSubmit = async (recipe: string, filters: string[], mustUseIngredients?: string[], avoidIngredients?: string[]) => {
+    // Scroll to top when conversion starts
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     // Check OpenAI consent first
     if (!checkConsentBeforeAI()) {
       return; // Consent modal will be shown by the hook
@@ -342,11 +345,14 @@ export function RecipeApp() {
   };
 
   const handleSurpriseMe = async (filters: string[], mustUseIngredients?: string[], avoidIngredients?: string[]) => {
+    // Scroll to top when surprise me starts
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     // Check OpenAI consent first
     if (!checkConsentBeforeAI()) {
       return; // Consent modal will be shown by the hook
     }
-    
+
     // Check daily conversion limits
     const conversionCheck = await DailyConversionService.canUserConvert(user!.uid);
     if (!conversionCheck.canConvert) {
