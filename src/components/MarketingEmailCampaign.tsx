@@ -197,25 +197,37 @@ export const MarketingEmailCampaign: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Mail className="w-5 h-5" />
-            Marketing Email Campaign
-          </CardTitle>
-          <CardDescription>
-            Send recipe newsletters and marketing content to users who have enabled "Marketing Emails" in their Settings &gt; Notifications preferences.
-          </CardDescription>
+      <Card className="bg-gradient-to-br from-purple-50 to-pink-50/50 border-2 border-purple-200 shadow-lg rounded-2xl overflow-hidden">
+        <CardHeader className="bg-white/50 border-b-2 border-purple-100">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center shadow-md">
+              <Mail className="w-6 h-6 text-purple-600" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Marketing Email Campaign
+              </CardTitle>
+              <CardDescription className="text-purple-700 font-medium mt-1">
+                Send recipe newsletters and marketing content to users who have enabled "Marketing Emails" in their Settings &gt; Notifications preferences.
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6">
           {marketingSubmissionStatus.type && (
-            <Alert className={marketingSubmissionStatus.type === 'success' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}>
+            <Alert className={`rounded-xl border-2 shadow-md ${
+              marketingSubmissionStatus.type === 'success'
+                ? 'bg-gradient-to-br from-green-50 to-emerald-50/50 border-green-300'
+                : 'bg-gradient-to-br from-red-50 to-rose-50/50 border-red-300'
+            }`}>
               {marketingSubmissionStatus.type === 'success' ? (
-                <CheckCircle className="w-4 h-4 text-green-600" />
+                <CheckCircle className="w-5 h-5 text-green-600" />
               ) : (
-                <AlertCircle className="w-4 h-4 text-red-600" />
+                <AlertCircle className="w-5 h-5 text-red-600" />
               )}
-              <AlertDescription className={marketingSubmissionStatus.type === 'success' ? 'text-green-800' : 'text-red-800'}>
+              <AlertDescription className={`font-bold ${
+                marketingSubmissionStatus.type === 'success' ? 'text-green-800' : 'text-red-800'
+              }`}>
                 {marketingSubmissionStatus.message}
               </AlertDescription>
             </Alert>
@@ -481,16 +493,16 @@ export const MarketingEmailCampaign: React.FC = () => {
               <Button
                 type="submit"
                 disabled={isSubmittingMarketing}
-                className="min-w-[140px]"
+                className="min-w-[160px] bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-xl hover:scale-105 transition-all duration-200"
               >
                 {isSubmittingMarketing ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                     Sending...
                   </>
                 ) : (
                   <>
-                    <Send className="w-4 h-4 mr-2" />
+                    <Send className="w-5 h-5 mr-2" />
                     Send Campaign
                   </>
                 )}
@@ -501,33 +513,37 @@ export const MarketingEmailCampaign: React.FC = () => {
       </Card>
 
       {/* Email Statistics */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
-            Campaign Statistics
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-primary">{allUsers.length}</div>
-              <div className="text-sm text-muted-foreground">Total Users</div>
+      <Card className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 shadow-lg rounded-2xl overflow-hidden">
+        <CardHeader className="bg-white/50 border-b-2 border-blue-100">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center shadow-md">
+              <Users className="w-5 h-5 text-blue-600" />
             </div>
-            <div className="text-center p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-green-600">
+            <CardTitle className="text-xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              Campaign Statistics
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center p-5 border-2 border-indigo-200 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50/50 shadow-md">
+              <div className="text-3xl font-black bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">{allUsers.length}</div>
+              <div className="text-sm text-indigo-700 font-bold mt-1">Total Users</div>
+            </div>
+            <div className="text-center p-5 border-2 border-green-200 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50/50 shadow-md">
+              <div className="text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 {allUsers.filter(user => user.marketingEmails === true).length}
               </div>
-              <div className="text-sm text-muted-foreground">Marketing Enabled</div>
+              <div className="text-sm text-green-700 font-bold mt-1">Marketing Enabled</div>
             </div>
-            <div className="text-center p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-green-600">
+            <div className="text-center p-5 border-2 border-purple-200 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50/50 shadow-md">
+              <div className="text-3xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 {sendMarketingToAllUsers ?
                   allUsers.filter(user => user.marketingEmails === true).length :
                   selectedMarketingUsers.length
                 }
               </div>
-              <div className="text-sm text-muted-foreground">Target Recipients</div>
+              <div className="text-sm text-purple-700 font-bold mt-1">Target Recipients</div>
             </div>
           </div>
         </CardContent>

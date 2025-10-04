@@ -219,87 +219,103 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
   return (
     <div className="space-y-6">
       {/* Admin Header */}
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-        <div className="flex items-center">
-          <Shield className="w-6 h-6 text-red-600 mr-3" />
+      <div className="bg-gradient-to-br from-red-50 to-orange-50/50 border-2 border-red-200 rounded-2xl p-6 shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-orange-100 rounded-xl flex items-center justify-center shadow-md">
+            <Shield className="w-6 h-6 text-red-600" />
+          </div>
           <div>
-            <h3 className="text-lg font-semibold text-red-900">Admin Notification Center</h3>
-            <p className="text-sm text-red-700">Send notifications to all registered users</p>
+            <h3 className="text-xl font-black bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Admin Notification Center</h3>
+            <p className="text-sm text-red-700 font-medium">Send notifications to all registered users</p>
           </div>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center">
-            <Users className="w-8 h-8 text-blue-600 mr-3" />
+        <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl p-5 border-2 border-blue-200 shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center shadow-md">
+              <Users className="w-6 h-6 text-blue-600" />
+            </div>
             <div>
-              <p className="text-sm text-gray-600">Total Users</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm text-blue-700 font-bold">Total Users</p>
+              <p className="text-3xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                 {loadingStats ? '...' : stats.totalUsers}
               </p>
             </div>
           </div>
         </div>
-        
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center">
-            <Send className="w-8 h-8 text-green-600 mr-3" />
+
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 rounded-2xl p-5 border-2 border-green-200 shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
+              <Send className="w-6 h-6 text-green-600" />
+            </div>
             <div>
-              <p className="text-sm text-gray-600">Total Notifications</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm text-green-700 font-bold">Total Notifications</p>
+              <p className="text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 {loadingStats ? '...' : stats.totalNotifications}
               </p>
             </div>
           </div>
         </div>
-        
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center">
-            <BarChart3 className="w-8 h-8 text-purple-600 mr-3" />
+
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50/50 rounded-2xl p-5 border-2 border-purple-200 shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center shadow-md">
+              <BarChart3 className="w-6 h-6 text-purple-600" />
+            </div>
             <div>
-              <p className="text-sm text-gray-600">Reach</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {loadingStats ? '...' : `${stats.totalUsers} users`}
+              <p className="text-sm text-purple-700 font-bold">Reach</p>
+              <p className="text-3xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {loadingStats ? '...' : `${stats.totalUsers}`}
               </p>
+              <p className="text-xs text-purple-600 font-medium">users</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Notification Creation Form */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h4 className="text-lg font-semibold text-gray-900 mb-6">Create New Notification</h4>
+      <div className="bg-gradient-to-br from-indigo-50 to-blue-50/50 rounded-2xl border-2 border-indigo-200 p-6 shadow-lg">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-xl flex items-center justify-center shadow-md">
+            <Send className="w-5 h-5 text-indigo-600" />
+          </div>
+          <h4 className="text-xl font-black bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">Create New Notification</h4>
+        </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Type Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-gray-800 mb-3">
               Notification Type
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                { value: 'info', label: 'Info', icon: Info, color: 'blue' },
-                { value: 'success', label: 'Success', icon: CheckCircle, color: 'green' },
-                { value: 'warning', label: 'Warning', icon: AlertTriangle, color: 'yellow' },
-                { value: 'update', label: 'Update', icon: AlertCircle, color: 'blue' }
-              ].map(({ value, label, icon: Icon, color }) => (
+                { value: 'info', label: 'Info', icon: Info, gradient: 'from-blue-500 to-cyan-500', bg: 'from-blue-50 to-cyan-50/50', border: 'border-blue-300' },
+                { value: 'success', label: 'Success', icon: CheckCircle, gradient: 'from-green-500 to-emerald-500', bg: 'from-green-50 to-emerald-50/50', border: 'border-green-300' },
+                { value: 'warning', label: 'Warning', icon: AlertTriangle, gradient: 'from-yellow-500 to-amber-500', bg: 'from-yellow-50 to-amber-50/50', border: 'border-yellow-300' },
+                { value: 'update', label: 'Update', icon: AlertCircle, gradient: 'from-purple-500 to-pink-500', bg: 'from-purple-50 to-pink-50/50', border: 'border-purple-300' }
+              ].map(({ value, label, icon: Icon, gradient, bg, border }) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setFormData(prev => ({ ...prev, type: value as NotificationData['type'] }))}
-                  className={`p-3 rounded-lg border-2 transition-all ${
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                     formData.type === value
-                      ? `border-${color}-500 bg-${color}-50`
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? `${border} bg-gradient-to-br ${bg} shadow-lg transform scale-105`
+                      : 'border-gray-300 bg-white hover:border-gray-400 hover:shadow-md'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mx-auto mb-1 ${
-                    formData.type === value ? `text-${color}-600` : 'text-gray-400'
-                  }`} />
-                  <span className={`text-sm font-medium ${
-                    formData.type === value ? `text-${color}-700` : 'text-gray-600'
+                  <div className={`w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center ${
+                    formData.type === value ? `bg-gradient-to-br ${gradient}` : 'bg-gray-200'
+                  }`}>
+                    <Icon className="w-5 h-5 text-white" />
+                  </div>
+                  <span className={`text-sm font-bold block ${
+                    formData.type === value ? 'text-gray-800' : 'text-gray-600'
                   }`}>
                     {label}
                   </span>
@@ -310,7 +326,7 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
 
           {/* Title */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="title" className="block text-sm font-bold text-gray-800 mb-2">
               Notification Title *
             </label>
             <input
@@ -319,16 +335,16 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium"
               placeholder="Enter notification title..."
               maxLength={100}
             />
-            <p className="mt-1 text-xs text-gray-500">{formData.title.length}/100 characters</p>
+            <p className="mt-2 text-xs text-gray-600 font-medium">{formData.title.length}/100 characters</p>
           </div>
 
           {/* Message */}
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="message" className="block text-sm font-bold text-gray-800 mb-2">
               Notification Message *
             </label>
             <textarea
@@ -337,11 +353,11 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
               value={formData.message}
               onChange={handleInputChange}
               rows={4}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium resize-none"
               placeholder="Enter notification message..."
               maxLength={500}
             />
-            <p className="mt-1 text-xs text-gray-500">{formData.message.length}/500 characters</p>
+            <p className="mt-2 text-xs text-gray-600 font-medium">{formData.message.length}/500 characters</p>
           </div>
 
           {/* User Selection */}
@@ -552,23 +568,23 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
           )}
 
           {/* Submit */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-            <div className="text-sm text-gray-600">
+          <div className="flex items-center justify-between pt-6 border-t-2 border-gray-200">
+            <div className="text-sm text-gray-700 font-medium">
               {sendToAllUsers ? (
                 <>
-                  This will send an in-app notification to all {stats.totalUsers} registered users
+                  This will send an in-app notification to all <span className="font-bold text-indigo-700">{stats.totalUsers}</span> registered users
                   {sendAsEmail && (
-                    <div className="mt-1 text-xs text-blue-600 font-medium">
-                      + Email notifications to users with email notifications enabled
+                    <div className="mt-1 text-xs text-blue-700 font-bold">
+                      📧 + Email notifications to users with email notifications enabled
                     </div>
                   )}
                 </>
               ) : (
                 <>
-                  This will send an in-app notification to {selectedUsers.length} selected user{selectedUsers.length !== 1 ? 's' : ''}
+                  This will send an in-app notification to <span className="font-bold text-indigo-700">{selectedUsers.length}</span> selected user{selectedUsers.length !== 1 ? 's' : ''}
                   {sendAsEmail && (
-                    <div className="mt-1 text-xs text-blue-600 font-medium">
-                      + Email notifications to selected users with email notifications enabled
+                    <div className="mt-1 text-xs text-blue-700 font-bold">
+                      📧 + Email notifications to selected users with email notifications enabled
                     </div>
                   )}
                 </>
@@ -577,16 +593,16 @@ export const AdminNotificationCreator: React.FC<AdminNotificationCreatorProps> =
             <button
               type="submit"
               disabled={isSubmitting || !formData.title.trim() || !formData.message.trim() || (!sendToAllUsers && selectedUsers.length === 0)}
-              className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl font-bold hover:from-indigo-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:scale-105"
             >
               {isSubmitting ? (
                 <>
-                  <Loader className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader className="w-5 h-5 mr-2 animate-spin" />
                   Sending...
                 </>
               ) : (
                 <>
-                  <Send className="w-4 h-4 mr-2" />
+                  <Send className="w-5 h-5 mr-2" />
                   {sendToAllUsers ? 'Send to All Users' : `Send to ${selectedUsers.length} User${selectedUsers.length !== 1 ? 's' : ''}`}
                 </>
               )}

@@ -374,32 +374,39 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
     <div className="space-y-6">
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Blog Management</h2>
-          <p className="text-gray-600">Create and manage blog posts for RecipeRevamped</p>
+      <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-6 shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
+              <FileText className="w-6 h-6 text-green-600" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Blog Management</h2>
+              <p className="text-green-700 font-medium">Create and manage blog posts for RecipeRevamped</p>
+            </div>
+          </div>
+          <button
+            onClick={handleCreatePost}
+            className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            New Post
+          </button>
         </div>
-        <button
-          onClick={handleCreatePost}
-          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          New Post
-        </button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+      <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 p-6 rounded-2xl border-2 border-blue-200 shadow-lg space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-500 w-5 h-5" />
             <input
               type="text"
               placeholder="Search posts..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full pl-12 pr-4 py-3 border-2 border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
             />
           </div>
 
@@ -407,7 +414,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="px-4 py-3 border-2 border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
           >
             <option value="all">All Categories</option>
             {categories.map(category => (
@@ -421,7 +428,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="px-4 py-3 border-2 border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
           >
             <option value="all">All Status</option>
             <option value="published">Published</option>
@@ -429,16 +436,15 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
           </select>
 
           {/* Stats */}
-          <div className="flex items-center space-x-4 text-sm text-gray-600">
-            <span>{filteredPosts.length} posts</span>
-            <span>•</span>
-            <span>{posts.filter(p => p.status === 'published').length} published</span>
+          <div className="flex items-center space-x-3 text-sm font-bold">
+            <span className="px-3 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl shadow-md">{filteredPosts.length} posts</span>
+            <span className="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl shadow-md">{posts.filter(p => p.status === 'published').length} published</span>
           </div>
         </div>
       </div>
 
       {/* Posts List */}
-      <div className="bg-white rounded-lg border border-gray-200">
+      <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
         {filteredPosts.length === 0 ? (
           <div className="text-center py-12">
             <FileText className="mx-auto h-12 w-12 text-gray-400" />

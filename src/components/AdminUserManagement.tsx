@@ -332,67 +332,73 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
   return (
     <div className="space-y-6">
       {/* Admin Panel Header */}
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div className="bg-gradient-to-br from-red-50 to-orange-50/50 border-2 border-red-200 rounded-2xl p-6 shadow-lg">
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <Shield className="w-6 h-6 text-red-600 mr-3" />
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-orange-100 rounded-xl flex items-center justify-center shadow-md">
+              <Shield className="w-6 h-6 text-red-600" />
+            </div>
             <div>
-              <h3 className="text-lg font-semibold text-red-900">User & Admin Management</h3>
-              <p className="text-sm text-red-700">Manage admin privileges and subscription plans</p>
+              <h3 className="text-xl font-black bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                User & Admin Management
+              </h3>
+              <p className="text-sm text-red-700 font-medium">Manage admin privileges and subscription plans</p>
             </div>
           </div>
           <button
             onClick={loadData}
             disabled={loading}
-            className="flex items-center px-3 py-2 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-xl hover:from-red-700 hover:to-orange-700 transition-all duration-200 font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:scale-105 disabled:opacity-50"
           >
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
         </div>
       </div>
 
       {/* Current Admin Plan Management */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-gradient-to-br from-yellow-50 to-amber-50/50 border-2 border-yellow-200 rounded-2xl p-6 shadow-lg">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center">
-            <Crown className="w-5 h-5 text-yellow-500 mr-2" />
-            <h4 className="text-lg font-semibold text-gray-900">Your Admin Plan</h4>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-xl flex items-center justify-center shadow-md">
+              <Crown className="w-6 h-6 text-yellow-600" />
+            </div>
+            <h4 className="text-xl font-black bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">Your Admin Plan</h4>
           </div>
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-            currentUserPlan === 'free' ? 'bg-gray-100 text-gray-700' :
-            currentUserPlan === 'chef' ? 'bg-blue-100 text-blue-700' :
-            currentUserPlan === 'master-chef' ? 'bg-green-100 text-green-700' :
-            'bg-purple-100 text-purple-700'
+          <span className={`px-4 py-2 rounded-xl text-sm font-bold shadow-md ${
+            currentUserPlan === 'free' ? 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 border-2 border-gray-300' :
+            currentUserPlan === 'chef' ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-2 border-blue-300 shadow-blue-500/30' :
+            currentUserPlan === 'master-chef' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white border-2 border-green-300 shadow-green-500/30' :
+            'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-2 border-purple-300 shadow-purple-500/30'
           }`}>
             {SUBSCRIPTION_PLANS[currentUserPlan].name}
           </span>
         </div>
-        
-        <p className="text-gray-600 mb-4">
+
+        <p className="text-yellow-800 mb-4 font-medium">
           Change your own subscription plan for testing functionality
         </p>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {Object.entries(SUBSCRIPTION_PLANS).map(([planId, plan]) => (
             <button
               key={planId}
               onClick={() => handleChangePlan(planId as SubscriptionPlan, true)}
               disabled={currentUserPlan === planId || actionLoading === `plan-${planId}`}
-              className={`p-3 rounded-lg border-2 transition-all ${
+              className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                 currentUserPlan === planId
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                  ? 'border-green-500 bg-gradient-to-br from-green-50 to-emerald-50 shadow-lg shadow-green-500/20 transform scale-105'
+                  : 'border-gray-300 hover:border-yellow-400 hover:bg-yellow-50/50 hover:shadow-md'
               } ${actionLoading === `plan-${planId}` ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {actionLoading === `plan-${planId}` ? (
-                <Loader className="w-4 h-4 animate-spin mx-auto" />
+                <Loader className="w-5 h-5 animate-spin mx-auto text-yellow-600" />
               ) : (
                 <>
-                  <div className="font-semibold text-sm">{plan.name}</div>
-                  <div className="text-xs text-gray-500">${plan.basePrice}/mo</div>
+                  <div className="font-black text-sm text-gray-800">{plan.name}</div>
+                  <div className="text-xs text-gray-600 font-medium mt-1">${plan.basePrice}/mo</div>
                   {currentUserPlan === planId && (
-                    <Check className="w-4 h-4 text-green-600 mx-auto mt-1" />
+                    <Check className="w-5 h-5 text-green-600 mx-auto mt-2" />
                   )}
                 </>
               )}
@@ -402,64 +408,70 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
       </div>
 
       {/* User Search */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <div className="flex items-center mb-4">
-          <Users className="w-5 h-5 text-gray-500 mr-2" />
-          <h4 className="text-lg font-semibold text-gray-900">User Management</h4>
-          <span className="ml-2 px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+      <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-6 shadow-lg">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center shadow-md">
+            <Users className="w-6 h-6 text-blue-600" />
+          </div>
+          <h4 className="text-xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">User Management</h4>
+          <span className="ml-auto px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30">
             {users.length} users
           </span>
         </div>
-        
+
         <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-500 w-5 h-5" />
           <input
             type="text"
             placeholder="Search users by email, name, or ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-12 pr-4 py-3 border-2 border-blue-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium placeholder:text-gray-400"
           />
         </div>
 
-        <div className="space-y-2 max-h-96 overflow-y-auto">
+        <div className="space-y-3 max-h-96 overflow-y-auto">
           {filteredUsers.map((user) => (
             <div
               key={user.uid}
-              className={`flex items-center justify-between p-4 rounded-lg border ${
-                user.isAdmin ? 'border-red-200 bg-red-50' : 'border-gray-200'
+              className={`flex items-center justify-between p-4 rounded-xl border-2 shadow-md transition-all duration-200 hover:shadow-lg ${
+                user.isAdmin
+                  ? 'border-red-300 bg-gradient-to-br from-red-50 to-orange-50/50'
+                  : 'border-gray-300 bg-white hover:border-blue-300'
               }`}
             >
               <div className="flex items-center space-x-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  user.isAdmin ? 'bg-red-500' : 'bg-gray-500'
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
+                  user.isAdmin
+                    ? 'bg-gradient-to-br from-red-500 to-orange-500'
+                    : 'bg-gradient-to-br from-gray-400 to-gray-500'
                 }`}>
                   {user.isAdmin ? (
-                    <ShieldCheck className="w-5 h-5 text-white" />
+                    <ShieldCheck className="w-6 h-6 text-white" />
                   ) : (
-                    <Users className="w-5 h-5 text-white" />
+                    <Users className="w-6 h-6 text-white" />
                   )}
                 </div>
-                
+
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
-                    <span className="font-medium text-gray-900">
+                    <span className="font-black text-gray-900">
                       {user.displayName || 'Unknown User'}
                     </span>
                     {user.isAdmin && (
-                      <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+                      <span className="px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl text-xs font-bold shadow-md shadow-red-500/30">
                         Admin
                       </span>
                     )}
                     {user.uid === currentAdminUid && (
-                      <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">
+                      <span className="px-3 py-1 bg-gradient-to-r from-yellow-400 to-amber-400 text-gray-900 rounded-xl text-xs font-bold shadow-md shadow-yellow-400/30">
                         You
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-500">{user.email}</p>
-                  <p className="text-xs text-gray-400">
-                    Plan: {SUBSCRIPTION_PLANS[user.subscriptionPlan || 'free'].name} • ID: {user.uid.slice(0, 8)}...
+                  <p className="text-sm text-gray-600 font-medium">{user.email}</p>
+                  <p className="text-xs text-gray-500 font-medium mt-1">
+                    Plan: <span className="font-bold">{SUBSCRIPTION_PLANS[user.subscriptionPlan || 'free'].name}</span> • ID: {user.uid.slice(0, 8)}...
                   </p>
                 </div>
               </div>
@@ -470,18 +482,18 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                     setSelectedUser(user);
                     setShowUserModal(true);
                   }}
-                  className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+                  className="px-3 py-2 text-sm bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-md shadow-blue-500/30 hover:shadow-lg hover:scale-105 font-bold"
                 >
                   <Settings className="w-4 h-4" />
                 </button>
-                
+
                 {user.uid !== currentAdminUid && (
                   user.isAdmin ? (
                     canGrantAdmin() ? (
                       <button
                         onClick={() => handleRevokeAdmin(user)}
                         disabled={actionLoading === `revoke-${user.uid}`}
-                        className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
+                        className="px-3 py-2 text-sm bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl hover:from-red-600 hover:to-rose-600 transition-all duration-200 shadow-md shadow-red-500/30 hover:shadow-lg hover:scale-105 disabled:opacity-50 font-bold"
                       >
                         {actionLoading === `revoke-${user.uid}` ? (
                           <Loader className="w-4 h-4 animate-spin" />
@@ -490,7 +502,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                         )}
                       </button>
                     ) : (
-                      <div className="px-3 py-1 text-xs bg-gray-100 text-gray-500 rounded-md">
+                      <div className="px-3 py-2 text-xs bg-gray-100 text-gray-500 rounded-xl font-bold border-2 border-gray-200">
                         Admin
                       </div>
                     )
@@ -499,7 +511,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                       <button
                         onClick={() => handleGrantAdmin(user)}
                         disabled={actionLoading === `grant-${user.uid}`}
-                        className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors disabled:opacity-50"
+                        className="px-3 py-2 text-sm bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-md shadow-green-500/30 hover:shadow-lg hover:scale-105 disabled:opacity-50 font-bold"
                       >
                         {actionLoading === `grant-${user.uid}` ? (
                           <Loader className="w-4 h-4 animate-spin" />
@@ -513,9 +525,9 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
               </div>
             </div>
           ))}
-          
+
           {filteredUsers.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-gray-600 font-medium">
               {searchTerm ? 'No users found matching your search' : 'No users found'}
             </div>
           )}
@@ -524,100 +536,111 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
 
       {/* User Detail Modal */}
       {showUserModal && selectedUser && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div 
-              className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity"
-              onClick={() => setShowUserModal(false)}
-            />
-            
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-5 relative overflow-hidden">
+              {/* Decorative pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                  backgroundSize: '24px 24px'
+                }} />
+              </div>
+
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
+                    <Settings className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-black text-white">
                     Manage User: {selectedUser.displayName}
                   </h3>
-                  <button
-                    onClick={() => setShowUserModal(false)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
                 </div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Change Subscription Plan
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {Object.entries(SUBSCRIPTION_PLANS).map(([planId, plan]) => (
-                        <button
-                          key={planId}
-                          onClick={() => handleChangePlan(planId as SubscriptionPlan, false)}
-                          disabled={selectedUser.subscriptionPlan === planId || actionLoading === `plan-${planId}`}
-                          className={`p-3 rounded-lg border-2 transition-all ${
-                            selectedUser.subscriptionPlan === planId
-                              ? 'border-blue-500 bg-blue-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          {actionLoading === `plan-${planId}` ? (
-                            <Loader className="w-4 h-4 animate-spin mx-auto" />
-                          ) : (
-                            <>
-                              <div className="font-semibold text-sm">{plan.name}</div>
-                              <div className="text-xs text-gray-500">${plan.basePrice}/mo</div>
-                            </>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between pt-4 border-t">
-                    <span className="text-sm text-gray-600">Admin Status</span>
-                    {selectedUser.uid !== currentAdminUid && canGrantAdmin() && (
-                      selectedUser.isAdmin ? (
-                        <button
-                          onClick={() => handleRevokeAdmin(selectedUser)}
-                          disabled={actionLoading === `revoke-${selectedUser.uid}`}
-                          className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50"
-                        >
-                          {actionLoading === `revoke-${selectedUser.uid}` ? (
-                            <Loader className="w-4 h-4 animate-spin mr-2 inline" />
-                          ) : (
-                            <UserMinus className="w-4 h-4 mr-2 inline" />
-                          )}
-                          Remove Admin
-                        </button>
+                <button
+                  onClick={() => setShowUserModal(false)}
+                  className="text-white/90 hover:text-white transition-all duration-200 p-2 rounded-xl hover:bg-white/20 backdrop-blur-sm"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-800 mb-3">
+                  Change Subscription Plan
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {Object.entries(SUBSCRIPTION_PLANS).map(([planId, plan]) => (
+                    <button
+                      key={planId}
+                      onClick={() => handleChangePlan(planId as SubscriptionPlan, false)}
+                      disabled={selectedUser.subscriptionPlan === planId || actionLoading === `plan-${planId}`}
+                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                        selectedUser.subscriptionPlan === planId
+                          ? 'border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 shadow-lg shadow-purple-500/20 transform scale-105'
+                          : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50/50 hover:shadow-md'
+                      } ${actionLoading === `plan-${planId}` ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {actionLoading === `plan-${planId}` ? (
+                        <Loader className="w-5 h-5 animate-spin mx-auto text-purple-600" />
                       ) : (
-                        <button
-                          onClick={() => handleGrantAdmin(selectedUser)}
-                          disabled={actionLoading === `grant-${selectedUser.uid}`}
-                          className="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors disabled:opacity-50"
-                        >
-                          {actionLoading === `grant-${selectedUser.uid}` ? (
-                            <Loader className="w-4 h-4 animate-spin mr-2 inline" />
-                          ) : (
-                            <UserPlus className="w-4 h-4 mr-2 inline" />
+                        <>
+                          <div className="font-black text-sm text-gray-800">{plan.name}</div>
+                          <div className="text-xs text-gray-600 font-medium mt-1">${plan.basePrice}/mo</div>
+                          {selectedUser.subscriptionPlan === planId && (
+                            <Check className="w-5 h-5 text-purple-600 mx-auto mt-2" />
                           )}
-                          Grant Admin
-                        </button>
-                      )
-                    )}
-                    {selectedUser.uid === currentAdminUid && (
-                      <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm">
-                        Cannot modify yourself
-                      </span>
-                    )}
-                    {selectedUser.uid !== currentAdminUid && !canGrantAdmin() && (
-                      <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-sm">
-                        Only super admins can manage admin privileges
-                      </span>
-                    )}
-                  </div>
+                        </>
+                      )}
+                    </button>
+                  ))}
                 </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t-2 border-gray-200">
+                <span className="text-sm font-bold text-gray-800">Admin Status</span>
+                {selectedUser.uid !== currentAdminUid && canGrantAdmin() && (
+                  selectedUser.isAdmin ? (
+                    <button
+                      onClick={() => handleRevokeAdmin(selectedUser)}
+                      disabled={actionLoading === `revoke-${selectedUser.uid}`}
+                      className="px-5 py-2.5 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl hover:from-red-600 hover:to-rose-600 transition-all duration-200 font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:scale-105 disabled:opacity-50"
+                    >
+                      {actionLoading === `revoke-${selectedUser.uid}` ? (
+                        <Loader className="w-4 h-4 animate-spin mr-2 inline" />
+                      ) : (
+                        <UserMinus className="w-4 h-4 mr-2 inline" />
+                      )}
+                      Remove Admin
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleGrantAdmin(selectedUser)}
+                      disabled={actionLoading === `grant-${selectedUser.uid}`}
+                      className="px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105 disabled:opacity-50"
+                    >
+                      {actionLoading === `grant-${selectedUser.uid}` ? (
+                        <Loader className="w-4 h-4 animate-spin mr-2 inline" />
+                      ) : (
+                        <UserPlus className="w-4 h-4 mr-2 inline" />
+                      )}
+                      Grant Admin
+                    </button>
+                  )
+                )}
+                {selectedUser.uid === currentAdminUid && (
+                  <span className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold border-2 border-gray-200">
+                    Cannot modify yourself
+                  </span>
+                )}
+                {selectedUser.uid !== currentAdminUid && !canGrantAdmin() && (
+                  <span className="px-4 py-2 bg-gradient-to-r from-orange-100 to-red-100 text-orange-700 rounded-xl text-sm font-bold border-2 border-orange-200">
+                    Only super admins can manage admin privileges
+                  </span>
+                )}
               </div>
             </div>
           </div>
