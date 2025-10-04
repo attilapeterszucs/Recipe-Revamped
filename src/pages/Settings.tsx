@@ -2394,40 +2394,40 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
+      <div className="bg-gradient-to-r from-green-600 to-emerald-600 shadow-lg border-b-2 border-green-700/20 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <button
                 onClick={onBack}
-                className="mr-3 sm:mr-4 p-1.5 sm:p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors touch-friendly"
+                className="mr-3 sm:mr-4 p-1.5 sm:p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-xl transition-all duration-200 touch-friendly backdrop-blur-sm"
               >
                 <span className="text-xl sm:text-2xl font-bold">←</span>
               </button>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">Settings</h1>
+              <h1 className="text-xl sm:text-2xl font-black text-white truncate">Settings</h1>
             </div>
-            
-            <div className="flex items-center space-x-2 sm:space-x-3">
+
+            <div className="flex items-center gap-2 sm:gap-3">
               {saveStatus === 'saved' && (
-                <div className="flex items-center text-green-600">
+                <div className="flex items-center text-white bg-white/20 px-3 py-1.5 rounded-xl backdrop-blur-sm">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-                  <span className="text-xs sm:text-sm hidden sm:inline">Saved!</span>
+                  <span className="text-xs sm:text-sm hidden sm:inline font-semibold">Saved!</span>
                 </div>
               )}
               {saveStatus === 'error' && (
-                <div className="flex items-center text-red-600">
+                <div className="flex items-center text-white bg-red-500/30 px-3 py-1.5 rounded-xl backdrop-blur-sm">
                   <X className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-                  <span className="text-xs sm:text-sm hidden sm:inline">Failed to save</span>
+                  <span className="text-xs sm:text-sm hidden sm:inline font-semibold">Failed to save</span>
                 </div>
               )}
-              
+
               {!activeSection.startsWith('admin') && (
                 <button
                   onClick={handleSaveSettings}
                   disabled={saving}
-                  className="flex items-center px-3 sm:px-4 py-2 sm:py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm font-medium shadow-sm touch-friendly min-h-[40px]"
+                  className="flex items-center px-3 sm:px-4 py-2 sm:py-2.5 bg-white text-green-700 rounded-xl hover:bg-white/90 disabled:opacity-50 text-sm font-bold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 touch-friendly min-h-[40px]"
                 >
                   <Save className="w-4 h-4 mr-1 sm:mr-2 flex-shrink-0" />
                   <span className="hidden sm:inline">{saving ? 'Saving...' : 'Save Changes'}</span>
@@ -2445,7 +2445,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           {/* Mobile Navigation Tabs */}
           <div className="lg:hidden">
             <div className="flex overflow-x-auto pb-3 -mx-4 px-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-              <div className="flex space-x-3 min-w-max">
+              <div className="flex gap-3 min-w-max">
                 {sections.map((section) => {
                   const Icon = section.icon;
                   const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'));
@@ -2453,10 +2453,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     <button
                       key={section.id}
                       onClick={() => setActiveSection(section.id)}
-                      className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-xl transition-all whitespace-nowrap touch-friendly min-h-[44px] shadow-sm ${
+                      className={`flex items-center px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 whitespace-nowrap touch-friendly min-h-[44px] ${
                         isActive
-                          ? 'bg-green-600 text-white shadow-md transform scale-105'
-                          : 'text-gray-700 hover:bg-gray-100 border border-gray-200 bg-white hover:shadow-md'
+                          ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 transform scale-105'
+                          : 'text-gray-700 hover:bg-white border-2 border-gray-200 bg-white/80 backdrop-blur-sm hover:shadow-lg hover:border-green-200'
                       }`}
                     >
                       <Icon className="w-4 h-4 mr-2 flex-shrink-0" />
@@ -2470,17 +2470,17 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
           {/* Desktop Sidebar */}
           <div className="hidden lg:block w-64 flex-shrink-0">
-            <nav className="space-y-1">
+            <nav className="space-y-2">
               {sections.map((section) => {
                 const Icon = section.icon;
                 return (
                   <button
                     key={section.id}
                     onClick={() => setActiveSection(section.id)}
-                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
                       activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'))
-                        ? 'bg-green-50 text-green-700 border-r-2 border-green-500'
-                        : 'text-gray-700 hover:bg-gray-50'
+                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 transform scale-105'
+                        : 'text-gray-700 hover:bg-white border-2 border-gray-200 bg-white/60 backdrop-blur-sm hover:shadow-lg hover:border-green-200'
                     }`}
                   >
                     <Icon className="w-5 h-5 mr-3" />
@@ -2494,7 +2494,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
+            <div className="bg-white rounded-2xl shadow-2xl border-2 border-green-100 p-4 sm:p-6 lg:p-8">
               <div className="space-y-6 lg:space-y-8">
                 {renderSectionContent()}
               </div>
