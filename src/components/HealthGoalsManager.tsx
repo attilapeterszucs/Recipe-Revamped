@@ -404,20 +404,37 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
       {/* Add Goal Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50" onClick={() => setShowAddModal(false)}>
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-5 rounded-t-3xl">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-black text-white">Add Health Goal</h3>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200" onClick={() => setShowAddModal(false)}>
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
+
+            {/* Header with Gradient */}
+            <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-5 relative overflow-hidden">
+              {/* Decorative pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                  backgroundSize: '24px 24px'
+                }} />
+              </div>
+
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
+                    <Target className="w-6 h-6 text-white" strokeWidth={2.5} />
+                  </div>
+                  <h3 className="text-2xl font-black text-white">Add Health Goal</h3>
+                </div>
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-xl transition-all duration-200"
+                  className="text-white/90 hover:text-white transition-all duration-200 p-2 rounded-xl hover:bg-white/20 backdrop-blur-sm"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
-            <div className="p-6">
+
+            {/* Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
 
               <div className="space-y-4">
                 <div>
@@ -543,18 +560,23 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-100">
+            </div>
+
+            {/* Footer with Action Buttons */}
+            <div className="px-6 py-4 border-t-2 border-gray-100 bg-gradient-to-br from-gray-50 to-green-50/30">
+              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="px-6 py-3 text-gray-700 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 font-bold hover:scale-105 shadow-sm"
+                  className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-bold shadow-sm hover:shadow-md hover:scale-105"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleAddGoal}
                   disabled={!newGoal.title || !newGoal.description}
-                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transform hover:scale-105 flex items-center justify-center gap-2"
                 >
+                  <Plus className="w-4 h-4" />
                   Add Goal
                 </button>
               </div>
@@ -565,20 +587,37 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
       {/* Edit Goal Modal */}
       {editingGoal && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50" onClick={() => setEditingGoal(null)}>
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-5 rounded-t-3xl">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-black text-white">Edit Health Goal</h3>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200" onClick={() => setEditingGoal(null)}>
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
+
+            {/* Header with Gradient */}
+            <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-5 relative overflow-hidden">
+              {/* Decorative pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                  backgroundSize: '24px 24px'
+                }} />
+              </div>
+
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
+                    <Edit3 className="w-6 h-6 text-white" strokeWidth={2.5} />
+                  </div>
+                  <h3 className="text-2xl font-black text-white">Edit Health Goal</h3>
+                </div>
                 <button
                   onClick={() => setEditingGoal(null)}
-                  className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-xl transition-all duration-200"
+                  className="text-white/90 hover:text-white transition-all duration-200 p-2 rounded-xl hover:bg-white/20 backdrop-blur-sm"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
-            <div className="p-6">
+
+            {/* Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
 
               <div className="space-y-4">
                 <div>
@@ -704,18 +743,23 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-100">
+            </div>
+
+            {/* Footer with Action Buttons */}
+            <div className="px-6 py-4 border-t-2 border-gray-100 bg-gradient-to-br from-gray-50 to-green-50/30">
+              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
                 <button
                   onClick={() => setEditingGoal(null)}
-                  className="px-6 py-3 text-gray-700 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 font-bold hover:scale-105 shadow-sm"
+                  className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-bold shadow-sm hover:shadow-md hover:scale-105"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveEditGoal}
                   disabled={!editingGoal.title || !editingGoal.description}
-                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transform hover:scale-105 flex items-center justify-center gap-2"
                 >
+                  <Check className="w-4 h-4" />
                   Save Changes
                 </button>
               </div>
