@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { User, Activity, AlertTriangle, Scale } from 'lucide-react';
 import type { PersonalProfile } from '../types/userSettings';
+import { CustomDropdown } from './CustomDropdown';
 
 interface PersonalProfileEditorProps {
   personalProfile: PersonalProfile;
@@ -125,36 +126,40 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
                 <label className="block text-sm font-bold text-gray-800 mb-2">
                   Gender
                 </label>
-                <select
+                <CustomDropdown
                   value={personalProfile.gender || ''}
-                  onChange={(e) => updateProfile({ gender: e.target.value as PersonalProfile['gender'] || undefined })}
-                  disabled={disabled}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                >
-                  <option value="">Select gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                  <option value="prefer_not_to_say">Prefer not to say</option>
-                </select>
+                  onChange={(value) => updateProfile({ gender: value as PersonalProfile['gender'] || undefined })}
+                  options={[
+                    { value: '', label: 'Select gender', icon: '👤' },
+                    { value: 'male', label: 'Male', icon: '👨' },
+                    { value: 'female', label: 'Female', icon: '👩' },
+                    { value: 'other', label: 'Other', icon: '🧑' },
+                    { value: 'prefer_not_to_say', label: 'Prefer not to say', icon: '🤐' }
+                  ]}
+                  placeholder="Select gender"
+                  icon={<User className="w-5 h-5 text-gray-400" />}
+                  ariaLabel="Gender selection"
+                />
               </div>
 
               <div className="md:col-span-2">
                 <label className="block text-sm font-bold text-gray-800 mb-2">
                   Activity Level
                 </label>
-                <select
+                <CustomDropdown
                   value={personalProfile.activityLevel}
-                  onChange={(e) => updateProfile({ activityLevel: e.target.value as PersonalProfile['activityLevel'] })}
-                  disabled={disabled}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                >
-                  <option value="sedentary">Sedentary (little to no exercise)</option>
-                  <option value="lightly_active">Lightly Active (light exercise 1-3 days/week)</option>
-                  <option value="moderately_active">Moderately Active (moderate exercise 3-5 days/week)</option>
-                  <option value="very_active">Very Active (hard exercise 6-7 days/week)</option>
-                  <option value="extremely_active">Extremely Active (very hard exercise, physical job)</option>
-                </select>
+                  onChange={(value) => updateProfile({ activityLevel: value as PersonalProfile['activityLevel'] })}
+                  options={[
+                    { value: 'sedentary', label: 'Sedentary (little to no exercise)', icon: '🛋️' },
+                    { value: 'lightly_active', label: 'Lightly Active (light exercise 1-3 days/week)', icon: '🚶' },
+                    { value: 'moderately_active', label: 'Moderately Active (moderate exercise 3-5 days/week)', icon: '🏃' },
+                    { value: 'very_active', label: 'Very Active (hard exercise 6-7 days/week)', icon: '🏋️' },
+                    { value: 'extremely_active', label: 'Extremely Active (very hard exercise, physical job)', icon: '💪' }
+                  ]}
+                  placeholder="Select activity level"
+                  icon={<Activity className="w-5 h-5 text-gray-400" />}
+                  ariaLabel="Activity level selection"
+                />
               </div>
             </div>
           </div>
@@ -182,15 +187,17 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
                     className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                     placeholder="Height"
                   />
-                  <select
+                  <CustomDropdown
                     value={personalProfile.heightUnit}
-                    onChange={(e) => updateProfile({ heightUnit: e.target.value as PersonalProfile['heightUnit'] })}
-                    disabled={disabled}
-                    className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                  >
-                    <option value="cm">cm</option>
-                    <option value="ft_in">ft/in</option>
-                  </select>
+                    onChange={(value) => updateProfile({ heightUnit: value as PersonalProfile['heightUnit'] })}
+                    options={[
+                      { value: 'cm', label: 'cm', icon: '📏' },
+                      { value: 'ft_in', label: 'ft/in', icon: '📐' }
+                    ]}
+                    placeholder="Unit"
+                    className="w-32"
+                    ariaLabel="Height unit selection"
+                  />
                 </div>
               </div>
 
@@ -207,15 +214,17 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
                     className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                     placeholder="Weight"
                   />
-                  <select
+                  <CustomDropdown
                     value={personalProfile.weightUnit}
-                    onChange={(e) => updateProfile({ weightUnit: e.target.value as PersonalProfile['weightUnit'] })}
-                    disabled={disabled}
-                    className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                  >
-                    <option value="kg">kg</option>
-                    <option value="lbs">lbs</option>
-                  </select>
+                    onChange={(value) => updateProfile({ weightUnit: value as PersonalProfile['weightUnit'] })}
+                    options={[
+                      { value: 'kg', label: 'kg', icon: '⚖️' },
+                      { value: 'lbs', label: 'lbs', icon: '📊' }
+                    ]}
+                    placeholder="Unit"
+                    className="w-32"
+                    ariaLabel="Weight unit selection"
+                  />
                 </div>
               </div>
             </div>
@@ -383,50 +392,56 @@ export const PersonalProfileEditor: React.FC<PersonalProfileEditorProps> = ({
                 <label className="block text-sm font-bold text-gray-800 mb-2">
                   Cooking Skill Level
                 </label>
-                <select
+                <CustomDropdown
                   value={personalProfile.cookingSkillLevel}
-                  onChange={(e) => updateProfile({ cookingSkillLevel: e.target.value as PersonalProfile['cookingSkillLevel'] })}
-                  disabled={disabled}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                >
-                  <option value="beginner">Beginner (basic recipes)</option>
-                  <option value="intermediate">Intermediate (moderate complexity)</option>
-                  <option value="advanced">Advanced (complex techniques)</option>
-                  <option value="professional">Professional (expert level)</option>
-                </select>
+                  onChange={(value) => updateProfile({ cookingSkillLevel: value as PersonalProfile['cookingSkillLevel'] })}
+                  options={[
+                    { value: 'beginner', label: 'Beginner (basic recipes)', icon: '🥄' },
+                    { value: 'intermediate', label: 'Intermediate (moderate complexity)', icon: '👨‍🍳' },
+                    { value: 'advanced', label: 'Advanced (complex techniques)', icon: '🔪' },
+                    { value: 'professional', label: 'Professional (expert level)', icon: '⭐' }
+                  ]}
+                  placeholder="Select skill level"
+                  icon={<Activity className="w-5 h-5 text-gray-400" />}
+                  ariaLabel="Cooking skill level selection"
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-gray-800 mb-2">
                   Available Cooking Time
                 </label>
-                <select
+                <CustomDropdown
                   value={personalProfile.timeAvailableForCooking}
-                  onChange={(e) => updateProfile({ timeAvailableForCooking: e.target.value as PersonalProfile['timeAvailableForCooking'] })}
-                  disabled={disabled}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                >
-                  <option value="under_15_min">Under 15 minutes</option>
-                  <option value="15_30_min">15-30 minutes</option>
-                  <option value="30_60_min">30-60 minutes</option>
-                  <option value="over_60_min">Over 60 minutes</option>
-                </select>
+                  onChange={(value) => updateProfile({ timeAvailableForCooking: value as PersonalProfile['timeAvailableForCooking'] })}
+                  options={[
+                    { value: 'under_15_min', label: 'Under 15 minutes', icon: '⚡' },
+                    { value: '15_30_min', label: '15-30 minutes', icon: '⏱️' },
+                    { value: '30_60_min', label: '30-60 minutes', icon: '⏰' },
+                    { value: 'over_60_min', label: 'Over 60 minutes', icon: '🕐' }
+                  ]}
+                  placeholder="Select cooking time"
+                  icon={<Activity className="w-5 h-5 text-gray-400" />}
+                  ariaLabel="Available cooking time selection"
+                />
               </div>
 
               <div className="md:col-span-2">
                 <label className="block text-sm font-bold text-gray-800 mb-2">
                   Budget Preference
                 </label>
-                <select
+                <CustomDropdown
                   value={personalProfile.budgetPreference}
-                  onChange={(e) => updateProfile({ budgetPreference: e.target.value as PersonalProfile['budgetPreference'] })}
-                  disabled={disabled}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                >
-                  <option value="budget_friendly">Budget Friendly (affordable ingredients)</option>
-                  <option value="moderate">Moderate (balanced cost and quality)</option>
-                  <option value="premium">Premium (high-quality ingredients)</option>
-                </select>
+                  onChange={(value) => updateProfile({ budgetPreference: value as PersonalProfile['budgetPreference'] })}
+                  options={[
+                    { value: 'budget_friendly', label: 'Budget Friendly (affordable ingredients)', icon: '💰' },
+                    { value: 'moderate', label: 'Moderate (balanced cost and quality)', icon: '💵' },
+                    { value: 'premium', label: 'Premium (high-quality ingredients)', icon: '💎' }
+                  ]}
+                  placeholder="Select budget preference"
+                  icon={<Activity className="w-5 h-5 text-gray-400" />}
+                  ariaLabel="Budget preference selection"
+                />
               </div>
             </div>
 

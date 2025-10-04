@@ -5,6 +5,7 @@ import { createHealthGoal, HEALTH_GOAL_TEMPLATES } from '../types/userSettings';
 import { updateUserSettings } from '../lib/userSettings';
 import { useToast } from './ToastContainer';
 import { logger } from '../lib/logger';
+import { CustomDropdown } from './CustomDropdown';
 
 interface HealthGoalsManagerProps {
   personalProfile: PersonalProfile;
@@ -441,10 +442,10 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                   <label className="block text-sm font-bold text-gray-800 mb-2">
                     Goal Type
                   </label>
-                  <select
-                    value={newGoal.type}
-                    onChange={(e) => {
-                      const goalType = e.target.value as HealthGoal['type'];
+                  <CustomDropdown
+                    value={newGoal.type || 'weight_loss'}
+                    onChange={(value) => {
+                      const goalType = value as HealthGoal['type'];
                       const template = HEALTH_GOAL_TEMPLATES[goalType];
                       setNewGoal({
                         ...newGoal,
@@ -454,15 +455,18 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                         unit: getDefaultUnit(goalType)
                       });
                     }}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                  >
-                    <option value="weight_loss">Weight Loss</option>
-                    <option value="weight_gain">Weight Gain</option>
-                    <option value="muscle_gain">Muscle Building</option>
-                    <option value="performance">Athletic Performance</option>
-                    <option value="lifestyle">Lifestyle Goal</option>
-                    <option value="custom">Custom Goal</option>
-                  </select>
+                    options={[
+                      { value: 'weight_loss', label: 'Weight Loss', icon: '📉' },
+                      { value: 'weight_gain', label: 'Weight Gain', icon: '📈' },
+                      { value: 'muscle_gain', label: 'Muscle Building', icon: '💪' },
+                      { value: 'performance', label: 'Athletic Performance', icon: '🏃' },
+                      { value: 'lifestyle', label: 'Lifestyle Goal', icon: '🌟' },
+                      { value: 'custom', label: 'Custom Goal', icon: '✏️' }
+                    ]}
+                    placeholder="Select goal type"
+                    icon={<Target className="w-5 h-5 text-gray-400" />}
+                    ariaLabel="Goal type selection"
+                  />
                 </div>
 
                 <div>
@@ -523,29 +527,33 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                     <label className="block text-sm font-bold text-gray-800 mb-2">
                       Unit
                     </label>
-                    <select
+                    <CustomDropdown
                       value={newGoal.unit || ''}
-                      onChange={(e) => setNewGoal({ ...newGoal, unit: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                    >
-                      <option value="">Select unit</option>
-                      <option value="kg">Kilograms (kg)</option>
-                      <option value="lbs">Pounds (lbs)</option>
-                    </select>
+                      onChange={(value) => setNewGoal({ ...newGoal, unit: value })}
+                      options={[
+                        { value: '', label: 'Select unit', icon: '📏' },
+                        { value: 'kg', label: 'Kilograms (kg)', icon: '⚖️' },
+                        { value: 'lbs', label: 'Pounds (lbs)', icon: '📊' }
+                      ]}
+                      placeholder="Select unit"
+                      ariaLabel="Unit selection"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-2">
                       Priority
                     </label>
-                    <select
-                      value={newGoal.priority}
-                      onChange={(e) => setNewGoal({ ...newGoal, priority: e.target.value as HealthGoal['priority'] })}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                    >
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
-                    </select>
+                    <CustomDropdown
+                      value={newGoal.priority || 'medium'}
+                      onChange={(value) => setNewGoal({ ...newGoal, priority: value as HealthGoal['priority'] })}
+                      options={[
+                        { value: 'low', label: 'Low', icon: '🟢' },
+                        { value: 'medium', label: 'Medium', icon: '🟡' },
+                        { value: 'high', label: 'High', icon: '🔴' }
+                      ]}
+                      placeholder="Select priority"
+                      ariaLabel="Priority selection"
+                    />
                   </div>
                 </div>
 
@@ -626,10 +634,10 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                   <label className="block text-sm font-bold text-gray-800 mb-2">
                     Goal Type
                   </label>
-                  <select
+                  <CustomDropdown
                     value={editingGoal.type}
-                    onChange={(e) => {
-                      const goalType = e.target.value as HealthGoal['type'];
+                    onChange={(value) => {
+                      const goalType = value as HealthGoal['type'];
                       const template = HEALTH_GOAL_TEMPLATES[goalType];
                       setEditingGoal({
                         ...editingGoal,
@@ -639,15 +647,18 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                         unit: getDefaultUnit(goalType) || editingGoal.unit
                       });
                     }}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                  >
-                    <option value="weight_loss">Weight Loss</option>
-                    <option value="weight_gain">Weight Gain</option>
-                    <option value="muscle_gain">Muscle Building</option>
-                    <option value="performance">Athletic Performance</option>
-                    <option value="lifestyle">Lifestyle Goal</option>
-                    <option value="custom">Custom Goal</option>
-                  </select>
+                    options={[
+                      { value: 'weight_loss', label: 'Weight Loss', icon: '📉' },
+                      { value: 'weight_gain', label: 'Weight Gain', icon: '📈' },
+                      { value: 'muscle_gain', label: 'Muscle Building', icon: '💪' },
+                      { value: 'performance', label: 'Athletic Performance', icon: '🏃' },
+                      { value: 'lifestyle', label: 'Lifestyle Goal', icon: '🌟' },
+                      { value: 'custom', label: 'Custom Goal', icon: '✏️' }
+                    ]}
+                    placeholder="Select goal type"
+                    icon={<Target className="w-5 h-5 text-gray-400" />}
+                    ariaLabel="Goal type selection"
+                  />
                 </div>
 
                 <div>
@@ -708,29 +719,33 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                     <label className="block text-sm font-bold text-gray-800 mb-2">
                       Unit
                     </label>
-                    <select
+                    <CustomDropdown
                       value={editingGoal.unit || ''}
-                      onChange={(e) => setEditingGoal({ ...editingGoal, unit: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                    >
-                      <option value="">Select unit</option>
-                      <option value="kg">Kilograms (kg)</option>
-                      <option value="lbs">Pounds (lbs)</option>
-                    </select>
+                      onChange={(value) => setEditingGoal({ ...editingGoal, unit: value })}
+                      options={[
+                        { value: '', label: 'Select unit', icon: '📏' },
+                        { value: 'kg', label: 'Kilograms (kg)', icon: '⚖️' },
+                        { value: 'lbs', label: 'Pounds (lbs)', icon: '📊' }
+                      ]}
+                      placeholder="Select unit"
+                      ariaLabel="Unit selection"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-2">
                       Priority
                     </label>
-                    <select
+                    <CustomDropdown
                       value={editingGoal.priority}
-                      onChange={(e) => setEditingGoal({ ...editingGoal, priority: e.target.value as HealthGoal['priority'] })}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
-                    >
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
-                    </select>
+                      onChange={(value) => setEditingGoal({ ...editingGoal, priority: value as HealthGoal['priority'] })}
+                      options={[
+                        { value: 'low', label: 'Low', icon: '🟢' },
+                        { value: 'medium', label: 'Medium', icon: '🟡' },
+                        { value: 'high', label: 'High', icon: '🔴' }
+                      ]}
+                      placeholder="Select priority"
+                      ariaLabel="Priority selection"
+                    />
                   </div>
                 </div>
 
