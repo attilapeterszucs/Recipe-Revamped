@@ -1582,7 +1582,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'notifications':
         // Helper function to check if any marketing email setting is enabled
         const hasAnyMarketingEmails = settings.marketingEmails || settings.productUpdates || settings.featuresAnnouncements || settings.promotionalOffers;
-        
+
         // Helper function to toggle all marketing emails
         const handleMarketingEmailsToggle = (enabled: boolean) => {
           updateSetting('marketingEmails', enabled);
@@ -1590,73 +1590,147 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           updateSetting('featuresAnnouncements', enabled);
           updateSetting('promotionalOffers', enabled);
         };
-        
+
         return (
           <div className="space-y-8">
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Notifications</h3>
-              <p className="text-gray-600 leading-relaxed">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Notifications</h3>
+              <p className="text-gray-700 leading-relaxed font-medium">
                 Control how and when you receive updates from Recipe Revamped. Customize email preferences, push notifications, and marketing communications to suit your needs.
               </p>
             </div>
-            
+
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-4 sm:p-5">
+              <p className="text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
+                <span className="font-bold text-blue-700">💡 Quick Tip:</span> Manage your notification preferences to stay informed without being overwhelmed. You can enable or disable specific types of communications at any time.
+              </p>
+            </div>
+
             <div className="space-y-6">
-              {/* Main notification toggles on the same level */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Toggle
-                  enabled={settings.emailNotifications}
-                  onChange={(enabled) => updateSetting('emailNotifications', enabled)}
-                  label="Email Notifications"
-                  description="Receive updates and informations"
-                  size="md"
-                />
-                
-                <Toggle
-                  enabled={hasAnyMarketingEmails}
-                  onChange={handleMarketingEmailsToggle}
-                  label="Marketing Emails"
-                  description="Toggle all marketing communications"
-                  size="md"
-                />
+              {/* Main notification toggles */}
+              <div className="bg-gradient-to-br from-white to-green-50/20 border-2 border-green-100 rounded-2xl p-5 shadow-lg">
+                <h5 className="text-base sm:text-lg font-black text-gray-900 mb-5 flex items-center gap-2">
+                  <span className="text-2xl">📧</span> Communication Preferences
+                </h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-green-300 transition-all duration-200 hover:shadow-md">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
+                          <span className="text-xl">✉️</span>
+                        </div>
+                        <div>
+                          <h6 className="text-base font-black text-gray-900">Email Notifications</h6>
+                          <p className="text-xs text-gray-600 font-medium">Receive updates and information</p>
+                        </div>
+                      </div>
+                    </div>
+                    <Toggle
+                      enabled={settings.emailNotifications}
+                      onChange={(enabled) => updateSetting('emailNotifications', enabled)}
+                      label=""
+                      description=""
+                      size="md"
+                    />
+                  </div>
+
+                  <div className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-green-300 transition-all duration-200 hover:shadow-md">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
+                          <span className="text-xl">📢</span>
+                        </div>
+                        <div>
+                          <h6 className="text-base font-black text-gray-900">Marketing Emails</h6>
+                          <p className="text-xs text-gray-600 font-medium">Toggle all marketing communications</p>
+                        </div>
+                      </div>
+                    </div>
+                    <Toggle
+                      enabled={hasAnyMarketingEmails}
+                      onChange={handleMarketingEmailsToggle}
+                      label=""
+                      description=""
+                      size="md"
+                    />
+                  </div>
+                </div>
               </div>
-              
+
               {/* Marketing emails group - only show when marketing emails is enabled */}
               {hasAnyMarketingEmails && (
-                <div className="pl-6 border-l-2 border-green-200 bg-green-50 rounded-lg p-4 space-y-4">
-                  <p className="text-sm font-semibold text-green-800 mb-4">Marketing Email Types</p>
-                  
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-5 shadow-lg">
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-md">
+                      <span className="text-xl">📬</span>
+                    </div>
+                    <h5 className="text-base sm:text-lg font-black text-gray-900">Marketing Email Types</h5>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Toggle
-                      enabled={settings.marketingEmails}
-                      onChange={(enabled) => updateSetting('marketingEmails', enabled)}
-                      label="General Marketing"
-                      description="Newsletters and general communications"
-                      size="sm"
-                    />
-                    
-                    <Toggle
-                      enabled={settings.productUpdates}
-                      onChange={(enabled) => updateSetting('productUpdates', enabled)}
-                      label="Product Updates"
-                      description="New features and improvements"
-                      size="sm"
-                    />
-                    
-                    <Toggle
-                      enabled={settings.featuresAnnouncements}
-                      onChange={(enabled) => updateSetting('featuresAnnouncements', enabled)}
-                      label="Feature Announcements"
-                      description="New tools and capabilities"
-                      size="sm"
-                    />
-                    
-                    <Toggle
-                      enabled={settings.promotionalOffers}
-                      onChange={(enabled) => updateSetting('promotionalOffers', enabled)}
-                      label="Promotional Offers"
-                      description="Special deals and discounts"
-                      size="sm"
-                    />
+                    <div className="bg-white border-2 border-green-100 rounded-xl p-4 hover:border-green-300 transition-all duration-200 hover:shadow-md">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h6 className="text-sm font-bold text-gray-900">General Marketing</h6>
+                          <p className="text-xs text-gray-600 font-medium">Newsletters and general communications</p>
+                        </div>
+                      </div>
+                      <Toggle
+                        enabled={settings.marketingEmails}
+                        onChange={(enabled) => updateSetting('marketingEmails', enabled)}
+                        label=""
+                        description=""
+                        size="sm"
+                      />
+                    </div>
+
+                    <div className="bg-white border-2 border-green-100 rounded-xl p-4 hover:border-green-300 transition-all duration-200 hover:shadow-md">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h6 className="text-sm font-bold text-gray-900">Product Updates</h6>
+                          <p className="text-xs text-gray-600 font-medium">New features and improvements</p>
+                        </div>
+                      </div>
+                      <Toggle
+                        enabled={settings.productUpdates}
+                        onChange={(enabled) => updateSetting('productUpdates', enabled)}
+                        label=""
+                        description=""
+                        size="sm"
+                      />
+                    </div>
+
+                    <div className="bg-white border-2 border-green-100 rounded-xl p-4 hover:border-green-300 transition-all duration-200 hover:shadow-md">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h6 className="text-sm font-bold text-gray-900">Feature Announcements</h6>
+                          <p className="text-xs text-gray-600 font-medium">New tools and capabilities</p>
+                        </div>
+                      </div>
+                      <Toggle
+                        enabled={settings.featuresAnnouncements}
+                        onChange={(enabled) => updateSetting('featuresAnnouncements', enabled)}
+                        label=""
+                        description=""
+                        size="sm"
+                      />
+                    </div>
+
+                    <div className="bg-white border-2 border-green-100 rounded-xl p-4 hover:border-green-300 transition-all duration-200 hover:shadow-md">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h6 className="text-sm font-bold text-gray-900">Promotional Offers</h6>
+                          <p className="text-xs text-gray-600 font-medium">Special deals and discounts</p>
+                        </div>
+                      </div>
+                      <Toggle
+                        enabled={settings.promotionalOffers}
+                        onChange={(enabled) => updateSetting('promotionalOffers', enabled)}
+                        label=""
+                        description=""
+                        size="sm"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
