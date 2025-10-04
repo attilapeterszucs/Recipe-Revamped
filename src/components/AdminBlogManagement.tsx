@@ -553,127 +553,130 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
             </button>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
-          <div className="overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y-2 divide-gray-200">
-              <thead className="bg-gradient-to-r from-gray-50 to-blue-50/30">
-                <tr>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-black text-gray-700 uppercase tracking-wider min-w-0" style={{ width: '45%' }}>
-                    Post
-                  </th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-black text-gray-700 uppercase tracking-wider hidden sm:table-cell whitespace-nowrap" style={{ width: '15%' }}>
-                    Category
-                  </th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-black text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ width: '12%' }}>
-                    Status
-                  </th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-black text-gray-700 uppercase tracking-wider hidden md:table-cell whitespace-nowrap" style={{ width: '15%' }}>
-                    Date
-                  </th>
-                  <th className="px-3 sm:px-6 py-4 text-right text-xs font-black text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ width: '13%' }}>
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y-2 divide-gray-100">
-                {filteredPosts.map((post) => (
-                  <tr key={post.id} className="hover:bg-gradient-to-r hover:from-blue-50 hover:to-green-50/30 transition-colors duration-150">
-                    <td className="px-3 sm:px-6 py-5" style={{ maxWidth: '0' }}>
-                      <div className="flex items-start space-x-3 min-w-0">
-                        {post.featuredImage && (
-                          <img
-                            src={post.featuredImage}
-                            alt={post.title}
-                            className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl object-cover flex-shrink-0 border-2 border-gray-200 shadow-md"
-                          />
+          <div className="space-y-4">
+            {filteredPosts.map((post) => (
+              <div
+                key={post.id}
+                className="bg-white border-2 border-gray-200 rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:border-blue-300"
+              >
+                <div className="flex flex-col lg:flex-row gap-5">
+                  {/* Left Side: Image and Content */}
+                  <div className="flex-1 flex gap-4">
+                    {/* Featured Image */}
+                    {post.featuredImage && (
+                      <img
+                        src={post.featuredImage}
+                        alt={post.title}
+                        className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover flex-shrink-0 border-2 border-gray-200 shadow-md"
+                      />
+                    )}
+
+                    {/* Post Content */}
+                    <div className="flex-1 min-w-0">
+                      {/* Title with Featured Star */}
+                      <div className="flex items-start gap-2 mb-2">
+                        <h3 className="text-base sm:text-lg font-black text-gray-900 line-clamp-2 flex-1" title={post.title}>
+                          {post.title}
+                        </h3>
+                        {post.featured && (
+                          <Star className="w-6 h-6 text-yellow-500 fill-current flex-shrink-0" />
                         )}
-                        <div className="min-w-0 flex-1 overflow-hidden">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <h3 className="text-sm font-bold text-gray-900 truncate min-w-0" title={post.title}>
-                              {post.title}
-                            </h3>
-                            {post.featured && (
-                              <Star className="w-5 h-5 text-yellow-500 fill-current flex-shrink-0" />
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-600 line-clamp-2 mt-1 break-words font-medium" title={post.excerpt}>
-                            {post.excerpt}
-                          </p>
-                          {post.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5 mt-2 max-w-full">
-                              {post.tags.slice(0, 2).map(tag => (
-                                <span
-                                  key={tag}
-                                  className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 border border-blue-200 truncate max-w-24 shadow-sm"
-                                  title={tag}
-                                >
-                                  {tag}
-                                </span>
-                              ))}
-                              {post.tags.length > 2 && (
-                                <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">+{post.tags.length - 2}</span>
-                              )}
-                            </div>
+                      </div>
+
+                      {/* Excerpt */}
+                      <p className="text-sm text-gray-600 line-clamp-2 mb-3 font-medium" title={post.excerpt}>
+                        {post.excerpt}
+                      </p>
+
+                      {/* Tags */}
+                      {post.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {post.tags.slice(0, 3).map(tag => (
+                            <span
+                              key={tag}
+                              className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 border border-blue-200 shadow-sm"
+                              title={tag}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          {post.tags.length > 3 && (
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                              +{post.tags.length - 3} more
+                            </span>
                           )}
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-3 sm:px-6 py-5 whitespace-nowrap hidden sm:table-cell">
-                      <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border border-purple-200 max-w-full truncate shadow-sm" title={post.category}>
-                        {post.category}
-                      </span>
-                    </td>
-                    <td className="px-3 sm:px-6 py-5 whitespace-nowrap">
-                      {post.status === 'published' ? (
-                        <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md">
-                          <Eye className="w-4 h-4 mr-1.5" />
-                          <span className="hidden sm:inline">Published</span>
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-600 border-2 border-gray-300">
-                          <EyeOff className="w-4 h-4 mr-1.5" />
-                          <span className="hidden sm:inline">Draft</span>
-                        </span>
                       )}
-                    </td>
-                    <td className="px-3 sm:px-6 py-5 whitespace-nowrap text-sm text-gray-700 hidden md:table-cell">
-                      <div className="flex items-center font-medium">
-                        <Calendar className="w-4 h-4 mr-2 text-blue-500" />
-                        {post.publishedAt
-                          ? (post.publishedAt instanceof Timestamp
-                             ? post.publishedAt.toDate().toLocaleDateString()
-                             : new Date(post.publishedAt).toLocaleDateString())
-                          : (post.createdAt instanceof Timestamp
-                             ? post.createdAt.toDate().toLocaleDateString()
-                             : new Date(post.createdAt).toLocaleDateString())
-                        }
+                    </div>
+                  </div>
+
+                  {/* Right Side: Meta Info and Actions */}
+                  <div className="flex lg:flex-col justify-between lg:justify-start gap-4 lg:min-w-[200px]">
+                    {/* Meta Information */}
+                    <div className="flex flex-wrap lg:flex-col gap-3">
+                      {/* Category */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500 font-medium lg:hidden">Category:</span>
+                        <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border border-purple-200 shadow-sm">
+                          {post.category}
+                        </span>
                       </div>
-                    </td>
-                    <td className="px-3 sm:px-6 py-5 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleEditPost(post)}
-                          className="inline-flex items-center justify-center w-9 h-9 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-md shadow-blue-500/30 hover:shadow-lg hover:scale-110"
-                          title="Edit post"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeletePost(post)}
-                          className="inline-flex items-center justify-center w-9 h-9 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl hover:from-red-600 hover:to-rose-600 transition-all duration-200 shadow-md shadow-red-500/30 hover:shadow-lg hover:scale-110"
-                          title="Delete post"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+
+                      {/* Status */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500 font-medium lg:hidden">Status:</span>
+                        {post.status === 'published' ? (
+                          <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md">
+                            <Eye className="w-4 h-4 mr-1.5" />
+                            Published
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-600 border-2 border-gray-300">
+                            <EyeOff className="w-4 h-4 mr-1.5" />
+                            Draft
+                          </span>
+                        )}
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              </table>
-            </div>
-          </div>
+
+                      {/* Date */}
+                      <div className="flex items-center gap-2 text-sm text-gray-700">
+                        <Calendar className="w-4 h-4 text-blue-500" />
+                        <span className="font-medium">
+                          {post.publishedAt
+                            ? (post.publishedAt instanceof Timestamp
+                               ? post.publishedAt.toDate().toLocaleDateString()
+                               : new Date(post.publishedAt).toLocaleDateString())
+                            : (post.createdAt instanceof Timestamp
+                               ? post.createdAt.toDate().toLocaleDateString()
+                               : new Date(post.createdAt).toLocaleDateString())
+                          }
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex lg:flex-col gap-2 lg:mt-auto">
+                      <button
+                        onClick={() => handleEditPost(post)}
+                        className="flex-1 lg:w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-md shadow-blue-500/30 hover:shadow-lg hover:scale-105 font-bold text-sm"
+                        title="Edit post"
+                      >
+                        <Edit className="w-4 h-4" />
+                        <span className="hidden sm:inline">Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeletePost(post)}
+                        className="flex-1 lg:w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl hover:from-red-600 hover:to-rose-600 transition-all duration-200 shadow-md shadow-red-500/30 hover:shadow-lg hover:scale-105 font-bold text-sm"
+                        title="Delete post"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span className="hidden sm:inline">Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
