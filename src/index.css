@@ -531,19 +531,23 @@ select option:first-child {
 select option:checked,
 select option:active,
 select option[selected] {
-  background: #10b981 !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
   background-color: #10b981 !important;
   color: #ffffff !important;
-  font-weight: 700 !important;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2) !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.2) !important;
+  border-left: 4px solid #047857 !important;
 }
 
 /* Hover state for options - Limited browser support but works in some */
 select option:hover {
-  background: #f0fdf4 !important;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%) !important;
   background-color: #f0fdf4 !important;
-  color: #059669 !important;
-  font-weight: 600 !important;
+  color: #047857 !important;
+  font-weight: 700 !important;
+  border-left: 3px solid #10b981 !important;
+  transform: translateX(2px) !important;
+  transition: all 0.15s ease-in-out !important;
 }
 
 /* Focus state for keyboard navigation */
@@ -595,16 +599,22 @@ select:focus {
 /* WebKit/Chromium browsers (Chrome, Edge, Safari, etc) */
 @supports (-webkit-appearance: none) {
   select option {
-    padding: 12px 16px !important;
+    padding: 14px 18px !important;
     background-color: white !important;
     color: #374151 !important;
+    border-radius: 6px !important;
+    margin: 2px 4px !important;
+    transition: all 0.2s ease-in-out !important;
   }
 
   /* Checked state in WebKit */
   select option:checked {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
     color: white !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.25) !important;
+    border-left: 4px solid #047857 !important;
+    transform: scale(1.02) !important;
   }
 
   /* Hover effect in WebKit browsers */
@@ -612,6 +622,10 @@ select:focus {
   select option:hover {
     background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%) !important;
     color: #047857 !important;
+    font-weight: 700 !important;
+    transform: translateX(4px) scale(1.01) !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15) !important;
+    border-left: 3px solid #10b981 !important;
   }
 }
 
@@ -646,6 +660,42 @@ select[size] option:last-child {
 select[size] option:hover {
   transform: translateX(4px) !important;
   background: linear-gradient(90deg, #f0fdf4 0%, #dcfce7 100%) !important;
+}
+
+/* Add checkmark to selected options using pseudo-element */
+select option:checked::before,
+select option[selected]::before {
+  content: '✓ ';
+  margin-right: 8px;
+  font-weight: 900;
+  color: white;
+}
+
+/* Enhanced dropdown appearance when open */
+select:focus,
+select:active {
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2), 0 4px 12px rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+  outline: none !important;
+  transform: scale(1.01);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Add subtle animation to dropdown when opening */
+@keyframes dropdown-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+select[size],
+select:focus option {
+  animation: dropdown-reveal 0.2s ease-out;
 }
 
 /* ============================================================================
