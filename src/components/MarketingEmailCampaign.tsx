@@ -7,6 +7,7 @@ import { Badge } from './ui/badge';
 import { Alert, AlertDescription } from './ui/alert';
 import { Separator } from './ui/separator';
 import { Mail, Users, Send, Search, Clock, AlertCircle, CheckCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { CustomDropdown } from './CustomDropdown';
 import { getAllUsersWithEmails } from '../lib/adminNotifications';
 import { useAuth } from '../hooks/useAuth';
 import { logger } from '../lib/logger';
@@ -26,6 +27,7 @@ interface MarketingEmailData {
   recipeContent: string;
   frequency: string;
   overrideFrequency: boolean;
+  emailTemplate?: string;
 }
 
 export const MarketingEmailCampaign: React.FC = () => {
@@ -238,50 +240,55 @@ export const MarketingEmailCampaign: React.FC = () => {
             <div className="space-y-4">
               <div>
                 <Label htmlFor="emailTemplate">Email Template</Label>
-                <select
-                  id="emailTemplate"
-                  onChange={(e) => {
-                    const template = e.target.value;
+                <CustomDropdown
+                  value={marketingEmailData.emailTemplate || 'custom'}
+                  onChange={(template) => {
                     if (template === 'welcome') {
                       setMarketingEmailData(prev => ({
                         ...prev,
+                        emailTemplate: template,
                         recipeName: 'Welcome to Recipe Revamped!',
                         recipeContent: 'Transform your cooking experience with our AI-powered recipe tools and personalized meal planning.'
                       }));
                     } else if (template === 'weekly_recipe') {
                       setMarketingEmailData(prev => ({
                         ...prev,
+                        emailTemplate: template,
                         recipeName: 'This Week\'s Featured Recipe',
                         recipeContent: 'Discover a delicious new recipe handpicked by our culinary team and convert it to your perfect serving size!'
                       }));
                     } else if (template === 'features') {
                       setMarketingEmailData(prev => ({
                         ...prev,
+                        emailTemplate: template,
                         recipeName: 'Unlock Recipe Revamped\'s Full Potential',
                         recipeContent: 'From AI recipe conversion to meal planning - explore all the features that make cooking easier and more enjoyable.'
                       }));
                     } else if (template === 'comeback') {
                       setMarketingEmailData(prev => ({
                         ...prev,
+                        emailTemplate: template,
                         recipeName: 'We Miss You in the Kitchen!',
                         recipeContent: 'Come back and discover new recipes, convert your favorites, and plan your meals with Recipe Revamped.'
                       }));
                     } else if (template === 'custom') {
                       setMarketingEmailData(prev => ({
                         ...prev,
+                        emailTemplate: template,
                         recipeName: '',
                         recipeContent: ''
                       }));
                     }
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
-                >
-                  <option value="custom">📝 Custom Email</option>
-                  <option value="welcome">🎉 Welcome Email</option>
-                  <option value="weekly_recipe">🍳 Weekly Recipe Feature</option>
-                  <option value="features">✨ Feature Showcase</option>
-                  <option value="comeback">💚 Re-engagement Email</option>
-                </select>
+                  options={[
+                    { value: 'custom', label: 'Custom Email', icon: '📝' },
+                    { value: 'welcome', label: 'Welcome Email', icon: '🎉' },
+                    { value: 'weekly_recipe', label: 'Weekly Recipe Feature', icon: '🍳' },
+                    { value: 'features', label: 'Feature Showcase', icon: '✨' },
+                    { value: 'comeback', label: 'Re-engagement Email', icon: '💚' }
+                  ]}
+                  className="mb-4"
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -297,15 +304,14 @@ export const MarketingEmailCampaign: React.FC = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="frequency">Email Frequency</Label>
-                  <select
-                    id="frequency"
+                  <CustomDropdown
                     value={marketingEmailData.frequency}
-                    onChange={(e) => setMarketingEmailData(prev => ({ ...prev, frequency: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="weekly">Weekly</option>
-                    <option value="bi-weekly">Bi-weekly</option>
-                  </select>
+                    onChange={(value) => setMarketingEmailData(prev => ({ ...prev, frequency: value }))}
+                    options={[
+                      { value: 'weekly', label: 'Weekly', icon: '📅' },
+                      { value: 'bi-weekly', label: 'Bi-weekly', icon: '📆' }
+                    ]}
+                  />
                 </div>
               </div>
             </div>

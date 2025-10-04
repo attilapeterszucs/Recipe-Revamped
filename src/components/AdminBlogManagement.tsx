@@ -15,6 +15,7 @@ import {
   Star,
   Type
 } from 'lucide-react';
+import { CustomDropdown } from './CustomDropdown';
 import { EnhancedRichTextEditor } from './EnhancedRichTextEditor';
 import { useToast } from './ToastContainer';
 import { useAuth } from '../hooks/useAuth';
@@ -411,29 +412,29 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
           </div>
 
           {/* Category Filter */}
-          <select
+          <CustomDropdown
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-4 py-3 border-2 border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
-          >
-            <option value="all">All Categories</option>
-            {categories.map(category => (
-              <option key={category.id} value={category.name}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+            onChange={(value) => setSelectedCategory(value)}
+            options={[
+              { value: 'all', label: 'All Categories', icon: '📁' },
+              ...categories.map(category => ({
+                value: category.name,
+                label: category.name,
+                icon: category.color === 'blue' ? '🔵' : category.color === 'green' ? '🟢' : category.color === 'purple' ? '🟣' : category.color === 'pink' ? '🩷' : '🟠'
+              }))
+            ]}
+          />
 
           {/* Status Filter */}
-          <select
+          <CustomDropdown
             value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-4 py-3 border-2 border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
-          >
-            <option value="all">All Status</option>
-            <option value="published">Published</option>
-            <option value="draft">Draft</option>
-          </select>
+            onChange={(value) => setSelectedStatus(value)}
+            options={[
+              { value: 'all', label: 'All Status', icon: '📋' },
+              { value: 'published', label: 'Published', icon: '✅' },
+              { value: 'draft', label: 'Draft', icon: '📝' }
+            ]}
+          />
 
           {/* Stats */}
           <div className="flex items-center space-x-3 text-sm font-bold">
@@ -680,35 +681,35 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               {/* Category and Status */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
                     Category *
                   </label>
-                  <select
+                  <CustomDropdown
                     value={postForm.category}
-                    onChange={(e) => setPostForm(prev => ({ ...prev, category: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  >
-                    <option value="">Select category</option>
-                    {categories.map(category => (
-                      <option key={category.id} value={category.name}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(value) => setPostForm(prev => ({ ...prev, category: value }))}
+                    options={[
+                      { value: '', label: 'Select category', icon: '📁' },
+                      ...categories.map(category => ({
+                        value: category.name,
+                        label: category.name,
+                        icon: category.color === 'blue' ? '🔵' : category.color === 'green' ? '🟢' : category.color === 'purple' ? '🟣' : category.color === 'pink' ? '🩷' : '🟠'
+                      }))
+                    ]}
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
                     Status
                   </label>
-                  <select
+                  <CustomDropdown
                     value={postForm.status}
-                    onChange={(e) => setPostForm(prev => ({ ...prev, status: e.target.value as 'draft' | 'published' }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  >
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                  </select>
+                    onChange={(value) => setPostForm(prev => ({ ...prev, status: value as 'draft' | 'published' }))}
+                    options={[
+                      { value: 'draft', label: 'Draft', icon: '📝' },
+                      { value: 'published', label: 'Published', icon: '✅' }
+                    ]}
+                  />
                 </div>
               </div>
 
