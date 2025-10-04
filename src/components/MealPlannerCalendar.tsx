@@ -1157,9 +1157,9 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border-2 border-green-200 shadow-lg animate-in fade-in slide-in-from-top-4 duration-700">
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border-2 border-green-200 shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <div className="flex items-center space-x-4">
             <div className="bg-gradient-to-br from-green-600 to-emerald-600 p-3 rounded-xl shadow-lg">
@@ -1175,7 +1175,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
       {/* Enhanced Weekly Nutrition Summary - Only for Master Chef+ plans */}
       {canUseNutritionAnalysis ? (
-        <div className="bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-6 rounded-2xl border-2 border-green-200 shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+        <div className="bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-6 rounded-2xl border-2 border-green-200 shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-purple-600 bg-clip-text text-transparent flex items-center">
               <div className="bg-gradient-to-br from-green-600 to-purple-600 p-2 rounded-lg mr-3">
@@ -1405,7 +1405,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
       {/* Recipe List Sidebar - Hidden on mobile */}
       {showRecipeList && (
-        <div className="hidden md:block mb-6 bg-white rounded-2xl shadow-lg border-2 border-green-200 animate-in fade-in slide-in-from-right-4 duration-500">
+        <div className="hidden md:block mb-6 bg-white rounded-2xl shadow-lg border-2 border-green-200 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
           <div className="flex items-center justify-between p-5 border-b-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
             <h3 className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent flex items-center">
               <div className="bg-gradient-to-br from-green-600 to-emerald-600 p-2 rounded-lg mr-3">
@@ -1634,7 +1634,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
       {/* Weekly Recipe Generator */}
       {featureAccess?.canGenerateWeeklyMenu ? (
-        <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 border-2 border-purple-300 rounded-2xl p-6 mb-6 shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+        <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 border-2 border-purple-300 rounded-2xl p-6 mb-6 shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[450ms]">
           <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4 mb-5">
             <div className="flex items-center space-x-4">
               <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl shadow-lg">
@@ -1786,7 +1786,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       )}
 
       {/* Week Navigation */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-xl border-2 border-green-200 shadow-lg mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+      <div className="flex items-center justify-between bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-xl border-2 border-green-200 shadow-lg mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
         <button
           onClick={() => navigateWeek('prev')}
           className="flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 hover:text-green-600 border-2 border-gray-300 hover:border-green-400 rounded-lg transition-all duration-200 font-bold shadow-sm hover:shadow-md"
@@ -1814,7 +1814,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       </div>
 
       {/* Calendar Grid */}
-      <div className="bg-white rounded-2xl shadow-xl border-2 border-green-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400">
+      <div className="bg-white rounded-2xl shadow-xl border-2 border-green-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[750ms]">
         {/* Mobile Calendar View */}
         <div className="md:hidden">
           {weekDates.map((date) => {
