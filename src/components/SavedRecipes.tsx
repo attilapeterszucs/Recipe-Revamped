@@ -56,7 +56,6 @@ const extractRecipeInfo = (content: string) => {
 export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, onViewRecipe, userSettings, featureAccess }) => {
   const [recipes, setRecipes] = useState<SavedRecipe[]>([]);
   const [filteredRecipes, setFilteredRecipes] = useState<SavedRecipe[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState<string>('');
@@ -76,7 +75,6 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
 
   const loadRecipes = useCallback(async () => {
     try {
-      setLoading(true);
       setError('');
       const userRecipes = await getUserRecipes(userId);
 
@@ -90,8 +88,6 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     } catch (err) {
       setError('Failed to load recipes');
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   }, [userId]);
 
@@ -308,29 +304,6 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     
     setEditingRecipe(null);
   };
-
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-8 border-2 border-green-100">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-3 shadow-lg">
-                <ChefHat className="h-8 w-8 text-white" />
-              </div>
-              <h2 className="text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
-            </div>
-          </div>
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-200 border-t-green-600"></div>
-              <p className="mt-4 text-gray-600 font-bold">Loading your delicious recipes...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
