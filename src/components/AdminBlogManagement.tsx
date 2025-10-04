@@ -396,58 +396,132 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 p-6 rounded-2xl border-2 border-blue-200 shadow-lg space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-500 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search posts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border-2 border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
-            />
+      {/* Search and Filters */}
+      <div className="space-y-4">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-5 shadow-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center shadow-md">
+                <FileText className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-xs text-blue-700 font-bold uppercase tracking-wide">Total Posts</p>
+                <p className="text-3xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  {posts.length}
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Category Filter */}
-          <CustomDropdown
-            value={selectedCategory}
-            onChange={(value) => setSelectedCategory(value)}
-            options={[
-              { value: 'all', label: 'All Categories', icon: '📁' },
-              ...categories.map(category => ({
-                value: category.name,
-                label: category.name,
-                icon: category.color === 'blue' ? '🔵' : category.color === 'green' ? '🟢' : category.color === 'purple' ? '🟣' : category.color === 'pink' ? '🩷' : '🟠'
-              }))
-            ]}
-          />
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-5 shadow-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
+                <Eye className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <p className="text-xs text-green-700 font-bold uppercase tracking-wide">Published</p>
+                <p className="text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  {posts.filter(p => p.status === 'published').length}
+                </p>
+              </div>
+            </div>
+          </div>
 
-          {/* Status Filter */}
-          <CustomDropdown
-            value={selectedStatus}
-            onChange={(value) => setSelectedStatus(value)}
-            options={[
-              { value: 'all', label: 'All Status', icon: '📋' },
-              { value: 'published', label: 'Published', icon: '✅' },
-              { value: 'draft', label: 'Draft', icon: '📝' }
-            ]}
-          />
+          <div className="bg-gradient-to-br from-yellow-50 to-amber-50/50 border-2 border-yellow-200 rounded-2xl p-5 shadow-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-xl flex items-center justify-center shadow-md">
+                <EyeOff className="w-6 h-6 text-yellow-600" />
+              </div>
+              <div>
+                <p className="text-xs text-yellow-700 font-bold uppercase tracking-wide">Drafts</p>
+                <p className="text-3xl font-black bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">
+                  {posts.filter(p => p.status === 'draft').length}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          {/* Stats */}
-          <div className="flex items-center space-x-3 text-sm font-bold">
-            <span className="px-3 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl shadow-md">{filteredPosts.length} posts</span>
-            <span className="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl shadow-md">{posts.filter(p => p.status === 'published').length} published</span>
+        {/* Search and Filters Row */}
+        <div className="bg-gradient-to-br from-indigo-50 to-purple-50/50 p-5 rounded-2xl border-2 border-indigo-200 shadow-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            {/* Search - Takes more space */}
+            <div className="lg:col-span-5">
+              <label className="block text-xs font-bold text-indigo-900 mb-2 uppercase tracking-wide">
+                Search Posts
+              </label>
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-500 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Search by title, content, or tags..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 border-2 border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium bg-white"
+                />
+              </div>
+            </div>
+
+            {/* Category Filter */}
+            <div className="lg:col-span-3">
+              <label className="block text-xs font-bold text-indigo-900 mb-2 uppercase tracking-wide">
+                Category
+              </label>
+              <CustomDropdown
+                value={selectedCategory}
+                onChange={(value) => setSelectedCategory(value)}
+                options={[
+                  { value: 'all', label: 'All Categories', icon: '📁' },
+                  ...categories.map(category => ({
+                    value: category.name,
+                    label: category.name,
+                    icon: category.color === 'blue' ? '🔵' : category.color === 'green' ? '🟢' : category.color === 'purple' ? '🟣' : category.color === 'pink' ? '🩷' : '🟠'
+                  }))
+                ]}
+              />
+            </div>
+
+            {/* Status Filter */}
+            <div className="lg:col-span-3">
+              <label className="block text-xs font-bold text-indigo-900 mb-2 uppercase tracking-wide">
+                Status
+              </label>
+              <CustomDropdown
+                value={selectedStatus}
+                onChange={(value) => setSelectedStatus(value)}
+                options={[
+                  { value: 'all', label: 'All Status', icon: '📋' },
+                  { value: 'published', label: 'Published', icon: '✅' },
+                  { value: 'draft', label: 'Draft', icon: '📝' }
+                ]}
+              />
+            </div>
+
+            {/* Results Count */}
+            <div className="lg:col-span-1 flex items-end">
+              <div className="w-full bg-white border-2 border-indigo-300 rounded-xl px-4 py-3 text-center">
+                <p className="text-xs text-indigo-700 font-bold">Found</p>
+                <p className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  {filteredPosts.length}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Posts List */}
-      <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between px-2">
+          <h3 className="text-lg font-black text-gray-900">
+            Blog Posts
+            <span className="ml-2 text-sm font-medium text-gray-500">({filteredPosts.length} {filteredPosts.length === 1 ? 'post' : 'posts'})</span>
+          </h3>
+        </div>
+
         {filteredPosts.length === 0 ? (
-          <div className="text-center py-16 px-4">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg text-center py-16 px-4">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full mb-4 shadow-md">
               <FileText className="w-10 h-10 text-green-600" />
             </div>
@@ -467,6 +541,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
             </button>
           </div>
         ) : (
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
           <div className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y-2 divide-gray-200">
@@ -586,6 +661,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               </tbody>
               </table>
             </div>
+          </div>
           </div>
         )}
       </div>
