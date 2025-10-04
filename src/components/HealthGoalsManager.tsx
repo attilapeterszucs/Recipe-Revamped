@@ -404,22 +404,24 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
       {/* Add Goal Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Add Health Goal</h3>
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50" onClick={() => setShowAddModal(false)}>
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-5 rounded-t-3xl">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-black text-white">Add Health Goal</h3>
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="p-1 text-gray-400 hover:text-gray-600"
+                  className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-xl transition-all duration-200"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
+            </div>
+            <div className="p-6">
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
                     Goal Type
                   </label>
                   <select
@@ -435,7 +437,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                         unit: getDefaultUnit(goalType)
                       });
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                   >
                     <option value="weight_loss">Weight Loss</option>
                     <option value="weight_gain">Weight Gain</option>
@@ -447,53 +449,53 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
                     Goal Title
                   </label>
                   <input
                     type="text"
                     value={newGoal.title}
                     onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                     placeholder="e.g., Lose 5kg for summer"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
                     Description
                   </label>
                   <textarea
                     value={newGoal.description}
                     onChange={(e) => setNewGoal({ ...newGoal, description: e.target.value })}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm resize-none"
                     placeholder="Describe your goal and motivation..."
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
                       Current Value
                     </label>
                     <input
                       type="number"
                       value={newGoal.currentValue || ''}
                       onChange={(e) => setNewGoal({ ...newGoal, currentValue: parseFloat(e.target.value) || undefined })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                       placeholder="Current"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
                       Target Value
                     </label>
                     <input
                       type="number"
                       value={newGoal.targetValue || ''}
                       onChange={(e) => setNewGoal({ ...newGoal, targetValue: parseFloat(e.target.value) || undefined })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                       placeholder="Target"
                     />
                   </div>
@@ -501,25 +503,25 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
                       Unit
                     </label>
                     <input
                       type="text"
                       value={newGoal.unit || ''}
                       onChange={(e) => setNewGoal({ ...newGoal, unit: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                       placeholder="kg, lbs, %"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
                       Priority
                     </label>
                     <select
                       value={newGoal.priority}
                       onChange={(e) => setNewGoal({ ...newGoal, priority: e.target.value as HealthGoal['priority'] })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                     >
                       <option value="low">Low</option>
                       <option value="medium">Medium</option>
@@ -529,29 +531,29 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
                     Target Date (Optional)
                   </label>
                   <input
                     type="date"
                     value={newGoal.targetDate ? new Date(newGoal.targetDate).toISOString().split('T')[0] : ''}
                     onChange={(e) => setNewGoal({ ...newGoal, targetDate: e.target.value ? new Date(e.target.value) : undefined })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-100">
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-6 py-3 text-gray-700 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 font-bold hover:scale-105 shadow-sm"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleAddGoal}
                   disabled={!newGoal.title || !newGoal.description}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
                 >
                   Add Goal
                 </button>
@@ -563,22 +565,24 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
       {/* Edit Goal Modal */}
       {editingGoal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Edit Health Goal</h3>
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50" onClick={() => setEditingGoal(null)}>
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-5 rounded-t-3xl">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-black text-white">Edit Health Goal</h3>
                 <button
                   onClick={() => setEditingGoal(null)}
-                  className="p-1 text-gray-400 hover:text-gray-600"
+                  className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-xl transition-all duration-200"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
+            </div>
+            <div className="p-6">
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
                     Goal Type
                   </label>
                   <select
@@ -594,7 +598,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                         unit: getDefaultUnit(goalType) || editingGoal.unit
                       });
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                   >
                     <option value="weight_loss">Weight Loss</option>
                     <option value="weight_gain">Weight Gain</option>
@@ -606,53 +610,53 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
                     Goal Title
                   </label>
                   <input
                     type="text"
                     value={editingGoal.title}
                     onChange={(e) => setEditingGoal({ ...editingGoal, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                     placeholder="e.g., Lose 5kg for summer"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
                     Description
                   </label>
                   <textarea
                     value={editingGoal.description}
                     onChange={(e) => setEditingGoal({ ...editingGoal, description: e.target.value })}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm resize-none"
                     placeholder="Describe your goal and motivation..."
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
                       Current Value
                     </label>
                     <input
                       type="number"
                       value={editingGoal.currentValue || ''}
                       onChange={(e) => setEditingGoal({ ...editingGoal, currentValue: parseFloat(e.target.value) || undefined })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                       placeholder="Current"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
                       Target Value
                     </label>
                     <input
                       type="number"
                       value={editingGoal.targetValue || ''}
                       onChange={(e) => setEditingGoal({ ...editingGoal, targetValue: parseFloat(e.target.value) || undefined })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                       placeholder="Target"
                     />
                   </div>
@@ -660,25 +664,25 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
                       Unit
                     </label>
                     <input
                       type="text"
                       value={editingGoal.unit || ''}
                       onChange={(e) => setEditingGoal({ ...editingGoal, unit: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                       placeholder="kg, lbs, %"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
                       Priority
                     </label>
                     <select
                       value={editingGoal.priority}
                       onChange={(e) => setEditingGoal({ ...editingGoal, priority: e.target.value as HealthGoal['priority'] })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                     >
                       <option value="low">Low</option>
                       <option value="medium">Medium</option>
@@ -688,29 +692,29 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
                     Target Date (Optional)
                   </label>
                   <input
                     type="date"
                     value={editingGoal.targetDate && !isNaN(new Date(editingGoal.targetDate).getTime()) ? new Date(editingGoal.targetDate).toISOString().split('T')[0] : ''}
                     onChange={(e) => setEditingGoal({ ...editingGoal, targetDate: e.target.value ? new Date(e.target.value) : undefined })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-green-300 shadow-sm"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-100">
                 <button
                   onClick={() => setEditingGoal(null)}
-                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-6 py-3 text-gray-700 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 font-bold hover:scale-105 shadow-sm"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveEditGoal}
                   disabled={!editingGoal.title || !editingGoal.description}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
                 >
                   Save Changes
                 </button>
