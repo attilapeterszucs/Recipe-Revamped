@@ -254,40 +254,42 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">Health Goals</h3>
-          <p className="text-sm text-gray-600">
-            Set and track your health and nutrition goals for personalized recipes
-          </p>
+      <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-black text-gray-900">Health Goals</h3>
+            <p className="text-sm text-gray-700 font-medium">
+              Set and track your health and nutrition goals for personalized recipes
+            </p>
+          </div>
+          <button
+            onClick={() => setShowAddModal(true)}
+            disabled={disabled}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Goal</span>
+          </button>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          disabled={disabled}
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Goal</span>
-        </button>
       </div>
 
       {/* Active Goals */}
       {activeGoals.length > 0 && (
         <div className="space-y-3">
-          <h4 className="font-medium text-gray-900">Active Goals</h4>
+          <h4 className="font-black text-gray-900">Active Goals</h4>
           {activeGoals.map((goal) => (
-            <div key={goal.id} className="bg-white border border-gray-200 rounded-lg p-4">
+            <div key={goal.id} className="bg-gradient-to-br from-white to-green-50/20 border-2 border-green-100 rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-[1.02]">
               <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-3 flex-1">
+                <div className="flex items-start gap-3 flex-1">
                   {getGoalIcon(goal.type)}
                   <div className="flex-1">
-                    <div className="flex items-center space-x-2">
-                      <h5 className="font-medium text-gray-900">{goal.title}</h5>
-                      <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(goal.priority)}`}>
+                    <div className="flex items-center gap-2">
+                      <h5 className="font-bold text-gray-900">{goal.title}</h5>
+                      <span className={`px-2 py-1 text-xs rounded-full font-bold ${getPriorityColor(goal.priority)}`}>
                         {goal.priority}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">{goal.description}</p>
+                    <p className="text-sm text-gray-700 mt-1 font-medium">{goal.description}</p>
 
                     {(goal.targetValue || goal.currentValue) && (
                       <div className="mt-2 flex items-center space-x-4 text-sm">
@@ -312,11 +314,11 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleEditGoal(goal)}
                     disabled={disabled}
-                    className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-all duration-200"
                     title="Edit goal"
                   >
                     <Edit3 className="w-4 h-4" />
@@ -324,7 +326,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                   <button
                     onClick={() => handleToggleGoal(goal.id)}
                     disabled={disabled}
-                    className="p-1 text-green-500 hover:text-green-600 disabled:opacity-50"
+                    className="p-2 text-green-500 hover:text-green-700 hover:bg-green-50 rounded-lg disabled:opacity-50 transition-all duration-200"
                     title="Mark as completed"
                   >
                     <Check className="w-4 h-4" />
@@ -332,7 +334,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                   <button
                     onClick={() => setDeletingGoalId(goal.id)}
                     disabled={disabled}
-                    className="p-1 text-red-400 hover:text-red-600 disabled:opacity-50"
+                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-50 transition-all duration-200"
                     title="Delete goal"
                   >
                     <X className="w-4 h-4" />
@@ -347,22 +349,22 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       {/* Inactive Goals */}
       {inactiveGoals.length > 0 && (
         <div className="space-y-3">
-          <h4 className="font-medium text-gray-500">Completed Goals</h4>
+          <h4 className="font-black text-gray-500">Completed Goals</h4>
           {inactiveGoals.map((goal) => (
-            <div key={goal.id} className="bg-gray-50 border border-gray-200 rounded-lg p-4 opacity-60">
+            <div key={goal.id} className="bg-gradient-to-br from-gray-50 to-gray-100/50 border-2 border-gray-200 rounded-2xl p-4 opacity-60 shadow-md">
               <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-3 flex-1">
+                <div className="flex items-start gap-3 flex-1">
                   {getGoalIcon(goal.type)}
                   <div className="flex-1">
-                    <h5 className="font-medium text-gray-700">{goal.title}</h5>
-                    <p className="text-sm text-gray-500">{goal.description}</p>
+                    <h5 className="font-bold text-gray-700">{goal.title}</h5>
+                    <p className="text-sm text-gray-500 font-medium">{goal.description}</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleToggleGoal(goal.id)}
                     disabled={disabled}
-                    className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-lg disabled:opacity-50 transition-all duration-200"
                     title="Reactivate goal"
                   >
                     <Target className="w-4 h-4" />
@@ -370,7 +372,7 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
                   <button
                     onClick={() => setDeletingGoalId(goal.id)}
                     disabled={disabled}
-                    className="p-1 text-red-400 hover:text-red-600 disabled:opacity-50"
+                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-50 transition-all duration-200"
                     title="Delete goal"
                   >
                     <X className="w-4 h-4" />
