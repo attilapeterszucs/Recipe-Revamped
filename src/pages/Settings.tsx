@@ -29,7 +29,9 @@ import {
   Info,
   Activity,
   Crown,
-  ArrowRight
+  ArrowRight,
+  Mail,
+  FileText
 } from 'lucide-react';
 import { getUserSettings, updateUserSettings, updateUserProfile, uploadProfilePicture, deleteProfilePicture } from '../lib/userSettings';
 import { createBackup, getUserBackups, restoreFromBackup, scheduleAutoBackup, deleteBackup } from '../lib/backup';
@@ -2514,54 +2516,73 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         
         return (
           <div className="space-y-6">
+            {/* Admin Panel Header */}
+            <div className="bg-gradient-to-br from-red-50 to-orange-50/50 border-2 border-red-200 rounded-2xl p-6 shadow-lg">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-orange-100 rounded-xl flex items-center justify-center shadow-md">
+                  <UserCog className="w-6 h-6 text-red-600" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                    Admin Panel
+                  </h2>
+                  <p className="text-sm text-red-700 font-medium">Manage users, notifications, and content</p>
+                </div>
+              </div>
+            </div>
+
             {/* Admin Section Tabs */}
-            <div className="border-b border-gray-200">
-              <nav className="-mb-px flex space-x-8">
+            <div className="bg-gradient-to-br from-white to-red-50/20 border-2 border-red-100 rounded-2xl p-4 shadow-lg">
+              <nav className="flex flex-wrap gap-3">
                 <button
                   onClick={() => setActiveSection('admin-users')}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
                     (activeSection === 'admin' || activeSection === 'admin-users')
-                      ? 'border-red-500 text-red-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:scale-105 hover:shadow-md'
                   }`}
                 >
-                  User Management
+                  <UserCog className="w-4 h-4" />
+                  <span>User Management</span>
                 </button>
                 <button
                   onClick={() => setActiveSection('admin-notifications')}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
                     activeSection === 'admin-notifications'
-                      ? 'border-red-500 text-red-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:scale-105 hover:shadow-md'
                   }`}
                 >
-                  Notifications
+                  <Bell className="w-4 h-4" />
+                  <span>Notifications</span>
                 </button>
                 <button
                   onClick={() => setActiveSection('admin-marketing')}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
                     activeSection === 'admin-marketing'
-                      ? 'border-red-500 text-red-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:scale-105 hover:shadow-md'
                   }`}
                 >
-                  Marketing Emails
+                  <Mail className="w-4 h-4" />
+                  <span>Marketing Emails</span>
                 </button>
                 <button
                   onClick={() => setActiveSection('admin-blog')}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
                     activeSection === 'admin-blog'
-                      ? 'border-red-500 text-red-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:scale-105 hover:shadow-md'
                   }`}
                 >
-                  Blog Management
+                  <FileText className="w-4 h-4" />
+                  <span>Blog Management</span>
                 </button>
               </nav>
             </div>
 
             {/* Admin Content */}
-            <div className="mt-6">
+            <div className="bg-gradient-to-br from-white to-gray-50/50 border-2 border-gray-200 rounded-2xl p-6 shadow-lg">
               {activeSection === 'admin-notifications' ? (
                 <AdminNotificationCreator
                   key="admin-notifications"
