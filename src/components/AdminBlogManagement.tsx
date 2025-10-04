@@ -447,108 +447,112 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
       {/* Posts List */}
       <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
         {filteredPosts.length === 0 ? (
-          <div className="text-center py-12">
-            <FileText className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No blog posts</h3>
-            <p className="mt-1 text-sm text-gray-500">Get started by creating a new blog post.</p>
-            <div className="mt-6">
-              <button
-                onClick={handleCreatePost}
-                className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                New Post
-              </button>
+          <div className="text-center py-16 px-4">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full mb-4 shadow-md">
+              <FileText className="w-10 h-10 text-green-600" />
             </div>
+            <h3 className="text-xl font-black text-gray-900 mb-2">No blog posts found</h3>
+            <p className="text-sm text-gray-600 font-medium mb-6 max-w-md mx-auto">
+              {searchTerm || selectedCategory !== 'all' || selectedStatus !== 'all'
+                ? 'Try adjusting your filters to find what you\'re looking for.'
+                : 'Get started by creating your first blog post to share with your audience.'
+              }
+            </p>
+            <button
+              onClick={handleCreatePost}
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Create Your First Post
+            </button>
           </div>
         ) : (
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <table className="min-w-full divide-y-2 divide-gray-200">
+              <thead className="bg-gradient-to-r from-gray-50 to-blue-50/30">
                 <tr>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-0" style={{ width: '45%' }}>
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-black text-gray-700 uppercase tracking-wider min-w-0" style={{ width: '45%' }}>
                     Post
                   </th>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell whitespace-nowrap" style={{ width: '15%' }}>
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-black text-gray-700 uppercase tracking-wider hidden sm:table-cell whitespace-nowrap" style={{ width: '15%' }}>
                     Category
                   </th>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap" style={{ width: '12%' }}>
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-black text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ width: '12%' }}>
                     Status
                   </th>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell whitespace-nowrap" style={{ width: '15%' }}>
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-black text-gray-700 uppercase tracking-wider hidden md:table-cell whitespace-nowrap" style={{ width: '15%' }}>
                     Date
                   </th>
-                  <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap" style={{ width: '13%' }}>
+                  <th className="px-3 sm:px-6 py-4 text-right text-xs font-black text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ width: '13%' }}>
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y-2 divide-gray-100">
                 {filteredPosts.map((post) => (
-                  <tr key={post.id} className="hover:bg-gray-50">
-                    <td className="px-3 sm:px-6 py-4" style={{ maxWidth: '0' }}>
+                  <tr key={post.id} className="hover:bg-gradient-to-r hover:from-blue-50 hover:to-green-50/30 transition-colors duration-150">
+                    <td className="px-3 sm:px-6 py-5" style={{ maxWidth: '0' }}>
                       <div className="flex items-start space-x-3 min-w-0">
                         {post.featuredImage && (
                           <img
                             src={post.featuredImage}
                             alt={post.title}
-                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover flex-shrink-0"
+                            className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl object-cover flex-shrink-0 border-2 border-gray-200 shadow-md"
                           />
                         )}
                         <div className="min-w-0 flex-1 overflow-hidden">
                           <div className="flex items-center space-x-2 mb-1">
-                            <h3 className="text-sm font-medium text-gray-900 truncate min-w-0" title={post.title}>
+                            <h3 className="text-sm font-bold text-gray-900 truncate min-w-0" title={post.title}>
                               {post.title}
                             </h3>
                             {post.featured && (
-                              <Star className="w-4 h-4 text-yellow-400 fill-current flex-shrink-0" />
+                              <Star className="w-5 h-5 text-yellow-500 fill-current flex-shrink-0" />
                             )}
                           </div>
-                          <p className="text-sm text-gray-500 line-clamp-2 mt-1 break-words" title={post.excerpt}>
+                          <p className="text-sm text-gray-600 line-clamp-2 mt-1 break-words font-medium" title={post.excerpt}>
                             {post.excerpt}
                           </p>
                           {post.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-1 max-w-full">
+                            <div className="flex flex-wrap gap-1.5 mt-2 max-w-full">
                               {post.tags.slice(0, 2).map(tag => (
                                 <span
                                   key={tag}
-                                  className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 truncate max-w-20"
+                                  className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 border border-blue-200 truncate max-w-24 shadow-sm"
                                   title={tag}
                                 >
                                   {tag}
                                 </span>
                               ))}
                               {post.tags.length > 2 && (
-                                <span className="text-xs text-gray-500 flex-shrink-0">+{post.tags.length - 2}</span>
+                                <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">+{post.tags.length - 2}</span>
                               )}
                             </div>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 max-w-full truncate" title={post.category}>
+                    <td className="px-3 sm:px-6 py-5 whitespace-nowrap hidden sm:table-cell">
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border border-purple-200 max-w-full truncate shadow-sm" title={post.category}>
                         {post.category}
                       </span>
                     </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        {post.status === 'published' ? (
-                          <Eye className="w-4 h-4 text-green-500 mr-1" />
-                        ) : (
-                          <EyeOff className="w-4 h-4 text-gray-400 mr-1" />
-                        )}
-                        <span className={`text-sm font-medium hidden sm:inline ${
-                          post.status === 'published' ? 'text-green-600' : 'text-gray-500'
-                        }`}>
-                          {post.status === 'published' ? 'Published' : 'Draft'}
+                    <td className="px-3 sm:px-6 py-5 whitespace-nowrap">
+                      {post.status === 'published' ? (
+                        <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md">
+                          <Eye className="w-4 h-4 mr-1.5" />
+                          <span className="hidden sm:inline">Published</span>
                         </span>
-                      </div>
+                      ) : (
+                        <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-600 border-2 border-gray-300">
+                          <EyeOff className="w-4 h-4 mr-1.5" />
+                          <span className="hidden sm:inline">Draft</span>
+                        </span>
+                      )}
                     </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
-                      <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-1" />
+                    <td className="px-3 sm:px-6 py-5 whitespace-nowrap text-sm text-gray-700 hidden md:table-cell">
+                      <div className="flex items-center font-medium">
+                        <Calendar className="w-4 h-4 mr-2 text-blue-500" />
                         {post.publishedAt
                           ? (post.publishedAt instanceof Timestamp
                              ? post.publishedAt.toDate().toLocaleDateString()
@@ -559,17 +563,19 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                         }
                       </div>
                     </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex items-center justify-end space-x-2">
+                    <td className="px-3 sm:px-6 py-5 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEditPost(post)}
-                          className="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded"
+                          className="inline-flex items-center justify-center w-9 h-9 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-md shadow-blue-500/30 hover:shadow-lg hover:scale-110"
+                          title="Edit post"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeletePost(post)}
-                          className="text-red-600 hover:text-red-900 p-1 hover:bg-red-50 rounded"
+                          className="inline-flex items-center justify-center w-9 h-9 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl hover:from-red-600 hover:to-rose-600 transition-all duration-200 shadow-md shadow-red-500/30 hover:shadow-lg hover:scale-110"
+                          title="Delete post"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
