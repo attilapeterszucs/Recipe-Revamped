@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import DOMPurify from 'dompurify';
-import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple, Sparkles } from 'lucide-react';
+import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple, Sparkles, ArrowUpDown, Filter, Utensils, AlertTriangle, Info, CheckCircle } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
 import { getUserRecipes } from '../lib/firestore';
 import { useToast } from './ToastContainer';
 import { parseNutritionFromRecipe, calculateTotalNutrition, type NutritionInfo } from '../lib/nutritionParser';
 import { MealPlanService, type MealPlan } from '../lib/mealPlanService';
+import { CustomDropdown } from './CustomDropdown';
 
 interface MealPlannerCalendarProps {
   userId: string;
@@ -1171,28 +1172,33 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-        <div className="flex items-center space-x-3 sm:space-x-4">
-          <Calendar className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Meal Planning</h1>
-            <p className="text-sm sm:text-base text-gray-600 hidden sm:block">Plan your weekly meals and generate shopping lists</p>
-            <p className="text-sm text-gray-600 sm:hidden">Weekly meal planner</p>
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border-2 border-green-200 shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+          <div className="flex items-center space-x-4">
+            <div className="bg-gradient-to-br from-green-600 to-emerald-600 p-3 rounded-xl shadow-lg">
+              <Calendar className="h-7 w-7 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Meal Planning</h1>
+              <p className="text-sm sm:text-base text-gray-700 font-medium mt-1">Plan your weekly meals and generate shopping lists</p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Enhanced Weekly Nutrition Summary - Only for Master Chef+ plans */}
       {canUseNutritionAnalysis ? (
-        <div className="bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-4 sm:p-6 rounded-xl border border-green-200 shadow-lg">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center">
-              <Activity className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mr-2" />
+        <div className="bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-6 rounded-2xl border-2 border-green-200 shadow-lg">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-purple-600 bg-clip-text text-transparent flex items-center">
+              <div className="bg-gradient-to-br from-green-600 to-purple-600 p-2 rounded-lg mr-3">
+                <Activity className="w-6 h-6 text-white" />
+              </div>
               Weekly Nutrition Analytics
             </h3>
-            <div className="flex items-center text-sm text-gray-600">
-              <TrendingUp className="w-4 h-4 mr-1" />
-              Advanced Analysis
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg text-sm font-bold shadow-md">
+              <TrendingUp className="w-4 h-4" />
+              Advanced
             </div>
           </div>
 
@@ -1206,107 +1212,170 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
               return (
                 <div className="space-y-6">
                   {/* Primary Nutrition Cards */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                    <div className="bg-white rounded-lg p-3 sm:p-4 border-l-4 border-l-orange-500 shadow-sm">
-                      <div className="flex items-center mb-2">
-                        <Flame className="w-4 h-4 text-orange-500 mr-2" />
-                        <span className="text-xs sm:text-sm font-medium text-gray-600">Daily Avg Calories</span>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div className="bg-white rounded-xl p-4 border-2 border-orange-200 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
+                      <div className="flex items-center mb-3">
+                        <div className="bg-orange-100 p-2 rounded-lg mr-2">
+                          <Flame className="w-5 h-5 text-orange-600" />
+                        </div>
+                        <span className="text-sm font-bold text-gray-700">Daily Avg Calories</span>
                       </div>
-                      <div className="text-xl sm:text-2xl font-bold text-gray-900">{dailyAvg.calories}</div>
-                      <div className="text-xs text-gray-500">kcal/day</div>
+                      <div className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">{dailyAvg.calories}</div>
+                      <div className="text-xs text-gray-600 font-semibold mt-1">kcal/day</div>
                     </div>
 
-                    <div className="bg-white rounded-lg p-3 sm:p-4 border-l-4 border-l-blue-500 shadow-sm">
-                      <div className="flex items-center mb-2">
-                        <Zap className="w-4 h-4 text-blue-500 mr-2" />
-                        <span className="text-xs sm:text-sm font-medium text-gray-600">Protein</span>
+                    <div className="bg-white rounded-xl p-4 border-2 border-blue-200 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
+                      <div className="flex items-center mb-3">
+                        <div className="bg-blue-100 p-2 rounded-lg mr-2">
+                          <Zap className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <span className="text-sm font-bold text-gray-700">Protein</span>
                       </div>
-                      <div className="text-xl sm:text-2xl font-bold text-gray-900">{dailyAvg.protein}g</div>
-                      <div className="text-xs text-green-600 font-medium">{macroPercentages.proteinPct}% of calories</div>
+                      <div className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">{dailyAvg.protein}g</div>
+                      <div className="text-xs text-green-600 font-bold mt-1">{macroPercentages.proteinPct}% of calories</div>
                     </div>
 
-                    <div className="bg-white rounded-lg p-3 sm:p-4 border-l-4 border-l-green-500 shadow-sm">
-                      <div className="flex items-center mb-2">
-                        <Apple className="w-4 h-4 text-green-500 mr-2" />
-                        <span className="text-xs sm:text-sm font-medium text-gray-600">Carbs</span>
+                    <div className="bg-white rounded-xl p-4 border-2 border-green-200 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
+                      <div className="flex items-center mb-3">
+                        <div className="bg-green-100 p-2 rounded-lg mr-2">
+                          <Apple className="w-5 h-5 text-green-600" />
+                        </div>
+                        <span className="text-sm font-bold text-gray-700">Carbs</span>
                       </div>
-                      <div className="text-xl sm:text-2xl font-bold text-gray-900">{dailyAvg.carbs}g</div>
-                      <div className="text-xs text-green-600 font-medium">{macroPercentages.carbsPct}% of calories</div>
+                      <div className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{dailyAvg.carbs}g</div>
+                      <div className="text-xs text-green-600 font-bold mt-1">{macroPercentages.carbsPct}% of calories</div>
                     </div>
 
-                    <div className="bg-white rounded-lg p-3 sm:p-4 border-l-4 border-l-purple-500 shadow-sm">
-                      <div className="flex items-center mb-2">
-                        <Target className="w-4 h-4 text-purple-500 mr-2" />
-                        <span className="text-xs sm:text-sm font-medium text-gray-600">Fat</span>
+                    <div className="bg-white rounded-xl p-4 border-2 border-purple-200 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
+                      <div className="flex items-center mb-3">
+                        <div className="bg-purple-100 p-2 rounded-lg mr-2">
+                          <Target className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <span className="text-sm font-bold text-gray-700">Fat</span>
                       </div>
-                      <div className="text-xl sm:text-2xl font-bold text-gray-900">{dailyAvg.fat}g</div>
-                      <div className="text-xs text-green-600 font-medium">{macroPercentages.fatPct}% of calories</div>
+                      <div className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">{dailyAvg.fat}g</div>
+                      <div className="text-xs text-green-600 font-bold mt-1">{macroPercentages.fatPct}% of calories</div>
                     </div>
                   </div>
 
                   {/* Macro Distribution Visualization */}
-                  <div className="bg-white rounded-lg p-4 sm:p-5 shadow-sm">
-                    <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-3">Macronutrient Distribution</h4>
-                    <div className="flex rounded-lg overflow-hidden h-3 mb-3">
+                  <div className="bg-white rounded-xl p-5 shadow-md border-2 border-gray-200">
+                    <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                      Macronutrient Distribution
+                    </h4>
+                    <div className="flex rounded-xl overflow-hidden h-4 mb-4 shadow-sm">
                       <div
-                        className="bg-blue-500"
+                        className="bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500 hover:opacity-90"
                         style={{ width: `${macroPercentages.proteinPct}%` }}
                         title={`Protein: ${macroPercentages.proteinPct}%`}
                       />
                       <div
-                        className="bg-green-500"
+                        className="bg-gradient-to-r from-green-500 to-emerald-600 transition-all duration-500 hover:opacity-90"
                         style={{ width: `${macroPercentages.carbsPct}%` }}
                         title={`Carbs: ${macroPercentages.carbsPct}%`}
                       />
                       <div
-                        className="bg-purple-500"
+                        className="bg-gradient-to-r from-purple-500 to-pink-600 transition-all duration-500 hover:opacity-90"
                         style={{ width: `${macroPercentages.fatPct}%` }}
                         title={`Fat: ${macroPercentages.fatPct}%`}
                       />
                     </div>
-                    <div className="flex justify-between text-xs text-gray-600">
-                      <span>Protein {macroPercentages.proteinPct}%</span>
-                      <span>Carbs {macroPercentages.carbsPct}%</span>
-                      <span>Fat {macroPercentages.fatPct}%</span>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="flex flex-col items-center p-2 rounded-lg bg-blue-50 border border-blue-200">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-blue-600"></div>
+                          <span className="text-xs font-bold text-gray-700">Protein</span>
+                        </div>
+                        <span className="text-lg font-black bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">{macroPercentages.proteinPct}%</span>
+                      </div>
+                      <div className="flex flex-col items-center p-2 rounded-lg bg-green-50 border border-green-200">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-600"></div>
+                          <span className="text-xs font-bold text-gray-700">Carbs</span>
+                        </div>
+                        <span className="text-lg font-black bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">{macroPercentages.carbsPct}%</span>
+                      </div>
+                      <div className="flex flex-col items-center p-2 rounded-lg bg-purple-50 border border-purple-200">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-600"></div>
+                          <span className="text-xs font-bold text-gray-700">Fat</span>
+                        </div>
+                        <span className="text-lg font-black bg-gradient-to-r from-purple-600 to-pink-700 bg-clip-text text-transparent">{macroPercentages.fatPct}%</span>
+                      </div>
                     </div>
                   </div>
 
                   {/* Additional Nutrition Info */}
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <div className="bg-white rounded-lg p-3 text-center shadow-sm">
-                      <div className="text-sm font-medium text-gray-600 mb-1">Fiber</div>
-                      <div className="text-lg font-bold text-gray-900">{dailyAvg.fiber}g</div>
-                      <div className="text-xs text-gray-500">per day</div>
+                    <div className="bg-white rounded-xl p-4 text-center shadow-md border-2 border-green-200 hover:shadow-lg transition-all duration-200 hover:scale-105">
+                      <div className="flex items-center justify-center mb-2">
+                        <div className="bg-green-100 p-2 rounded-lg">
+                          <Apple className="w-5 h-5 text-green-600" />
+                        </div>
+                      </div>
+                      <div className="text-sm font-bold text-gray-700 mb-1">Fiber</div>
+                      <div className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{dailyAvg.fiber}g</div>
+                      <div className="text-xs text-gray-600 font-semibold mt-1">per day</div>
                     </div>
 
-                    <div className="bg-white rounded-lg p-3 text-center shadow-sm">
-                      <div className="text-sm font-medium text-gray-600 mb-1">Sodium</div>
-                      <div className="text-lg font-bold text-gray-900">{dailyAvg.sodium}mg</div>
-                      <div className="text-xs text-gray-500">per day</div>
+                    <div className="bg-white rounded-xl p-4 text-center shadow-md border-2 border-blue-200 hover:shadow-lg transition-all duration-200 hover:scale-105">
+                      <div className="flex items-center justify-center mb-2">
+                        <div className="bg-blue-100 p-2 rounded-lg">
+                          <Activity className="w-5 h-5 text-blue-600" />
+                        </div>
+                      </div>
+                      <div className="text-sm font-bold text-gray-700 mb-1">Sodium</div>
+                      <div className="text-2xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">{dailyAvg.sodium}mg</div>
+                      <div className="text-xs text-gray-600 font-semibold mt-1">per day</div>
                     </div>
 
-                    <div className="bg-white rounded-lg p-3 text-center shadow-sm col-span-2 sm:col-span-1">
-                      <div className="text-sm font-medium text-gray-600 mb-1">Weekly Total</div>
-                      <div className="text-lg font-bold text-gray-900">{Math.round(weekNutrition.calories)}</div>
-                      <div className="text-xs text-gray-500">calories</div>
+                    <div className="bg-white rounded-xl p-4 text-center shadow-md border-2 border-purple-200 hover:shadow-lg transition-all duration-200 hover:scale-105 col-span-2 sm:col-span-1">
+                      <div className="flex items-center justify-center mb-2">
+                        <div className="bg-purple-100 p-2 rounded-lg">
+                          <TrendingUp className="w-5 h-5 text-purple-600" />
+                        </div>
+                      </div>
+                      <div className="text-sm font-bold text-gray-700 mb-1">Weekly Total</div>
+                      <div className="text-2xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">{Math.round(weekNutrition.calories)}</div>
+                      <div className="text-xs text-gray-600 font-semibold mt-1">calories</div>
                     </div>
                   </div>
 
                   {/* Recommendations */}
                   {recommendations.length > 0 && (
-                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-200">
-                      <h4 className="text-sm font-semibold text-amber-800 mb-2 flex items-center">
-                        <Target className="w-4 h-4 mr-2" />
-                        Nutrition Insights
-                      </h4>
-                      <div className="space-y-2">
+                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-5 border-2 border-amber-200 shadow-md">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="bg-gradient-to-br from-amber-500 to-orange-500 p-2.5 rounded-xl shadow-lg">
+                          <Sparkles className="w-5 h-5 text-white" />
+                        </div>
+                        <h4 className="text-base sm:text-lg font-black bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                          Nutrition Insights
+                        </h4>
+                      </div>
+                      <div className="space-y-3">
                         {recommendations.map((rec, index) => (
-                          <div key={index} className={`text-xs sm:text-sm flex items-start ${
-                            rec.type === 'warning' ? 'text-red-700' :
-                            rec.type === 'info' ? 'text-blue-700' : 'text-amber-700'
+                          <div key={index} className={`flex items-start gap-3 p-3 rounded-lg border-l-4 transition-all duration-200 hover:shadow-md ${
+                            rec.type === 'warning'
+                              ? 'bg-red-50 border-l-red-500' :
+                            rec.type === 'info'
+                              ? 'bg-blue-50 border-l-blue-500'
+                              : 'bg-amber-50 border-l-amber-500'
                           }`}>
-                            <span className="w-1.5 h-1.5 rounded-full bg-current mt-2 mr-2 flex-shrink-0" />
-                            {rec.text}
+                            <div className={`flex-shrink-0 mt-0.5 ${
+                              rec.type === 'warning' ? 'text-red-600' :
+                              rec.type === 'info' ? 'text-blue-600' : 'text-amber-600'
+                            }`}>
+                              {rec.type === 'warning' && <AlertTriangle className="w-4 h-4" />}
+                              {rec.type === 'info' && <Info className="w-4 h-4" />}
+                              {rec.type === 'success' && <CheckCircle className="w-4 h-4" />}
+                            </div>
+                            <p className={`text-sm font-semibold flex-1 ${
+                              rec.type === 'warning' ? 'text-red-700' :
+                              rec.type === 'info' ? 'text-blue-700' : 'text-amber-700'
+                            }`}>
+                              {rec.text}
+                            </p>
                           </div>
                         ))}
                       </div>
@@ -1349,122 +1418,145 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
       {/* Recipe List Sidebar - Hidden on mobile */}
       {showRecipeList && (
-        <div className="hidden md:block mb-6 bg-white rounded-lg shadow border">
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <GripVertical className="w-5 h-5 mr-2 text-gray-400" />
+        <div className="hidden md:block mb-6 bg-white rounded-2xl shadow-lg border-2 border-green-200">
+          <div className="flex items-center justify-between p-5 border-b-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+            <h3 className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent flex items-center">
+              <div className="bg-gradient-to-br from-green-600 to-emerald-600 p-2 rounded-lg mr-3">
+                <GripVertical className="w-5 h-5 text-white" />
+              </div>
               Your Recipes - Drag to Calendar
             </h3>
             <button
               onClick={() => setShowRecipeList(!showRecipeList)}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-500 hover:text-green-600 transition-colors duration-200 p-2 hover:bg-green-100 rounded-lg"
             >
-              <X className="w-5 h-5" />
+              <X className="w-6 h-6" />
             </button>
           </div>
           
           {/* Search and Sort Controls */}
-          <div className="p-3 sm:p-4 border-b border-gray-200 bg-gray-50">
+          <div className="p-5 border-b-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
             {/* First Row: Search and Sort */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-3">
+            <div className="flex flex-col sm:flex-row gap-4 mb-4">
               {/* Search Input - 2/3 width on desktop */}
               <div className="relative flex-1 sm:flex-[2]">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500 z-10" strokeWidth={2.5} />
                 <input
                   type="text"
                   placeholder="Search recipes..."
                   value={recipeSearchTerm}
                   onChange={(e) => setRecipeSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                  className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm font-semibold shadow-sm hover:border-green-300 hover:shadow-md transition-all duration-200"
                 />
               </div>
-              
+
               {/* Sort By - 1/3 width on desktop */}
               <div className="sm:flex-1">
-                <select
+                <CustomDropdown
                   value={recipeSortBy}
-                  onChange={(e) => setRecipeSortBy(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-sm"
-                >
-                  <option value="date-asc">📅 Date (Oldest First)</option>
-                  <option value="date-desc">📅 Date (Newest First)</option>
-                  <option value="name-asc">📝 Name (A-Z)</option>
-                  <option value="name-desc">📝 Name (Z-A)</option>
-                  <option value="rating-asc">⭐ Rating (Lowest First)</option>
-                  <option value="rating-desc">⭐ Rating (Highest First)</option>
-                </select>
+                  onChange={(value) => setRecipeSortBy(value)}
+                  options={[
+                    { value: 'date-asc', label: 'Date (Oldest First)', icon: '📅' },
+                    { value: 'date-desc', label: 'Date (Newest First)', icon: '📅' },
+                    { value: 'name-asc', label: 'Name (A-Z)', icon: '📝' },
+                    { value: 'name-desc', label: 'Name (Z-A)', icon: '📝' },
+                    { value: 'rating-asc', label: 'Rating (Lowest First)', icon: '⭐' },
+                    { value: 'rating-desc', label: 'Rating (Highest First)', icon: '⭐' }
+                  ]}
+                  placeholder="Sort by..."
+                  icon={<ArrowUpDown className="w-5 h-5 text-green-500" strokeWidth={2.5} />}
+                  ariaLabel="Sort recipes"
+                />
               </div>
             </div>
-            
+
             {/* Second Row: Filters - Each takes 1/3 width on desktop */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-4">
               {/* Dietary Filter - 1/3 width */}
               <div className="sm:flex-1">
-                <select
+                <CustomDropdown
                   value={selectedDietaryFilter}
-                  onChange={(e) => setSelectedDietaryFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-sm"
-                >
-                  <option value="">All Dietary Preferences</option>
-                  <option value="Vegetarian">🌱 Vegetarian</option>
-                  <option value="Vegan">🥬 Vegan</option>
-                  <option value="Gluten-Free">🌾 Gluten-Free</option>
-                  <option value="Dairy-Free">🥛 Dairy-Free</option>
-                  <option value="Keto">🥓 Keto</option>
-                  <option value="Paleo">🥩 Paleo</option>
-                  <option value="Low-Carb">🍖 Low-Carb</option>
-                  <option value="High-Protein">💪 High-Protein</option>
-                </select>
+                  onChange={(value) => setSelectedDietaryFilter(value)}
+                  options={[
+                    { value: '', label: 'All Dietary Preferences' },
+                    { value: 'Vegetarian', label: 'Vegetarian', icon: '🌱' },
+                    { value: 'Vegan', label: 'Vegan', icon: '🥬' },
+                    { value: 'Gluten-Free', label: 'Gluten-Free', icon: '🌾' },
+                    { value: 'Dairy-Free', label: 'Dairy-Free', icon: '🥛' },
+                    { value: 'Keto', label: 'Keto', icon: '🥓' },
+                    { value: 'Paleo', label: 'Paleo', icon: '🥩' },
+                    { value: 'Low-Carb', label: 'Low-Carb', icon: '🍖' },
+                    { value: 'High-Protein', label: 'High-Protein', icon: '💪' }
+                  ]}
+                  placeholder="All Dietary Preferences"
+                  icon={<Filter className="w-5 h-5 text-green-500" strokeWidth={2.5} />}
+                  ariaLabel="Filter by dietary preference"
+                />
               </div>
-              
+
               {/* Health Condition Filter - Only for Master Chef+ plans */}
               {featureAccess?.canUseHealthConditions && (
                 <div className="sm:flex-1">
-                  <select
+                  <CustomDropdown
                     value={selectedHealthFilter}
-                    onChange={(e) => setSelectedHealthFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-sm"
-                  >
-                    <option value="">All Health Conditions</option>
-                    <option value="Diabetes">🩺 Diabetes-Friendly</option>
-                    <option value="Heart Disease">❤️ Heart-Healthy</option>
-                    <option value="Hypertension">💓 Low-Sodium</option>
-                    <option value="Celiac Disease">🌾 Celiac-Safe</option>
-                    <option value="Kidney Disease">🫘 Kidney-Friendly</option>
-                  </select>
+                    onChange={(value) => setSelectedHealthFilter(value)}
+                    options={[
+                      { value: '', label: 'All Health Conditions' },
+                      { value: 'Diabetes', label: 'Diabetes-Friendly', icon: '🩺' },
+                      { value: 'Heart Disease', label: 'Heart-Healthy', icon: '❤️' },
+                      { value: 'Hypertension', label: 'Low-Sodium', icon: '💓' },
+                      { value: 'Celiac Disease', label: 'Celiac-Safe', icon: '🌾' },
+                      { value: 'Kidney Disease', label: 'Kidney-Friendly', icon: '🫘' }
+                    ]}
+                    placeholder="All Health Conditions"
+                    icon={<Heart className="w-5 h-5 text-green-500" strokeWidth={2.5} />}
+                    ariaLabel="Filter by health condition"
+                  />
                 </div>
               )}
-              
+
               {/* Category Filter - 1/3 width */}
               <div className="sm:flex-1">
-                <select
+                <CustomDropdown
                   value={selectedCategoryFilter}
-                  onChange={(e) => setSelectedCategoryFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-sm"
-                >
-                  <option value="">All Categories</option>
-                  <option value="appetizer">🥗 Appetizers</option>
-                  <option value="main-dish">🍽️ Main Dishes</option>
-                  <option value="side-dish">🥘 Side Dishes</option>
-                  <option value="dessert">🍰 Desserts</option>
-                </select>
+                  onChange={(value) => setSelectedCategoryFilter(value)}
+                  options={[
+                    { value: '', label: 'All Categories' },
+                    { value: 'appetizer', label: 'Appetizers', icon: '🥗' },
+                    { value: 'main-dish', label: 'Main Dishes', icon: '🍽️' },
+                    { value: 'side-dish', label: 'Side Dishes', icon: '🥘' },
+                    { value: 'dessert', label: 'Desserts', icon: '🍰' }
+                  ]}
+                  placeholder="All Categories"
+                  icon={<Utensils className="w-5 h-5 text-green-500" strokeWidth={2.5} />}
+                  ariaLabel="Filter by category"
+                />
               </div>
             </div>
           </div>
           
-          <div className="p-3 sm:p-4 max-h-48 sm:max-h-60 overflow-y-auto">
+          <div className="p-5 max-h-60 overflow-y-auto bg-white">
             {(() => {
               const filteredRecipes = getFilteredAndSortedRecipes();
               return filteredRecipes.length === 0 ? (
-                <div className="text-center text-gray-500 py-4">
+                <div className="text-center py-8">
                   {recipes.length === 0 ? (
-                    <p>No saved recipes found. Create some recipes first!</p>
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                        <ChefHat className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-gray-600 font-semibold">No saved recipes found</p>
+                      <p className="text-sm text-gray-500">Create some recipes first!</p>
+                    </div>
                   ) : (
-                    <div>
-                      <p>No recipes match your search.</p>
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-yellow-100 rounded-full flex items-center justify-center">
+                        <Search className="w-8 h-8 text-orange-500" />
+                      </div>
+                      <p className="text-gray-600 font-semibold">No recipes match your search</p>
                       <button
                         onClick={() => setRecipeSearchTerm('')}
-                        className="mt-2 text-green-600 hover:text-green-700 text-sm underline"
+                        className="mt-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 text-sm font-bold transition-all duration-200 shadow-md hover:shadow-lg"
                       >
                         Clear search
                       </button>
@@ -1473,8 +1565,24 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                 </div>
               ) : (
                 <div>
-                  <div className="text-xs text-gray-500 mb-3">
-                    Showing {filteredRecipes.length} of {recipes.length} recipes
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-green-100">
+                    <span className="text-sm font-bold text-gray-700">
+                      Showing <span className="text-green-600">{filteredRecipes.length}</span> of {recipes.length} recipes
+                    </span>
+                    {(recipeSearchTerm || selectedDietaryFilter || selectedHealthFilter || selectedCategoryFilter) && (
+                      <button
+                        onClick={() => {
+                          setRecipeSearchTerm('');
+                          setSelectedDietaryFilter('');
+                          setSelectedHealthFilter('');
+                          setSelectedCategoryFilter('');
+                        }}
+                        className="text-xs text-green-600 hover:text-green-700 font-semibold flex items-center gap-1 px-2 py-1 hover:bg-green-50 rounded-lg transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                        Clear filters
+                      </button>
+                    )}
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
                     {filteredRecipes.map(recipe => (
@@ -1539,48 +1647,48 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
       {/* Weekly Recipe Generator */}
       {featureAccess?.canGenerateWeeklyMenu ? (
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-4 mb-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 sm:space-x-4">
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-full">
-                <Sparkles className="w-5 h-5 text-purple-600" />
+        <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 border-2 border-purple-300 rounded-2xl p-6 mb-6 shadow-lg">
+          <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4 mb-5">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl shadow-lg">
+                <Sparkles className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-purple-900">Generate Weekly Menu</h3>
-                <p className="text-sm text-purple-700">Auto-fill your calendar with recipes based on your preferences</p>
+                <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Generate Weekly Menu</h3>
+                <p className="text-sm text-purple-700 font-semibold mt-1">Auto-fill your calendar with smart recipe recommendations</p>
               </div>
             </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
             {/* Left Side: Week Selector and Settings Toggles */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               {/* Health Conditions and Dietary Preferences */}
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 {userSettings?.healthConditions && userSettings.healthConditions.length > 0 && (
-                  <label className="flex items-center text-sm cursor-pointer whitespace-nowrap">
+                  <label className="flex items-center text-sm cursor-pointer whitespace-nowrap group">
                     <input
                       type="checkbox"
                       checked={alignWithHealthConditions}
                       onChange={(e) => setAlignWithHealthConditions(e.target.checked)}
-                      className="mr-2 h-4 w-4 text-purple-600 focus:ring-purple-500 border-purple-300 rounded"
+                      className="mr-3 h-5 w-5 text-purple-600 focus:ring-2 focus:ring-purple-500 border-2 border-purple-400 rounded transition-all duration-200"
                     />
-                    <span className="text-purple-800 font-medium">🩺 Health Conditions</span>
-                    <span className="ml-1 text-xs text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded-full">
+                    <span className="text-purple-900 font-bold group-hover:text-purple-700 transition-colors">🩺 Health Conditions</span>
+                    <span className="ml-2 text-xs text-white bg-gradient-to-r from-purple-600 to-pink-600 px-2 py-1 rounded-lg font-bold shadow-sm">
                       {userSettings.healthConditions.length}
                     </span>
                   </label>
                 )}
 
                 {userSettings?.defaultDietaryFilters && userSettings.defaultDietaryFilters.length > 0 && (
-                  <label className="flex items-center text-sm cursor-pointer whitespace-nowrap">
+                  <label className="flex items-center text-sm cursor-pointer whitespace-nowrap group">
                     <input
                       type="checkbox"
                       checked={alignWithDietaryPreferences}
                       onChange={(e) => setAlignWithDietaryPreferences(e.target.checked)}
-                      className="mr-2 h-4 w-4 text-purple-600 focus:ring-purple-500 border-purple-300 rounded"
+                      className="mr-3 h-5 w-5 text-purple-600 focus:ring-2 focus:ring-purple-500 border-2 border-purple-400 rounded transition-all duration-200"
                     />
-                    <span className="text-purple-800 font-medium">🌱 Dietary Preferences</span>
-                    <span className="ml-1 text-xs text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded-full">
+                    <span className="text-purple-900 font-bold group-hover:text-purple-700 transition-colors">🌱 Dietary Preferences</span>
+                    <span className="ml-2 text-xs text-white bg-gradient-to-r from-purple-600 to-pink-600 px-2 py-1 rounded-lg font-bold shadow-sm">
                       {userSettings.defaultDietaryFilters.length}
                     </span>
                   </label>
@@ -1588,7 +1696,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
                 {(!userSettings?.healthConditions || userSettings.healthConditions.length === 0) &&
                  (!userSettings?.defaultDietaryFilters || userSettings.defaultDietaryFilters.length === 0) && (
-                  <div className="text-sm text-purple-600 bg-purple-50 px-3 py-2 rounded-lg">
+                  <div className="text-sm text-purple-700 bg-white border-2 border-purple-200 px-4 py-2.5 rounded-xl font-semibold shadow-sm">
                     💡 Set health conditions and dietary preferences in Settings
                   </div>
                 )}
@@ -1597,12 +1705,12 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
             </div>
 
             {/* Right Side: Action Buttons */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               {/* Week Type Selector */}
               <select
                 value={selectedWeekType}
                 onChange={(e) => setSelectedWeekType(e.target.value)}
-                className="px-3 py-2 border border-purple-300 rounded-lg bg-white text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm font-medium min-w-[140px]"
+                className="px-4 py-2.5 border-2 border-purple-300 rounded-xl bg-white text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm font-bold min-w-[150px] shadow-sm hover:border-purple-400 transition-all duration-200"
               >
                 <option value="balanced">🌟 Balanced</option>
                 <option value="protein-focused">💪 Protein</option>
@@ -1616,20 +1724,20 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
               <button
                 onClick={clearWeeklyPlan}
                 disabled={isClearing || Object.keys(mealPlan).length === 0}
-                className={`flex items-center px-3 py-2 rounded-lg font-medium transition-all text-sm whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-200 text-sm whitespace-nowrap shadow-lg ${
                   isClearing || Object.keys(mealPlan).length === 0
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-red-600 text-white hover:bg-red-700 hover:shadow-md transform hover:scale-105'
+                    : 'bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-700 hover:to-rose-700 hover:shadow-xl hover:scale-105 shadow-red-500/30'
                 }`}
               >
                 {isClearing ? (
                   <>
-                    <RefreshCcw className="w-4 h-4 mr-1 animate-spin" />
+                    <RefreshCcw className="w-5 h-5 animate-spin" />
                     Clearing...
                   </>
                 ) : (
                   <>
-                    <Trash2 className="w-4 h-4 mr-1" />
+                    <Trash2 className="w-5 h-5" />
                     Clear
                   </>
                 )}
@@ -1639,20 +1747,20 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
               <button
                 onClick={generateWeeklyPlan}
                 disabled={isGenerating || recipes.length === 0}
-                className={`flex items-center px-3 py-2 rounded-lg font-medium transition-all text-sm whitespace-nowrap ${
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all duration-200 text-sm whitespace-nowrap shadow-lg ${
                   isGenerating || recipes.length === 0
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-purple-600 text-white hover:bg-purple-700 hover:shadow-md transform hover:scale-105'
+                    : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 hover:shadow-xl hover:scale-105 shadow-purple-500/30'
                 }`}
               >
                 {isGenerating ? (
                   <>
-                    <RefreshCcw className="w-4 h-4 mr-1 animate-spin" />
+                    <RefreshCcw className="w-5 h-5 animate-spin" />
                     Generating...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 mr-1" />
+                    <Sparkles className="w-5 h-5" />
                     Generate
                   </>
                 )}
@@ -1662,27 +1770,27 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
         </div>
 
           {recipes.length === 0 && (
-            <div className="mt-3 text-center">
-              <p className="text-sm text-purple-600 bg-purple-100 rounded-lg px-3 py-2 inline-block">
+            <div className="mt-4 text-center">
+              <p className="text-sm text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl px-4 py-2.5 inline-block font-bold shadow-lg">
                 💡 Save some recipes first to generate meal plans
               </p>
             </div>
           )}
         </div>
       ) : (
-        <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-lg p-4 mb-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 sm:space-x-4">
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full">
-                <Sparkles className="w-5 h-5 text-orange-600" />
+        <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-orange-50 border-2 border-orange-300 rounded-2xl p-6 mb-6 shadow-lg">
+          <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-orange-600 to-yellow-600 rounded-xl shadow-lg">
+                <Sparkles className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-orange-900">Generate Weekly Menu</h3>
-                <p className="text-sm text-orange-700">Auto-generate weekly meal plans with AI-powered recipe recommendations</p>
+                <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">Generate Weekly Menu</h3>
+                <p className="text-sm text-orange-700 font-semibold mt-1">Auto-generate weekly meal plans with AI-powered recipe recommendations</p>
               </div>
             </div>
             <div className="flex items-center">
-              <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">
+              <span className="text-xs bg-gradient-to-r from-orange-600 to-yellow-600 text-white px-4 py-2 rounded-xl font-black shadow-md">
                 Master Chef
               </span>
             </div>
@@ -1691,35 +1799,35 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       )}
 
       {/* Week Navigation */}
-      <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow mb-6">
+      <div className="flex items-center justify-between bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-xl border-2 border-green-200 shadow-lg mb-6">
         <button
           onClick={() => navigateWeek('prev')}
-          className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 hover:text-green-600 border-2 border-gray-300 hover:border-green-400 rounded-lg transition-all duration-200 font-bold shadow-sm hover:shadow-md"
         >
-          <ChevronLeft className="w-4 h-4 mr-1" />
-          Previous Week
+          <ChevronLeft className="w-5 h-5" />
+          <span className="hidden sm:inline">Previous</span>
         </button>
 
         <div className="text-center">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
             {weekDates[0].toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
           </h2>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-700 font-semibold mt-1">
             {weekDates[0].toLocaleDateString()} - {weekDates[6].toLocaleDateString()}
           </p>
         </div>
 
         <button
           onClick={() => navigateWeek('next')}
-          className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 hover:text-green-600 border-2 border-gray-300 hover:border-green-400 rounded-lg transition-all duration-200 font-bold shadow-sm hover:shadow-md"
         >
-          Next Week
-          <ChevronRight className="w-4 h-4 ml-1" />
+          <span className="hidden sm:inline">Next</span>
+          <ChevronRight className="w-5 h-5" />
         </button>
       </div>
 
       {/* Calendar Grid */}
-      <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-xl border-2 border-green-100 overflow-hidden">
         {/* Mobile Calendar View */}
         <div className="md:hidden">
           {weekDates.map((date) => {
@@ -1731,20 +1839,26 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
             return (
               <div key={dateStr} className="border-b border-gray-200 last:border-b-0">
                 {/* Day Header */}
-                <div className={`p-4 border-b border-gray-200 ${
-                  isToday ? 'bg-green-50' : 'bg-gray-50'
+                <div className={`p-4 border-b-2 ${
+                  isToday
+                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-b-green-300'
+                    : 'bg-gradient-to-r from-gray-50 to-gray-100 border-b-gray-200'
                 }`}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className={`font-bold ${isToday ? 'text-green-700' : 'text-gray-900'}`}>
+                      <h3 className={`font-black text-lg ${
+                        isToday
+                          ? 'bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent'
+                          : 'text-gray-900'
+                      }`}>
                         {formatDisplayDate(date)}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 font-semibold mt-0.5">
                         {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </p>
                     </div>
                     {dayNutrition.calories > 0 && (
-                      <div className="text-xs text-white bg-green-500 px-2 py-1 rounded-full font-medium">
+                      <div className="text-xs text-white bg-gradient-to-r from-green-500 to-emerald-500 px-3 py-1.5 rounded-lg font-bold shadow-md">
                         {Math.round(dayNutrition.calories)} kcal
                       </div>
                     )}
@@ -1811,10 +1925,10 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
         </div>
         
         {/* Desktop Grid Header */}
-        <div className="hidden md:grid grid-cols-8 border-b-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
-          <div className="p-5 bg-gradient-to-br from-green-500 to-blue-500 border-r border-gray-200">
-            <div className="font-bold text-white text-center flex items-center justify-center">
-              <Calendar className="w-5 h-5 mr-2" />
+        <div className="hidden md:grid grid-cols-8 border-b-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+          <div className="p-5 bg-gradient-to-br from-green-600 to-emerald-600 border-r-2 border-green-300">
+            <div className="font-black text-white text-center flex items-center justify-center text-lg">
+              <Calendar className="w-6 h-6 mr-2" />
               Meals
             </div>
           </div>
@@ -1823,28 +1937,32 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
             const dayNutrition = getDayNutrition(dateStr);
             const isToday = date.toDateString() === new Date().toDateString();
             const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-            
+
             return (
-              <div key={dateStr} className={`p-4 text-center border-r border-gray-200 last:border-r-0 ${
-                isToday 
-                  ? 'bg-gradient-to-br from-green-100 to-blue-100 border-l-4 border-l-green-500' 
-                  : isWeekend 
-                    ? 'bg-gradient-to-br from-purple-50 to-pink-50' 
+              <div key={dateStr} className={`p-4 text-center border-r-2 border-green-200 last:border-r-0 transition-all duration-200 ${
+                isToday
+                  ? 'bg-gradient-to-br from-green-100 to-emerald-100'
+                  : isWeekend
+                    ? 'bg-gradient-to-br from-purple-50 to-pink-50'
                     : 'bg-white'
               }`}>
-                <div className={`font-bold ${isToday ? 'text-green-700' : 'text-gray-900'}`}>
+                <div className={`font-black text-base ${
+                  isToday
+                    ? 'bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent'
+                    : 'text-gray-900'
+                }`}>
                   {formatDisplayDate(date)}
                 </div>
-                <div className={`text-sm mt-1 ${isToday ? 'text-green-600' : 'text-gray-600'}`}>
+                <div className={`text-sm mt-1 font-semibold ${isToday ? 'text-green-600' : 'text-gray-600'}`}>
                   {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </div>
                 {dayNutrition.calories > 0 && (
-                  <div className="text-xs text-white bg-green-500 px-2 py-1 rounded-full mt-2 font-medium inline-block">
+                  <div className="text-xs text-white bg-gradient-to-r from-green-500 to-emerald-500 px-2.5 py-1 rounded-lg mt-2 font-bold inline-block shadow-sm">
                     {Math.round(dayNutrition.calories)} kcal
                   </div>
                 )}
                 {isToday && (
-                  <div className="text-xs text-green-700 font-medium mt-1">Today</div>
+                  <div className="text-xs bg-green-100 text-green-700 font-bold mt-2 px-2 py-0.5 rounded-full inline-block">Today</div>
                 )}
               </div>
             );
@@ -1856,27 +1974,27 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
         {['breakfast', 'lunch', 'dinner', 'snacks'].map((mealType) => {
           const mealIcons = {
             breakfast: '🥞',
-            lunch: '🥗', 
+            lunch: '🥗',
             dinner: '🍽️',
             snacks: '🍿'
           };
           const mealColors = {
-            breakfast: 'bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-l-yellow-400',
-            lunch: 'bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-l-green-400',
-            dinner: 'bg-gradient-to-r from-purple-50 to-indigo-50 border-l-4 border-l-purple-400',
-            snacks: 'bg-gradient-to-r from-pink-50 to-rose-50 border-l-4 border-l-pink-400'
+            breakfast: 'bg-gradient-to-br from-yellow-50 to-orange-50 border-l-4 border-l-yellow-500',
+            lunch: 'bg-gradient-to-br from-green-50 to-emerald-50 border-l-4 border-l-green-500',
+            dinner: 'bg-gradient-to-br from-purple-50 to-indigo-50 border-l-4 border-l-purple-500',
+            snacks: 'bg-gradient-to-br from-pink-50 to-rose-50 border-l-4 border-l-pink-500'
           };
-          
+
           return (
-            <div key={mealType} className="grid grid-cols-8 border-b border-gray-200 last:border-b-0 hover:bg-gray-25 transition-colors">
+            <div key={mealType} className="grid grid-cols-8 border-b-2 border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors">
               {/* Meal Label */}
-              <div className={`p-5 border-r border-gray-200 flex items-center justify-center ${mealColors[mealType as keyof typeof mealColors]}`}>
+              <div className={`p-5 border-r-2 border-green-200 flex items-center justify-center ${mealColors[mealType as keyof typeof mealColors]}`}>
                 <div className="text-center">
-                  <div className="text-2xl mb-1">{mealIcons[mealType as keyof typeof mealIcons]}</div>
-                  <div className="font-bold text-gray-900 capitalize text-sm">
+                  <div className="text-3xl mb-2">{mealIcons[mealType as keyof typeof mealIcons]}</div>
+                  <div className="font-black text-gray-900 capitalize text-base">
                     {mealType === 'snacks' ? 'Snacks' : mealType}
                   </div>
-                  <div className="text-xs text-gray-600 mt-1">
+                  <div className="text-xs text-gray-600 font-semibold mt-1">
                     {mealType === 'lunch' ? 'Up to 5' : mealType === 'snacks' ? 'Up to 5' : 'Up to 3'}
                   </div>
                 </div>
@@ -2029,32 +2147,32 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       </div>
 
       {/* Action Buttons - Positioned under calendar right side */}
-      <div className="flex justify-end mt-4">
-        <div className="flex items-center space-x-3">
+      <div className="flex justify-end mt-6">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setShowShoppingList(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all duration-200 font-bold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:scale-105"
           >
-            <ShoppingCart className="w-4 h-4 mr-2" />
+            <ShoppingCart className="w-5 h-5" />
             Shopping List
           </button>
           <button
             onClick={saveMealPlan}
             disabled={saving || !hasUnsavedChanges}
-            className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center gap-2 px-5 py-3 rounded-xl transition-all duration-200 font-bold shadow-lg ${
               hasUnsavedChanges
-                ? 'bg-green-600 text-white hover:bg-green-700'
+                ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-green-500/30 hover:shadow-xl hover:scale-105'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
             {saving ? (
               <>
-                <RefreshCcw className="w-4 h-4 mr-2 animate-spin" />
+                <RefreshCcw className="w-5 h-5 animate-spin" />
                 Saving...
               </>
             ) : (
               <>
-                <Save className="w-4 h-4 mr-2" />
+                <Save className="w-5 h-5" />
                 {hasUnsavedChanges ? 'Save Plan' : 'Saved'}
               </>
             )}
