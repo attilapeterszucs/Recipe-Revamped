@@ -444,11 +444,12 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
         </div>
 
         {/* Search and Filters Row */}
-        <div className="bg-gradient-to-br from-indigo-50 to-purple-50/50 p-5 rounded-2xl border-2 border-indigo-200 shadow-lg">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            {/* Search - Takes more space */}
-            <div className="lg:col-span-5">
-              <label className="block text-xs font-bold text-indigo-900 mb-2 uppercase tracking-wide">
+        <div className="bg-gradient-to-br from-indigo-50 to-purple-50/50 p-6 rounded-2xl border-2 border-indigo-200 shadow-lg">
+          <div className="space-y-5">
+            {/* Search - Full Width */}
+            <div>
+              <label className="block text-sm font-bold text-indigo-900 mb-3 flex items-center gap-2">
+                <Search className="w-5 h-5 text-indigo-600" />
                 Search Posts
               </label>
               <div className="relative">
@@ -458,53 +459,64 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                   placeholder="Search by title, content, or tags..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border-2 border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium bg-white"
+                  className="w-full pl-12 pr-4 py-3.5 border-2 border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium bg-white shadow-sm"
                 />
               </div>
             </div>
 
-            {/* Category Filter */}
-            <div className="lg:col-span-3">
-              <label className="block text-xs font-bold text-indigo-900 mb-2 uppercase tracking-wide">
-                Category
-              </label>
-              <CustomDropdown
-                value={selectedCategory}
-                onChange={(value) => setSelectedCategory(value)}
-                options={[
-                  { value: 'all', label: 'All Categories', icon: '📁' },
-                  ...categories.map(category => ({
-                    value: category.name,
-                    label: category.name,
-                    icon: category.color === 'blue' ? '🔵' : category.color === 'green' ? '🟢' : category.color === 'purple' ? '🟣' : category.color === 'pink' ? '🩷' : '🟠'
-                  }))
-                ]}
-              />
-            </div>
+            {/* Filters Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Category Filter */}
+              <div>
+                <label className="block text-sm font-bold text-indigo-900 mb-3">
+                  Filter by Category
+                </label>
+                <CustomDropdown
+                  value={selectedCategory}
+                  onChange={(value) => setSelectedCategory(value)}
+                  options={[
+                    { value: 'all', label: 'All Categories', icon: '📁' },
+                    ...categories.map(category => ({
+                      value: category.name,
+                      label: category.name,
+                      icon: category.color === 'blue' ? '🔵' : category.color === 'green' ? '🟢' : category.color === 'purple' ? '🟣' : category.color === 'pink' ? '🩷' : '🟠'
+                    }))
+                  ]}
+                />
+              </div>
 
-            {/* Status Filter */}
-            <div className="lg:col-span-3">
-              <label className="block text-xs font-bold text-indigo-900 mb-2 uppercase tracking-wide">
-                Status
-              </label>
-              <CustomDropdown
-                value={selectedStatus}
-                onChange={(value) => setSelectedStatus(value)}
-                options={[
-                  { value: 'all', label: 'All Status', icon: '📋' },
-                  { value: 'published', label: 'Published', icon: '✅' },
-                  { value: 'draft', label: 'Draft', icon: '📝' }
-                ]}
-              />
-            </div>
+              {/* Status Filter */}
+              <div>
+                <label className="block text-sm font-bold text-indigo-900 mb-3">
+                  Filter by Status
+                </label>
+                <CustomDropdown
+                  value={selectedStatus}
+                  onChange={(value) => setSelectedStatus(value)}
+                  options={[
+                    { value: 'all', label: 'All Status', icon: '📋' },
+                    { value: 'published', label: 'Published', icon: '✅' },
+                    { value: 'draft', label: 'Draft', icon: '📝' }
+                  ]}
+                />
+              </div>
 
-            {/* Results Count */}
-            <div className="lg:col-span-1 flex items-end">
-              <div className="w-full bg-white border-2 border-indigo-300 rounded-xl px-4 py-3 text-center">
-                <p className="text-xs text-indigo-700 font-bold">Found</p>
-                <p className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  {filteredPosts.length}
-                </p>
+              {/* Results Count */}
+              <div>
+                <label className="block text-sm font-bold text-indigo-900 mb-3">
+                  Results
+                </label>
+                <div className="bg-white border-2 border-indigo-300 rounded-xl px-4 py-3.5 text-center shadow-sm">
+                  <div className="flex items-center justify-center gap-2">
+                    <FileText className="w-5 h-5 text-indigo-600" />
+                    <p className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                      {filteredPosts.length}
+                    </p>
+                    <p className="text-sm text-indigo-700 font-medium">
+                      {filteredPosts.length === 1 ? 'post' : 'posts'}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
