@@ -88,6 +88,11 @@ export function RecipeApp() {
     window.scrollTo(0, 0);
   }, []);
 
+  // Scroll to top when switching between pages
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [showSaved, showSettings, showMealPlanner]);
+
   // Check for URL search params to show settings with specific section
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
