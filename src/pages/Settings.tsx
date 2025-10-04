@@ -1659,9 +1659,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'recipe-settings':
         return (
           <div className="space-y-8">
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Recipe Settings</h3>
-              <p className="text-gray-600 leading-relaxed">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Recipe Settings</h3>
+              <p className="text-gray-700 leading-relaxed">
                 Configure your recipe conversion preferences and cooking defaults. Set up auto-save, serving sizes, and measurement units to streamline your cooking experience.
               </p>
             </div>
@@ -1669,15 +1669,15 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             {featureAccess?.canSetDefaultPreferences ? (
               <div className="space-y-6">
                 {/* Auto-save Recipes */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-6 shadow-lg">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                        <Save className="w-5 h-5 text-blue-600" />
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
+                        <Save className="w-6 h-6 text-green-600" />
                       </div>
                       <div>
-                        <h4 className="text-lg font-semibold text-gray-900">Auto-save Recipes</h4>
-                        <p className="text-sm text-gray-600">Automatically save recipes as you work</p>
+                        <h4 className="text-lg font-black text-gray-900">Auto-save Recipes</h4>
+                        <p className="text-sm text-gray-600 font-medium">Automatically save recipes as you work</p>
                       </div>
                     </div>
                     <Toggle
@@ -1691,25 +1691,25 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 </div>
 
                 {/* Recipe Conversion Defaults */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
-                  <div className="flex items-center mb-6">
-                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                      <Bot className="w-5 h-5 text-green-600" />
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-6 shadow-lg">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
+                      <Bot className="w-6 h-6 text-green-600" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-semibold text-gray-900">Recipe Conversion Defaults</h4>
-                      <p className="text-sm text-gray-600">Set your preferred recipe generation settings</p>
+                      <h4 className="text-lg font-black text-gray-900">Recipe Conversion Defaults</h4>
+                      <p className="text-sm text-gray-600 font-medium">Set your preferred recipe generation settings</p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Default Serving Size */}
-                    <div className="bg-white rounded-lg p-5 border border-green-100">
-                      <div className="flex items-center mb-4">
-                        <span className="text-2xl mr-3">🍽️</span>
+                    <div className="bg-white rounded-2xl p-5 border-2 border-green-100 shadow-md">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-2xl">🍽️</span>
                         <div>
-                          <label className="block text-sm font-semibold text-gray-800">Default Serving Size</label>
-                          <p className="text-xs text-gray-500">How many people to cook for by default</p>
+                          <label className="block text-sm font-black text-gray-800">Default Serving Size</label>
+                          <p className="text-xs text-gray-600 font-medium">How many people to cook for by default</p>
                         </div>
                       </div>
 
@@ -1719,10 +1719,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                           <button
                             key={size}
                             onClick={() => updateSetting('defaultServingSize', size)}
-                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                            className={`px-3 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
                               settings.defaultServingSize === size
-                                ? 'bg-green-500 text-white shadow-md transform scale-105'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105'
+                                ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 transform scale-105'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105 border-2 border-gray-200'
                             }`}
                           >
                             {size} {size === 1 ? 'person' : 'people'}
@@ -1732,7 +1732,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
                       {/* Custom Input */}
                       <div className="space-y-2">
-                        <label className="block text-xs font-medium text-gray-600">Custom size:</label>
+                        <label className="block text-xs font-bold text-gray-700">Custom size:</label>
                         <div className="relative">
                           <input
                             type="number"
@@ -1744,34 +1744,34 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                               const servingSize = isNaN(value) || value < 1 ? 1 : value;
                               updateSetting('defaultServingSize', servingSize);
                             }}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-lg font-medium text-center"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-lg font-bold text-center transition-all duration-200 hover:border-green-300 shadow-sm"
                             placeholder="Enter custom size"
                           />
                           <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                            <span className="text-gray-400 text-sm font-medium">
+                            <span className="text-gray-500 text-sm font-bold">
                               {settings.defaultServingSize === 1 ? 'person' : 'people'}
                             </span>
                           </div>
                         </div>
-                        <p className="text-xs text-gray-500 text-center">
+                        <p className="text-xs text-gray-600 text-center font-medium">
                           Range: 1-20 people
                         </p>
                       </div>
                     </div>
 
                     {/* Preferred Units */}
-                    <div className="bg-white rounded-lg p-5 border border-green-100">
-                      <div className="flex items-center mb-3">
-                        <span className="text-2xl mr-3">📏</span>
+                    <div className="bg-white rounded-2xl p-5 border-2 border-green-100 shadow-md">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-2xl">📏</span>
                         <div>
-                          <label className="block text-sm font-semibold text-gray-800">Measurement Units</label>
-                          <p className="text-xs text-gray-500">Your preferred measurement system</p>
+                          <label className="block text-sm font-black text-gray-800">Measurement Units</label>
+                          <p className="text-xs text-gray-600 font-medium">Your preferred measurement system</p>
                         </div>
                       </div>
                       <select
                         value={settings.preferredUnits}
                         onChange={(e) => updateSetting('preferredUnits', e.target.value as 'metric' | 'imperial')}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base font-medium"
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-base font-bold transition-all duration-200 hover:border-green-300 shadow-sm"
                       >
                         <option value="metric">🌍 Metric (grams, ml, °C)</option>
                         <option value="imperial">🦅 Imperial (cups, oz, °F)</option>
