@@ -1571,43 +1571,62 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                       </button>
                     )}
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
                     {filteredRecipes.map(recipe => (
                       <div
                         key={recipe.id}
                         draggable
                         onDragStart={(e) => handleDragStart(e, recipe)}
                         onDragEnd={handleDragEnd}
-                        className="bg-white rounded-lg border border-gray-200 hover:border-green-500 hover:shadow-md transition-all cursor-move shadow-sm overflow-hidden group"
+                        className="bg-white rounded-xl border-2 border-gray-200 hover:border-green-400 hover:shadow-xl transition-all duration-300 cursor-move shadow-md overflow-hidden group transform hover:scale-105 hover:-rotate-1"
                       >
                         {/* Recipe Image */}
-                        <div className="relative h-16 sm:h-20 bg-gradient-to-br from-green-400 to-blue-500">
+                        <div className="relative h-20 sm:h-24 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden">
                           {recipe.imageUrl ? (
-                            <img 
-                              src={recipe.imageUrl} 
+                            <img
+                              src={recipe.imageUrl}
                               alt={recipe.title}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                               onError={(e) => {
                                 e.currentTarget.style.display = 'none';
                               }}
                             />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <ChefHat className="w-4 h-4 sm:w-6 sm:h-6 text-white opacity-80" />
+                              <ChefHat className="w-6 h-6 sm:w-8 sm:h-8 text-white opacity-80 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                             </div>
                           )}
+                          {/* Drag indicator */}
+                          <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <GripVertical className="w-3 h-3 text-white" />
+                          </div>
                         </div>
-                        
+
                         {/* Recipe Details */}
-                        <div className="p-1.5 sm:p-2">
-                          <div className="font-medium text-gray-900 text-xs sm:text-sm truncate" title={recipe.title}>
+                        <div className="p-2 sm:p-3">
+                          <div className="font-black text-gray-900 text-xs sm:text-sm truncate mb-1" title={recipe.title}>
                             {recipe.title}
                           </div>
-                          <div className="text-xs text-gray-600 mt-1 truncate hidden sm:block">
-                            {recipe.dietaryFilters.slice(0, 2).join(', ')}
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            ~{Math.round(parseNutritionFromRecipe(recipe.convertedRecipe).calories)} kcal
+                          {recipe.dietaryFilters.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mb-1.5">
+                              {recipe.dietaryFilters.slice(0, 1).map(filter => (
+                                <span
+                                  key={filter}
+                                  className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200"
+                                >
+                                  {filter.length > 8 ? filter.substring(0, 8) + '...' : filter}
+                                </span>
+                              ))}
+                              {recipe.dietaryFilters.length > 1 && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-gradient-to-r from-gray-50 to-slate-50 text-gray-600 border border-gray-200">
+                                  +{recipe.dietaryFilters.length - 1}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          <div className="flex items-center gap-1 text-xs text-gray-600 font-semibold">
+                            <Flame className="w-3 h-3 text-orange-500" />
+                            <span>~{Math.round(parseNutritionFromRecipe(recipe.convertedRecipe).calories)} kcal</span>
                           </div>
                         </div>
                       </div>
