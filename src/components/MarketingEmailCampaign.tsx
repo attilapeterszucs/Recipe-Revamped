@@ -293,17 +293,19 @@ export const MarketingEmailCampaign: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="recipeName">Email Subject</Label>
-                  <Input
+                  <Label htmlFor="recipeName" className="text-sm font-bold text-gray-800">Email Subject</Label>
+                  <input
                     id="recipeName"
+                    type="text"
                     value={marketingEmailData.recipeName}
                     onChange={(e) => setMarketingEmailData(prev => ({ ...prev, recipeName: e.target.value }))}
                     placeholder="e.g., Welcome to Recipe Revamped!"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 font-medium"
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="frequency">Email Frequency</Label>
+                  <Label htmlFor="frequency" className="text-sm font-bold text-gray-800">Email Frequency</Label>
                   <CustomDropdown
                     value={marketingEmailData.frequency}
                     onChange={(value) => setMarketingEmailData(prev => ({ ...prev, frequency: value }))}
@@ -317,170 +319,205 @@ export const MarketingEmailCampaign: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="recipeContent">Email Content</Label>
+              <Label htmlFor="recipeContent" className="text-sm font-bold text-gray-800">Email Content</Label>
               <textarea
                 id="recipeContent"
                 value={marketingEmailData.recipeContent}
                 onChange={(e) => setMarketingEmailData(prev => ({ ...prev, recipeContent: e.target.value }))}
                 placeholder="Enter your marketing message. This will be the main content of your email campaign..."
-                className="min-h-[200px] w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="min-h-[200px] w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 font-medium resize-none"
                 required
               />
-              <p className="text-sm text-gray-500">
-                💡 Tip: Use the templates above for pre-written content designed to engage users and drive them to your website.
-              </p>
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-xl p-3 shadow-sm">
+                <p className="text-sm text-blue-800 font-medium">
+                  💡 <strong className="font-bold">Tip:</strong> Use the templates above for pre-written content designed to engage users and drive them to your website.
+                </p>
+              </div>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="overrideFrequency"
-                checked={marketingEmailData.overrideFrequency}
-                onChange={(e) => setMarketingEmailData(prev => ({ ...prev, overrideFrequency: e.target.checked }))}
-                className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-              />
-              <Label htmlFor="overrideFrequency" className="text-sm">
-                Override frequency limits (send regardless of user's last email date)
-              </Label>
+            <div className="bg-gradient-to-br from-yellow-50 to-amber-50/50 border-2 border-yellow-200 rounded-xl p-4 shadow-md">
+              <div className="flex items-start space-x-3">
+                <input
+                  type="checkbox"
+                  id="overrideFrequency"
+                  checked={marketingEmailData.overrideFrequency}
+                  onChange={(e) => setMarketingEmailData(prev => ({ ...prev, overrideFrequency: e.target.checked }))}
+                  className="mt-1 h-5 w-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-purple-500 cursor-pointer transition-all duration-200"
+                />
+                <div className="flex-1">
+                  <Label htmlFor="overrideFrequency" className="text-sm font-bold text-gray-800 cursor-pointer">
+                    Override frequency limits
+                  </Label>
+                  <p className="text-xs text-yellow-800 mt-1 font-medium">
+                    Send immediately regardless of user's last email date
+                  </p>
+                </div>
+              </div>
             </div>
 
             <Separator />
 
             {/* User Selection */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Target Recipients</h3>
-                <div className="flex items-center gap-2">
-                  {marketingEmailData.overrideFrequency ? (
-                    <>
-                      <AlertCircle className="w-4 h-4 text-green-600" />
-                      <span className="text-sm text-green-600 font-medium">
-                        Override frequency limits - Send immediately
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Clock className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        Respects user frequency preferences
-                      </span>
-                    </>
-                  )}
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50/50 border-2 border-purple-200 rounded-xl p-4 shadow-md">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-5 h-5 text-purple-600" />
+                    <h3 className="text-lg font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Target Recipients</h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {marketingEmailData.overrideFrequency ? (
+                      <>
+                        <AlertCircle className="w-4 h-4 text-green-600" />
+                        <span className="text-sm text-green-700 font-bold">
+                          Override ON - Send immediately
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Clock className="w-4 h-4 text-purple-600" />
+                        <span className="text-sm text-purple-700 font-medium">
+                          Respects frequency preferences
+                        </span>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    id="allUsers"
-                    name="userSelection"
-                    checked={sendMarketingToAllUsers}
-                    onChange={() => setSendMarketingToAllUsers(true)}
-                    className="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500"
-                  />
-                  <Label htmlFor="allUsers">Send to all eligible users</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="bg-white border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-purple-300 hover:shadow-md">
+                  <div className="flex items-start space-x-3">
+                    <input
+                      type="radio"
+                      id="allUsers"
+                      name="userSelection"
+                      checked={sendMarketingToAllUsers}
+                      onChange={() => setSendMarketingToAllUsers(true)}
+                      className="mt-1 h-5 w-5 text-purple-600 border-2 border-gray-300 focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                    />
+                    <div className="flex-1">
+                      <Label htmlFor="allUsers" className="text-sm font-bold text-gray-800 cursor-pointer">
+                        Send to all eligible users
+                      </Label>
+                      <p className="text-xs text-gray-600 mt-1 font-medium">
+                        Targets all users with marketing emails enabled
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    id="selectedUsers"
-                    name="userSelection"
-                    checked={!sendMarketingToAllUsers}
-                    onChange={() => setSendMarketingToAllUsers(false)}
-                    className="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500"
-                  />
-                  <Label htmlFor="selectedUsers">Send to selected users</Label>
+                <div className="bg-white border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-purple-300 hover:shadow-md">
+                  <div className="flex items-start space-x-3">
+                    <input
+                      type="radio"
+                      id="selectedUsers"
+                      name="userSelection"
+                      checked={!sendMarketingToAllUsers}
+                      onChange={() => setSendMarketingToAllUsers(false)}
+                      className="mt-1 h-5 w-5 text-purple-600 border-2 border-gray-300 focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                    />
+                    <div className="flex-1">
+                      <Label htmlFor="selectedUsers" className="text-sm font-bold text-gray-800 cursor-pointer">
+                        Send to selected users
+                      </Label>
+                      <p className="text-xs text-gray-600 mt-1 font-medium">
+                        Manually choose specific recipients
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {!sendMarketingToAllUsers && (
-                <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
+                <div className="space-y-4 p-5 border-2 border-indigo-200 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50/50 shadow-md">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-medium">Select Users</h4>
-                    <Button
+                    <h4 className="text-base font-black text-indigo-900">Select Users</h4>
+                    <button
                       type="button"
-                      variant="outline"
-                      size="sm"
                       onClick={() => setShowUserList(!showUserList)}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:to-blue-700 transition-all duration-200 font-bold shadow-md shadow-indigo-500/30 hover:shadow-lg hover:scale-105"
                     >
                       {showUserList ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       {showUserList ? 'Hide' : 'Show'} User List
-                    </Button>
+                    </button>
                   </div>
 
                   {showUserList && (
                     <>
-                      <div className="flex items-center gap-4">
-                        <div className="flex-1">
-                          <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                              placeholder="Search users by email or name..."
-                              value={userSearchTerm}
-                              onChange={(e) => setUserSearchTerm(e.target.value)}
-                              className="pl-10"
-                            />
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
+                      <div className="space-y-3">
+                        <div className="relative">
+                          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-indigo-500" />
                           <input
-                            type="checkbox"
-                            id="emailEnabled"
-                            checked={showOnlyEmailEnabled}
-                            onChange={(e) => setShowOnlyEmailEnabled(e.target.checked)}
-                            className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                            type="text"
+                            placeholder="Search users by email or name..."
+                            value={userSearchTerm}
+                            onChange={(e) => setUserSearchTerm(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3 border-2 border-indigo-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium"
                           />
-                          <Label htmlFor="emailEnabled" className="text-sm">Marketing emails enabled (Settings &gt; Notifications)</Label>
+                        </div>
+
+                        <div className="bg-white border-2 border-indigo-200 rounded-xl p-3 shadow-sm">
+                          <div className="flex items-start space-x-3">
+                            <input
+                              type="checkbox"
+                              id="emailEnabled"
+                              checked={showOnlyEmailEnabled}
+                              onChange={(e) => setShowOnlyEmailEnabled(e.target.checked)}
+                              className="mt-0.5 h-5 w-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                            />
+                            <Label htmlFor="emailEnabled" className="text-sm font-bold text-gray-800 cursor-pointer">
+                              Show only users with marketing emails enabled
+                            </Label>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline">
+                      <div className="flex items-center justify-between p-3 bg-white border-2 border-indigo-200 rounded-xl">
+                        <span className="px-3 py-1.5 bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-lg text-sm font-bold shadow-md">
                           {selectedMarketingUsers.length} of {filteredUsers.length} selected
-                        </Badge>
-                        <Button
+                        </span>
+                        <button
                           type="button"
-                          variant="outline"
-                          size="sm"
                           onClick={handleMarketingSelectAll}
+                          className="px-4 py-2 bg-white border-2 border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-50 transition-all duration-200 font-bold text-sm"
                         >
                           {selectedMarketingUsers.length === filteredUsers.length ? 'Deselect All' : 'Select All'}
-                        </Button>
+                        </button>
                       </div>
 
                       {loadingUsers ? (
-                        <div className="flex items-center justify-center py-8">
-                          <Loader2 className="w-6 h-6 animate-spin" />
-                          <span className="ml-2">Loading users...</span>
+                        <div className="flex items-center justify-center py-8 bg-white border-2 border-indigo-200 rounded-xl">
+                          <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+                          <span className="ml-3 text-indigo-700 font-bold">Loading users...</span>
                         </div>
                       ) : (
-                        <div className="max-h-80 overflow-y-auto border rounded">
+                        <div className="max-h-80 overflow-y-auto border-2 border-indigo-200 rounded-xl bg-white shadow-inner">
                           {filteredUsers.length === 0 ? (
-                            <div className="p-4 text-center text-muted-foreground">
-                              No users found matching your criteria.
+                            <div className="p-8 text-center">
+                              <Users className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+                              <p className="text-gray-600 font-medium">No users found matching your criteria.</p>
                             </div>
                           ) : (
-                            <div className="divide-y">
+                            <div className="divide-y-2 divide-gray-100">
                               {filteredUsers.map((user) => (
-                                <div key={user.uid} className="flex items-center space-x-3 p-3">
+                                <div key={user.uid} className="flex items-center space-x-3 p-4 hover:bg-indigo-50 transition-colors duration-150">
                                   <input
                                     type="checkbox"
                                     checked={selectedMarketingUsers.includes(user.uid)}
                                     onChange={() => handleMarketingUserToggle(user.uid)}
-                                    className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                                    className="h-5 w-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-purple-500 cursor-pointer"
                                   />
                                   <div className="flex-1 min-w-0">
-                                    <div className="flex items-center space-x-2">
-                                      <span className="text-sm font-medium truncate">{user.email}</span>
+                                    <div className="flex items-center space-x-2 flex-wrap">
+                                      <span className="text-sm font-bold text-gray-900 truncate">{user.email}</span>
                                       {user.marketingEmails !== true && (
-                                        <Badge variant="secondary" className="text-xs">
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-bold bg-red-100 text-red-700 border border-red-200">
                                           Marketing disabled
-                                        </Badge>
+                                        </span>
                                       )}
                                     </div>
                                     {user.displayName && (
-                                      <p className="text-sm text-muted-foreground truncate">{user.displayName}</p>
+                                      <p className="text-sm text-gray-600 truncate font-medium mt-0.5">{user.displayName}</p>
                                     )}
                                   </div>
                                 </div>
