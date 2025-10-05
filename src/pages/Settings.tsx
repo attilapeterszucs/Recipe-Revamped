@@ -115,6 +115,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [backupToRestore, setBackupToRestore] = useState<BackupData | null>(null);
   const [uploadingProfilePicture, setUploadingProfilePicture] = useState(false);
+  const [currentProfilePicture, setCurrentProfilePicture] = useState<string | null>(null);
   const [recipeCount, setRecipeCount] = useState<number>(0);
   const [changingPassword, setChangingPassword] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
@@ -178,6 +179,28 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   useEffect(() => {
     refreshSubscriptionStatus();
   }, [refreshTrigger]);
+
+  // Update currentProfilePicture when settings or user changes
+  useEffect(() => {
+    const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
+
+    // For Google users, show Google photo by default unless they have a custom upload
+    if (isGoogleUser && user.photoURL && !settings?.profilePictureUrl) {
+      setCurrentProfilePicture(user.photoURL);
+    }
+    // Show custom uploaded picture if available (overrides Google photo)
+    else if (settings?.profilePictureUrl) {
+      setCurrentProfilePicture(settings.profilePictureUrl);
+    }
+    // Fallback to Firebase Auth photo for non-Google users
+    else if (user.photoURL) {
+      setCurrentProfilePicture(user.photoURL);
+    }
+    // No profile picture
+    else {
+      setCurrentProfilePicture(null);
+    }
+  }, [settings, user.photoURL, user.providerData]);
 
   // Auto-set admin tab when entering admin mode and load backups when data section opens
   useEffect(() => {
@@ -642,26 +665,27 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const handleProfilePictureUpload = async (file: File) => {
     try {
       setUploadingProfilePicture(true);
-      
+
       // Validate file type
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
         showError('Invalid File Type', 'Please select a JPEG, PNG, or WebP image file');
         return;
       }
-      
+
       // Validate file size (5MB limit)
       const maxSize = 5 * 1024 * 1024; // 5MB
       if (file.size > maxSize) {
         showError('File Too Large', 'Please select an image smaller than 5MB');
         return;
       }
-      
+
       const photoURL = await uploadProfilePicture(file, user.uid);
-      
-      // Update local settings
+
+      // Update local settings and profile picture state
       setSettings(prev => prev ? { ...prev, profilePictureUrl: photoURL } : null);
-      
+      setCurrentProfilePicture(photoURL);
+
       showSuccess('Profile Picture Updated', 'Your profile picture has been successfully changed');
     } catch (error) {
       logger.error('Failed to upload profile picture:', { error });
@@ -675,10 +699,18 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     try {
       setUploadingProfilePicture(true);
       await deleteProfilePicture(user.uid);
-      
-      // Update local settings
+
+      // Update local settings and profile picture state to show default
       setSettings(prev => prev ? { ...prev, profilePictureUrl: null } : null);
-      
+
+      // Set to null to show default profile picture
+      const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
+      if (isGoogleUser && user.photoURL) {
+        setCurrentProfilePicture(user.photoURL);
+      } else {
+        setCurrentProfilePicture(null);
+      }
+
       showSuccess('Profile Picture Removed', 'Your profile picture has been removed');
     } catch (error) {
       logger.error('Failed to delete profile picture:', { error });
@@ -686,28 +718,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     } finally {
       setUploadingProfilePicture(false);
     }
-  };
-
-  // Get current profile picture URL (prioritize Google for Google users, then custom uploads)
-  const getCurrentProfilePicture = () => {
-    const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
-    
-    // For Google users, show Google photo by default unless they have a custom upload
-    if (isGoogleUser && user.photoURL && !settings?.profilePictureUrl) {
-      return user.photoURL;
-    }
-    
-    // Show custom uploaded picture if available (overrides Google photo)
-    if (settings?.profilePictureUrl) {
-      return settings.profilePictureUrl;
-    }
-    
-    // Fallback to Firebase Auth photo for non-Google users
-    if (user.photoURL) {
-      return user.photoURL;
-    }
-    
-    return null;
   };
 
   if (loading) {
@@ -936,7 +946,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const renderSectionContent = () => {
     switch (activeSection) {
       case 'profile':
-        const currentProfilePicture = getCurrentProfilePicture();
         const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
         const canUploadProfilePicture = featureAccess?.canUploadProfilePicture || false;
         
