@@ -2582,7 +2582,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             </div>
 
             {/* Admin Content */}
-            <div className="bg-gradient-to-br from-white to-gray-50/50 border-2 border-gray-200 rounded-2xl p-6 shadow-lg">
+            <div key={activeSection} className="bg-gradient-to-br from-white to-gray-50/50 border-2 border-gray-200 rounded-2xl p-6 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               {activeSection === 'admin-notifications' ? (
                 <AdminNotificationCreator
                   key="admin-notifications"
