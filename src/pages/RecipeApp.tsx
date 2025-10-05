@@ -614,6 +614,7 @@ export function RecipeApp() {
                     />
                     <UserAccountDropdown
                       user={user}
+                      profilePictureUrl={userSettings?.profilePictureUrl}
                       onShowSaved={() => {
                         setShowSaved(!showSaved);
                         setShowSettings(false);

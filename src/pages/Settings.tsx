@@ -54,6 +54,7 @@ import { useSubscriptionRefresh } from '../contexts/SubscriptionContext';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
 import { CancelSubscriptionButton } from '../components/SubscriptionCancellation/CancelSubscriptionButton';
 import { logger } from '../lib/logger';
+import { getUserInitials } from '../utils/profileUtils';
 
 interface SettingsProps {
   user: User;
@@ -975,8 +976,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-green-200 shadow-lg ring-2 ring-green-100"
                       />
                     ) : (
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center border-4 border-green-200 shadow-lg ring-2 ring-green-100">
-                        <UserIcon className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center border-4 border-green-200 shadow-lg ring-2 ring-green-100">
+                        <span className="text-2xl sm:text-3xl font-black text-white">
+                          {getUserInitials(user)}
+                        </span>
                       </div>
                     )}
 
@@ -1044,8 +1047,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                           className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-orange-200"
                         />
                       ) : (
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-orange-100 flex items-center justify-center border-4 border-orange-200">
-                          <UserIcon className="w-8 h-8 sm:w-10 sm:h-10 text-orange-400" />
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center border-4 border-orange-200">
+                          <span className="text-xl sm:text-2xl font-black text-white">
+                            {getUserInitials(user)}
+                          </span>
                         </div>
                       )}
                     </div>

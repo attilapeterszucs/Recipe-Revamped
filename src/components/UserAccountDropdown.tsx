@@ -6,9 +6,11 @@ import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan } from '../types/subscription';
 import { useToast } from './ToastContainer';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
+import { getUserInitials } from '../utils/profileUtils';
 
 interface UserAccountDropdownProps {
   user: User;
+  profilePictureUrl?: string | null;
   onShowSaved: () => void;
   onShowSettings: () => void;
   onSignOut: () => void;
@@ -35,6 +37,7 @@ const STRIPE_PAYMENT_LINKS = {
 
 export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
   user,
+  profilePictureUrl,
   onShowSaved,
   onShowSettings,
   onSignOut,
@@ -47,12 +50,15 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
-  
+
   // Use the cleaner subscription status hook
   const { subscription: userSubscription, isAdmin, loading, hasPermissions, refresh } = useSubscriptionStatus(
-    user?.uid, 
+    user?.uid,
     user?.email || undefined
   );
+
+  // Get the current profile picture URL (prioritize custom upload, then Google/Firebase photo)
+  const currentProfilePicture = profilePictureUrl || user.photoURL;
 
 
   // Close dropdown when clicking outside
@@ -103,7 +109,6 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
   }, []);
 
 
-  // Get user initials from email or display name
   // Helper function to get price with yearly discount
   const getPrice = (planId: string): string => {
     const plan = SUBSCRIPTION_PLANS[planId as SubscriptionPlan];
@@ -150,23 +155,6 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
     return isYearly ? links.yearly : links.monthly;
   };
 
-  const getUserInitials = (user: User): string => {
-    if (user.displayName) {
-      return user.displayName
-        .split(' ')
-        .map(name => name[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2);
-    }
-    
-    if (user.email) {
-      return user.email[0].toUpperCase();
-    }
-    
-    return 'U';
-  };
-
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Account Button */}
@@ -176,9 +164,9 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
       >
         {/* Profile Picture or Initials */}
         <div className="w-9 h-9 rounded-full overflow-hidden bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center ring-2 ring-white shadow-md group-hover:shadow-lg group-hover:ring-green-200 transition-all duration-200">
-          {user.photoURL && !profileImageError ? (
+          {currentProfilePicture && !profileImageError ? (
             <img
-              src={user.photoURL}
+              src={currentProfilePicture}
               alt="Profile"
               className="w-full h-full object-cover"
               onError={() => setProfileImageError(true)}
@@ -231,9 +219,9 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
 
             <div className="relative flex items-center gap-3">
               <div className="w-14 h-14 rounded-full overflow-hidden bg-white/20 ring-2 ring-white/30 flex items-center justify-center backdrop-blur-sm shadow-xl">
-                {user.photoURL && !profileImageError ? (
+                {currentProfilePicture && !profileImageError ? (
                   <img
-                    src={user.photoURL}
+                    src={currentProfilePicture}
                     alt="Profile"
                     className="w-full h-full object-cover"
                     onError={() => setProfileImageError(true)}
