@@ -939,7 +939,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         
         return (
           <div className="space-y-4 sm:space-y-6">
-            <div key="account-header" className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Account</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Manage your account information, profile picture, and security settings. Update your personal details and control your Recipe Revamped experience.
@@ -1262,7 +1262,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-6">
-            <div key="personal-profile-header" className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 mb-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 mb-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Personal Profile & Health Goals</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Set up your personal profile and health goals to get AI-powered recipe recommendations tailored specifically to your needs and objectives.
@@ -1372,7 +1372,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div key="dietary-filters-header" className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Dietary Filters</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Customize your recipe experience with dietary filters that match your lifestyle. Set preferences to automatically show recipes that fit your nutritional needs and food choices.
@@ -1596,7 +1596,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div key="notifications-header" className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Notifications</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Control how and when you receive updates from Recipe Revamped. Customize email preferences, push notifications, and marketing communications to suit your needs.
@@ -1744,7 +1744,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'recipe-settings':
         return (
           <div className="space-y-8">
-            <div key="recipe-settings-header" className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Recipe Settings</h3>
               <p className="text-gray-700 leading-relaxed">
                 Configure your recipe conversion preferences and cooking defaults. Set up auto-save, serving sizes, and measurement units to streamline your cooking experience.
@@ -2140,7 +2140,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div key="health-conditions-header" className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Health Conditions & Dietary Needs</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Tell us about your health conditions so we can suggest recipes that support your specific dietary requirements and wellness goals.
@@ -2311,7 +2311,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'data':
         return (
           <div className="space-y-8">
-            <div key="data-backup-header" className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Data & Backup</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Protect your recipes and cooking data with secure cloud backups. Restore your collection anytime and keep your culinary creations safe.
