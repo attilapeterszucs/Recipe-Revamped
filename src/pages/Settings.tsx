@@ -950,7 +950,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             </div>
 
             {/* Profile Picture Section */}
-            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out delay-100">
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
               <label className="block text-sm sm:text-base font-black text-gray-900 mb-4">
                 Profile Picture
               </label>
@@ -1064,7 +1064,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             </div>
             
             {/* Basic Information Section */}
-            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out delay-200">
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
               <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Basic Information</h4>
 
               <div className="space-y-4">
@@ -1113,7 +1113,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             
             {/* Password Change Section - Only for email/password users */}
             {!isGoogleUser && (
-              <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out delay-300">
+              <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
                 <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Change Password</h4>
 
                 <div className="space-y-4">
@@ -1177,7 +1177,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             )}
             
             {/* Account Management Section */}
-            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out delay-[400ms]">
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
               <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Account Management</h4>
 
               <div className="space-y-4">
