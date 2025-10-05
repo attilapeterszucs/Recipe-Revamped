@@ -534,11 +534,11 @@ export const Blog: React.FC = () => {
                   <Link
                     key={relatedPost.id}
                     to={`/blog/${relatedPost.id}`}
-                    className="group block"
+                    className="group block h-full"
                   >
-                    <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-400 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:scale-105">
-                      {relatedPost.featuredImage && (
-                        <div className="relative h-48 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden">
+                    <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-400 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:scale-105 h-full flex flex-col">
+                      <div className="relative h-48 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden flex-shrink-0">
+                        {relatedPost.featuredImage ? (
                           <img
                             src={relatedPost.featuredImage}
                             alt={relatedPost.title}
@@ -547,24 +547,28 @@ export const Blog: React.FC = () => {
                               e.currentTarget.style.display = 'none';
                             }}
                           />
-                        </div>
-                      )}
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <ChefHat className="w-12 h-12 text-white opacity-80" />
+                          </div>
+                        )}
+                      </div>
 
-                      <div className="p-6">
+                      <div className="p-6 flex flex-col flex-grow">
                         <div className="flex items-center gap-2 text-xs text-green-600 font-bold uppercase tracking-wide mb-3">
                           <Calendar className="w-3 h-3" />
                           {formatDate(relatedPost.publishedAt || relatedPost.createdAt)}
                         </div>
 
-                        <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-3 leading-tight group-hover:text-green-600 transition-colors">
+                        <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-3 leading-tight group-hover:text-green-600 transition-colors line-clamp-2">
                           {relatedPost.title}
                         </h3>
 
-                        <p className="text-gray-600 leading-relaxed mb-4 line-clamp-2">
+                        <p className="text-gray-600 leading-relaxed mb-4 line-clamp-2 flex-grow">
                           {relatedPost.excerpt}
                         </p>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between mt-auto">
                           <div className="flex items-center text-gray-500 text-sm font-semibold">
                             <Clock className="w-4 h-4 mr-2 text-green-600" />
                             <span>{relatedPost.readTime || '5 min read'}</span>
@@ -709,13 +713,13 @@ export const Blog: React.FC = () => {
             {filteredPosts.map((post, index) => (
               <article
                 key={post.id}
-                className="group animate-in fade-in slide-in-from-bottom-4 duration-500"
+                className="group animate-in fade-in slide-in-from-bottom-4 duration-500 h-full"
                 style={{ animationDelay: `${150 + index * 50}ms` }}
               >
-                <Link to={`/blog/${post.id}`} className="block">
-                  <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-400 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:scale-105">
-                    {post.featuredImage && (
-                      <div className="relative h-48 lg:h-56 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden">
+                <Link to={`/blog/${post.id}`} className="block h-full">
+                  <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-400 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:scale-105 h-full flex flex-col">
+                    <div className="relative h-48 lg:h-56 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden flex-shrink-0">
+                      {post.featuredImage ? (
                         <img
                           src={post.featuredImage}
                           alt={post.title}
@@ -724,25 +728,29 @@ export const Blog: React.FC = () => {
                             e.currentTarget.style.display = 'none';
                           }}
                         />
-                      </div>
-                    )}
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <ChefHat className="w-12 h-12 text-white opacity-80" />
+                        </div>
+                      )}
+                    </div>
 
-                    <div className="p-6">
+                    <div className="p-6 flex flex-col flex-grow">
                       <div className="flex items-center gap-2 text-xs text-green-600 font-bold uppercase tracking-wide mb-3">
                         <Calendar className="w-3 h-3" />
                         {formatDate(post.publishedAt)}
                       </div>
 
-                      <h2 className="text-xl lg:text-2xl font-black text-gray-900 mb-3 leading-tight group-hover:text-green-600 transition-colors">
+                      <h2 className="text-xl lg:text-2xl font-black text-gray-900 mb-3 leading-tight group-hover:text-green-600 transition-colors line-clamp-2">
                         {post.title}
                       </h2>
 
-                      <p className="text-gray-600 leading-relaxed mb-4 line-clamp-3">
+                      <p className="text-gray-600 leading-relaxed mb-4 line-clamp-3 flex-grow">
                         {post.excerpt}
                       </p>
 
                       {post.tags && post.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-2 mb-4 min-h-[32px]">
                           {post.tags.slice(0, 3).map(tag => (
                             <span
                               key={tag}
@@ -755,7 +763,7 @@ export const Blog: React.FC = () => {
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between mt-auto">
                         <div className="flex items-center text-gray-500 text-sm font-semibold">
                           <Clock className="w-4 h-4 mr-2 text-green-600" />
                           <span>{post.readTime || '5 min read'}</span>
