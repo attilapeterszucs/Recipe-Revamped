@@ -309,28 +309,8 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     setEditingRecipe(null);
   };
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-8 border-2 border-green-100">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-3 shadow-lg">
-                <ChefHat className="h-8 w-8 text-white" />
-              </div>
-              <h2 className="text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
-            </div>
-          </div>
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-200 border-t-green-600"></div>
-              <p className="mt-4 text-gray-600 font-bold">Loading your delicious recipes...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Loading skeleton cards will be shown in the main UI below
+  const isLoadingState = loading;
 
   if (error) {
     return (
@@ -361,31 +341,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     );
   }
 
-  if (recipes.length === 0) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-2xl shadow-2xl p-8 border-2 border-green-100">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-3 shadow-lg">
-                <ChefHat className="h-8 w-8 text-white" />
-              </div>
-              <h2 className="text-3xl font-black text-gray-900 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">My Recipe Book</h2>
-            </div>
-          </div>
-          <div className="text-center py-16">
-            <div className="bg-gray-100 rounded-full p-8 w-32 h-32 mx-auto mb-6 flex items-center justify-center">
-              <ChefHat className="h-16 w-16 text-gray-400" />
-            </div>
-            <h3 className="text-xl font-black text-gray-900 mb-2">No recipes saved yet</h3>
-            <p className="text-gray-600 max-w-md mx-auto font-medium">
-              Start converting or creating recipes to build your personal collection of delicious dishes!
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Remove the empty state - always show the full UI
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
@@ -610,7 +566,49 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
               : 'flex flex-col gap-4'
           } ${isTransitioning ? 'animate-page-out' : 'animate-page-in'}`}
         >
-          {currentRecipes.map((recipe, index) => {
+          {isLoadingState ? (
+            // Loading skeleton cards
+            Array.from({ length: 8 }).map((_, index) => {
+              const staggerClass = `stagger-${(index % 8) + 1}`;
+              return (
+                <div
+                  key={`skeleton-${index}`}
+                  className={`bg-white rounded-xl shadow-md border-2 border-gray-200 overflow-hidden animate-pulse ${
+                    isPageLoaded ? `animate-recipe-card-enter ${staggerClass}` : 'opacity-0'
+                  }`}
+                >
+                  {/* Skeleton Image */}
+                  <div className="relative h-40 sm:h-48 bg-gradient-to-br from-gray-200 to-gray-300"></div>
+
+                  {/* Skeleton Content */}
+                  <div className="p-3 sm:p-4">
+                    <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                      <div className="h-4 bg-gray-200 rounded w-24"></div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2.5 sm:mb-3">
+                      <div className="h-4 bg-gray-200 rounded"></div>
+                      <div className="h-4 bg-gray-200 rounded"></div>
+                    </div>
+
+                    <div className="mb-2 sm:mb-3">
+                      <div className="flex flex-wrap gap-1.5">
+                        <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+                        <div className="h-6 bg-gray-200 rounded-full w-16"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Skeleton Actions */}
+                  <div className="bg-gradient-to-r from-gray-50 to-slate-50 px-3 sm:px-4 py-3 sm:py-3.5 flex justify-between items-center border-t border-gray-200 gap-2">
+                    <div className="h-10 bg-gray-200 rounded-lg flex-1"></div>
+                    <div className="h-10 w-10 bg-gray-200 rounded-lg"></div>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            currentRecipes.map((recipe, index) => {
             const recipeInfo = extractRecipeInfo(recipe.convertedRecipe);
             const staggerClass = `stagger-${(index % 8) + 1}`;
 
@@ -841,11 +839,12 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                 </div>
               </div>
             );
-          })}
+          })
+          )}
         </div>
 
         {/* Pagination Controls with enhanced design */}
-        {totalPages > 1 && filteredRecipes.length > 0 && (
+        {!isLoadingState && totalPages > 1 && filteredRecipes.length > 0 && (
           <div className={`mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 border-t-2 border-green-100 pt-4 sm:pt-6 ${isPageLoaded ? 'animate-fade-in' : 'opacity-0'}`}>
             <div className="flex items-center text-xs sm:text-sm text-gray-700 font-semibold bg-gradient-to-r from-green-50 to-emerald-50 px-3 sm:px-4 py-2 rounded-lg border border-green-200 w-full sm:w-auto justify-center">
               <span>
@@ -920,7 +919,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         )}
 
         {/* No Results with animation */}
-        {filteredRecipes.length === 0 && recipes.length > 0 && (
+        {!isLoadingState && filteredRecipes.length === 0 && recipes.length > 0 && (
           <div className="text-center py-12 animate-no-results">
             <div className="inline-block p-4 bg-gray-100 rounded-full mb-4">
               <Search className="h-12 w-12 text-gray-400" />
@@ -928,6 +927,19 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No recipes found</h3>
             <p className="text-gray-600 max-w-md mx-auto">
               Try adjusting your search terms or filters to find what you're looking for.
+            </p>
+          </div>
+        )}
+
+        {/* Empty state - shown only when not loading and no recipes exist */}
+        {!isLoadingState && recipes.length === 0 && (
+          <div className="text-center py-16 animate-fade-in">
+            <div className="bg-gray-100 rounded-full p-8 w-32 h-32 mx-auto mb-6 flex items-center justify-center">
+              <ChefHat className="h-16 w-16 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-black text-gray-900 mb-2">No recipes saved yet</h3>
+            <p className="text-gray-600 max-w-md mx-auto font-medium">
+              Start converting or creating recipes to build your personal collection of delicious dishes!
             </p>
           </div>
         )}
