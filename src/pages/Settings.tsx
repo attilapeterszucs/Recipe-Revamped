@@ -942,7 +942,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         
         return (
           <div className="space-y-4 sm:space-y-6">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Account</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Manage your account information, profile picture, and security settings. Update your personal details and control your Recipe Revamped experience.
@@ -950,7 +950,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             </div>
 
             {/* Profile Picture Section */}
-            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out delay-100">
               <label className="block text-sm sm:text-base font-black text-gray-900 mb-4">
                 Profile Picture
               </label>
@@ -1064,7 +1064,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             </div>
             
             {/* Basic Information Section */}
-            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out delay-200">
               <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Basic Information</h4>
 
               <div className="space-y-4">
@@ -1113,7 +1113,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             
             {/* Password Change Section - Only for email/password users */}
             {!isGoogleUser && (
-              <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
+              <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out delay-300">
                 <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Change Password</h4>
 
                 <div className="space-y-4">
@@ -1177,7 +1177,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             )}
             
             {/* Account Management Section */}
-            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out delay-[400ms]">
               <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Account Management</h4>
 
               <div className="space-y-4">
@@ -1261,7 +1261,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-6">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 mb-6">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 mb-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Personal Profile & Health Goals</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Set up your personal profile and health goals to get AI-powered recipe recommendations tailored specifically to your needs and objectives.
@@ -1371,7 +1371,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Dietary Filters</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Customize your recipe experience with dietary filters that match your lifestyle. Set preferences to automatically show recipes that fit your nutritional needs and food choices.
@@ -1595,7 +1595,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Notifications</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Control how and when you receive updates from Recipe Revamped. Customize email preferences, push notifications, and marketing communications to suit your needs.
@@ -1743,7 +1743,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'recipe-settings':
         return (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Recipe Settings</h3>
               <p className="text-gray-700 leading-relaxed">
                 Configure your recipe conversion preferences and cooking defaults. Set up auto-save, serving sizes, and measurement units to streamline your cooking experience.
@@ -2139,7 +2139,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Health Conditions & Dietary Needs</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Tell us about your health conditions so we can suggest recipes that support your specific dietary requirements and wellness goals.
@@ -2310,7 +2310,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'data':
         return (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Data & Backup</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Protect your recipes and cooking data with secure cloud backups. Restore your collection anytime and keep your culinary creations safe.
@@ -2691,17 +2691,23 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           {/* Desktop Sidebar */}
           <div className="hidden lg:block w-64 flex-shrink-0">
             <nav className="space-y-2">
-              {sections.map((section) => {
+              {sections.map((section, index) => {
                 const Icon = section.icon;
+                const animationDelay = `delay-[${index * 50}ms]`;
                 return (
                   <button
                     key={section.id}
                     onClick={() => setActiveSection(section.id)}
-                    className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
+                    className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 animate-in fade-in slide-in-from-left-4 ${animationDelay} ${
                       activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'))
                         ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 transform scale-105'
                         : 'text-gray-700 hover:bg-white border-2 border-gray-200 bg-white/60 backdrop-blur-sm hover:shadow-lg hover:border-green-200'
                     }`}
+                    style={{
+                      animationDuration: '600ms',
+                      animationDelay: `${index * 50}ms`,
+                      animationFillMode: 'backwards'
+                    }}
                   >
                     <Icon className="w-5 h-5 mr-3" />
                     {section.label}
@@ -2714,7 +2720,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="bg-white rounded-2xl shadow-2xl border-2 border-green-100 p-4 sm:p-6 lg:p-8">
+            <div className="bg-white rounded-2xl shadow-2xl border-2 border-green-100 p-4 sm:p-6 lg:p-8 animate-in fade-in slide-in-from-right-4 duration-700 ease-out">
               <div className="space-y-6 lg:space-y-8">
                 {renderSectionContent()}
               </div>
