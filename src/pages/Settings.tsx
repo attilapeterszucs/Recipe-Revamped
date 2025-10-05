@@ -2720,7 +2720,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
           {/* Main Content */}
           <div className="flex-1">
-            <div key={activeSection} className="bg-white rounded-2xl shadow-2xl border-2 border-green-100 p-4 sm:p-6 lg:p-8 animate-in fade-in slide-in-from-right-4 duration-700 ease-out">
+            <div key={activeSection.startsWith('admin') ? 'admin' : activeSection} className="bg-white rounded-2xl shadow-2xl border-2 border-green-100 p-4 sm:p-6 lg:p-8 animate-in fade-in slide-in-from-right-4 duration-700 ease-out">
               <div className="space-y-6 lg:space-y-8">
                 {renderSectionContent()}
               </div>
