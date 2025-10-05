@@ -712,21 +712,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30 flex items-center justify-center">
-        <div className="text-center animate-in fade-in duration-500">
-          <div className="relative w-16 h-16 mx-auto mb-6">
-            {/* Outer ring */}
-            <div className="absolute inset-0 rounded-full border-4 border-green-200 animate-pulse"></div>
-            {/* Spinning ring */}
-            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-green-600 border-r-green-600 animate-spin"></div>
-            {/* Inner dot */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
-            </div>
-          </div>
-          <p className="text-lg font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent animate-pulse">
-            Loading settings...
-          </p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <p className="mt-4 text-gray-600">Loading settings...</p>
         </div>
       </div>
     );
