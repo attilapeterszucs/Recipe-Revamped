@@ -1900,38 +1900,59 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                         {recipes && recipes.length > 0 ? (
                           <div className="space-y-2">
                             {recipes.map((recipe, index) => (
-                              <div key={`${recipe.id}-${index}`} className="bg-white border-2 border-green-200 rounded-lg p-2 hover:border-green-400 hover:shadow-md transition-all duration-200 group">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center space-x-2 flex-1 min-w-0">
-                                    <div className="relative w-10 h-10 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 rounded-lg flex-shrink-0 overflow-hidden shadow-sm">
-                                      {recipe.imageUrl ? (
-                                        <img
-                                          src={recipe.imageUrl}
-                                          alt={recipe.title}
-                                          className="w-full h-full object-cover"
-                                          onError={(e) => {
-                                            e.currentTarget.style.display = 'none';
-                                          }}
-                                        />
-                                      ) : (
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                          <ChefHat className="w-4 h-4 text-white opacity-80" />
-                                        </div>
-                                      )}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <p className="text-sm font-bold text-gray-900 truncate">{recipe.title}</p>
-                                      <div className="flex items-center gap-1 text-xs text-gray-600 font-semibold mt-0.5">
-                                        <Flame className="w-3 h-3 text-orange-500" />
-                                        <span>~{Math.round(parseNutritionFromRecipe(recipe.convertedRecipe).calories)} kcal</span>
+                              <div key={`${recipe.id}-${index}`} className="relative group">
+                                <div className="bg-white rounded-xl border-2 border-gray-200 hover:border-green-400 hover:shadow-xl transition-all duration-300 shadow-md overflow-hidden">
+                                  {/* Recipe Image */}
+                                  <div className="relative h-20 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden">
+                                    {recipe.imageUrl ? (
+                                      <img
+                                        src={recipe.imageUrl}
+                                        alt={recipe.title}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        onError={(e) => {
+                                          e.currentTarget.style.display = 'none';
+                                        }}
+                                      />
+                                    ) : (
+                                      <div className="absolute inset-0 flex items-center justify-center">
+                                        <ChefHat className="w-6 h-6 text-white opacity-80 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                                       </div>
+                                    )}
+                                  </div>
+
+                                  {/* Recipe Details */}
+                                  <div className="p-2">
+                                    <div className="font-black text-gray-900 text-sm truncate mb-1" title={recipe.title}>
+                                      {recipe.title}
+                                    </div>
+                                    {recipe.dietaryFilters.length > 0 && (
+                                      <div className="flex flex-wrap gap-1 mb-1.5">
+                                        {recipe.dietaryFilters.slice(0, 1).map(filter => (
+                                          <span
+                                            key={filter}
+                                            className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200"
+                                          >
+                                            {filter.length > 8 ? filter.substring(0, 8) + '...' : filter}
+                                          </span>
+                                        ))}
+                                        {recipe.dietaryFilters.length > 1 && (
+                                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-gray-50 to-slate-50 text-gray-600 border border-gray-200">
+                                            +{recipe.dietaryFilters.length - 1}
+                                          </span>
+                                        )}
+                                      </div>
+                                    )}
+                                    <div className="flex items-center gap-1 text-xs text-gray-600 font-semibold">
+                                      <Flame className="w-3 h-3 text-orange-500" />
+                                      <span>~{Math.round(parseNutritionFromRecipe(recipe.convertedRecipe).calories)} kcal</span>
                                     </div>
                                   </div>
+
                                   <button
                                     onClick={() => removeRecipeFromMeal(dateStr, mealType, index)}
-                                    className="text-red-500 hover:text-red-700 p-1.5 hover:bg-red-50 rounded-lg transition-all duration-200"
+                                    className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-all duration-200 p-1.5 rounded-full hover:scale-110"
                                   >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-3 h-3" />
                                   </button>
                                 </div>
                               </div>
@@ -2054,52 +2075,58 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                       {dayMeals.snacks && dayMeals.snacks.length > 0 && (
                         dayMeals.snacks.map((snack, snackIndex) => (
                           <div key={`${snack.id}-${snackIndex}`} className="relative group">
-                            <div className="bg-white border-2 border-orange-200 rounded-lg p-2 hover:border-orange-400 hover:shadow-lg transition-all duration-300 transform hover:scale-102">
+                            <div className="bg-white rounded-xl border-2 border-gray-200 hover:border-orange-400 hover:shadow-xl transition-all duration-300 shadow-md overflow-hidden transform hover:scale-105">
                               {/* Snack Image */}
-                              <div className="flex items-center space-x-2 mb-2">
-                                <div className="relative w-10 h-10 bg-gradient-to-br from-orange-400 via-pink-400 to-pink-500 rounded-lg flex-shrink-0 overflow-hidden shadow-md">
-                                  {snack.imageUrl ? (
-                                    <img
-                                      src={snack.imageUrl}
-                                      alt={snack.title}
-                                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                                      onError={(e) => {
-                                        e.currentTarget.style.display = 'none';
-                                      }}
-                                    />
-                                  ) : (
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                      <ChefHat className="w-4 h-4 text-white opacity-80" />
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="font-bold text-gray-900 text-sm truncate mb-0.5" title={snack.title}>
-                                    {snack.title}
+                              <div className="relative h-16 sm:h-20 bg-gradient-to-br from-orange-400 via-pink-400 to-pink-500 overflow-hidden">
+                                {snack.imageUrl ? (
+                                  <img
+                                    src={snack.imageUrl}
+                                    alt={snack.title}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none';
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="absolute inset-0 flex items-center justify-center">
+                                    <ChefHat className="w-4 h-4 sm:w-6 sm:h-6 text-white opacity-80 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                                   </div>
-                                  {snack.dietaryFilters.length > 0 && (
-                                    <div className="flex flex-wrap gap-1">
-                                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-orange-50 to-pink-50 text-orange-700 border border-orange-200">
-                                        {snack.dietaryFilters[0].length > 8 ? snack.dietaryFilters[0].substring(0, 8) + '...' : snack.dietaryFilters[0]}
+                                )}
+                              </div>
+
+                              {/* Snack Details */}
+                              <div className="p-2">
+                                <div className="font-black text-gray-900 text-xs sm:text-sm truncate mb-1" title={snack.title}>
+                                  {snack.title}
+                                </div>
+                                {snack.dietaryFilters.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mb-1.5">
+                                    {snack.dietaryFilters.slice(0, 1).map(filter => (
+                                      <span
+                                        key={filter}
+                                        className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-orange-50 to-pink-50 text-orange-700 border border-orange-200"
+                                      >
+                                        {filter.length > 8 ? filter.substring(0, 8) + '...' : filter}
                                       </span>
-                                      {snack.dietaryFilters.length > 1 && (
-                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-gray-50 to-slate-50 text-gray-600 border border-gray-200">
-                                          +{snack.dietaryFilters.length - 1}
-                                        </span>
-                                      )}
-                                    </div>
-                                  )}
+                                    ))}
+                                    {snack.dietaryFilters.length > 1 && (
+                                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-gray-50 to-slate-50 text-gray-600 border border-gray-200">
+                                        +{snack.dietaryFilters.length - 1}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                                <div className="flex items-center gap-1 text-xs text-gray-600 font-semibold">
+                                  <Flame className="w-3 h-3 text-orange-500" />
+                                  <span>~{Math.round(parseNutritionFromRecipe(snack.convertedRecipe).calories)} kcal</span>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-1 text-xs text-gray-600 font-semibold mt-1">
-                                <Flame className="w-3 h-3 text-orange-500" />
-                                <span>~{Math.round(parseNutritionFromRecipe(snack.convertedRecipe).calories)} kcal</span>
-                              </div>
+
                               <button
                                 onClick={() => removeRecipeFromMeal(dateStr, 'snacks', snackIndex)}
-                                className="absolute top-2 right-2 bg-white text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-all duration-200 p-1.5 hover:bg-red-50 rounded-lg shadow-md hover:scale-110"
+                                className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-all duration-200 p-1.5 rounded-full hover:scale-110"
                               >
-                                <Trash2 className="w-3.5 h-3.5" />
+                                <Trash2 className="w-3 h-3" />
                               </button>
                             </div>
                           </div>
@@ -2126,52 +2153,58 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                             {recipes && recipes.length > 0 && (
                               recipes.map((recipe, recipeIndex) => (
                                 <div key={`${recipe.id}-${recipeIndex}`} className="relative group">
-                                  <div className="bg-white border-2 border-green-200 rounded-lg p-2 hover:border-green-400 hover:shadow-lg transition-all duration-300 transform hover:scale-102">
+                                  <div className="bg-white rounded-xl border-2 border-gray-200 hover:border-green-400 hover:shadow-xl transition-all duration-300 shadow-md overflow-hidden transform hover:scale-105">
                                     {/* Recipe Image */}
-                                    <div className="flex items-center space-x-2 mb-2">
-                                      <div className="relative w-10 h-10 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 rounded-lg flex-shrink-0 overflow-hidden shadow-md">
-                                        {recipe.imageUrl ? (
-                                          <img
-                                            src={recipe.imageUrl}
-                                            alt={recipe.title}
-                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                                            onError={(e) => {
-                                              e.currentTarget.style.display = 'none';
-                                            }}
-                                          />
-                                        ) : (
-                                          <div className="absolute inset-0 flex items-center justify-center">
-                                            <ChefHat className="w-4 h-4 text-white opacity-80" />
-                                          </div>
-                                        )}
-                                      </div>
-                                      <div className="flex-1 min-w-0">
-                                        <div className="font-bold text-gray-900 text-sm truncate mb-0.5" title={recipe.title}>
-                                          {recipe.title}
+                                    <div className="relative h-16 sm:h-20 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden">
+                                      {recipe.imageUrl ? (
+                                        <img
+                                          src={recipe.imageUrl}
+                                          alt={recipe.title}
+                                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                          onError={(e) => {
+                                            e.currentTarget.style.display = 'none';
+                                          }}
+                                        />
+                                      ) : (
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                          <ChefHat className="w-4 h-4 sm:w-6 sm:w-6 text-white opacity-80 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                                         </div>
-                                        {recipe.dietaryFilters.length > 0 && (
-                                          <div className="flex flex-wrap gap-1">
-                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200">
-                                              {recipe.dietaryFilters[0].length > 8 ? recipe.dietaryFilters[0].substring(0, 8) + '...' : recipe.dietaryFilters[0]}
+                                      )}
+                                    </div>
+
+                                    {/* Recipe Details */}
+                                    <div className="p-2">
+                                      <div className="font-black text-gray-900 text-xs sm:text-sm truncate mb-1" title={recipe.title}>
+                                        {recipe.title}
+                                      </div>
+                                      {recipe.dietaryFilters.length > 0 && (
+                                        <div className="flex flex-wrap gap-1 mb-1.5">
+                                          {recipe.dietaryFilters.slice(0, 1).map(filter => (
+                                            <span
+                                              key={filter}
+                                              className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200"
+                                            >
+                                              {filter.length > 8 ? filter.substring(0, 8) + '...' : filter}
                                             </span>
-                                            {recipe.dietaryFilters.length > 1 && (
-                                              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-gray-50 to-slate-50 text-gray-600 border border-gray-200">
-                                                +{recipe.dietaryFilters.length - 1}
-                                              </span>
-                                            )}
-                                          </div>
-                                        )}
+                                          ))}
+                                          {recipe.dietaryFilters.length > 1 && (
+                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-gray-50 to-slate-50 text-gray-600 border border-gray-200">
+                                              +{recipe.dietaryFilters.length - 1}
+                                            </span>
+                                          )}
+                                        </div>
+                                      )}
+                                      <div className="flex items-center gap-1 text-xs text-gray-600 font-semibold">
+                                        <Flame className="w-3 h-3 text-orange-500" />
+                                        <span>~{Math.round(parseNutritionFromRecipe(recipe.convertedRecipe).calories)} kcal</span>
                                       </div>
                                     </div>
-                                    <div className="flex items-center gap-1 text-xs text-gray-600 font-semibold mt-1">
-                                      <Flame className="w-3 h-3 text-orange-500" />
-                                      <span>~{Math.round(parseNutritionFromRecipe(recipe.convertedRecipe).calories)} kcal</span>
-                                    </div>
+
                                     <button
                                       onClick={() => removeRecipeFromMeal(dateStr, mealType, recipeIndex)}
-                                      className="absolute top-2 right-2 bg-white text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-all duration-200 p-1.5 hover:bg-red-50 rounded-lg shadow-md hover:scale-110"
+                                      className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-all duration-200 p-1.5 rounded-full hover:scale-110"
                                     >
-                                      <Trash2 className="w-3.5 h-3.5" />
+                                      <Trash2 className="w-3 h-3" />
                                     </button>
                                   </div>
                                 </div>
