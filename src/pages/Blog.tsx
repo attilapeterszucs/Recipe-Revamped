@@ -367,12 +367,23 @@ export const Blog: React.FC = () => {
 
     if (loading) {
       return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
           <AuthAwareNavigation />
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-              <span className="ml-3 text-gray-600">Loading blog post...</span>
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="animate-pulse space-y-8">
+              <div className="space-y-4">
+                <div className="h-8 bg-green-200 rounded-full w-32" />
+                <div className="h-4 bg-green-200 rounded w-24" />
+                <div className="h-12 bg-gray-200 rounded w-3/4" />
+                <div className="h-6 bg-gray-200 rounded w-full" />
+                <div className="h-6 bg-gray-200 rounded w-5/6" />
+              </div>
+              <div className="h-96 bg-gradient-to-br from-green-200 via-emerald-200 to-blue-200 rounded-2xl" />
+              <div className="space-y-4">
+                <div className="h-4 bg-gray-200 rounded w-full" />
+                <div className="h-4 bg-gray-200 rounded w-full" />
+                <div className="h-4 bg-gray-200 rounded w-3/4" />
+              </div>
             </div>
           </div>
         </div>
@@ -381,17 +392,20 @@ export const Blog: React.FC = () => {
 
     if (!post) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+        <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
           <AuthAwareNavigation />
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">Blog Post Not Found</h1>
-              <p className="text-gray-600 mb-8">The blog post you're looking for doesn't exist.</p>
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-green-100 text-green-600 mb-6">
+                <ChefHat className="w-10 h-10" />
+              </div>
+              <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">Article Not Found</h1>
+              <p className="text-xl text-gray-600 mb-8 max-w-md mx-auto">The blog post you're looking for doesn't exist or has been removed.</p>
               <Link
                 to="/blog"
-                className="inline-flex items-center text-green-600 hover:text-green-700 font-medium"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-green-500/30"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="w-4 h-4" />
                 Back to Blog
               </Link>
             </div>
@@ -401,54 +415,70 @@ export const Blog: React.FC = () => {
     }
 
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
         <AuthAwareNavigation />
-        
-        {/* Apple Newsroom Style Header */}
-        <div className="bg-white">
-          {/* Navigation Breadcrumb */}
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
+
+        {/* Hero Header with Landing Page Design */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20 -z-10">
+            <div className="absolute top-0 -left-4 w-96 h-96 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
+            <div className="absolute top-0 -right-4 w-96 h-96 bg-emerald-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
+          </div>
+
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4 animate-in fade-in duration-500">
             <Link
               to="/blog"
-              className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors text-sm"
+              className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold hover:bg-green-200 transition-all duration-300 shadow-sm hover:shadow-md"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Newsroom
+              <ArrowLeft className="w-4 h-4" />
+              Back to Blog
             </Link>
           </div>
 
-          {/* Article Header */}
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-            {/* Publication Date */}
-            <div className="text-gray-500 text-sm font-medium mb-4 uppercase tracking-wider">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+            <div className="flex items-center gap-2 text-green-600 text-sm font-bold mb-4 uppercase tracking-wider">
+              <Calendar className="w-4 h-4" />
               {formatDate(post.publishedAt)}
             </div>
 
-            {/* Title */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.1] mb-8 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.1] mb-8 tracking-tight">
               {post.title}
             </h1>
 
-            {/* Subtitle/Excerpt */}
             <div className="text-xl sm:text-2xl text-gray-600 leading-relaxed mb-8 font-normal max-w-4xl">
               {post.excerpt}
             </div>
 
-            {/* Reading Time */}
-            <div className="flex items-center text-gray-500 text-sm">
-              <Clock className="w-4 h-4 mr-2" />
-              <span>{post.readTime || '5 min read'}</span>
+            <div className="flex flex-wrap items-center gap-4">
+              {post.tags && post.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {post.tags.map(tag => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200"
+                    >
+                      <Tag className="w-3 h-3 mr-1" />
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div className="flex items-center text-gray-600 text-sm font-semibold">
+                <Clock className="w-4 h-4 mr-2 text-green-600" />
+                <span>{post.readTime || '5 min read'}</span>
+              </div>
             </div>
           </div>
 
-          {/* Featured Image */}
           {post.featuredImage && (
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-              <img
-                src={post.featuredImage}
-                alt={post.title}
-                className="w-full h-auto object-cover rounded-xl"
-              />
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 animate-in fade-in duration-700 delay-300">
+              <div className="rounded-2xl overflow-hidden shadow-2xl border-2 border-green-200">
+                <img
+                  src={post.featuredImage}
+                  alt={post.title}
+                  className="w-full h-auto object-cover"
+                />
+              </div>
             </div>
           )}
         </div>
@@ -462,29 +492,30 @@ export const Blog: React.FC = () => {
             }) }} />
           </div>
 
-          {/* Apple-style Footer */}
-          <div className="border-t border-gray-200 mt-16 pt-8">
+          {/* Footer with Share Button */}
+          <div className="border-t-2 border-green-100 mt-16 pt-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="text-sm text-gray-500">
+              <div className="flex items-center gap-2 text-sm text-gray-600 font-semibold">
+                <Calendar className="w-4 h-4 text-green-600" />
                 Published {formatDate(post.publishedAt)}
               </div>
               <button
                 onClick={() => handleShare(post)}
-                className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-green-500/30"
               >
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
+                <Share2 className="w-4 h-4" />
+                Share Article
               </button>
             </div>
           </div>
         </article>
 
-        {/* Related Articles - Apple Style */}
+        {/* Related Articles with Landing Page Design */}
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="border-t border-gray-200 pt-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 tracking-tight">Related Articles</h2>
+          <div className="border-t-2 border-green-100 pt-16">
+            <h2 className="text-3xl font-black text-gray-900 mb-12 tracking-tight">Related Articles</h2>
 
-            <div className="grid md:grid-cols-2 gap-12">
+            <div className="grid md:grid-cols-2 gap-8">
               {blogPosts
                 .filter(p => p.id !== post.id && p.tags.some(tag => post.tags.includes(tag)))
                 .slice(0, 2)
@@ -492,33 +523,48 @@ export const Blog: React.FC = () => {
                   <Link
                     key={relatedPost.id}
                     to={`/blog/${relatedPost.id}`}
-                    className="group block hover:opacity-75 transition-opacity duration-200"
+                    className="group block h-full"
                   >
-                    {relatedPost.featuredImage && (
-                      <div className="mb-6">
-                        <img
-                          src={relatedPost.featuredImage}
-                          alt={relatedPost.title}
-                          className="w-full h-64 object-cover"
-                        />
+                    <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-400 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:scale-105 h-full flex flex-col">
+                      <div className="relative h-48 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden flex-shrink-0">
+                        {relatedPost.featuredImage ? (
+                          <img
+                            src={relatedPost.featuredImage}
+                            alt={relatedPost.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <ChefHat className="w-12 h-12 text-white opacity-80" />
+                          </div>
+                        )}
                       </div>
-                    )}
 
-                    <div className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-3">
-                      {formatDate(relatedPost.publishedAt || relatedPost.createdAt)}
-                    </div>
+                      <div className="p-6 flex flex-col flex-grow">
+                        <div className="flex items-center gap-2 text-xs text-green-600 font-bold uppercase tracking-wide mb-3">
+                          <Calendar className="w-3 h-3" />
+                          {formatDate(relatedPost.publishedAt || relatedPost.createdAt)}
+                        </div>
 
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
-                      {relatedPost.title}
-                    </h3>
+                        <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-3 leading-tight group-hover:text-green-600 transition-colors line-clamp-2">
+                          {relatedPost.title}
+                        </h3>
 
-                    <p className="text-gray-600 leading-relaxed mb-4">
-                      {relatedPost.excerpt}
-                    </p>
+                        <p className="text-gray-600 leading-relaxed mb-4 line-clamp-2 flex-grow">
+                          {relatedPost.excerpt}
+                        </p>
 
-                    <div className="flex items-center text-gray-500 text-sm">
-                      <Clock className="w-4 h-4 mr-2" />
-                      <span>{relatedPost.readTime || '5 min read'}</span>
+                        <div className="flex items-center justify-between mt-auto">
+                          <div className="flex items-center text-gray-500 text-sm font-semibold">
+                            <Clock className="w-4 h-4 mr-2 text-green-600" />
+                            <span>{relatedPost.readTime || '5 min read'}</span>
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-green-600 transform group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
                     </div>
                   </Link>
                 ))}
@@ -530,15 +576,28 @@ export const Blog: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
       {/* Header */}
       <AuthAwareNavigation />
 
-      {/* Apple Newsroom Style Header */}
-      <div className="bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.1] mb-6 tracking-tight">
-            Newsroom
+      {/* Hero Header with Landing Page Design */}
+      <div className="relative overflow-hidden">
+        {/* Gradient Background Blobs */}
+        <div className="absolute inset-0 opacity-30 -z-10">
+          <div className="absolute top-0 -left-4 w-96 h-96 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
+          <div className="absolute top-0 -right-4 w-96 h-96 bg-emerald-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6 shadow-sm">
+            <ChefHat className="w-4 h-4" />
+            Recipe Revamped Blog
+          </div>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 leading-[1.1] mb-6 tracking-tight">
+            Cooking
+            <span className="block bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              Insights & Tips
+            </span>
           </h1>
           <p className="text-xl sm:text-2xl text-gray-600 leading-relaxed max-w-3xl">
             The latest on AI-powered cooking, nutrition science, and dietary adaptation.
@@ -548,27 +607,27 @@ export const Blog: React.FC = () => {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
 
-        {/* Apple-style Filter */}
-        <div className="mb-12">
-          <div className="flex flex-wrap gap-6">
+        {/* Filter Tags with Landing Page Design */}
+        <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+          <div className="flex flex-wrap gap-3">
             <button
               onClick={() => setSelectedTag(null)}
-              className={`text-lg font-medium transition-colors ${
+              className={`px-6 py-2.5 rounded-xl font-bold transition-all duration-300 ${
                 selectedTag === null
-                  ? 'text-gray-900 border-b-2 border-blue-600 pb-1'
-                  : 'text-gray-500 hover:text-gray-900'
+                  ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 scale-105'
+                  : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-green-500 hover:bg-green-50 hover:text-green-600 shadow-md hover:shadow-lg'
               }`}
             >
-              All
+              All Posts
             </button>
             {allTags.map((tag) => (
               <button
                 key={tag}
                 onClick={() => setSelectedTag(tag)}
-                className={`text-lg font-medium transition-colors ${
+                className={`px-6 py-2.5 rounded-xl font-bold transition-all duration-300 ${
                   selectedTag === tag
-                    ? 'text-gray-900 border-b-2 border-blue-600 pb-1'
-                    : 'text-gray-500 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 scale-105'
+                    : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-green-500 hover:bg-green-50 hover:text-green-600 shadow-md hover:shadow-lg'
                 }`}
               >
                 {tag}
@@ -579,36 +638,59 @@ export const Blog: React.FC = () => {
 
         {/* Blog Posts Grid */}
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading blog posts...</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
+                  <div className="h-48 lg:h-56 bg-gradient-to-br from-green-200 via-emerald-200 to-blue-200" />
+                  <div className="p-6">
+                    <div className="h-4 bg-green-200 rounded w-24 mb-3" />
+                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-3" />
+                    <div className="h-4 bg-gray-200 rounded w-full mb-2" />
+                    <div className="h-4 bg-gray-200 rounded w-5/6 mb-4" />
+                    <div className="flex gap-2 mb-4">
+                      <div className="h-6 bg-green-100 rounded-full w-16" />
+                      <div className="h-6 bg-green-100 rounded-full w-20" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="h-4 bg-gray-200 rounded w-20" />
+                      <div className="h-5 w-5 bg-green-200 rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : error ? (
-          <div className="text-center py-12">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-              <p className="text-red-600 mb-4">{error}</p>
+          <div className="text-center py-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="bg-white rounded-2xl border-2 border-red-200 shadow-lg p-8 max-w-md mx-auto">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-100 text-red-600 mb-4">
+                <ChefHat className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-black text-gray-900 mb-2">Oops! Something went wrong</h3>
+              <p className="text-red-600 mb-6 font-semibold">{error}</p>
               <button
                 onClick={() => window.location.reload()}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-green-500/30"
               >
                 Try Again
               </button>
             </div>
           </div>
         ) : filteredPosts.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 max-w-md mx-auto">
-              <ChefHat className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 text-lg mb-2">No blog posts found</p>
-              <p className="text-gray-500 text-sm">
+          <div className="text-center py-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="bg-white rounded-2xl border-2 border-green-200 shadow-lg p-8 max-w-md mx-auto">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-green-100 text-green-600 mb-4">
+                <ChefHat className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-black text-gray-900 mb-2">No Articles Found</h3>
+              <p className="text-gray-600 mb-6">
                 {selectedTag ? `No posts found for "${selectedTag}"` : 'Check back later for new content!'}
               </p>
               {selectedTag && (
                 <button
                   onClick={() => setSelectedTag(null)}
-                  className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-green-500/30"
                 >
                   Show All Posts
                 </button>
@@ -616,35 +698,68 @@ export const Blog: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-            {filteredPosts.map((post) => (
-              <article key={post.id} className="group">
-                <Link to={`/blog/${post.id}`} className="block hover:opacity-75 transition-opacity duration-200">
-                  {post.featuredImage && (
-                    <div className="mb-4">
-                      <img
-                        src={post.featuredImage}
-                        alt={post.title}
-                        className="w-full h-48 lg:h-56 object-cover"
-                      />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+            {filteredPosts.map((post, index) => (
+              <article
+                key={post.id}
+                className="group animate-in fade-in slide-in-from-bottom-4 duration-500 h-full"
+                style={{ animationDelay: `${150 + index * 50}ms` }}
+              >
+                <Link to={`/blog/${post.id}`} className="block h-full">
+                  <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-400 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:scale-105 h-full flex flex-col">
+                    <div className="relative h-48 lg:h-56 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden flex-shrink-0">
+                      {post.featuredImage ? (
+                        <img
+                          src={post.featuredImage}
+                          alt={post.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <ChefHat className="w-12 h-12 text-white opacity-80" />
+                        </div>
+                      )}
                     </div>
-                  )}
 
-                  <div className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-3">
-                    {formatDate(post.publishedAt)}
-                  </div>
+                    <div className="p-6 flex flex-col flex-grow">
+                      <div className="flex items-center gap-2 text-xs text-green-600 font-bold uppercase tracking-wide mb-3">
+                        <Calendar className="w-3 h-3" />
+                        {formatDate(post.publishedAt)}
+                      </div>
 
-                  <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 leading-tight">
-                    {post.title}
-                  </h2>
+                      <h2 className="text-xl lg:text-2xl font-black text-gray-900 mb-3 leading-tight group-hover:text-green-600 transition-colors line-clamp-2">
+                        {post.title}
+                      </h2>
 
-                  <p className="text-gray-600 leading-relaxed mb-4 line-clamp-3">
-                    {post.excerpt}
-                  </p>
+                      <p className="text-gray-600 leading-relaxed mb-4 line-clamp-3 flex-grow">
+                        {post.excerpt}
+                      </p>
 
-                  <div className="flex items-center text-gray-500 text-sm">
-                    <Clock className="w-4 h-4 mr-2" />
-                    <span>{post.readTime || '5 min read'}</span>
+                      {post.tags && post.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-4 min-h-[32px]">
+                          {post.tags.slice(0, 3).map(tag => (
+                            <span
+                              key={tag}
+                              className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200"
+                            >
+                              <Tag className="w-3 h-3 mr-1" />
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between mt-auto">
+                        <div className="flex items-center text-gray-500 text-sm font-semibold">
+                          <Clock className="w-4 h-4 mr-2 text-green-600" />
+                          <span>{post.readTime || '5 min read'}</span>
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-green-600 transform group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
                   </div>
                 </Link>
               </article>
