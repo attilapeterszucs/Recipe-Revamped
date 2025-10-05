@@ -592,34 +592,29 @@ export const Blog: React.FC = () => {
       <AuthAwareNavigation />
 
       {/* Hero Header with Landing Page Design */}
-      <section className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50/30 to-white -z-10" />
+      <div className="relative overflow-hidden">
+        {/* Gradient Background Blobs */}
         <div className="absolute inset-0 opacity-30 -z-10">
           <div className="absolute top-0 -left-4 w-96 h-96 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
           <div className="absolute top-0 -right-4 w-96 h-96 bg-emerald-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute -bottom-8 left-20 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
         </div>
 
-        <div className="max-w-7xl mx-auto relative">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6 shadow-sm">
-              <ChefHat className="w-4 h-4" />
-              Recipe Revamped Blog
-            </div>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black text-gray-900 mb-6 leading-tight">
-              Cooking Knowledge &
-              <span className="block bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                Expert Insights
-              </span>
-            </h1>
-            <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Discover expert tips on AI-powered cooking, nutrition science, and dietary adaptation.
-              <span className="block mt-2 font-semibold text-gray-900">From Kitchen Hacks to Smart Recipe Conversion</span>
-            </p>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6 shadow-sm">
+            <ChefHat className="w-4 h-4" />
+            Recipe Revamped Blog
           </div>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 leading-[1.1] mb-6 tracking-tight">
+            Cooking
+            <span className="block bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              Insights & Tips
+            </span>
+          </h1>
+          <p className="text-xl sm:text-2xl text-gray-600 leading-relaxed max-w-3xl">
+            The latest on AI-powered cooking, nutrition science, and dietary adaptation.
+          </p>
         </div>
-      </section>
+      </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
 
