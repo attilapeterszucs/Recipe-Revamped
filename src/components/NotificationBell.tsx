@@ -2,16 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Bell, CheckCircle, Info, AlertTriangle, AlertCircle } from 'lucide-react';
 import { subscribeToUserNotifications, markNotificationAsRead } from '../lib/notifications';
 import type { Notification } from '../types/notifications';
-import { NotificationPopup } from './NotificationPopup';
 
 interface NotificationBellProps {
   userId: string;
+  onNotificationClick?: (notification: Notification) => void;
 }
 
-export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) => {
+export const NotificationBell: React.FC<NotificationBellProps> = ({ userId, onNotificationClick }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const bellRef = useRef<HTMLButtonElement>(null);
 
@@ -42,8 +41,11 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
     if (!notification.isRead) {
       await markNotificationAsRead(notification.id);
     }
-    setSelectedNotification(notification);
     setIsOpen(false);
+    // Call the parent handler to show the popup
+    if (onNotificationClick) {
+      onNotificationClick(notification);
+    }
   };
 
   const handleMarkAllAsRead = async () => {
@@ -206,13 +208,6 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
         )}
       </div>
 
-      {/* Notification Popup */}
-      {selectedNotification && (
-        <NotificationPopup
-          notification={selectedNotification}
-          onClose={() => setSelectedNotification(null)}
-        />
-      )}
     </>
   );
 };

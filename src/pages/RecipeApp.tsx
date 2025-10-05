@@ -15,6 +15,8 @@ import { saveRecipe, getUserRecipeLimitInfo } from '../lib/firestore';
 import type { SavedRecipe } from '../lib/validation';
 import { UserAccountDropdown } from '../components/UserAccountDropdown';
 import { NotificationBell } from '../components/NotificationBell';
+import { NotificationPopup } from '../components/NotificationPopup';
+import type { Notification } from '../types/notifications';
 import { Settings } from './Settings';
 import { getUserSettings } from '../lib/userSettings';
 import type { UserSettings } from '../types/userSettings';
@@ -65,6 +67,7 @@ export function RecipeApp() {
   } | null>(null);
   const [showReactivationModal, setShowReactivationModal] = useState(false);
   const [isCheckingAccountStatus, setIsCheckingAccountStatus] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const { showSuccess, showError, showInfo } = useToast();
 
   // Payment success popup management
@@ -605,7 +608,10 @@ export function RecipeApp() {
                   </nav>
 
                   <div className="flex items-center gap-3 ml-4">
-                    <NotificationBell userId={user.uid} />
+                    <NotificationBell
+                      userId={user.uid}
+                      onNotificationClick={(notification) => setSelectedNotification(notification)}
+                    />
                     <UserAccountDropdown
                       user={user}
                       onShowSaved={() => {
@@ -974,6 +980,14 @@ export function RecipeApp() {
         isOpen={showSuccessPopup}
         onClose={closeSuccessPopup}
       />
+
+      {/* Notification Popup - Rendered in main section */}
+      {selectedNotification && (
+        <NotificationPopup
+          notification={selectedNotification}
+          onClose={() => setSelectedNotification(null)}
+        />
+      )}
 
     </div>
     </SubscriptionProvider>
