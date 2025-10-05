@@ -15,6 +15,7 @@ interface CustomDropdownProps {
   icon?: React.ReactNode;
   className?: string;
   ariaLabel?: string;
+  openUpward?: boolean;
 }
 
 export const CustomDropdown: React.FC<CustomDropdownProps> = ({
@@ -24,7 +25,8 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
   placeholder = 'Select an option',
   icon,
   className = '',
-  ariaLabel
+  ariaLabel,
+  openUpward = false
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -104,7 +106,9 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
           {/* Options List */}
           <div
-            className="absolute z-50 w-full top-full mt-2 bg-white border-2 border-green-200 rounded-xl shadow-2xl overflow-hidden animate-dropdown-open"
+            className={`absolute z-[100] w-full bg-white border-2 border-green-200 rounded-xl shadow-2xl overflow-hidden animate-dropdown-open ${
+              openUpward ? 'bottom-full mb-2' : 'top-full mt-2'
+            }`}
             role="listbox"
             aria-label={ariaLabel}
           >

@@ -367,7 +367,7 @@ export const Blog: React.FC = () => {
 
     if (loading) {
       return (
-        <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
+        <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white pt-20">
           <AuthAwareNavigation />
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="animate-pulse space-y-8">
@@ -392,7 +392,7 @@ export const Blog: React.FC = () => {
 
     if (!post) {
       return (
-        <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
+        <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white pt-20">
           <AuthAwareNavigation />
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -415,7 +415,7 @@ export const Blog: React.FC = () => {
     }
 
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
+      <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white pt-20">
         <AuthAwareNavigation />
 
         {/* Hero Header with Landing Page Design */}
@@ -576,7 +576,7 @@ export const Blog: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white pt-20">
       {/* Header */}
       <AuthAwareNavigation />
 

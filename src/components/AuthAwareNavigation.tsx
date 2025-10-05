@@ -27,20 +27,23 @@ export const AuthAwareNavigation: React.FC<AuthAwareNavigationProps> = ({
   const backText = user ? 'Back to App' : 'Back to Home';
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex items-center justify-between">
-          <Link to={backLink} className="flex items-center hover:opacity-75 transition-opacity">
-            <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-8 w-8 mr-2" />
-            <span className="text-xl font-bold text-gray-900">{title}</span>
+    <header className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          <Link to={backLink} className="flex items-center gap-3 group">
+            <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-10 w-10 transition-transform duration-300 group-hover:scale-110" />
+            <span className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{title}</span>
           </Link>
-          
+
           {!loading && (
-            <Link to={backLink} className="flex items-center text-gray-600 hover:text-green-600 transition-colors group">
+            <Link
+              to={backLink}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
+            >
               {user ? (
-                <Home className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+                <Home className="h-4 w-4" />
               ) : (
-                <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+                <ArrowLeft className="h-4 w-4" />
               )}
               {backText}
             </Link>

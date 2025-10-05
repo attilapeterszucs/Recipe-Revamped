@@ -94,11 +94,11 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
         <button
           ref={bellRef}
           onClick={() => setIsOpen(!isOpen)}
-          className="relative p-2 text-gray-600 hover:text-green-600 transition-colors rounded-full hover:bg-gray-100"
+          className="relative p-2 text-gray-700 hover:text-green-600 transition-all duration-200 rounded-full hover:bg-green-50 group"
         >
-          <Bell className="w-6 h-6" />
+          <Bell className={`w-6 h-6 transition-transform duration-200 ${unreadCount > 0 ? 'animate-pulse' : 'group-hover:scale-110'}`} />
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+            <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg shadow-red-500/50 animate-bounce">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
@@ -107,15 +107,27 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
         {isOpen && (
           <div
             ref={dropdownRef}
-            className="absolute -right-32 sm:right-0 mt-2 w-72 sm:w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-80 sm:max-h-96 overflow-hidden"
+            className="absolute -right-32 sm:right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border-2 border-green-100 z-[9999] max-h-[500px] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
           >
             {/* Header */}
-            <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Notifications</h3>
+            <div className="px-5 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border-b-2 border-green-100 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-xl">
+                  <Bell className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    Notifications
+                  </h3>
+                  {unreadCount > 0 && (
+                    <p className="text-xs text-gray-600 font-medium">{unreadCount} unread</p>
+                  )}
+                </div>
+              </div>
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
-                  className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors px-2 py-1 rounded hover:bg-blue-50"
+                  className="text-sm text-green-600 hover:text-green-700 font-semibold transition-all duration-200 px-3 py-1.5 rounded-lg hover:bg-green-100"
                 >
                   Mark all read
                 </button>
@@ -123,44 +135,58 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
             </div>
 
             {/* Notifications List */}
-            <div className="max-h-60 sm:max-h-72 overflow-y-auto">
+            <div className="max-h-96 overflow-y-auto custom-scrollbar">
               {notifications.length === 0 ? (
-                <div className="p-4 sm:p-6 text-center text-gray-500">
-                  <Bell className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm sm:text-base">No notifications yet</p>
+                <div className="p-8 text-center">
+                  <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Bell className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-sm font-semibold text-gray-500">No notifications yet</p>
+                  <p className="text-xs text-gray-400 mt-1">We'll notify you when something new arrives</p>
                 </div>
               ) : (
                 notifications.map((notification) => (
                   <div
                     key={notification.id}
                     onClick={() => handleNotificationClick(notification)}
-                    className={`p-2 sm:p-3 cursor-pointer hover:bg-gray-50 transition-colors active:bg-gray-100 ${getNotificationBgColor(
-                      notification.type,
+                    className={`p-4 cursor-pointer transition-all duration-200 border-b border-gray-100 last:border-0 ${
                       notification.isRead
-                    )}`}
+                        ? 'hover:bg-gray-50'
+                        : 'bg-gradient-to-r from-green-50/30 to-emerald-50/30 hover:from-green-50 hover:to-emerald-50 border-l-4 border-l-green-500'
+                    }`}
                   >
-                    <div className="flex items-start space-x-2 sm:space-x-3">
-                      <div className="flex-shrink-0 mt-0.5">
-                        {getNotificationIcon(notification.type)}
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 mt-1">
+                        <div className={`p-2 rounded-lg ${
+                          notification.type === 'success' ? 'bg-green-100' :
+                          notification.type === 'warning' ? 'bg-yellow-100' :
+                          notification.type === 'update' ? 'bg-blue-100' :
+                          'bg-blue-100'
+                        }`}>
+                          {getNotificationIcon(notification.type)}
+                        </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <h4 className={`text-xs sm:text-sm font-medium truncate ${
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className={`text-sm font-bold ${
                             notification.isRead ? 'text-gray-700' : 'text-gray-900'
                           }`}>
                             {notification.title}
                           </h4>
-                          <span className="text-xs text-gray-500 ml-1 sm:ml-2 flex-shrink-0">
+                          <span className="text-xs text-gray-500 font-medium flex-shrink-0">
                             {formatTime(notification.createdAt)}
                           </span>
                         </div>
-                        <p className={`text-xs mt-1 line-clamp-2 ${
+                        <p className={`text-sm mt-1.5 leading-relaxed ${
                           notification.isRead ? 'text-gray-500' : 'text-gray-600'
                         }`}>
                           {notification.message}
                         </p>
                         {!notification.isRead && (
-                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full mt-1"></div>
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span className="text-xs font-semibold text-green-600">New</span>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -170,8 +196,8 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
             </div>
 
             {notifications.length > 0 && (
-              <div className="px-3 sm:px-4 py-1.5 sm:py-2 border-t border-gray-200 text-center">
-                <span className="text-xs text-gray-500">
+              <div className="px-5 py-3 bg-gradient-to-r from-gray-50 to-green-50/30 border-t-2 border-gray-100 text-center">
+                <span className="text-xs font-semibold text-gray-600">
                   {notifications.length} total notification{notifications.length !== 1 ? 's' : ''}
                 </span>
               </div>
