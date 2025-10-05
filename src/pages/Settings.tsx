@@ -673,8 +673,16 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       const photoURL = await uploadProfilePicture(file, user.uid);
 
       // Update local settings and profile picture state
-      setSettings(prev => prev ? { ...prev, profilePictureUrl: photoURL } : null);
-      setCurrentProfilePicture(photoURL);
+      const updatedSettings = settings ? { ...settings, profilePictureUrl: photoURL } : null;
+      if (updatedSettings) {
+        setSettings(updatedSettings);
+        setCurrentProfilePicture(photoURL);
+
+        // Notify parent component to update UserAccountDropdown
+        if (onSettingsUpdate) {
+          onSettingsUpdate(updatedSettings);
+        }
+      }
 
       showSuccess('Profile Picture Updated', 'Your profile picture has been successfully changed');
     } catch (error) {
@@ -690,8 +698,16 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       setUploadingProfilePicture(true);
 
       // Update UI immediately to show anagram (before async delete completes)
-      setCurrentProfilePicture(null);
-      setSettings(prev => prev ? { ...prev, profilePictureUrl: null } : null);
+      const updatedSettings = settings ? { ...settings, profilePictureUrl: null } : null;
+      if (updatedSettings) {
+        setSettings(updatedSettings);
+        setCurrentProfilePicture(null);
+
+        // Notify parent component to update UserAccountDropdown
+        if (onSettingsUpdate) {
+          onSettingsUpdate(updatedSettings);
+        }
+      }
 
       // Delete from Firebase Storage
       await deleteProfilePicture(user.uid);
