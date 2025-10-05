@@ -181,27 +181,16 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     refreshSubscriptionStatus();
   }, [refreshTrigger]);
 
-  // Update currentProfilePicture when settings or user changes
+  // Update currentProfilePicture when settings changes
   useEffect(() => {
-    const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
-
-    // For Google users, show Google photo by default unless they have a custom upload
-    if (isGoogleUser && user.photoURL && !settings?.profilePictureUrl) {
-      setCurrentProfilePicture(user.photoURL);
-    }
-    // Show custom uploaded picture if available (overrides Google photo)
-    else if (settings?.profilePictureUrl) {
+    // Show custom uploaded picture if available, otherwise null (which shows anagram)
+    if (settings?.profilePictureUrl) {
       setCurrentProfilePicture(settings.profilePictureUrl);
-    }
-    // Fallback to Firebase Auth photo for non-Google users
-    else if (user.photoURL) {
-      setCurrentProfilePicture(user.photoURL);
-    }
-    // No profile picture
-    else {
+    } else {
+      // No custom picture - show anagram initials
       setCurrentProfilePicture(null);
     }
-  }, [settings, user.photoURL, user.providerData]);
+  }, [settings?.profilePictureUrl]);
 
   // Auto-set admin tab when entering admin mode and load backups when data section opens
   useEffect(() => {
@@ -699,23 +688,21 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const handleProfilePictureDelete = async () => {
     try {
       setUploadingProfilePicture(true);
-      await deleteProfilePicture(user.uid);
 
-      // Update local settings and profile picture state to show default
+      // Update UI immediately to show anagram (before async delete completes)
+      setCurrentProfilePicture(null);
       setSettings(prev => prev ? { ...prev, profilePictureUrl: null } : null);
 
-      // Set to null to show default profile picture
-      const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
-      if (isGoogleUser && user.photoURL) {
-        setCurrentProfilePicture(user.photoURL);
-      } else {
-        setCurrentProfilePicture(null);
-      }
+      // Delete from Firebase Storage
+      await deleteProfilePicture(user.uid);
 
       showSuccess('Profile Picture Removed', 'Your profile picture has been removed');
     } catch (error) {
       logger.error('Failed to delete profile picture:', { error });
       showError('Delete Failed', 'Could not remove profile picture. Please try again.');
+
+      // Revert the change if delete failed
+      // The useEffect will re-sync from the actual settings
     } finally {
       setUploadingProfilePicture(false);
     }

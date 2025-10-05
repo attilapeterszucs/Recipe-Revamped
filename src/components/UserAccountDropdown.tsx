@@ -57,8 +57,8 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
     user?.email || undefined
   );
 
-  // Get the current profile picture URL (prioritize custom upload, then Google/Firebase photo)
-  const currentProfilePicture = profilePictureUrl || user.photoURL;
+  // Get the current profile picture URL (only use custom upload, show anagram otherwise)
+  const currentProfilePicture = profilePictureUrl;
 
 
   // Close dropdown when clicking outside
