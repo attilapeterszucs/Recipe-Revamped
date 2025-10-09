@@ -14,10 +14,16 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // ⭐ SUBSCRIPTIONS - Allow authenticated users to read/write (admin logic in app)
+    // ⭐ SUBSCRIPTIONS - Users can read/write own data, admins can manage all
     match /subscriptions/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
+      allow read: if request.auth != null && (
+        request.auth.uid == userId ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+      allow write: if request.auth != null && (
+        request.auth.uid == userId ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
     }
 
     // 🆕 USAGE TRACKING - Daily conversion tracking
@@ -33,64 +39,100 @@ service cloud.firestore {
         usageDocId.split('_')[0] == request.auth.uid;
     }
 
-    // Admins collection - readable by authenticated users for admin verification
+    // Admins collection - readable for verification, only admins can manage
     match /admins/{adminId} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    // Admin actions and logs - authenticated users (real admin check in app)
+    // Admin actions and logs - only admins can access
     match /adminActions/{actionId} {
-      allow read, write: if request.auth != null;
+      allow read, write: if request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
     match /adminLogs/{logId} {
-      allow read, write: if request.auth != null;
+      allow read, write: if request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    // Notifications - authenticated users can manage (admin logic in app)
+    // Notifications - read by all, only admins can manage
     match /notifications/{notificationId} {
-      allow read, write: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    // Recipes - authenticated users
+    // Recipes - users can manage own recipes, admins can manage all
     match /recipes/{recipeId} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && (
+        request.auth.uid == resource.data.ownerUid ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+      allow create: if request.auth != null &&
+        request.auth.uid == request.resource.data.ownerUid;
     }
 
-    // Meal plans - authenticated users
+    // Meal plans - users can manage own plans, admins can manage all
     match /mealPlans/{planId} {
-      allow read, write: if request.auth != null;
+      allow read: if request.auth != null && (
+        request.auth.uid == resource.data.userId ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+      allow write: if request.auth != null && (
+        request.auth.uid == resource.data.userId ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+      allow create: if request.auth != null &&
+        request.auth.uid == request.resource.data.userId;
     }
 
-    // User profiles - authenticated users
+    // User profiles - users can manage own profile, admins can read all
     match /userProfiles/{userId} {
-      allow read, write: if request.auth != null;
-    }
-
-    // System config - authenticated users (admin logic in app)
-    match /systemConfig/{document} {
-      allow read, write: if request.auth != null;
-    }
-
-    // Backups - authenticated users
-    match /backups/{backupId} {
-      allow read, write: if request.auth != null;
-    }
-
-    // 📝 BLOG POSTS - Authenticated users can read/write (admin logic in app)
-    match /blog_posts/{postId} {
-      // Anyone authenticated can read all posts (published/draft filtering in app)
       allow read: if request.auth != null;
-      // Authenticated users can write (admin check in app logic)
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && (
+        request.auth.uid == userId ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
     }
 
-    // 📂 BLOG CATEGORIES - Authenticated users can read/write (admin logic in app)
+    // System config - only admins can access
+    match /systemConfig/{document} {
+      allow read, write: if request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Backups - users can manage own backups, admins can manage all
+    match /backups/{backupId} {
+      allow read: if request.auth != null && (
+        request.auth.uid == resource.data.userId ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+      allow write: if request.auth != null && (
+        request.auth.uid == resource.data.userId ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+      allow create: if request.auth != null &&
+        request.auth.uid == request.resource.data.userId;
+    }
+
+    // 📝 BLOG POSTS - Public read for published posts, admins can manage all
+    match /blog_posts/{postId} {
+      // Anyone can read published posts (public blog access)
+      // Authenticated users can read all posts including drafts (for admin preview)
+      allow read: if resource.data.status == 'published' || request.auth != null;
+      // Only admins can write blog posts
+      allow write: if request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // 📂 BLOG CATEGORIES - Anyone can read, only admins can manage
     match /blog_categories/{categoryId} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
     // Default deny all other collections
