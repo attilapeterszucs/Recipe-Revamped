@@ -237,10 +237,10 @@ export const Blog: React.FC = () => {
   const { blogId } = useParams();
   const navigate = useNavigate();
 
-  // Scroll to top when component mounts
+  // Scroll to top when component mounts or blogId changes
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [blogId]);
 
   const handleShare = async (post: BlogPost) => {
     const shareData = {
@@ -274,12 +274,26 @@ export const Blog: React.FC = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const allTags = Array.from(new Set(blogPosts.flatMap(post => post.tags)));
 
   const filteredPosts = selectedTag
     ? blogPosts.filter(post => post.tags.includes(selectedTag))
     : blogPosts;
+
+  // Handle tag selection with transition
+  const handleTagSelect = (tag: string | null) => {
+    if (tag === selectedTag) return;
+
+    setIsTransitioning(true);
+
+    // Wait for fade-out animation
+    setTimeout(() => {
+      setSelectedTag(tag);
+      setIsTransitioning(false);
+    }, 200);
+  };
 
   const loadPosts = async () => {
     try {
@@ -425,7 +439,7 @@ export const Blog: React.FC = () => {
             <div className="absolute top-0 -right-4 w-96 h-96 bg-emerald-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
           </div>
 
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4 animate-in fade-in duration-500">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4 animate-in slide-in-from-bottom-2 duration-700 ease-out">
             <Link
               to="/blog"
               className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold hover:bg-green-200 transition-all duration-300 shadow-sm hover:shadow-md"
@@ -435,7 +449,7 @@ export const Blog: React.FC = () => {
             </Link>
           </div>
 
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 animate-in slide-in-from-bottom-4 duration-1000 ease-out delay-100">
             <div className="flex items-center gap-2 text-green-600 text-sm font-bold mb-4 uppercase tracking-wider">
               <Calendar className="w-4 h-4" />
               {formatDate(post.publishedAt)}
@@ -471,7 +485,7 @@ export const Blog: React.FC = () => {
           </div>
 
           {post.featuredImage && (
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 animate-in fade-in duration-700 delay-300">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 animate-in slide-in-from-bottom-6 duration-1000 ease-out delay-200">
               <div className="rounded-2xl overflow-hidden shadow-2xl border-2 border-green-200">
                 <img
                   src={post.featuredImage}
@@ -513,19 +527,21 @@ export const Blog: React.FC = () => {
         {/* Related Articles with Landing Page Design */}
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="border-t-2 border-green-100 pt-16">
-            <h2 className="text-3xl font-black text-gray-900 mb-12 tracking-tight">Related Articles</h2>
+            <h2 className="text-3xl font-black text-gray-900 mb-12 tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-500">Related Articles</h2>
 
             <div className="grid md:grid-cols-2 gap-8">
               {blogPosts
                 .filter(p => p.id !== post.id && p.tags.some(tag => post.tags.includes(tag)))
                 .slice(0, 2)
-                .map((relatedPost) => (
+                .map((relatedPost, index) => (
                   <Link
                     key={relatedPost.id}
                     to={`/blog/${relatedPost.id}`}
-                    className="group block h-full"
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className="group block h-full animate-in fade-in slide-in-from-bottom-4 duration-500"
+                    style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'backwards' }}
                   >
-                    <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-400 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:scale-105 h-full flex flex-col">
+                    <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-400 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:scale-105 hover:-translate-y-1 h-full flex flex-col">
                       <div className="relative h-48 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden flex-shrink-0">
                         {relatedPost.featuredImage ? (
                           <img
@@ -541,6 +557,8 @@ export const Blog: React.FC = () => {
                             <ChefHat className="w-12 h-12 text-white opacity-80" />
                           </div>
                         )}
+                        {/* Overlay gradient on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
 
                       <div className="p-6 flex flex-col flex-grow">
@@ -611,11 +629,11 @@ export const Blog: React.FC = () => {
         <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
           <div className="flex flex-wrap gap-3">
             <button
-              onClick={() => setSelectedTag(null)}
+              onClick={() => handleTagSelect(null)}
               className={`px-6 py-2.5 rounded-xl font-bold transition-all duration-300 ${
                 selectedTag === null
                   ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 scale-105'
-                  : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-green-500 hover:bg-green-50 hover:text-green-600 shadow-md hover:shadow-lg'
+                  : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-green-500 hover:bg-green-50 hover:text-green-600 shadow-md hover:shadow-lg hover:scale-105'
               }`}
             >
               All Posts
@@ -623,11 +641,11 @@ export const Blog: React.FC = () => {
             {allTags.map((tag) => (
               <button
                 key={tag}
-                onClick={() => setSelectedTag(tag)}
+                onClick={() => handleTagSelect(tag)}
                 className={`px-6 py-2.5 rounded-xl font-bold transition-all duration-300 ${
                   selectedTag === tag
                     ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 scale-105'
-                    : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-green-500 hover:bg-green-50 hover:text-green-600 shadow-md hover:shadow-lg'
+                    : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-green-500 hover:bg-green-50 hover:text-green-600 shadow-md hover:shadow-lg hover:scale-105'
                 }`}
               >
                 {tag}
@@ -689,7 +707,7 @@ export const Blog: React.FC = () => {
               </p>
               {selectedTag && (
                 <button
-                  onClick={() => setSelectedTag(null)}
+                  onClick={() => handleTagSelect(null)}
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-green-500/30"
                 >
                   Show All Posts
@@ -698,15 +716,25 @@ export const Blog: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+          <div
+            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 transition-all duration-300 ${
+              isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+            }`}
+          >
             {filteredPosts.map((post, index) => (
               <article
                 key={post.id}
-                className="group animate-in fade-in slide-in-from-bottom-4 duration-500 h-full"
-                style={{ animationDelay: `${150 + index * 50}ms` }}
+                className={`group h-full ${
+                  !isTransitioning ? 'animate-in fade-in slide-in-from-bottom-4 duration-500' : ''
+                }`}
+                style={!isTransitioning ? { animationDelay: `${index * 50}ms`, animationFillMode: 'backwards' } : {}}
               >
-                <Link to={`/blog/${post.id}`} className="block h-full">
-                  <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-400 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:scale-105 h-full flex flex-col">
+                <Link
+                  to={`/blog/${post.id}`}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className="block h-full"
+                >
+                  <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-400 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:scale-105 hover:-translate-y-1 h-full flex flex-col">
                     <div className="relative h-48 lg:h-56 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden flex-shrink-0">
                       {post.featuredImage ? (
                         <img
@@ -722,6 +750,8 @@ export const Blog: React.FC = () => {
                           <ChefHat className="w-12 h-12 text-white opacity-80" />
                         </div>
                       )}
+                      {/* Overlay gradient on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
 
                     <div className="p-6 flex flex-col flex-grow">
@@ -743,7 +773,7 @@ export const Blog: React.FC = () => {
                           {post.tags.slice(0, 3).map(tag => (
                             <span
                               key={tag}
-                              className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200"
+                              className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200 group-hover:border-green-300 transition-colors"
                             >
                               <Tag className="w-3 h-3 mr-1" />
                               {tag}

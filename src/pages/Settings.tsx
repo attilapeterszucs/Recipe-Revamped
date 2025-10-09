@@ -127,6 +127,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [cancelSectionHidden, setCancelSectionHidden] = useState(false);
+  const [preventAnimations, setPreventAnimations] = useState(false);
   const { showSuccess, showError, showInfo } = useToast();
   
   // Use subscription status hook for consistent admin checking
@@ -655,6 +656,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const handleProfilePictureUpload = async (file: File) => {
     try {
       setUploadingProfilePicture(true);
+      setPreventAnimations(true); // Prevent animations during profile picture update
 
       // Validate file type
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -690,12 +692,15 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       showError('Upload Failed', 'Could not upload profile picture. Please try again.');
     } finally {
       setUploadingProfilePicture(false);
+      // Re-enable animations after a short delay
+      setTimeout(() => setPreventAnimations(false), 100);
     }
   };
 
   const handleProfilePictureDelete = async () => {
     try {
       setUploadingProfilePicture(true);
+      setPreventAnimations(true); // Prevent animations during profile picture removal
 
       // Update UI immediately to show anagram (before async delete completes)
       const updatedSettings = settings ? { ...settings, profilePictureUrl: null } : null;
@@ -721,6 +726,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       // The useEffect will re-sync from the actual settings
     } finally {
       setUploadingProfilePicture(false);
+      // Re-enable animations after a short delay
+      setTimeout(() => setPreventAnimations(false), 100);
     }
   };
 
@@ -955,7 +962,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         
         return (
           <div className="space-y-4 sm:space-y-6">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+            <div className={`bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 ${!preventAnimations ? 'animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out' : ''}`}>
               <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Account</h3>
               <p className="text-gray-700 leading-relaxed font-medium">
                 Manage your account information, profile picture, and security settings. Update your personal details and control your Recipe Revamped experience.
@@ -1194,8 +1201,16 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             )}
             
             {/* Account Management Section */}
-            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
-              <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Account Management</h4>
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 rounded-2xl border-2 border-green-200 p-4 sm:p-6 shadow-xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
+                  <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                </div>
+                <div>
+                  <h4 className="text-lg sm:text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Account Management</h4>
+                  <p className="text-xs sm:text-sm text-gray-600 font-medium">Manage your subscription and account</p>
+                </div>
+              </div>
 
               <div className="space-y-4">
                 {/* Cancel Plan Button - Only show if user has an active subscription and section not hidden */}
@@ -1203,17 +1218,22 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                  featureAccess.currentPlan !== 'free' &&
                  subscription?.status === 'active' &&
                  !cancelSectionHidden && (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 sm:p-6">
-                    <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4">
+                  <div className="bg-gradient-to-br from-yellow-50 to-amber-50/50 border-2 border-yellow-300 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+                    {/* Decorative gradient overlay */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-200/20 to-amber-200/20 rounded-full blur-2xl -mr-16 -mt-16"></div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4 relative">
                       <div className="flex items-center sm:items-start">
-                        <CreditCard className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0 mr-3 sm:mr-0" />
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
+                          <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />
+                        </div>
                       </div>
                       <div className="flex-1">
-                        <h5 className="text-base sm:text-lg font-semibold text-yellow-800 mb-2">
+                        <h5 className="text-base sm:text-lg font-black text-yellow-900 mb-2">
                           Cancel Subscription
                         </h5>
-                        <p className="text-sm text-yellow-700 mb-4 leading-relaxed">
-                          Cancel your {featureAccess.currentPlan.replace('-', ' ')} plan and return to the free plan. This will immediately cancel your subscription in both our system and Stripe.
+                        <p className="text-sm text-yellow-800 mb-4 leading-relaxed font-medium">
+                          Cancel your <span className="font-bold capitalize">{featureAccess.currentPlan.replace('-', ' ')}</span> plan and return to the free plan. This will immediately cancel your subscription in both our system and Stripe.
                         </p>
                         <CancelSubscriptionButton
                           className="w-full sm:w-auto"
@@ -1228,21 +1248,26 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 )}
 
                 {/* Delete Account Section */}
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 sm:p-6">
-                  <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4">
+                <div className="bg-gradient-to-br from-red-50 to-rose-50/50 border-2 border-red-300 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+                  {/* Decorative gradient overlay */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-200/20 to-rose-200/20 rounded-full blur-2xl -mr-16 -mt-16"></div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4 relative">
                     <div className="flex items-center sm:items-start">
-                      <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0 mr-3 sm:mr-0" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-red-100 to-rose-100 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
+                        <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+                      </div>
                     </div>
                     <div className="flex-1">
-                      <h5 className="text-base sm:text-lg font-semibold text-red-800 mb-2">
+                      <h5 className="text-base sm:text-lg font-black text-red-900 mb-2">
                         Delete Account
                       </h5>
-                      <p className="text-sm text-red-700 mb-4 leading-relaxed">
-                        Permanently delete your account and all associated data. This action cannot be undone. Any active subscription will be automatically canceled.
+                      <p className="text-sm text-red-800 mb-4 leading-relaxed font-medium">
+                        Permanently delete your account and all associated data. <span className="font-bold">This action cannot be undone.</span> Any active subscription will be automatically canceled.
                       </p>
                       <button
                         onClick={() => setShowDeleteAccountModal(true)}
-                        className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium touch-friendly min-h-[44px]"
+                        className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 transition-all duration-200 font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 hover:scale-105 touch-friendly min-h-[44px]"
                       >
                         <UserX className="w-4 h-4 mr-2" />
                         Delete Account
@@ -2715,16 +2740,16 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   <button
                     key={section.id}
                     onClick={() => setActiveSection(section.id)}
-                    className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 animate-in fade-in slide-in-from-left-4 ${animationDelay} ${
+                    className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${!preventAnimations ? `animate-in fade-in slide-in-from-left-4 ${animationDelay}` : ''} ${
                       activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'))
                         ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 transform scale-105'
                         : 'text-gray-700 hover:bg-white border-2 border-gray-200 bg-white/60 backdrop-blur-sm hover:shadow-lg hover:border-green-200'
                     }`}
-                    style={{
+                    style={!preventAnimations ? {
                       animationDuration: '600ms',
                       animationDelay: `${index * 50}ms`,
                       animationFillMode: 'backwards'
-                    }}
+                    } : {}}
                   >
                     <Icon className="w-5 h-5 mr-3" />
                     {section.label}
@@ -2737,7 +2762,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
           {/* Main Content */}
           <div className="flex-1">
-            <div key={activeSection.startsWith('admin') ? 'admin' : activeSection} className="bg-white rounded-2xl shadow-2xl border-2 border-green-100 p-4 sm:p-6 lg:p-8 animate-in fade-in slide-in-from-right-4 duration-700 ease-out">
+            <div key={activeSection.startsWith('admin') ? 'admin' : activeSection} className={`bg-white rounded-2xl shadow-2xl border-2 border-green-100 p-4 sm:p-6 lg:p-8 ${!preventAnimations ? 'animate-in fade-in slide-in-from-right-4 duration-700 ease-out' : ''}`}>
               <div className="space-y-6 lg:space-y-8">
                 {renderSectionContent()}
               </div>

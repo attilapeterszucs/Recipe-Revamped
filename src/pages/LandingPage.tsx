@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Zap, Check, Star, Menu, X, Brain, Lock, Utensils, Globe, Crown } from 'lucide-react';
+import { Shield, Zap, Check, Star, Menu, X, Brain, Lock, Utensils, Globe, Crown, ChevronDown } from 'lucide-react';
 import { basePlans } from '../lib/pricing';
 import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
@@ -15,10 +15,50 @@ export const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [isYearly, setIsYearly] = React.useState(false);
   const [isTransitioning, setIsTransitioning] = React.useState(false);
+  const [showScrollArrow, setShowScrollArrow] = React.useState(true);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  // Hide scroll arrow when user scrolls
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setShowScrollArrow(false);
+      } else {
+        setShowScrollArrow(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Enhanced Intersection Observer for smooth scroll animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Add a small delay before triggering animation for smoothness
+          setTimeout(() => {
+            entry.target.classList.add('is-visible');
+          }, 50);
+        }
+      });
+    }, observerOptions);
+
+    // Observe all elements with scroll-animate class
+    const elements = document.querySelectorAll('.scroll-animate, .scroll-animate-scale, .scroll-animate-slide-left, .scroll-animate-slide-right');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -268,7 +308,7 @@ export const LandingPage: React.FC = () => {
         </div>
 
         <div className="max-w-7xl mx-auto relative">
-          <div className="text-center">
+          <div className="text-center scroll-animate">
             <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6 shadow-sm">
               <Zap className="w-4 h-4" />
               AI-Powered Recipe Conversion
@@ -306,7 +346,7 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* Hero Demo Card */}
-          <div className="mt-16 max-w-5xl mx-auto">
+          <div className="mt-16 max-w-5xl mx-auto scroll-animate-scale">
             <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
               <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 flex items-center gap-2">
                 <div className="flex gap-1.5">
@@ -355,6 +395,18 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Animated Scroll Arrow */}
+          <div className={`flex justify-center mt-12 transition-opacity duration-500 ${showScrollArrow ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className="animate-bounce">
+              <div className="flex flex-col items-center gap-2 cursor-pointer" onClick={() => scrollToSection('features')}>
+                <span className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Scroll to explore</span>
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group">
+                  <ChevronDown className="w-6 h-6 text-green-600 group-hover:text-green-700" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -362,28 +414,28 @@ export const LandingPage: React.FC = () => {
       <section className="py-16 bg-white border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center group">
+            <div className="text-center group scroll-animate" style={{ transitionDelay: '0ms' }}>
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-green-100 text-green-600 mb-4 group-hover:scale-110 transition-transform duration-300">
                 <Shield className="w-8 h-8" />
               </div>
               <div className="text-4xl font-black text-gray-900 mb-2">100%</div>
               <div className="text-sm font-semibold text-gray-600">Privacy Guaranteed</div>
             </div>
-            <div className="text-center group">
+            <div className="text-center group scroll-animate" style={{ transitionDelay: '100ms' }}>
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 mb-4 group-hover:scale-110 transition-transform duration-300">
                 <Utensils className="w-8 h-8" />
               </div>
               <div className="text-4xl font-black text-gray-900 mb-2">50K+</div>
               <div className="text-sm font-semibold text-gray-600">Recipes Converted</div>
             </div>
-            <div className="text-center group">
+            <div className="text-center group scroll-animate" style={{ transitionDelay: '200ms' }}>
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-yellow-100 text-yellow-600 mb-4 group-hover:scale-110 transition-transform duration-300">
                 <Star className="w-8 h-8 fill-current" />
               </div>
               <div className="text-4xl font-black text-gray-900 mb-2">4.9★</div>
               <div className="text-sm font-semibold text-gray-600">User Rating</div>
             </div>
-            <div className="text-center group">
+            <div className="text-center group scroll-animate" style={{ transitionDelay: '300ms' }}>
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-100 text-purple-600 mb-4 group-hover:scale-110 transition-transform duration-300">
                 <Zap className="w-8 h-8" />
               </div>
@@ -397,7 +449,7 @@ export const LandingPage: React.FC = () => {
       {/* Features Section */}
       <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 scroll-animate">
             <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
               <Star className="w-4 h-4" />
               Powerful Features
@@ -407,7 +459,7 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1">
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1 scroll-animate" style={{ transitionDelay: '0ms' }}>
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Brain className="h-7 w-7" />
               </div>
@@ -417,7 +469,7 @@ export const LandingPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-blue-300 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100 hover:-translate-y-1">
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-blue-300 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100 hover:-translate-y-1 scroll-animate" style={{ transitionDelay: '100ms' }}>
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Utensils className="h-7 w-7" />
               </div>
@@ -427,7 +479,7 @@ export const LandingPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-purple-300 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-100 hover:-translate-y-1">
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-purple-300 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-100 hover:-translate-y-1 scroll-animate" style={{ transitionDelay: '200ms' }}>
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Shield className="h-7 w-7" />
               </div>
@@ -437,7 +489,7 @@ export const LandingPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-red-300 transition-all duration-500 hover:shadow-2xl hover:shadow-red-100 hover:-translate-y-1">
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-red-300 transition-all duration-500 hover:shadow-2xl hover:shadow-red-100 hover:-translate-y-1 scroll-animate" style={{ transitionDelay: '300ms' }}>
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-red-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Lock className="h-7 w-7" />
               </div>
@@ -447,7 +499,7 @@ export const LandingPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-yellow-300 transition-all duration-500 hover:shadow-2xl hover:shadow-yellow-100 hover:-translate-y-1">
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-yellow-300 transition-all duration-500 hover:shadow-2xl hover:shadow-yellow-100 hover:-translate-y-1 scroll-animate" style={{ transitionDelay: '400ms' }}>
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Zap className="h-7 w-7" />
               </div>
@@ -457,7 +509,7 @@ export const LandingPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-indigo-300 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-1">
+            <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-indigo-300 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-1 scroll-animate" style={{ transitionDelay: '500ms' }}>
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Globe className="h-7 w-7" />
               </div>
@@ -471,57 +523,52 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-16 px-4 sm:px-6 lg:px-8">
+      <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
-          {/* Green Gradient Header */}
-          <div className="bg-gradient-to-r from-green-600 via-green-500 to-emerald-500 px-6 py-12 rounded-t-3xl relative overflow-hidden mb-0">
-            {/* Decorative pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-              <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full translate-x-1/3 translate-y-1/3"></div>
+          {/* Simple Header */}
+          <div className="text-center mb-12 scroll-animate">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+              <Star className="w-4 h-4" />
+              Pricing Plans
             </div>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">Simple, Transparent Pricing</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">Choose the plan that works for you</p>
 
-            <div className="relative text-center">
-              <h2 className="text-3xl font-bold text-white mb-4">Simple, Transparent Pricing</h2>
-              <p className="text-xl text-white/90 mb-8">Choose the plan that works for you</p>
-
-              {/* Enhanced Billing Toggle */}
-              <div className="flex items-center justify-center">
-                <div className="bg-white/20 backdrop-blur-md p-1.5 rounded-full flex items-center gap-3">
-                  <span className={cn("text-sm font-medium px-3 transition-colors",
-                    !isYearly ? 'text-white' : 'text-white/60'
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center">
+              <div className="bg-white border-2 border-gray-200 p-1.5 rounded-full flex items-center gap-3 shadow-md">
+                <span className={cn("text-sm font-medium px-3 transition-colors",
+                  !isYearly ? 'text-gray-900' : 'text-gray-500'
+                )}>
+                  Monthly
+                </span>
+                <button
+                  onClick={() => handleBillingToggle(!isYearly)}
+                  className={`relative inline-flex h-8 w-16 items-center rounded-full transition-all duration-300 ${
+                    isYearly ? 'bg-green-600 shadow-lg shadow-green-500/50' : 'bg-gray-300'
+                  }`}
+                >
+                  <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                    isYearly ? 'translate-x-9' : 'translate-x-1'
+                  }`} />
+                </button>
+                <div className="flex items-center gap-2">
+                  <span className={cn("text-sm font-medium transition-colors",
+                    isYearly ? 'text-gray-900' : 'text-gray-500'
                   )}>
-                    Monthly
+                    Yearly
                   </span>
-                  <button
-                    onClick={() => handleBillingToggle(!isYearly)}
-                    className={`relative inline-flex h-8 w-16 items-center rounded-full transition-all duration-300 ${
-                      isYearly ? 'bg-yellow-400 shadow-lg shadow-yellow-400/50' : 'bg-white/40'
-                    }`}
-                  >
-                    <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
-                      isYearly ? 'translate-x-9' : 'translate-x-1'
-                    }`} />
-                  </button>
-                  <div className="flex items-center gap-2">
-                    <span className={cn("text-sm font-medium transition-colors",
-                      isYearly ? 'text-white' : 'text-white/60'
-                    )}>
-                      Yearly
-                    </span>
-                    <span className="bg-yellow-400 text-yellow-900 text-xs font-black px-3 py-1.5 rounded-full shadow-lg">
-                      Save 20%
-                    </span>
-                  </div>
+                  <span className="bg-yellow-400 text-yellow-900 text-xs font-black px-3 py-1.5 rounded-full shadow-md">
+                    Save 20%
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white px-8 py-10 rounded-b-3xl shadow-xl">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {/* Free Plan */}
-              <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-green-100 transition-all duration-500 hover:scale-105 hover:shadow-2xl flex flex-col h-full group p-6">
+              <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-green-100 transition-all duration-500 hover:scale-105 hover:shadow-2xl flex flex-col h-full group p-6 scroll-animate-scale" style={{ transitionDelay: '0ms' }}>
                 <CardHeader className="text-center p-0 mb-6">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 text-gray-600 mb-4 mx-auto">
                     <Star className="w-8 h-8" />
@@ -565,7 +612,7 @@ export const LandingPage: React.FC = () => {
               </Card>
 
               {/* Chef Plan - Most Popular */}
-              <Card className="relative rounded-2xl border-2 border-green-400 bg-gradient-to-b from-green-50 via-emerald-50 to-white shadow-xl ring-4 ring-green-300 hover:ring-green-400 hover:shadow-2xl transition-all duration-500 transform scale-105 flex flex-col h-full p-6">
+              <Card className="relative rounded-2xl border-2 border-green-400 bg-gradient-to-b from-green-50 via-emerald-50 to-white shadow-xl ring-4 ring-green-300 hover:ring-green-400 hover:shadow-2xl transition-all duration-500 transform scale-105 flex flex-col h-full p-6 scroll-animate-scale" style={{ transitionDelay: '150ms' }}>
                 {/* Most Popular Badge */}
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <span className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-xl border-2 border-white flex items-center gap-1">
@@ -649,7 +696,7 @@ export const LandingPage: React.FC = () => {
               </Card>
 
               {/* Master Chef Plan */}
-              <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-green-100 transition-all duration-500 hover:scale-105 hover:shadow-2xl flex flex-col h-full group p-6">
+              <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-green-100 transition-all duration-500 hover:scale-105 hover:shadow-2xl flex flex-col h-full group p-6 scroll-animate-scale" style={{ transitionDelay: '300ms' }}>
                 <CardHeader className="text-center p-0 mb-6">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-50 text-purple-600 mb-4 mx-auto">
                     <Crown className="w-8 h-8" />
@@ -716,14 +763,13 @@ export const LandingPage: React.FC = () => {
                 </CardFooter>
               </Card>
             </div>
-          </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
       <section id="testimonials" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 scroll-animate">
             <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
               <Star className="w-4 h-4 fill-current" />
               Testimonials
@@ -733,7 +779,7 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1">
+            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1 scroll-animate-scale" style={{ transitionDelay: '0ms' }}>
               <div className="flex gap-1 mb-6">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
@@ -753,7 +799,7 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-blue-300 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100 hover:-translate-y-1">
+            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-blue-300 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100 hover:-translate-y-1 scroll-animate-scale" style={{ transitionDelay: '150ms' }}>
               <div className="flex gap-1 mb-6">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
@@ -773,7 +819,7 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-purple-300 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-100 hover:-translate-y-1">
+            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-purple-300 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-100 hover:-translate-y-1 scroll-animate-scale" style={{ transitionDelay: '300ms' }}>
               <div className="flex gap-1 mb-6">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
@@ -805,7 +851,7 @@ export const LandingPage: React.FC = () => {
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-300 rounded-full mix-blend-overlay filter blur-3xl animate-blob animation-delay-2000" />
         </div>
 
-        <div className="max-w-4xl mx-auto text-center relative">
+        <div className="max-w-4xl mx-auto text-center relative scroll-animate">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold mb-6">
             <Zap className="w-4 h-4" />
             Join 50,000+ Happy Users
