@@ -79,11 +79,10 @@ service cloud.firestore {
       allow read, write: if request.auth != null;
     }
 
-    // 📝 BLOG POSTS - Public read for published posts, authenticated write
+    // 📝 BLOG POSTS - Authenticated users can read/write (admin logic in app)
     match /blog_posts/{postId} {
-      // Anyone can read published posts (public blog access)
-      // Authenticated users can read all posts including drafts (for admin preview)
-      allow read: if resource.data.status == 'published' || request.auth != null;
+      // Anyone authenticated can read all posts (published/draft filtering in app)
+      allow read: if request.auth != null;
       // Authenticated users can write (admin check in app logic)
       allow write: if request.auth != null;
     }
