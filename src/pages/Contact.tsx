@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Mail, MapPin, Send, CheckCircle, AlertCircle, ChevronDown, Star, HelpCircle } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
 import { CustomDropdown } from '../components/CustomDropdown';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 interface ContactForm {
   name: string;
@@ -42,6 +43,8 @@ export const Contact: React.FC = () => {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Partial<ContactForm>>({});
   const [openFAQ, setOpenFAQ] = useState<string | null>(null);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const faqCategories: FAQCategory[] = [
     {
@@ -248,6 +251,12 @@ export const Contact: React.FC = () => {
       return;
     }
 
+    // Validate reCAPTCHA
+    if (!recaptchaToken) {
+      setSubmitStatus('error');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
@@ -283,7 +292,8 @@ export const Contact: React.FC = () => {
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
-          category: formData.category
+          category: formData.category,
+          recaptchaToken: recaptchaToken
         }),
       });
 
@@ -302,9 +312,15 @@ export const Contact: React.FC = () => {
         message: '',
         category: 'general'
       });
+      // Reset reCAPTCHA
+      setRecaptchaToken(null);
+      recaptchaRef.current?.reset();
     } catch (error) {
       console.error('Contact form submission error:', error);
       setSubmitStatus('error');
+      // Reset reCAPTCHA on error
+      setRecaptchaToken(null);
+      recaptchaRef.current?.reset();
     } finally {
       setIsSubmitting(false);
     }
@@ -494,9 +510,42 @@ export const Contact: React.FC = () => {
                   </p>
                 </div>
 
+                {/* reCAPTCHA */}
+                <div className="flex justify-center py-4">
+                  <div className="w-full">
+                    {import.meta.env.VITE_RECAPTCHA_V2_NOTAROBOT_KEY ? (
+                      <div className="flex justify-center">
+                        <ReCAPTCHA
+                          ref={recaptchaRef}
+                          sitekey={import.meta.env.VITE_RECAPTCHA_V2_NOTAROBOT_KEY}
+                          onChange={(token) => setRecaptchaToken(token)}
+                          onExpired={() => setRecaptchaToken(null)}
+                          theme="light"
+                        />
+                      </div>
+                    ) : (
+                      <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 text-center">
+                        <p className="text-sm text-yellow-800 font-semibold mb-2">⚠️ reCAPTCHA Not Configured</p>
+                        <p className="text-xs text-yellow-700">
+                          To enable spam protection, add a reCAPTCHA v2 site key to your .env file as VITE_RECAPTCHA_V2_NOTAROBOT_KEY
+                        </p>
+                        <p className="text-xs text-yellow-600 mt-2">
+                          Get your key at: <a href="https://www.google.com/recaptcha/admin" target="_blank" rel="noopener noreferrer" className="underline">google.com/recaptcha/admin</a>
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {!recaptchaToken && submitStatus === 'error' && (
+                  <p className="text-sm text-red-600 font-medium text-center">
+                    Please complete the reCAPTCHA verification
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !recaptchaToken}
                   className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-4 px-6 rounded-xl font-bold focus:outline-none focus:ring-4 focus:ring-green-400/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center shadow-lg shadow-green-500/30 hover:scale-105"
                 >
                   {isSubmitting ? (
