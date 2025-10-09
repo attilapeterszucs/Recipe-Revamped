@@ -25,19 +25,35 @@ export const AboutUs: React.FC = () => {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-6">
             Transforming Your Cooking
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
             AI-powered recipe conversion and dietary adaptation made simple, delicious, and accessible to everyone
           </p>
+
+          {/* Hero Illustration */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <img
+              src="https://illustrations.popsy.co/amber/man-riding-a-rocket.svg"
+              alt="Innovation in cooking"
+              className="w-full h-64 object-contain"
+            />
+          </div>
         </div>
 
         {/* Mission & Vision */}
         <div className="grid md:grid-cols-2 gap-8 mb-20">
-          <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8 hover:shadow-xl transition-shadow duration-300">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center">
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 rounded-2xl border-2 border-green-200 p-8 shadow-md hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-sm">
                 <Target className="w-6 h-6 text-green-600" />
               </div>
               <h2 className="text-2xl font-black text-gray-900">Our Mission</h2>
+            </div>
+            <div className="mb-6">
+              <img
+                src="https://illustrations.popsy.co/amber/target.svg"
+                alt="Mission target"
+                className="w-full h-40 object-contain"
+              />
             </div>
             <p className="text-gray-700 leading-relaxed">
               To make healthy, personalized cooking accessible to everyone by leveraging AI technology to adapt recipes
@@ -46,12 +62,19 @@ export const AboutUs: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8 hover:shadow-xl transition-shadow duration-300">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center">
-                <Lightbulb className="w-6 h-6 text-green-600" />
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50/50 rounded-2xl border-2 border-purple-200 p-8 shadow-md hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center shadow-sm">
+                <Lightbulb className="w-6 h-6 text-purple-600" />
               </div>
               <h2 className="text-2xl font-black text-gray-900">Our Vision</h2>
+            </div>
+            <div className="mb-6">
+              <img
+                src="https://illustrations.popsy.co/amber/idea.svg"
+                alt="Vision lightbulb"
+                className="w-full h-40 object-contain"
+              />
             </div>
             <p className="text-gray-700 leading-relaxed">
               A world where dietary restrictions never limit culinary creativity. We envision a future where AI seamlessly
@@ -61,28 +84,36 @@ export const AboutUs: React.FC = () => {
         </div>
 
         {/* Our Story */}
-        <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8 lg:p-12 mb-20">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center">
-              <Heart className="w-6 h-6 text-green-600" />
+        <div className="grid md:grid-cols-2 gap-8 items-center mb-20">
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-pink-100 rounded-xl flex items-center justify-center shadow-sm">
+                <Heart className="w-6 h-6 text-red-600" />
+              </div>
+              <h2 className="text-3xl font-black text-gray-900">Our Story</h2>
             </div>
-            <h2 className="text-2xl font-black text-gray-900">Our Story</h2>
+            <div className="space-y-5 text-gray-700 leading-relaxed">
+              <p>
+                Recipe Revamped was born from a simple frustration: finding delicious recipes that actually fit your dietary needs.
+                Whether you're managing diabetes, following a keto lifestyle, dealing with allergies, or simply trying to eat healthier,
+                traditional recipe websites often left you on your own to figure out substitutions and adaptations.
+              </p>
+              <p>
+                Our team of food enthusiasts, nutritionists, and AI experts came together with a shared vision: to create an
+                intelligent system that doesn't just convert recipes, but truly understands the science behind cooking and nutrition.
+              </p>
+              <p>
+                Today, Recipe Revamped helps thousands of home cooks discover new possibilities in their kitchens, proving that
+                dietary restrictions don't mean sacrificing taste or variety.
+              </p>
+            </div>
           </div>
-          <div className="space-y-5 text-gray-700 leading-relaxed">
-            <p>
-              Recipe Revamped was born from a simple frustration: finding delicious recipes that actually fit your dietary needs.
-              Whether you're managing diabetes, following a keto lifestyle, dealing with allergies, or simply trying to eat healthier,
-              traditional recipe websites often left you on your own to figure out substitutions and adaptations.
-            </p>
-            <p>
-              Our team of food enthusiasts, nutritionists, and AI experts came together with a shared vision: to create an
-              intelligent system that doesn't just convert recipes, but truly understands the science behind cooking and nutrition.
-              Using advanced AI technology, we've built a platform that can adapt any recipe while maintaining its soul and flavor.
-            </p>
-            <p>
-              Today, Recipe Revamped helps thousands of home cooks discover new possibilities in their kitchens, proving that
-              dietary restrictions don't mean sacrificing taste or variety.
-            </p>
+          <div className="bg-gradient-to-br from-orange-50 to-amber-50/50 rounded-2xl border-2 border-orange-200 p-8 shadow-md">
+            <img
+              src="https://illustrations.popsy.co/amber/cooking.svg"
+              alt="Cooking together"
+              className="w-full h-64 object-contain"
+            />
           </div>
         </div>
 
@@ -131,43 +162,63 @@ export const AboutUs: React.FC = () => {
         </div>
 
         {/* Technology */}
-        <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8 lg:p-12 mb-20">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center">
-              <Globe className="w-6 h-6 text-green-600" />
-            </div>
-            <h2 className="text-2xl font-black text-gray-900">Our Technology</h2>
+        <div className="grid md:grid-cols-2 gap-8 items-center mb-20">
+          <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl border-2 border-blue-200 p-8 shadow-md order-2 md:order-1">
+            <img
+              src="https://illustrations.popsy.co/amber/web-devices.svg"
+              alt="Technology platform"
+              className="w-full h-64 object-contain"
+            />
           </div>
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-xl font-black text-gray-900 mb-4">AI-Powered Recipe Intelligence</h3>
-              <p className="text-gray-700 leading-relaxed">
-                Our platform uses advanced AI models to understand recipe structures, ingredient interactions, and
-                nutritional requirements, enabling intelligent adaptations that preserve flavor while meeting dietary needs.
-              </p>
+          <div className="order-1 md:order-2">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center shadow-sm">
+                <Globe className="w-6 h-6 text-blue-600" />
+              </div>
+              <h2 className="text-3xl font-black text-gray-900">Our Technology</h2>
             </div>
-            <div>
-              <h3 className="text-xl font-black text-gray-900 mb-4">Secure & Transparent Processing</h3>
-              <p className="text-gray-700 leading-relaxed">
-                We process recipe data through secure cloud infrastructure with clear data practices. Users are fully
-                informed about data usage and maintain control over their recipe information.
-              </p>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-black text-gray-900 mb-3">AI-Powered Recipe Intelligence</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Our platform uses advanced AI models to understand recipe structures, ingredient interactions, and
+                  nutritional requirements, enabling intelligent adaptations that preserve flavor while meeting dietary needs.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-gray-900 mb-3">Secure & Transparent Processing</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  We process recipe data through secure cloud infrastructure with clear data practices. Users are fully
+                  informed about data usage and maintain control over their recipe information.
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Call to Action */}
-        <div className="text-center bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-12 text-white shadow-xl">
-          <h2 className="text-3xl md:text-4xl font-black mb-4">Ready to Transform Your Cooking?</h2>
-          <p className="text-lg text-white/95 mb-8 max-w-2xl mx-auto">
-            Join thousands of home cooks who have discovered the freedom of AI-adapted recipes
-          </p>
-          <Link
-            to="/signup"
-            className="inline-flex items-center gap-2 bg-white text-green-600 px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-lg"
-          >
-            Get Started Free
-          </Link>
+        <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-12 text-white shadow-xl overflow-hidden relative">
+          <div className="grid md:grid-cols-2 gap-8 items-center relative z-10">
+            <div className="text-center md:text-left">
+              <h2 className="text-3xl md:text-4xl font-black mb-4">Ready to Transform Your Cooking?</h2>
+              <p className="text-lg text-white/95 mb-8">
+                Join thousands of home cooks who have discovered the freedom of AI-adapted recipes
+              </p>
+              <Link
+                to="/signup"
+                className="inline-flex items-center gap-2 bg-white text-green-600 px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-lg"
+              >
+                Get Started Free
+              </Link>
+            </div>
+            <div className="hidden md:block">
+              <img
+                src="https://illustrations.popsy.co/white/remote-work.svg"
+                alt="Get started"
+                className="w-full h-56 object-contain"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
