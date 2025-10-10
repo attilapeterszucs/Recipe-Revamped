@@ -60,6 +60,7 @@ interface SettingsProps {
   user: User;
   onBack: () => void;
   onSettingsUpdate?: (settings: UserSettings) => void;
+  onShowUpgradeModal?: () => void;
   initialActiveSection?: string;
   featureAccess?: {
     canSetDefaultPreferences: boolean;
@@ -72,7 +73,7 @@ interface SettingsProps {
   };
 }
 
-export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpdate, initialActiveSection, featureAccess }) => {
+export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpdate, onShowUpgradeModal, initialActiveSection, featureAccess }) => {
   // Authentication guard - Settings should only be accessible when user is logged in
   if (!user) {
     logger.warn('Settings accessed without authenticated user - redirecting');
@@ -1046,40 +1047,86 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   </div>
                 </div>
               ) : (
-                <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-4 sm:p-6">
-                  <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                    {/* Current Profile Picture (Read-only) */}
-                    <div className="relative flex-shrink-0">
-                      {currentProfilePicture ? (
-                        <img
-                          src={currentProfilePicture}
-                          alt="Profile"
-                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-orange-200"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center border-4 border-orange-200">
-                          <span className="text-xl sm:text-2xl font-black text-white">
-                            {getUserInitials(user)}
-                          </span>
+                <div className="group relative bg-white rounded-2xl border-2 border-orange-200 hover:border-orange-300 p-6 sm:p-8 shadow-xl ring-4 ring-orange-200/50 hover:ring-orange-300/50 hover:shadow-2xl hover:shadow-orange-100 transition-all duration-500">
+                  {/* Decorative Pattern Background */}
+                  <div className="absolute inset-0 opacity-5 rounded-2xl overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400 rounded-full translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-400 rounded-full -translate-x-1/2 translate-y-1/2"></div>
+                    <div className="absolute inset-0" style={{
+                      backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
+                      backgroundSize: '24px 24px'
+                    }}></div>
+                  </div>
+
+                  <div className="relative flex flex-col sm:flex-row items-center gap-6">
+                    {/* Premium Badge Icon */}
+                    <div className="flex-shrink-0">
+                      <div className="relative">
+                        {/* Profile Picture with Premium Ring */}
+                        <div className="relative">
+                          {currentProfilePicture ? (
+                            <img
+                              src={currentProfilePicture}
+                              alt="Profile"
+                              className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-lg ring-4 ring-orange-200 group-hover:ring-orange-300 transition-all duration-300"
+                            />
+                          ) : (
+                            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center shadow-lg ring-4 ring-orange-200 group-hover:ring-orange-300 transition-all duration-300">
+                              <span className="text-2xl sm:text-3xl font-black text-white">
+                                {getUserInitials(user)}
+                              </span>
+                            </div>
+                          )}
+                          {/* Premium Crown Badge */}
+                          <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-400 to-amber-500 rounded-xl p-2 shadow-lg ring-2 ring-white group-hover:scale-110 transition-transform duration-300">
+                            <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                          </div>
                         </div>
-                      )}
+                      </div>
                     </div>
 
+                    {/* Content */}
                     <div className="flex-1 text-center sm:text-left">
-                      <h4 className="text-base sm:text-lg font-semibold text-orange-800 mb-2">
-                        Premium Profile Pictures
-                      </h4>
-                      <p className="text-orange-700 text-sm mb-3 leading-relaxed">
-                        Upload custom profile pictures with Chef plan or higher. Stand out with a personalized profile image.
-                      </p>
-                      <div className="text-xs text-orange-600 mb-4 leading-relaxed">
-                        ✓ Custom profile pictures • ✓ 5MB file size limit • ✓ Multiple formats supported
+                      <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-300 text-orange-800 px-3 py-1.5 rounded-full text-xs font-bold mb-3 shadow-sm">
+                        <Crown className="w-3 h-3" />
+                        <span>Premium Feature</span>
                       </div>
+
+                      <h4 className="text-lg sm:text-xl font-black text-gray-900 mb-3 leading-tight">
+                        Custom Profile Pictures
+                      </h4>
+
+                      <p className="text-sm sm:text-base text-gray-700 mb-4 leading-relaxed">
+                        Unlock personalized profile pictures with <span className="font-bold text-orange-600">Chef plan</span> or higher. Stand out with a custom profile image that represents you.
+                      </p>
+
+                      {/* Features List */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5">
+                        <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                          <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                          <span className="font-medium">Custom uploads</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                          <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                          <span className="font-medium">5MB file size</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                          <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                          <span className="font-medium">All formats</span>
+                        </div>
+                      </div>
+
+                      {/* CTA Button */}
                       <button
-                        data-upgrade-plan
-                        className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-4 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 text-sm touch-friendly min-h-[44px] w-full sm:w-auto"
+                        onClick={() => onShowUpgradeModal && onShowUpgradeModal()}
+                        className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
                       >
-                        Upgrade to Upload Pictures
+                        <span className="relative z-10 flex items-center justify-center gap-2">
+                          <Crown className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+                          Upgrade to Upload Pictures
+                        </span>
+                        {/* Shine effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
                       </button>
                     </div>
                   </div>
@@ -1574,50 +1621,80 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
               </div>
             ) : (
-              <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-8 text-center">
-                <div className="mb-6">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
-                    <Shield className="h-8 w-8 text-orange-600" />
-                  </div>
-                  <h4 className="text-xl font-bold text-orange-800 mb-2">
-                    Premium Dietary Filters
-                  </h4>
-                  <p className="text-orange-700 mb-6 max-w-md mx-auto leading-relaxed">
-                    Unlock advanced dietary filters and personalized preferences with any paid plan. Automatically filter recipes based on your dietary requirements.
-                  </p>
+              <div className="group relative bg-white rounded-2xl border-2 border-orange-200 hover:border-orange-300 p-6 sm:p-8 shadow-xl ring-4 ring-orange-200/50 hover:ring-orange-300/50 hover:shadow-2xl hover:shadow-orange-100 transition-all duration-500">
+                {/* Decorative Pattern Background */}
+                <div className="absolute inset-0 opacity-5 rounded-2xl overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400 rounded-full translate-x-1/2 -translate-y-1/2"></div>
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-400 rounded-full -translate-x-1/2 translate-y-1/2"></div>
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-lg mx-auto">
-                  <div className="bg-white/50 rounded-lg p-4 text-left">
-                    <div className="text-orange-600 font-semibold mb-2">🎯 Smart Filtering</div>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      <li>✓ Auto-apply dietary filters</li>
-                      <li>✓ Advanced allergen-free options</li>
-                      <li>✓ Medical condition support</li>
-                      <li>✓ Religious dietary requirements</li>
-                    </ul>
+                <div className="relative flex flex-col sm:flex-row items-center gap-6">
+                  {/* Premium Badge Icon */}
+                  <div className="flex-shrink-0">
+                    <div className="relative">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shadow-lg ring-4 ring-orange-200 group-hover:ring-orange-300 transition-all duration-300">
+                        <Shield className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600" />
+                      </div>
+                      {/* Premium Crown Badge */}
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-400 to-amber-500 rounded-xl p-2 shadow-lg ring-2 ring-white group-hover:scale-110 transition-transform duration-300">
+                        <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="bg-white/50 rounded-lg p-4 text-left">
-                    <div className="text-orange-600 font-semibold mb-2">⚡ Personalization</div>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      <li>✓ Skip repetitive filtering</li>
-                      <li>✓ Instant diet matching</li>
-                      <li>✓ Consistent preferences</li>
-                      <li>✓ Tailored suggestions</li>
-                    </ul>
+
+                  {/* Content */}
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-300 text-orange-800 px-3 py-1.5 rounded-full text-xs font-bold mb-3 shadow-sm">
+                      <Crown className="w-3 h-3" />
+                      <span>Premium Feature</span>
+                    </div>
+
+                    <h4 className="text-lg sm:text-xl font-black text-gray-900 mb-3 leading-tight">
+                      Advanced Dietary Filters & Preferences
+                    </h4>
+
+                    <p className="text-sm sm:text-base text-gray-700 mb-4 leading-relaxed">
+                      Unlock personalized dietary filters with <span className="font-bold text-orange-600">any paid plan</span>. Auto-apply your preferences and get recipes tailored to your lifestyle.
+                    </p>
+
+                    {/* Features List */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Auto-apply filters</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">12+ diet options</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Allergen support</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Medical conditions</span>
+                      </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <button
+                      onClick={() => onShowUpgradeModal && onShowUpgradeModal()}
+                      className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        <Crown className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+                        Unlock Dietary Filters
+                      </span>
+                      {/* Shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
+                    </button>
                   </div>
                 </div>
-                
-                <button
-                  onClick={() => {
-                    if ((window as any).showUpgradeModal) {
-                      (window as any).showUpgradeModal('chef', 'recipe-settings');
-                    }
-                  }}
-                  className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg"
-                >
-                  Upgrade Plan
-                </button>
               </div>
             )}
           </div>
@@ -2007,49 +2084,80 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 </div>
               </div>
             ) : (
-              <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-8 text-center">
-                <div className="mb-6">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
-                    <Bot className="h-8 w-8 text-orange-600" />
-                  </div>
-                  <h4 className="text-xl font-bold text-orange-800 mb-2">
-                    Premium Recipe Settings
-                  </h4>
-                  <p className="text-orange-700 leading-relaxed mb-6">
-                    Access advanced recipe management and conversion defaults with a premium subscription.
-                    Customize your cooking experience with auto-save, preferred units, and default serving sizes.
-                  </p>
+              <div className="group relative bg-white rounded-2xl border-2 border-orange-200 hover:border-orange-300 p-6 sm:p-8 shadow-xl ring-4 ring-orange-200/50 hover:ring-orange-300/50 hover:shadow-2xl hover:shadow-orange-100 transition-all duration-500">
+                {/* Decorative Pattern Background */}
+                <div className="absolute inset-0 opacity-5 rounded-2xl overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400 rounded-full translate-x-1/2 -translate-y-1/2"></div>
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-400 rounded-full -translate-x-1/2 translate-y-1/2"></div>
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-lg mx-auto">
-                  <div className="bg-white/50 rounded-lg p-4 text-left">
-                    <div className="text-orange-600 font-semibold mb-2">🤖 Smart Defaults</div>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      <li>✓ Recipe conversion defaults</li>
-                      <li>✓ Auto-save recipes</li>
-                      <li>✓ Preferred measurement units</li>
-                    </ul>
+                <div className="relative flex flex-col sm:flex-row items-center gap-6">
+                  {/* Premium Badge Icon */}
+                  <div className="flex-shrink-0">
+                    <div className="relative">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shadow-lg ring-4 ring-orange-200 group-hover:ring-orange-300 transition-all duration-300">
+                        <Bot className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600" />
+                      </div>
+                      {/* Premium Crown Badge */}
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-400 to-amber-500 rounded-xl p-2 shadow-lg ring-2 ring-white group-hover:scale-110 transition-transform duration-300">
+                        <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="bg-white/50 rounded-lg p-4 text-left">
-                    <div className="text-orange-600 font-semibold mb-2">⚡ Personalization</div>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      <li>✓ Default serving sizes</li>
-                      <li>✓ Skip repetitive settings</li>
-                      <li>✓ Consistent preferences</li>
-                    </ul>
+
+                  {/* Content */}
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-300 text-orange-800 px-3 py-1.5 rounded-full text-xs font-bold mb-3 shadow-sm">
+                      <Crown className="w-3 h-3" />
+                      <span>Premium Feature</span>
+                    </div>
+
+                    <h4 className="text-lg sm:text-xl font-black text-gray-900 mb-3 leading-tight">
+                      Smart Recipe Settings & Defaults
+                    </h4>
+
+                    <p className="text-sm sm:text-base text-gray-700 mb-4 leading-relaxed">
+                      Streamline your cooking with <span className="font-bold text-orange-600">premium settings</span>. Auto-save recipes and set default preferences to save time.
+                    </p>
+
+                    {/* Features List */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Auto-save recipes</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Default servings</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Preferred units</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Quick conversions</span>
+                      </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <button
+                      onClick={() => onShowUpgradeModal && onShowUpgradeModal()}
+                      className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        <Crown className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+                        Unlock Recipe Settings
+                      </span>
+                      {/* Shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
+                    </button>
                   </div>
                 </div>
-
-                <button
-                  onClick={() => {
-                    if ((window as any).showUpgradeModal) {
-                      (window as any).showUpgradeModal('chef', 'recipe-settings');
-                    }
-                  }}
-                  className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg"
-                >
-                  Upgrade Plan
-                </button>
               </div>
             )}
           </div>
@@ -2189,44 +2297,80 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             </div>
 
             {!canAccessHealthConditions && (
-              <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-8 text-center">
-                <div className="mb-6">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
-                    <Heart className="h-8 w-8 text-orange-600" />
-                  </div>
-                  <h4 className="text-xl font-bold text-orange-800 mb-2">
-                    Premium Health Features
-                  </h4>
-                  <p className="text-orange-700 mb-6 max-w-md mx-auto leading-relaxed">
-                    Unlock personalized health condition tracking and dietary recommendations with Chef plan or higher. Get recipes tailored to your specific health needs.
-                  </p>
+              <div className="group relative bg-white rounded-2xl border-2 border-orange-200 hover:border-orange-300 p-6 sm:p-8 shadow-xl ring-4 ring-orange-200/50 hover:ring-orange-300/50 hover:shadow-2xl hover:shadow-orange-100 transition-all duration-500">
+                {/* Decorative Pattern Background */}
+                <div className="absolute inset-0 opacity-5 rounded-2xl overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400 rounded-full translate-x-1/2 -translate-y-1/2"></div>
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-400 rounded-full -translate-x-1/2 translate-y-1/2"></div>
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-lg mx-auto">
-                  <div className="bg-white/50 rounded-lg p-4 text-left">
-                    <div className="text-orange-600 font-semibold mb-2">🏥 Health Tracking</div>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      <li>✓ Diabetes management</li>
-                      <li>✓ Heart health support</li>
-                      <li>✓ Digestive conditions</li>
-                    </ul>
+                <div className="relative flex flex-col sm:flex-row items-center gap-6">
+                  {/* Premium Badge Icon */}
+                  <div className="flex-shrink-0">
+                    <div className="relative">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shadow-lg ring-4 ring-orange-200 group-hover:ring-orange-300 transition-all duration-300">
+                        <Heart className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600" />
+                      </div>
+                      {/* Premium Crown Badge */}
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-400 to-amber-500 rounded-xl p-2 shadow-lg ring-2 ring-white group-hover:scale-110 transition-transform duration-300">
+                        <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="bg-white/50 rounded-lg p-4 text-left">
-                    <div className="text-orange-600 font-semibold mb-2">🎯 Smart Recipes</div>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      <li>✓ Condition-specific suggestions</li>
-                      <li>✓ Nutritional guidance</li>
-                      <li>✓ Safe ingredient alternatives</li>
-                    </ul>
+
+                  {/* Content */}
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-300 text-orange-800 px-3 py-1.5 rounded-full text-xs font-bold mb-3 shadow-sm">
+                      <Crown className="w-3 h-3" />
+                      <span>Premium Feature</span>
+                    </div>
+
+                    <h4 className="text-lg sm:text-xl font-black text-gray-900 mb-3 leading-tight">
+                      Health Conditions & Medical Support
+                    </h4>
+
+                    <p className="text-sm sm:text-base text-gray-700 mb-4 leading-relaxed">
+                      Get recipes tailored to your health with <span className="font-bold text-orange-600">Master Chef plan</span>. Track conditions and receive personalized dietary guidance.
+                    </p>
+
+                    {/* Features List */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Diabetes support</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Heart health</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Digestive care</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Allergen safety</span>
+                      </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <button
+                      onClick={() => onShowUpgradeModal && onShowUpgradeModal()}
+                      className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        <Crown className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+                        Unlock Health Features
+                      </span>
+                      {/* Shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
+                    </button>
                   </div>
                 </div>
-
-                <button
-                  data-upgrade-plan
-                  className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg"
-                >
-                  Upgrade to Access Health Features
-                </button>
               </div>
             )}
 
@@ -2496,48 +2640,80 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 </div>
               </>
             ) : (
-              <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-8 text-center">
-                <div className="mb-6">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
-                    <Database className="h-8 w-8 text-orange-600" />
-                  </div>
-                  <h4 className="text-xl font-bold text-orange-800 mb-2">
-                    Backup & Recovery - Paid Plan Required
-                  </h4>
-                  <p className="text-orange-700 leading-relaxed mb-6">
-                    Protect your recipes with cloud backup and recovery features. Available with any paid plan.
-                  </p>
+              <div className="group relative bg-white rounded-2xl border-2 border-orange-200 hover:border-orange-300 p-6 sm:p-8 shadow-xl ring-4 ring-orange-200/50 hover:ring-orange-300/50 hover:shadow-2xl hover:shadow-orange-100 transition-all duration-500">
+                {/* Decorative Pattern Background */}
+                <div className="absolute inset-0 opacity-5 rounded-2xl overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400 rounded-full translate-x-1/2 -translate-y-1/2"></div>
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-400 rounded-full -translate-x-1/2 translate-y-1/2"></div>
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-lg mx-auto">
-                  <div className="bg-white/50 rounded-lg p-4 text-left">
-                    <div className="text-orange-600 font-semibold mb-2">🔄 Backup Features</div>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      <li>✓ Automatic cloud backups</li>
-                      <li>✓ Manual backup creation</li>
-                      <li>✓ Recipe recovery tools</li>
-                    </ul>
+                <div className="relative flex flex-col sm:flex-row items-center gap-6">
+                  {/* Premium Badge Icon */}
+                  <div className="flex-shrink-0">
+                    <div className="relative">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shadow-lg ring-4 ring-orange-200 group-hover:ring-orange-300 transition-all duration-300">
+                        <Database className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600" />
+                      </div>
+                      {/* Premium Crown Badge */}
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-400 to-amber-500 rounded-xl p-2 shadow-lg ring-2 ring-white group-hover:scale-110 transition-transform duration-300">
+                        <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="bg-white/50 rounded-lg p-4 text-left">
-                    <div className="text-orange-600 font-semibold mb-2">🛡️ Protection</div>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      <li>✓ 90-day retention policy</li>
-                      <li>✓ Cross-device sync</li>
-                      <li>✓ Secure cloud storage</li>
-                    </ul>
+
+                  {/* Content */}
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-300 text-orange-800 px-3 py-1.5 rounded-full text-xs font-bold mb-3 shadow-sm">
+                      <Crown className="w-3 h-3" />
+                      <span>Premium Feature</span>
+                    </div>
+
+                    <h4 className="text-lg sm:text-xl font-black text-gray-900 mb-3 leading-tight">
+                      Cloud Backup & Recipe Recovery
+                    </h4>
+
+                    <p className="text-sm sm:text-base text-gray-700 mb-4 leading-relaxed">
+                      Protect your recipes with <span className="font-bold text-orange-600">cloud backups</span>. Never lose your culinary creations with automatic backup and recovery tools.
+                    </p>
+
+                    {/* Features List */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Auto backups</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">90-day retention</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">One-click restore</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Secure storage</span>
+                      </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <button
+                      onClick={() => onShowUpgradeModal && onShowUpgradeModal()}
+                      className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        <Crown className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+                        Unlock Backup Features
+                      </span>
+                      {/* Shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
+                    </button>
                   </div>
                 </div>
-
-                <button
-                  onClick={() => {
-                    if ((window as any).showUpgradeModal) {
-                      (window as any).showUpgradeModal('master-chef', 'backup-recovery');
-                    }
-                  }}
-                  className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 shadow-lg"
-                >
-                  Upgrade Plan
-                </button>
               </div>
             )}
           </div>
