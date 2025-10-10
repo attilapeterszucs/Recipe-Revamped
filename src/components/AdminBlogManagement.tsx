@@ -45,6 +45,7 @@ import {
   REDO_COMMAND,
   $getSelection,
   $isRangeSelection,
+  $isTextNode,
   TextFormatType
 } from 'lexical';
 import { ListItemNode, ListNode, INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND } from '@lexical/list';
@@ -306,7 +307,7 @@ function RichTextEditorWrapper({ initialContent, onChange }: {
       if ($isRangeSelection(selection)) {
         const nodes = selection.getNodes();
         nodes.forEach((node) => {
-          if (node.getType() === 'text') {
+          if ($isTextNode(node)) {
             node.setFormat(0);
           }
         });
@@ -357,16 +358,11 @@ function RichTextEditorWrapper({ initialContent, onChange }: {
         <RichTextPlugin
           contentEditable={
             <div className="h-full">
-              <div className="h-full overflow-y-auto px-8 py-6 prose prose-blue max-w-none">
+              <div className="h-full overflow-y-auto px-8 py-6 prose prose-blue max-w-none" style={{ caretColor: '#3b82f6' }}>
                 <ContentEditable
                   placeholder="✍️ Start writing your amazing blog post content here..."
                   className="h-full outline-none min-h-[460px] text-gray-800 leading-relaxed"
                   placeholderClassName="text-muted-foreground pointer-events-none absolute top-0 left-0 overflow-hidden px-8 py-6 text-ellipsis select-none"
-                  style={{
-                    caretColor: '#3b82f6',
-                    fontSize: '16px',
-                    lineHeight: '1.8'
-                  }}
                 />
               </div>
             </div>
@@ -411,7 +407,7 @@ function ToolbarPlugin({ onFormatText, onUndo, onRedo, onHeadingChange, onInsert
   onFormatText: (format: TextFormatType) => void;
   onUndo: () => void;
   onRedo: () => void;
-  onHeadingChange: (tag: 'paragraph' | 'h1' | 'h2' | 'h3') => void;
+  onHeadingChange: (tag: 'paragraph' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') => void;
   onInsertList: (type: 'bullet' | 'number') => void;
   onInsertQuote: () => void;
   onClearFormatting: () => void;
