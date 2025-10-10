@@ -1375,36 +1375,78 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 userId={user.uid}
               />
             ) : (
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50/50 border-2 border-amber-200 rounded-2xl p-6 shadow-lg">
-                <div className="flex items-start">
-                  <div className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl p-3 mr-4 flex-shrink-0 shadow-md">
-                    <Crown className="w-6 h-6 text-amber-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-lg font-black text-amber-900 mb-2 flex items-center">
-                      Health Goals
-                      <span className="ml-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
-                        CHEF PLAN+
-                      </span>
-                    </h4>
-                    <p className="text-amber-800 mb-4 font-medium">
-                      Set personalized health goals like weight management, calorie targets, and nutritional objectives.
-                      Track your progress and get AI-powered recipe recommendations tailored to your health journey.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <button
-                        onClick={() => {
-                          if ((window as any).showUpgradeModal) {
-                            (window as any).showUpgradeModal('chef', 'health-goals');
-                          }
-                        }}
-                        className="bg-gradient-to-r from-amber-600 to-orange-600 text-white px-4 py-2 rounded-xl hover:from-amber-700 hover:to-orange-700 transition-all duration-200 flex items-center justify-center font-bold shadow-lg shadow-amber-500/30 hover:shadow-xl hover:scale-105"
-                      >
-                        <Crown className="w-4 h-4 mr-2" />
-                        Upgrade Plan
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </button>
+              <div className="group relative bg-white rounded-2xl border-2 border-orange-200 hover:border-orange-300 p-6 sm:p-8 shadow-xl ring-4 ring-orange-200/50 hover:ring-orange-300/50 hover:shadow-2xl hover:shadow-orange-100 transition-all duration-500">
+                {/* Decorative Pattern Background */}
+                <div className="absolute inset-0 opacity-5 rounded-2xl overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400 rounded-full translate-x-1/2 -translate-y-1/2"></div>
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-400 rounded-full -translate-x-1/2 translate-y-1/2"></div>
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
+                </div>
+
+                <div className="relative flex flex-col sm:flex-row items-center gap-6">
+                  {/* Premium Badge Icon */}
+                  <div className="flex-shrink-0">
+                    <div className="relative">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shadow-lg ring-4 ring-orange-200 group-hover:ring-orange-300 transition-all duration-300">
+                        <Activity className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600" />
+                      </div>
+                      {/* Premium Crown Badge */}
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-400 to-amber-500 rounded-xl p-2 shadow-lg ring-2 ring-white group-hover:scale-110 transition-transform duration-300">
+                        <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                      </div>
                     </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-300 text-orange-800 px-3 py-1.5 rounded-full text-xs font-bold mb-3 shadow-sm">
+                      <Crown className="w-3 h-3" />
+                      <span>Premium Feature</span>
+                    </div>
+
+                    <h4 className="text-lg sm:text-xl font-black text-gray-900 mb-3 leading-tight">
+                      Personalized Health Goals & Tracking
+                    </h4>
+
+                    <p className="text-sm sm:text-base text-gray-700 mb-4 leading-relaxed">
+                      Set and track health goals with <span className="font-bold text-orange-600">Chef plan or higher</span>. Get AI-powered recommendations tailored to your wellness journey.
+                    </p>
+
+                    {/* Features List */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Weight management</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Calorie targets</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Nutrition goals</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                        <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                        <span className="font-medium">Progress tracking</span>
+                      </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <button
+                      onClick={() => onShowUpgradeModal && onShowUpgradeModal()}
+                      className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        <Crown className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+                        Unlock Health Goals
+                      </span>
+                      {/* Shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
+                    </button>
                   </div>
                 </div>
               </div>
