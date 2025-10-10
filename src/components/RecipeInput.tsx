@@ -580,6 +580,50 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
           <p className="mt-2 text-xs sm:text-sm text-red-600">{errors.filters}</p>
         )}
 
+        {/* Action Buttons for Chef+ Users - Shown right after filters */}
+        {availableFilters.length > basicFilters.length && (
+          <div className="flex flex-col sm:flex-row gap-3 mt-6">
+            {/* Primary Action Button with Enhanced Styling */}
+            <button
+              type="submit"
+              disabled={disabled}
+              className="flex-1 relative overflow-hidden py-3.5 sm:py-4 px-4 sm:px-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base group"
+              aria-label={mode === 'convert' ? 'Convert recipe with selected filters' : 'Create new recipe'}
+            >
+              <span className="relative z-10 flex items-center justify-center">
+                {mode === 'convert' ? (
+                  <>
+                    <Wand2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:animate-pulse" />
+                    Convert Recipe
+                    <span className="hidden lg:inline ml-2 text-xs opacity-75">(Enter ↵)</span>
+                  </>
+                ) : (
+                  <>
+                    <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:animate-pulse" />
+                    Create Recipe
+                    <span className="hidden lg:inline ml-2 text-xs opacity-75">(Enter ↵)</span>
+                  </>
+                )}
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-700" />
+            </button>
+
+            {/* Secondary Action Button */}
+            <button
+              type="button"
+              onClick={handleSurpriseMe}
+              disabled={disabled}
+              className="sm:w-auto px-5 sm:px-7 py-3.5 sm:py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base group"
+              title="Generate a random recipe with selected dietary preferences"
+              aria-label="Generate surprise recipe"
+            >
+              <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 inline mr-2 group-hover:rotate-180 transition-transform duration-500" />
+              <span className="hidden sm:inline">Surprise Me!</span>
+              <span className="sm:hidden">Surprise!</span>
+            </button>
+          </div>
+        )}
+
         {/* Custom Ingredient Preferences for Chef+ Users */}
         {availableFilters.length > basicFilters.length && (
           <div className="mt-6">
@@ -720,47 +764,49 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
         )}
       </div>
 
+        {/* Action Buttons for Free Users - Shown in original position */}
+        {availableFilters.length <= basicFilters.length && (
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* Primary Action Button with Enhanced Styling */}
+            <button
+              type="submit"
+              disabled={disabled}
+              className="flex-1 relative overflow-hidden py-3.5 sm:py-4 px-4 sm:px-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base group"
+              aria-label={mode === 'convert' ? 'Convert recipe with selected filters' : 'Create new recipe'}
+            >
+              <span className="relative z-10 flex items-center justify-center">
+                {mode === 'convert' ? (
+                  <>
+                    <Wand2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:animate-pulse" />
+                    Convert Recipe
+                    <span className="hidden lg:inline ml-2 text-xs opacity-75">(Enter ↵)</span>
+                  </>
+                ) : (
+                  <>
+                    <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:animate-pulse" />
+                    Create Recipe
+                    <span className="hidden lg:inline ml-2 text-xs opacity-75">(Enter ↵)</span>
+                  </>
+                )}
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-700" />
+            </button>
 
-        <div className="flex flex-col sm:flex-row gap-3">
-          {/* Primary Action Button with Enhanced Styling */}
-          <button
-            type="submit"
-            disabled={disabled}
-            className="flex-1 relative overflow-hidden py-3.5 sm:py-4 px-4 sm:px-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base group"
-            aria-label={mode === 'convert' ? 'Convert recipe with selected filters' : 'Create new recipe'}
-          >
-            <span className="relative z-10 flex items-center justify-center">
-              {mode === 'convert' ? (
-                <>
-                  <Wand2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:animate-pulse" />
-                  Convert Recipe
-                  <span className="hidden lg:inline ml-2 text-xs opacity-75">(Enter ↵)</span>
-                </>
-              ) : (
-                <>
-                  <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:animate-pulse" />
-                  Create Recipe
-                  <span className="hidden lg:inline ml-2 text-xs opacity-75">(Enter ↵)</span>
-                </>
-              )}
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-700" />
-          </button>
-
-          {/* Secondary Action Button */}
-          <button
-            type="button"
-            onClick={handleSurpriseMe}
-            disabled={disabled}
-            className="sm:w-auto px-5 sm:px-7 py-3.5 sm:py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base group"
-            title="Generate a random recipe with selected dietary preferences"
-            aria-label="Generate surprise recipe"
-          >
-            <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 inline mr-2 group-hover:rotate-180 transition-transform duration-500" />
-            <span className="hidden sm:inline">Surprise Me!</span>
-            <span className="sm:hidden">Surprise!</span>
-          </button>
-        </div>
+            {/* Secondary Action Button */}
+            <button
+              type="button"
+              onClick={handleSurpriseMe}
+              disabled={disabled}
+              className="sm:w-auto px-5 sm:px-7 py-3.5 sm:py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base group"
+              title="Generate a random recipe with selected dietary preferences"
+              aria-label="Generate surprise recipe"
+            >
+              <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 inline mr-2 group-hover:rotate-180 transition-transform duration-500" />
+              <span className="hidden sm:inline">Surprise Me!</span>
+              <span className="sm:hidden">Surprise!</span>
+            </button>
+          </div>
+        )}
       </form>
 
       {/* Enhanced Default Serving Size and Units Display - Moved After Action Buttons */}
