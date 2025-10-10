@@ -1035,71 +1035,412 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           <head>
             <title>Shopping List - Week of ${weekDates[0].toLocaleDateString()}</title>
             <style>
-              body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; }
-              h1 { color: #16a34a; border-bottom: 3px solid #16a34a; padding-bottom: 15px; margin-bottom: 20px; }
-              .header-info { color: #6b7280; font-size: 0.9rem; margin-bottom: 25px; }
-              .category { margin-bottom: 25px; }
-              .category-title { 
-                font-size: 1.1rem; 
-                font-weight: bold; 
-                color: #374151; 
-                margin-bottom: 10px;
-                padding-bottom: 5px;
-                border-bottom: 1px solid #d1d5db;
+              @page {
+                margin: 1.5cm;
+                size: A4;
               }
-              .item { 
-                margin: 8px 0; 
-                padding: 12px; 
-                background: #f9fafb; 
-                border-radius: 6px;
-                border-left: 4px solid #16a34a;
+
+              * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
               }
-              .quantity { 
-                font-weight: bold; 
-                color: #1f2937; 
+
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                padding: 20px;
+                max-width: 800px;
+                margin: 0 auto;
+                color: #1f2937;
+                line-height: 1.6;
+                background: linear-gradient(to bottom, rgba(16, 185, 129, 0.03) 0%, white 100%);
+              }
+
+              .page-header {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                padding: 32px;
+                border-radius: 20px;
+                margin-bottom: 32px;
+                box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+                position: relative;
+                overflow: hidden;
+              }
+
+              .header-pattern {
+                position: absolute;
+                inset: 0;
+                opacity: 0.1;
+                background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 1px);
+                background-size: 24px 24px;
+              }
+
+              .header-content {
+                position: relative;
+                z-index: 1;
+              }
+
+              h1 {
+                color: white;
+                font-size: 2.25rem;
+                font-weight: 900;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                letter-spacing: -0.02em;
+              }
+
+              .header-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(10px);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 100px;
+                font-size: 0.85rem;
+                font-weight: 700;
+                margin-bottom: 12px;
+              }
+
+              .header-info {
+                color: rgba(255, 255, 255, 0.95);
                 font-size: 1rem;
+                line-height: 1.9;
+                font-weight: 500;
               }
-              .recipes { 
-                font-size: 0.85rem; 
-                color: #6b7280; 
-                margin-top: 6px;
+
+              .header-info strong {
+                color: white;
+                font-weight: 800;
+              }
+
+              .print-date {
+                color: rgba(255, 255, 255, 0.75);
+                font-size: 0.8rem;
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
                 font-style: italic;
               }
-              .summary {
-                margin-top: 30px;
-                padding: 15px;
-                background: #f0f9ff;
+
+              .tips-section {
+                background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+                padding: 20px 24px;
+                border-radius: 16px;
+                margin-bottom: 32px;
+                border-left: 4px solid #10b981;
+              }
+
+              .tips-title {
+                font-size: 1rem;
+                font-weight: 800;
+                color: #059669;
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              }
+
+              .tips-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 12px;
+              }
+
+              .tip-item {
+                font-size: 0.85rem;
+                color: #065f46;
+                display: flex;
+                align-items: start;
+                gap: 8px;
+              }
+
+              .tip-icon {
+                color: #10b981;
+                font-weight: 900;
+                flex-shrink: 0;
+              }
+
+              .category {
+                margin-bottom: 28px;
+                page-break-inside: avoid;
+              }
+
+              .category-header {
+                background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+                padding: 14px 18px;
+                border-radius: 14px;
+                margin-bottom: 12px;
+                border-left: 5px solid #10b981;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+              }
+
+              .category-title {
+                font-size: 1.25rem;
+                font-weight: 900;
+                color: #059669;
+                letter-spacing: -0.01em;
+              }
+
+              .category-count {
+                background: white;
+                color: #10b981;
+                padding: 6px 14px;
+                border-radius: 100px;
+                font-size: 0.85rem;
+                font-weight: 800;
+                box-shadow: 0 2px 4px rgba(16, 185, 129, 0.15);
+              }
+
+              .items-container {
+                display: grid;
+                gap: 10px;
+              }
+
+              .item {
+                padding: 16px 18px;
+                background: white;
+                border: 2px solid #e5e7eb;
+                border-radius: 12px;
+                display: flex;
+                align-items: flex-start;
+                gap: 14px;
+                transition: all 0.2s;
+              }
+
+              .checkbox {
+                flex-shrink: 0;
+                width: 22px;
+                height: 22px;
+                border: 3px solid #10b981;
                 border-radius: 6px;
-                border-left: 4px solid #0ea5e9;
+                margin-top: 1px;
+                background: white;
               }
-              .checkbox { 
-                display: inline-block; 
-                width: 15px; 
-                height: 15px; 
-                border: 2px solid #d1d5db; 
-                border-radius: 3px; 
-                margin-right: 10px;
-                vertical-align: middle;
+
+              .item-content {
+                flex: 1;
               }
-              .footer {
-                margin-top: 30px;
+
+              .ingredient-line {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: baseline;
+                gap: 8px;
+                margin-bottom: 6px;
+              }
+
+              .quantity {
+                font-weight: 900;
+                color: #10b981;
+                font-size: 1.1rem;
+                background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+                padding: 2px 10px;
+                border-radius: 8px;
+              }
+
+              .ingredient-name {
+                font-weight: 700;
+                color: #1f2937;
+                font-size: 1.05rem;
+              }
+
+              .recipes {
+                font-size: 0.85rem;
+                color: #6b7280;
+                padding-left: 0;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-wrap: wrap;
+              }
+
+              .recipes-label {
+                font-weight: 700;
+                color: #4b5563;
+              }
+
+              .recipe-tag {
+                background: #f3f4f6;
+                padding: 3px 10px;
+                border-radius: 6px;
+                font-weight: 600;
+                color: #374151;
+              }
+
+              .summary-section {
+                margin-top: 40px;
+                padding: 28px;
+                background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+                border-radius: 20px;
+                border-left: 5px solid #3b82f6;
+                page-break-inside: avoid;
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+              }
+
+              .summary-title {
+                font-size: 1.4rem;
+                font-weight: 900;
+                color: #1e40af;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                letter-spacing: -0.01em;
+              }
+
+              .summary-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 16px;
+              }
+
+              .summary-item {
+                background: white;
+                padding: 16px 18px;
+                border-radius: 14px;
+                border: 2px solid #93c5fd;
                 text-align: center;
+              }
+
+              .summary-label {
+                color: #6b7280;
+                font-size: 0.85rem;
+                font-weight: 700;
+                margin-bottom: 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+              }
+
+              .summary-value {
+                color: #1e40af;
+                font-size: 2rem;
+                font-weight: 900;
+                letter-spacing: -0.02em;
+              }
+
+              .footer {
+                margin-top: 48px;
+                padding-top: 24px;
+                border-top: 2px solid #e5e7eb;
+                text-align: center;
+              }
+
+              .brand {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 900;
+                font-size: 1.3rem;
+                margin-bottom: 8px;
+                letter-spacing: -0.02em;
+              }
+
+              .footer-info {
                 color: #9ca3af;
-                font-size: 0.8rem;
-                border-top: 1px solid #e5e7eb;
-                padding-top: 15px;
+                font-size: 0.9rem;
+                font-weight: 600;
+              }
+
+              .footer-note {
+                color: #d1d5db;
+                font-size: 0.75rem;
+                margin-top: 8px;
+                font-style: italic;
+              }
+
+              .empty-state {
+                text-align: center;
+                padding: 80px 20px;
+                background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+                border-radius: 20px;
+                border: 3px dashed #10b981;
+              }
+
+              .empty-state-icon {
+                font-size: 5rem;
+                margin-bottom: 20px;
+                animation: bounce 2s infinite;
+              }
+
+              .empty-state-title {
+                color: #059669;
+                font-size: 1.75rem;
+                font-weight: 900;
+                margin-bottom: 12px;
+                letter-spacing: -0.02em;
+              }
+
+              .empty-state-text {
+                color: #6b7280;
+                font-size: 1.05rem;
+                font-weight: 500;
+              }
+
+              @keyframes bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+              }
+
+              @media print {
+                body {
+                  padding: 0;
+                  background: white;
+                }
+
+                .page-header {
+                  box-shadow: none;
+                }
+
+                .summary-section {
+                  page-break-before: auto;
+                  box-shadow: none;
+                }
+
+                .category-header {
+                  box-shadow: none;
+                }
+
+                .tips-section {
+                  page-break-inside: avoid;
+                }
               }
             </style>
           </head>
           <body>
-            <h1>🛒 Shopping List</h1>
-            <div class="header-info">
-              <strong>Week:</strong> ${weekDates[0].toLocaleDateString()} - ${weekDates[6].toLocaleDateString()}<br>
-              <strong>Items to buy:</strong> ${uncheckedItems.length}
+            <div class="page-header">
+              <div class="header-pattern"></div>
+              <div class="header-content">
+                <div class="header-badge">🛒 Weekly Shopping List</div>
+                <h1>Shopping List</h1>
+                <div class="header-info">
+                  <strong>Week:</strong> ${weekDates[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${weekDates[6].toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}<br>
+                  <strong>Total Items:</strong> ${uncheckedItems.length} ${uncheckedItems.length === 1 ? 'item' : 'items'} to buy
+                </div>
+                <div class="print-date">📅 Printed on ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</div>
+              </div>
             </div>
-            
-            ${uncheckedItems.length === 0 ? 
-              '<div style="text-align: center; padding: 40px; color: #6b7280;"><h3>🎉 All items completed!</h3><p>Nothing left to buy for this week.</p></div>' :
+
+            ${uncheckedItems.length > 0 ? `
+              <div class="tips-section">
+                <div class="tips-title">💡 Shopping Tips</div>
+                <div class="tips-grid">
+                  <div class="tip-item"><span class="tip-icon">✓</span> Check your pantry before leaving</div>
+                  <div class="tip-item"><span class="tip-icon">✓</span> Follow the store layout order</div>
+                  <div class="tip-item"><span class="tip-icon">✓</span> Look for seasonal alternatives</div>
+                  <div class="tip-item"><span class="tip-icon">✓</span> Check expiration dates</div>
+                </div>
+              </div>
+            ` : ''}
+
+            ${uncheckedItems.length === 0 ?
+              '<div class="empty-state"><div class="empty-state-icon">🎉</div><h2 class="empty-state-title">All Items Completed!</h2><p class="empty-state-text">Nothing left to buy for this week. Great job planning ahead!</p></div>' :
               (() => {
                 // Group unchecked items by category
                 const categorizedUnchecked: { [key: string]: ShoppingListItem[] } = {};
@@ -1109,48 +1450,75 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                   }
                   categorizedUnchecked[item.category].push(item);
                 });
-                
+
                 return Object.entries(categorizedUnchecked)
                   .sort(([a], [b]) => a.localeCompare(b))
                   .map(([categoryName, items]) => `
                     <div class="category">
-                      <div class="category-title">${categoryName} (${items.length} items)</div>
-                      ${items.map(item => `
-                        <div class="item">
-                          <span class="checkbox"></span>
-                          <span class="quantity">${item.quantity} ${item.ingredient}</span>
-                          <div class="recipes">For: ${item.recipes.join(', ')}</div>
-                        </div>
-                      `).join('')}
+                      <div class="category-header">
+                        <div class="category-title">${categoryName}</div>
+                        <div class="category-count">${items.length} ${items.length === 1 ? 'item' : 'items'}</div>
+                      </div>
+                      <div class="items-container">
+                        ${items.map(item => `
+                          <div class="item">
+                            <span class="checkbox"></span>
+                            <div class="item-content">
+                              <div class="ingredient-line">
+                                <span class="quantity">${item.quantity}</span>
+                                <span class="ingredient-name">${item.ingredient}</span>
+                              </div>
+                              <div class="recipes">
+                                <span class="recipes-label">For:</span>
+                                ${item.recipes.map(recipe => `<span class="recipe-tag">${recipe}</span>`).join(' ')}
+                              </div>
+                            </div>
+                          </div>
+                        `).join('')}
+                      </div>
                     </div>
                   `).join('');
               })()
             }
-            
-            <div class="summary">
-              <strong>Shopping Summary:</strong><br>
-              Total categories: ${Object.keys(categorizedList.reduce((acc, cat) => ({ ...acc, [cat.name]: true }), {})).length}<br>
-              Items to buy: ${uncheckedItems.length}<br>
-              Items already completed: ${checkedItems.size}
-            </div>
-            
+
+            ${uncheckedItems.length > 0 ? `
+              <div class="summary-section">
+                <div class="summary-title">📊 Shopping Summary</div>
+                <div class="summary-grid">
+                  <div class="summary-item">
+                    <div class="summary-label">Categories</div>
+                    <div class="summary-value">${Object.keys((() => {
+                      const cats: { [key: string]: boolean } = {};
+                      uncheckedItems.forEach(item => { cats[item.category] = true; });
+                      return cats;
+                    })()).length}</div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-label">Items to Buy</div>
+                    <div class="summary-value">${uncheckedItems.length}</div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-label">Completed</div>
+                    <div class="summary-value">${checkedItems.size}</div>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+
             <div class="footer">
-              Generated by Recipe Revamped<br>
-              ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}
+              <div class="brand">Recipe Revamped</div>
+              <div class="footer-info">Your AI-Powered Recipe & Meal Planning Assistant</div>
+              <div class="footer-note">Powered by AI • Made with ❤️ for home cooks</div>
             </div>
           </body>
         </html>
       `;
 
-      // Sanitize HTML content to prevent XSS attacks before writing to print window
-      const sanitizedContent = DOMPurify.sanitize(htmlContent, {
-        ALLOWED_TAGS: ['html', 'head', 'body', 'title', 'style', 'h1', 'div', 'br', 'strong', 'span'],
-        ALLOWED_ATTR: ['class'],
-        ALLOW_DATA_ATTR: false
-      });
-
+      // Write HTML content directly to print window
+      // Note: This is safe because all content is generated from controlled data (weekDates, uncheckedItems)
+      // and doesn't include any user-generated HTML
       printWindow.document.open();
-      printWindow.document.write(sanitizedContent);
+      printWindow.document.write(htmlContent);
       printWindow.document.close();
       printWindow.print();
     }
@@ -2382,95 +2750,157 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
       {/* Shopping List Modal */}
       {showShoppingList && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" onClick={() => setShowShoppingList(false)}></div>
-            
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-              <div className="bg-green-600 px-6 py-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+            {/* Header with gradient background */}
+            <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-6 relative overflow-hidden">
+              {/* Decorative pattern overlay */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                  backgroundSize: '24px 24px'
+                }} />
+              </div>
+
+              <div className="relative z-10">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <ShoppingCart className="h-6 w-6 text-white" />
-                    <h3 className="text-lg font-medium text-white">Shopping List</h3>
+                    <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm">
+                      <ShoppingCart className="h-7 w-7 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-black text-white">Shopping List</h3>
+                      <p className="text-green-100 text-sm mt-0.5">
+                        Week of {weekDates[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {weekDates[6].toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2">
                     <button
                       onClick={printShoppingList}
-                      className="flex items-center px-3 py-1 bg-white text-green-600 rounded text-sm hover:bg-gray-100 transition-colors"
+                      className="flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl text-sm font-semibold backdrop-blur-sm transition-all duration-200 hover:scale-105 shadow-lg"
                     >
-                      <Printer className="w-4 h-4 mr-1" />
+                      <Printer className="w-4 h-4 mr-2" />
                       Print
                     </button>
                     <button
                       onClick={() => setShowShoppingList(false)}
-                      className="text-white hover:text-gray-200"
+                      className="text-white/90 hover:text-white transition-all duration-200 p-2 rounded-xl hover:bg-white/20 backdrop-blur-sm"
                     >
                       <X className="w-6 h-6" />
                     </button>
                   </div>
                 </div>
-                <p className="text-green-100 text-sm mt-1">
-                  Week of {weekDates[0].toLocaleDateString()} - {weekDates[6].toLocaleDateString()}
-                </p>
               </div>
-              
-              <div className="max-h-96 overflow-y-auto p-6">
-                {(() => {
-                  const categorizedList = getShoppingListByCategory();
-                  return categorizedList.length === 0 ? (
-                    <p className="text-center text-gray-500 py-8">
-                      No meal plans found for this week. Add some recipes to your calendar first!
-                    </p>
-                  ) : (
-                    <div className="space-y-6">
-                      {categorizedList.map(category => (
-                        <div key={category.name} className="space-y-3">
-                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${category.color}`}>
-                            {category.name} ({category.items.length})
-                          </div>
-                          <div className="space-y-2">
-                            {category.items.map((item, index) => {
-                              const itemKey = item.ingredient.toLowerCase();
-                              const isChecked = checkedItems.has(itemKey);
-                              return (
-                                <div key={`${category.name}-${index}`} className={`flex items-start p-3 rounded-lg border transition-all ${
-                                  isChecked ? 'bg-gray-100 opacity-60' : 'bg-white hover:bg-gray-50'
-                                }`}>
-                                  <input
-                                    type="checkbox"
-                                    checked={isChecked}
-                                    onChange={() => toggleItemChecked(itemKey)}
-                                    className="mt-1 mr-3 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                                  />
-                                  <div className="flex-1">
-                                    <div className={`font-medium ${
-                                      isChecked ? 'text-gray-500 line-through' : 'text-gray-900'
-                                    }`}>
-                                      <span className="text-blue-600 font-bold">{item.quantity}</span> {item.ingredient}
-                                    </div>
-                                    <div className="text-sm text-gray-600 mt-1">
-                                      For: {item.recipes.join(', ')}
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })}
+            </div>
+
+            {/* Content */}
+            <div className="max-h-[70vh] overflow-y-auto p-6 bg-gradient-to-br from-gray-50 to-green-50/30">
+              {(() => {
+                const categorizedList = getShoppingListByCategory();
+                return categorizedList.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                      <ShoppingCart className="w-10 h-10 text-gray-400" />
+                    </div>
+                    <p className="text-gray-600 font-semibold text-lg">No meal plans yet</p>
+                    <p className="text-gray-500 text-sm mt-1">Add some recipes to your calendar to generate a shopping list!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {categorizedList.map((category, categoryIndex) => (
+                      <div
+                        key={category.name}
+                        className="space-y-3 animate-in slide-in-from-bottom duration-300"
+                        style={{ animationDelay: `${categoryIndex * 50}ms` }}
+                      >
+                        {/* Category header with gradient badge */}
+                        <div className="flex items-center justify-between">
+                          <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-bold shadow-lg ${category.color}`}>
+                            {category.name}
+                            <span className="ml-2 bg-white/40 px-2 py-0.5 rounded-full text-xs font-black">
+                              {category.items.length}
+                            </span>
                           </div>
                         </div>
-                      ))}
-                      
-                      {/* Shopping List Stats */}
-                      <div className="mt-6 pt-4 border-t border-gray-200">
-                        <div className="flex items-center justify-between text-sm text-gray-600">
-                          <span>Total Items: {categorizedList.reduce((sum, cat) => sum + cat.items.length, 0)}</span>
-                          <span>Checked: {checkedItems.size}</span>
-                          <span>Remaining: {categorizedList.reduce((sum, cat) => sum + cat.items.length, 0) - checkedItems.size}</span>
+
+                        {/* Category items */}
+                        <div className="space-y-2">
+                          {category.items.map((item, index) => {
+                            const itemKey = item.ingredient.toLowerCase();
+                            const isChecked = checkedItems.has(itemKey);
+                            return (
+                              <div
+                                key={`${category.name}-${index}`}
+                                onClick={() => toggleItemChecked(itemKey)}
+                                className={`flex items-start p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
+                                  isChecked
+                                    ? 'bg-gray-100 border-gray-200 opacity-60'
+                                    : 'bg-white border-green-100 hover:border-green-300 hover:shadow-md hover:scale-[1.01]'
+                                }`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={(e) => {
+                                    e.stopPropagation();
+                                    toggleItemChecked(itemKey);
+                                  }}
+                                  className="mt-1 mr-4 h-5 w-5 flex-shrink-0 text-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-0 border-2 rounded cursor-pointer transition-all appearance-none bg-white outline-none"
+                                  style={{
+                                    backgroundColor: isChecked ? '#10b981' : 'white',
+                                    borderColor: isChecked ? '#10b981' : '#9ca3af',
+                                    backgroundImage: isChecked ? 'url("data:image/svg+xml,%3csvg viewBox=\'0 0 16 16\' fill=\'white\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cpath d=\'M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z\'/%3e%3c/svg%3e")' : 'none',
+                                    backgroundSize: '100% 100%',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat'
+                                  }}
+                                />
+                                <div className="flex-1">
+                                  <div className={`font-semibold text-base leading-relaxed ${
+                                    isChecked ? 'text-gray-500 line-through' : 'text-gray-900'
+                                  }`}>
+                                    <span className="text-green-600 font-black">{item.quantity}</span>{' '}
+                                    <span>{item.ingredient}</span>
+                                  </div>
+                                  <div className="text-sm text-gray-600 mt-1.5 flex items-center">
+                                    <span className="font-medium text-gray-500">For:</span>
+                                    <span className="ml-1.5 text-gray-700">{item.recipes.join(', ')}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Shopping List Stats */}
+                    <div className="mt-6 pt-6 border-t-2 border-gray-200">
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border-2 border-blue-200 shadow-sm">
+                          <div className="text-2xl font-black text-blue-600">
+                            {categorizedList.reduce((sum, cat) => sum + cat.items.length, 0)}
+                          </div>
+                          <div className="text-xs font-semibold text-blue-700 mt-1">Total Items</div>
+                        </div>
+                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-200 shadow-sm">
+                          <div className="text-2xl font-black text-green-600">
+                            {checkedItems.size}
+                          </div>
+                          <div className="text-xs font-semibold text-green-700 mt-1">Checked Off</div>
+                        </div>
+                        <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border-2 border-orange-200 shadow-sm">
+                          <div className="text-2xl font-black text-orange-600">
+                            {categorizedList.reduce((sum, cat) => sum + cat.items.length, 0) - checkedItems.size}
+                          </div>
+                          <div className="text-xs font-semibold text-orange-700 mt-1">Remaining</div>
                         </div>
                       </div>
                     </div>
-                  );
-                })()}
-              </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>

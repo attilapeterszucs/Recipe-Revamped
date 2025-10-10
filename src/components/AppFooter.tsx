@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// Remove ChefHat import as we're using logo image now
 
 export const AppFooter: React.FC = () => {
   const scrollToTop = () => {
@@ -8,48 +7,87 @@ export const AppFooter: React.FC = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-gray-300 py-8 sm:py-12 px-4 sm:px-6 lg:px-8 mt-16">
+    <footer className="bg-gradient-to-b from-gray-50 to-white border-t border-gray-200 py-16 px-4 sm:px-6 lg:px-8 mt-16">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-          <div className="col-span-1 sm:col-span-2 md:col-span-1">
-            <div className="flex items-center mb-3 sm:mb-4">
-              <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
-              <span className="text-base sm:text-lg font-semibold text-white">Recipe Revamped</span>
-            </div>
-            <p className="text-sm text-gray-400">
-              The AI-powered recipe converter with transparent data practices.
+        <div className="grid md:grid-cols-4 gap-12 mb-12">
+          <div className="md:col-span-1">
+            <button onClick={scrollToTop} className="flex items-center gap-2 mb-4 group">
+              <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+              <span className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
+            </button>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              AI-powered recipe conversion for 24+ dietary needs. Transform any recipe instantly.
             </p>
           </div>
-          
+
           <div>
-            <h4 className="text-white font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Product</h4>
-            <ul className="space-y-2 text-sm">
-              <li><button onClick={scrollToTop} className="hover:text-white transition-colors text-left">Recipe Converter</button></li>
-              <li><Link to="/about" className="hover:text-white transition-colors">Features</Link></li>
-              <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+            <h4 className="text-gray-900 font-bold mb-4">Product</h4>
+            <ul className="space-y-3">
+              <li>
+                <button onClick={scrollToTop} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  Recipe Converter
+                </button>
+              </li>
+              <li>
+                <Link to="/about" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  Features
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  Blog
+                </Link>
+              </li>
             </ul>
           </div>
-          
+
           <div>
-            <h4 className="text-white font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Company</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+            <h4 className="text-gray-900 font-bold mb-4">Company</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/about" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
-          
+
           <div>
-            <h4 className="text-white font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Legal</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Use</Link></li>
-              <li><Link to="/cookies" className="hover:text-white transition-colors">Cookie Policy</Link></li>
+            <h4 className="text-gray-900 font-bold mb-4">Legal</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/privacy" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
+                <Link to="/cookies" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  Cookie Policy
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
-        
-        <div className="border-t border-gray-800 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-xs sm:text-sm">
-          <p>&copy; 2025 Recipe Revamped. All rights reserved.</p>
+
+        <div className="border-t border-gray-200 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-gray-600">&copy; 2025 Recipe Revamped. All rights reserved.</p>
+            <div className="flex items-center gap-6">
+              <button onClick={scrollToTop} className="text-sm text-gray-600 hover:text-green-600 transition-colors font-medium">
+                Back to Top ↑
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
