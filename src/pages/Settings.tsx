@@ -760,14 +760,14 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   }
 
   const sections = [
-    { id: 'profile', label: 'Account', icon: UserIcon },
-    { id: 'personal', label: 'Personal Profile & Goals', icon: Activity },
-    { id: 'recipe-settings', label: 'Recipe Settings', icon: Bot },
-    { id: 'preferences', label: 'Dietary Filters', icon: Palette },
-    { id: 'health', label: 'Health Conditions', icon: Heart },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'data', label: 'Data & Backup', icon: Database },
-    ...(isUserAdmin ? [{ id: 'admin', label: 'Admin Panel', icon: UserCog }] : [])
+    { id: 'profile', label: 'Account', icon: UserIcon, premium: false },
+    { id: 'personal', label: 'Personal Profile & Goals', icon: Activity, premium: false },
+    { id: 'recipe-settings', label: 'Recipe Settings', icon: Bot, premium: true, hasAccess: featureAccess?.canSetDefaultPreferences },
+    { id: 'preferences', label: 'Dietary Filters', icon: Palette, premium: true, hasAccess: featureAccess?.availableDietaryFilters && featureAccess.availableDietaryFilters.length > 5 },
+    { id: 'health', label: 'Health Conditions', icon: Heart, premium: true, hasAccess: featureAccess?.canUseHealthConditions },
+    { id: 'notifications', label: 'Notifications', icon: Bell, premium: false },
+    { id: 'data', label: 'Data & Backup', icon: Database, premium: true, hasAccess: featureAccess?.canBackupRestore },
+    ...(isUserAdmin ? [{ id: 'admin', label: 'Admin Panel', icon: UserCog, premium: false }] : [])
   ];
 
   const dietaryOptions = [
@@ -2929,6 +2929,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 {sections.map((section) => {
                   const Icon = section.icon;
                   const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'));
+                  const showPremiumBadge = section.premium && !section.hasAccess;
                   return (
                     <button
                       key={section.id}
@@ -2941,6 +2942,15 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     >
                       <Icon className="w-4 h-4 mr-2 flex-shrink-0" />
                       <span className="text-xs sm:text-sm truncate">{section.label}</span>
+                      {showPremiumBadge && (
+                        <div className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-bold ml-2 ${
+                          isActive
+                            ? 'bg-white/20 text-white'
+                            : 'bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border border-orange-300'
+                        }`}>
+                          <Crown className="w-3 h-3" />
+                        </div>
+                      )}
                     </button>
                   );
                 })}
@@ -2954,6 +2964,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               {sections.map((section, index) => {
                 const Icon = section.icon;
                 const animationDelay = `delay-[${index * 50}ms]`;
+                const showPremiumBadge = section.premium && !section.hasAccess;
                 return (
                   <button
                     key={section.id}
@@ -2970,8 +2981,18 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     } : {}}
                   >
                     <Icon className="w-5 h-5 mr-3" />
-                    {section.label}
-                    <ChevronRight className="w-4 h-4 ml-auto" />
+                    <span className="flex-1 text-left">{section.label}</span>
+                    {showPremiumBadge && (
+                      <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold mr-2 ${
+                        activeSection === section.id
+                          ? 'bg-white/20 text-white'
+                          : 'bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border border-orange-300'
+                      }`}>
+                        <Crown className="w-3 h-3" />
+                        <span>Premium</span>
+                      </div>
+                    )}
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 );
               })}
