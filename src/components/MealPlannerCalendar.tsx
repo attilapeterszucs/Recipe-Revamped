@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DOMPurify from 'dompurify';
-import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple, Sparkles, ArrowUpDown, Filter, Utensils, AlertTriangle, Info, CheckCircle } from 'lucide-react';
+import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple, Sparkles, ArrowUpDown, Filter, Utensils, AlertTriangle, Info, CheckCircle, Crown, Check } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
 import { getUserRecipes } from '../lib/firestore';
@@ -1750,24 +1750,74 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           )}
         </div>
       ) : (
-        <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-6 text-center">
-          <div className="mb-4">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full mb-3">
-              <Heart className="h-6 w-6 text-orange-600" />
-            </div>
-            <h4 className="text-lg font-bold text-orange-800 mb-2">
-              Premium Nutrition Analysis
-            </h4>
-            <p className="text-orange-700 max-w-md mx-auto leading-relaxed">
-              Unlock detailed weekly nutrition tracking with Master Chef or Enterprise plan. Get comprehensive nutritional insights for your meal plans.
-            </p>
+        <div className="relative bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 border-2 border-orange-300 rounded-2xl p-6 sm:p-8 shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300">
+          {/* Decorative background pattern */}
+          <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
+              backgroundSize: '24px 24px'
+            }}></div>
           </div>
-          <button 
-            data-upgrade-plan
-            className="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-          >
-            Upgrade for Nutrition Analysis
-          </button>
+
+          <div className="relative flex flex-col sm:flex-row items-center gap-6">
+            {/* Premium Badge Icon */}
+            <div className="flex-shrink-0">
+              <div className="relative">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shadow-lg ring-4 ring-orange-200 group-hover:ring-orange-300 transition-all duration-300">
+                  <Heart className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600" />
+                </div>
+                {/* Premium Crown Badge */}
+                <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-400 to-amber-500 rounded-xl p-2 shadow-lg ring-2 ring-white group-hover:scale-110 transition-transform duration-300">
+                  <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 text-center sm:text-left">
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-300 text-orange-800 px-3 py-1.5 rounded-full text-xs font-bold mb-3 shadow-sm">
+                <Crown className="w-3 h-3" />
+                <span>Premium Feature</span>
+              </div>
+
+              <h4 className="text-lg sm:text-xl font-black text-gray-900 mb-3 leading-tight">
+                Premium Nutrition Analysis
+              </h4>
+
+              <p className="text-sm sm:text-base text-gray-700 mb-4 leading-relaxed">
+                Unlock detailed weekly nutrition tracking with <span className="font-bold text-orange-600">Master Chef plan</span>. Get comprehensive nutritional insights for your meal plans.
+              </p>
+
+              {/* Feature List */}
+              <div className="flex flex-wrap gap-2 mb-5">
+                <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                  <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                  <span className="font-medium">Weekly tracking</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                  <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                  <span className="font-medium">Macro breakdowns</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                  <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                  <span className="font-medium">AI insights</span>
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <button
+                data-upgrade-plan
+                className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  <Crown className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+                  Upgrade for Nutrition Analysis
+                </span>
+                {/* Shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -2157,21 +2207,72 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
           )}
         </div>
       ) : (
-        <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-orange-50 border-2 border-orange-300 rounded-2xl p-6 mb-6 shadow-lg">
-          <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-orange-600 to-yellow-600 rounded-xl shadow-lg">
-                <Sparkles className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">Generate Weekly Menu</h3>
-                <p className="text-sm text-orange-700 font-semibold mt-1">Auto-generate weekly meal plans with AI-powered recipe recommendations</p>
+        <div className="relative bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 border-2 border-orange-300 rounded-2xl p-6 sm:p-8 mb-6 shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300">
+          {/* Decorative background pattern */}
+          <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
+              backgroundSize: '24px 24px'
+            }}></div>
+          </div>
+
+          <div className="relative flex flex-col sm:flex-row items-center gap-6">
+            {/* Premium Badge Icon */}
+            <div className="flex-shrink-0">
+              <div className="relative">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shadow-lg ring-4 ring-orange-200 group-hover:ring-orange-300 transition-all duration-300">
+                  <Sparkles className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600" />
+                </div>
+                {/* Premium Crown Badge */}
+                <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-400 to-amber-500 rounded-xl p-2 shadow-lg ring-2 ring-white group-hover:scale-110 transition-transform duration-300">
+                  <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                </div>
               </div>
             </div>
-            <div className="flex items-center">
-              <span className="text-xs bg-gradient-to-r from-orange-600 to-yellow-600 text-white px-4 py-2 rounded-xl font-black shadow-md">
-                Master Chef
-              </span>
+
+            {/* Content */}
+            <div className="flex-1 text-center sm:text-left">
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-300 text-orange-800 px-3 py-1.5 rounded-full text-xs font-bold mb-3 shadow-sm">
+                <Crown className="w-3 h-3" />
+                <span>Premium Feature</span>
+              </div>
+
+              <h4 className="text-lg sm:text-xl font-black text-gray-900 mb-3 leading-tight">
+                Generate Weekly Menu
+              </h4>
+
+              <p className="text-sm sm:text-base text-gray-700 mb-4 leading-relaxed">
+                Auto-generate weekly meal plans with <span className="font-bold text-orange-600">Master Chef plan</span>. Get AI-powered recipe recommendations tailored to your preferences.
+              </p>
+
+              {/* Feature List */}
+              <div className="flex flex-wrap gap-2 mb-5">
+                <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                  <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                  <span className="font-medium">AI-powered</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                  <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                  <span className="font-medium">Auto-fill calendar</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                  <Check className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                  <span className="font-medium">Smart suggestions</span>
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <button
+                data-upgrade-plan
+                className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  <Crown className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+                  Upgrade for Weekly Menus
+                </span>
+                {/* Shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
+              </button>
             </div>
           </div>
         </div>
