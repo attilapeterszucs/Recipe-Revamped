@@ -79,6 +79,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-display: swap;
 }
 
 /* Browser-specific compatibility fixes */
@@ -128,10 +129,15 @@ body {
   min-height: 100vh;
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   overscroll-behavior-y: contain; /* Prevent bounce scrolling */
+  /* GPU acceleration for smooth scrolling */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 #root {
   min-height: 100vh;
+  /* CSS containment for better rendering performance */
+  contain: layout style paint;
 }
 
 /* Enhanced Scroll Animations */
@@ -140,11 +146,13 @@ body {
   transform: translateY(40px);
   transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
               transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
 .scroll-animate.is-visible {
   opacity: 1;
   transform: translateY(0);
+  will-change: auto;
 }
 
 /* Scale animation variant */
@@ -153,11 +161,13 @@ body {
   transform: scale(0.95) translateY(20px);
   transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
 .scroll-animate-scale.is-visible {
   opacity: 1;
   transform: scale(1) translateY(0);
+  will-change: auto;
 }
 
 /* Slide from left */
@@ -214,6 +224,10 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+
+  /* GPU acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Improved focus states for mobile accessibility */
@@ -349,6 +363,22 @@ html {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Performance optimization: reduce animations on low-end devices */
+@media (prefers-reduced-motion: no-preference) and (max-width: 768px) {
+  .scroll-animate,
+  .scroll-animate-scale,
+  .scroll-animate-slide-left,
+  .scroll-animate-slide-right {
+    /* Faster animations on mobile */
+    transition-duration: 0.5s !important;
+  }
+
+  .animate-blob {
+    /* Simpler animation on mobile */
+    animation-duration: 10s !important;
   }
 }
 
@@ -538,24 +568,27 @@ input[type="datetime-local"] {
   animation: fadeIn 0.4s ease-out;
 }
 
-/* Blob animation for hero backgrounds */
+/* Blob animation for hero backgrounds - GPU accelerated */
 @keyframes blob {
   0%, 100% {
-    transform: translate(0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
   25% {
-    transform: translate(20px, -20px) scale(1.1);
+    transform: translate3d(20px, -20px, 0) scale(1.1);
   }
   50% {
-    transform: translate(-20px, 20px) scale(0.9);
+    transform: translate3d(-20px, 20px, 0) scale(0.9);
   }
   75% {
-    transform: translate(20px, 20px) scale(1.05);
+    transform: translate3d(20px, 20px, 0) scale(1.05);
   }
 }
 
 .animate-blob {
   animation: blob 7s infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 .animation-delay-2000 {

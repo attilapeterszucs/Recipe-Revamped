@@ -166,6 +166,10 @@
     <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
     <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
 
+    <!-- Preconnect to Firebase services for faster initial load -->
+    <link rel="preconnect" href="https://identitytoolkit.googleapis.com" />
+    <link rel="preconnect" href="https://securetoken.googleapis.com" />
+
     <!-- Enhanced Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self' https:;
@@ -310,6 +314,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx" fetchpriority="high"></script>
   </body>
 </html>
