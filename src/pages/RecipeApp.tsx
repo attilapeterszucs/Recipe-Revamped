@@ -958,6 +958,7 @@ export function RecipeApp() {
                           used: featureAccess.conversionsUsedToday,
                           limit: featureAccess.conversionLimit
                         }}
+                        onShowUpgradeModal={() => setShowUpgradeModal(true)}
                       />
                     </div>
 

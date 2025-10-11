@@ -16,6 +16,7 @@ interface RecipeInputProps {
     used: number;
     limit: number;
   };
+  onShowUpgradeModal?: () => void;
 }
 
 // Dietary options data with categories
@@ -59,7 +60,7 @@ const categoryLabels = {
   'religious': { label: '🙏 Religious', color: 'text-indigo-700' }
 };
 
-export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe, disabled, userSettings, userSettingsLoading, availableDietaryFilters, currentPlan, dailyUsage }) => {
+export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe, disabled, userSettings, userSettingsLoading, availableDietaryFilters, currentPlan, dailyUsage, onShowUpgradeModal }) => {
   const [recipe, setRecipe] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [mustUseIngredients, setMustUseIngredients] = useState<string[]>([]);
@@ -1054,19 +1055,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             <button
               type="button"
               className="w-full inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transform hover:scale-105 text-sm sm:text-base group relative overflow-hidden"
-              onClick={() => {
-                // Try direct global function first
-                if ((window as any).showUpgradeModal) {
-                  (window as any).showUpgradeModal('chef', 'recipe-filters');
-                  return;
-                }
-
-                // Fallback to clicking the upgrade button
-                const upgradeButton = document.querySelector('[data-upgrade-plan]') as HTMLButtonElement;
-                if (upgradeButton) {
-                  upgradeButton.click();
-                }
-              }}
+              onClick={() => onShowUpgradeModal && onShowUpgradeModal()}
               aria-label="Upgrade to access all premium filters"
             >
               <Crown className="w-5 h-5 group-hover:animate-pulse" />
@@ -1081,7 +1070,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
 
             {currentPlan !== 'chef' && (
               <p className="text-xs text-gray-700 mt-3 text-center font-semibold">
-                ⚡ Starting at $14.99/month • Cancel anytime • 14-day free trial
+                ⚡ Starting at $14.99/month • Cancel anytime
               </p>
             )}
           </div>
