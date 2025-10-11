@@ -146,33 +146,118 @@ function InitializeContentPlugin({ htmlContent }: { htmlContent: string }) {
           const root = $getRoot();
           root.clear();
 
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = DOMPurify.sanitize(htmlContent, {
-            ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-            ALLOWED_ATTR: []
+          // Sanitize HTML but keep all formatting tags
+          const sanitized = DOMPurify.sanitize(htmlContent, {
+            ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 's', 'del', 'strike'],
+            ALLOWED_ATTR: ['class', 'style']
           });
 
-          const textContent = tempDiv.textContent || tempDiv.innerText || '';
+          // Create a temporary DOM element to parse the HTML
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = sanitized;
 
-          if (textContent.trim()) {
-            const paragraphs = textContent.split('\n').filter(p => p.trim());
+          // Function to recursively parse DOM nodes and create Lexical nodes
+          const parseNode = (domNode: Node, parentLexicalNode: any) => {
+            if (domNode.nodeType === Node.TEXT_NODE) {
+              if (domNode.textContent && domNode.textContent.trim()) {
+                const textNode = $createTextNode(domNode.textContent);
+                parentLexicalNode.append(textNode);
+              }
+            } else if (domNode.nodeType === Node.ELEMENT_NODE) {
+              const element = domNode as HTMLElement;
+              const tagName = element.tagName.toLowerCase();
 
-            if (paragraphs.length > 0) {
-              paragraphs.forEach(paragraphText => {
+              // Handle different HTML elements
+              if (tagName === 'p') {
                 const paragraph = $createParagraphNode();
-                const textNode = $createTextNode(paragraphText.trim());
-                paragraph.append(textNode);
+                Array.from(element.childNodes).forEach(child => parseNode(child, paragraph));
+                if (paragraph.getChildrenSize() === 0) {
+                  paragraph.append($createTextNode(''));
+                }
                 root.append(paragraph);
-              });
-            } else {
-              const paragraph = $createParagraphNode();
-              const textNode = $createTextNode(textContent.trim());
-              paragraph.append(textNode);
-              root.append(paragraph);
+              } else if (tagName.match(/^h[1-6]$/)) {
+                const heading = $createHeadingNode(tagName as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6');
+                Array.from(element.childNodes).forEach(child => parseNode(child, heading));
+                root.append(heading);
+              } else if (tagName === 'blockquote') {
+                const quote = $createQuoteNode();
+                Array.from(element.childNodes).forEach(child => {
+                  if (child.nodeType === Node.TEXT_NODE && child.textContent) {
+                    const textNode = $createTextNode(child.textContent);
+                    quote.append(textNode);
+                  } else if (child.nodeType === Node.ELEMENT_NODE) {
+                    const childElement = child as HTMLElement;
+                    const childTag = childElement.tagName.toLowerCase();
+                    if (childTag === 'strong' || childTag === 'b') {
+                      const textNode = $createTextNode(childElement.textContent || '');
+                      textNode.setFormat('bold');
+                      quote.append(textNode);
+                    } else if (childTag === 'em' || childTag === 'i') {
+                      const textNode = $createTextNode(childElement.textContent || '');
+                      textNode.setFormat('italic');
+                      quote.append(textNode);
+                    } else {
+                      const textNode = $createTextNode(childElement.textContent || '');
+                      quote.append(textNode);
+                    }
+                  }
+                });
+                root.append(quote);
+              } else if (tagName === 'ul') {
+                const list = new ListNode('bullet', 1);
+                Array.from(element.children).forEach(li => {
+                  if (li.tagName.toLowerCase() === 'li') {
+                    const listItem = new ListItemNode();
+                    Array.from(li.childNodes).forEach(child => parseNode(child, listItem));
+                    list.append(listItem);
+                  }
+                });
+                root.append(list);
+              } else if (tagName === 'ol') {
+                const list = new ListNode('number', 1);
+                Array.from(element.children).forEach(li => {
+                  if (li.tagName.toLowerCase() === 'li') {
+                    const listItem = new ListItemNode();
+                    Array.from(li.childNodes).forEach(child => parseNode(child, listItem));
+                    list.append(listItem);
+                  }
+                });
+                root.append(list);
+              } else if (tagName === 'br') {
+                parentLexicalNode.append($createTextNode('\n'));
+              } else if (tagName === 'strong' || tagName === 'b') {
+                const textNode = $createTextNode(element.textContent || '');
+                textNode.setFormat('bold');
+                parentLexicalNode.append(textNode);
+              } else if (tagName === 'em' || tagName === 'i') {
+                const textNode = $createTextNode(element.textContent || '');
+                textNode.setFormat('italic');
+                parentLexicalNode.append(textNode);
+              } else if (tagName === 'u') {
+                const textNode = $createTextNode(element.textContent || '');
+                textNode.setFormat('underline');
+                parentLexicalNode.append(textNode);
+              } else if (tagName === 's' || tagName === 'del' || tagName === 'strike') {
+                const textNode = $createTextNode(element.textContent || '');
+                textNode.setFormat('strikethrough');
+                parentLexicalNode.append(textNode);
+              } else if (tagName === 'code') {
+                const textNode = $createTextNode(element.textContent || '');
+                textNode.setFormat('code');
+                parentLexicalNode.append(textNode);
+              } else {
+                // For other elements, just extract text
+                Array.from(element.childNodes).forEach(child => parseNode(child, parentLexicalNode));
+              }
             }
-          } else {
-            const paragraph = $createParagraphNode();
-            root.append(paragraph);
+          };
+
+          // Parse all top-level nodes
+          Array.from(tempDiv.childNodes).forEach(node => parseNode(node, root));
+
+          // If no content was added, add an empty paragraph
+          if (root.getChildrenSize() === 0) {
+            root.append($createParagraphNode());
           }
         } catch (error) {
           console.error('Error parsing HTML content:', error);
@@ -354,15 +439,15 @@ function RichTextEditorWrapper({ initialContent, onChange }: {
         onClearFormatting={handleClearFormatting}
         activeFormats={activeFormats}
       />
-      <div className="min-h-[500px] max-h-[500px] relative z-[5] bg-gradient-to-br from-white via-blue-50/10 to-cyan-50/20 border-t-2 border-blue-100">
+      <div className="min-h-[500px] max-h-[500px] relative z-[5] bg-white border-t-2 border-blue-200">
         <RichTextPlugin
           contentEditable={
             <div className="h-full">
-              <div className="h-full overflow-y-auto px-8 py-6 prose prose-blue max-w-none" style={{ caretColor: '#3b82f6' }}>
+              <div className="h-full overflow-y-auto px-8 py-6 prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h1:text-3xl prose-h1:leading-tight prose-h1:mb-8 prose-h1:mt-2 prose-h2:text-2xl prose-h2:leading-tight prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-xl prose-h3:leading-tight prose-h3:mt-6 prose-h3:mb-3 prose-h4:text-lg prose-h4:leading-snug prose-h4:mt-4 prose-h4:mb-2 prose-h5:text-base prose-h5:leading-snug prose-h5:mt-3 prose-h5:mb-2 prose-h6:text-sm prose-h6:leading-snug prose-h6:mt-2 prose-h6:mb-1 prose-p:text-gray-600 prose-p:leading-relaxed prose-p:mb-4 prose-p:text-lg prose-strong:text-gray-900 prose-strong:font-bold prose-em:italic prose-ul:my-4 prose-ul:list-disc prose-ul:pl-6 prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-6 prose-li:text-gray-600 prose-li:leading-relaxed prose-li:my-1 prose-blockquote:border-l-4 prose-blockquote:border-blue-400 prose-blockquote:pl-6 prose-blockquote:text-gray-600 prose-blockquote:italic prose-blockquote:my-6 prose-blockquote:py-2 prose-code:bg-gray-100 prose-code:text-gray-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:font-mono" style={{ caretColor: '#3b82f6' }}>
                 <ContentEditable
-                  placeholder="✍️ Start writing your amazing blog post content here..."
-                  className="h-full outline-none min-h-[460px] text-gray-800 leading-relaxed"
-                  placeholderClassName="text-muted-foreground pointer-events-none absolute top-0 left-0 overflow-hidden px-8 py-6 text-ellipsis select-none"
+                  placeholder="✍️ Start writing your amazing blog post content here... Your content will appear exactly as it will on the blog."
+                  className="h-full outline-none min-h-[460px]"
+                  placeholderClassName="text-gray-400 pointer-events-none absolute top-0 left-0 overflow-hidden px-8 py-6 text-base italic select-none"
                 />
               </div>
             </div>
@@ -394,7 +479,7 @@ function RichTextEditorWrapper({ initialContent, onChange }: {
             </div>
           </div>
           <div className="text-xs text-gray-500 font-medium">
-            💡 Tip: Use keyboard shortcuts for faster editing
+            ✨ WYSIWYG: Content displays exactly as it will appear on the blog
           </div>
         </div>
       </div>
