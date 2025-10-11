@@ -325,7 +325,7 @@ export const LandingPage: React.FC = () => {
 
       {/* Hero Section */}
       <main id="main-content">
-      <section className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section className="relative pt-20 pb-12 sm:pt-24 sm:pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50/30 to-white -z-10" />
         <div className="absolute inset-0 opacity-30 -z-10">
@@ -340,20 +340,20 @@ export const LandingPage: React.FC = () => {
               <Zap className="w-4 h-4" />
               AI-Powered Recipe Conversion
             </div>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black text-gray-900 mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-6 leading-tight">
               Transform Any Recipe to
               <span className="block bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 Match Your Diet
               </span>
             </h1>
-            <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed">
               Convert recipes instantly for 24+ dietary needs with AI-powered intelligence.
               <span className="block mt-2 font-semibold text-gray-900">Vegan • Gluten-Free • Keto • Low-Carb & More</span>
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button asChild size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center w-full sm:w-auto px-4 sm:px-0">
+              <Button asChild size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105 min-h-[44px]">
                 <Link to={user ? "/app" : "/signin"}>
-                  <Zap className="w-5 h-5 mr-2" />
+                  <Zap className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   {user ? "Go to App" : "Get Started Free"}
                 </Link>
               </Button>
@@ -361,38 +361,38 @@ export const LandingPage: React.FC = () => {
                 variant="outline"
                 size="lg"
                 onClick={() => scrollToSection('features')}
-                className="text-lg px-8 py-6 border-2 border-gray-300 hover:border-green-500 hover:bg-green-50 transition-all duration-300"
+                className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-2 border-gray-300 hover:border-green-500 hover:bg-green-50 transition-all duration-300 min-h-[44px]"
               >
                 See How It Works
               </Button>
             </div>
-            <p className="mt-6 text-sm text-gray-500 flex items-center justify-center gap-2">
-              <Check className="w-4 h-4 text-green-600" />
+            <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-500 flex items-center justify-center gap-2">
+              <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
               No credit card required • Free plan available forever
             </p>
           </div>
 
           {/* Hero Demo Card */}
-          <div className="mt-16 max-w-5xl mx-auto scroll-animate-scale">
-            <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 flex items-center gap-2">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-white/30" />
-                  <div className="w-3 h-3 rounded-full bg-white/30" />
-                  <div className="w-3 h-3 rounded-full bg-white/30" />
+          <div className="mt-12 sm:mt-16 max-w-5xl mx-auto scroll-animate-scale">
+            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-4 sm:px-6 py-2.5 sm:py-3 flex items-center gap-2">
+                <div className="flex gap-1 sm:gap-1.5">
+                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-white/30" />
+                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-white/30" />
+                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-white/30" />
                 </div>
-                <div className="flex-1 text-center text-white text-sm font-semibold">Recipe Converter</div>
+                <div className="flex-1 text-center text-white text-xs sm:text-sm font-semibold">Recipe Converter</div>
               </div>
-              <div className="p-8 md:p-10">
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-gray-500 text-sm font-semibold uppercase tracking-wide">
-                      <div className="w-2 h-2 rounded-full bg-gray-400" />
+              <div className="p-5 sm:p-8 md:p-10">
+                <div className="grid md:grid-cols-2 gap-5 sm:gap-8">
+                  <div className="space-y-2 sm:space-y-3">
+                    <div className="flex items-center gap-2 text-gray-500 text-xs sm:text-sm font-semibold uppercase tracking-wide">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gray-400" />
                       Original Recipe
                     </div>
-                    <div className="bg-gray-50 border-2 border-gray-200 p-6 rounded-2xl">
-                      <p className="font-bold text-lg text-gray-900 mb-4">Classic Beef Lasagna</p>
-                      <div className="space-y-2 text-gray-700">
+                    <div className="bg-gray-50 border-2 border-gray-200 p-4 sm:p-6 rounded-xl sm:rounded-2xl">
+                      <p className="font-bold text-base sm:text-lg text-gray-900 mb-3 sm:mb-4">Classic Beef Lasagna</p>
+                      <div className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-gray-700">
                         <p className="flex items-start"><span className="text-gray-400 mr-2">•</span>1 lb ground beef</p>
                         <p className="flex items-start"><span className="text-gray-400 mr-2">•</span>Ricotta cheese</p>
                         <p className="flex items-start"><span className="text-gray-400 mr-2">•</span>Mozzarella cheese</p>
@@ -400,21 +400,21 @@ export const LandingPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-green-600 text-sm font-semibold uppercase tracking-wide">
-                      <div className="w-2 h-2 rounded-full bg-green-600 animate-pulse" />
+                  <div className="space-y-2 sm:space-y-3">
+                    <div className="flex items-center gap-2 text-green-600 text-xs sm:text-sm font-semibold uppercase tracking-wide">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-600 animate-pulse" />
                       Converted Recipe
                     </div>
-                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 p-6 rounded-2xl relative overflow-hidden">
-                      <div className="absolute top-2 right-2">
-                        <div className="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">Vegan • GF</div>
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 p-4 sm:p-6 rounded-xl sm:rounded-2xl relative overflow-hidden">
+                      <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2">
+                        <div className="bg-green-600 text-white text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">Vegan • GF</div>
                       </div>
-                      <p className="font-bold text-lg text-green-700 mb-4">Plant-Based Lasagna</p>
-                      <div className="space-y-2 text-gray-700">
-                        <p className="flex items-start"><Check className="w-4 h-4 text-green-600 mr-2 mt-0.5" />1 lb plant-based ground</p>
-                        <p className="flex items-start"><Check className="w-4 h-4 text-green-600 mr-2 mt-0.5" />Cashew ricotta</p>
-                        <p className="flex items-start"><Check className="w-4 h-4 text-green-600 mr-2 mt-0.5" />Vegan mozzarella</p>
-                        <p className="flex items-start"><Check className="w-4 h-4 text-green-600 mr-2 mt-0.5" />Gluten-free lasagna sheets</p>
+                      <p className="font-bold text-base sm:text-lg text-green-700 mb-3 sm:mb-4">Plant-Based Lasagna</p>
+                      <div className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-gray-700">
+                        <p className="flex items-start"><Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 mr-2 mt-0.5" />1 lb plant-based ground</p>
+                        <p className="flex items-start"><Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 mr-2 mt-0.5" />Cashew ricotta</p>
+                        <p className="flex items-start"><Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 mr-2 mt-0.5" />Vegan mozzarella</p>
+                        <p className="flex items-start"><Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 mr-2 mt-0.5" />Gluten-free lasagna sheets</p>
                       </div>
                     </div>
                   </div>
@@ -438,54 +438,54 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Trust Indicators */}
-      <section className="py-16 bg-white border-y border-gray-200">
+      <section className="py-12 sm:py-16 bg-white border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             <div className="text-center group scroll-animate" style={{ transitionDelay: '0ms' }}>
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-green-100 text-green-600 mb-4 group-hover:scale-110 transition-transform duration-300">
-                <Shield className="w-8 h-8" />
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-green-100 text-green-600 mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Shield className="w-6 h-6 sm:w-8 sm:h-8" />
               </div>
-              <div className="text-4xl font-black text-gray-900 mb-2">100%</div>
-              <div className="text-sm font-semibold text-gray-600">Privacy Guaranteed</div>
+              <div className="text-3xl sm:text-4xl font-black text-gray-900 mb-1.5 sm:mb-2">100%</div>
+              <div className="text-xs sm:text-sm font-semibold text-gray-600">Privacy Guaranteed</div>
             </div>
             <div className="text-center group scroll-animate" style={{ transitionDelay: '100ms' }}>
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 mb-4 group-hover:scale-110 transition-transform duration-300">
-                <Utensils className="w-8 h-8" />
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-blue-100 text-blue-600 mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Utensils className="w-6 h-6 sm:w-8 sm:h-8" />
               </div>
-              <div className="text-4xl font-black text-gray-900 mb-2">50K+</div>
-              <div className="text-sm font-semibold text-gray-600">Recipes Converted</div>
+              <div className="text-3xl sm:text-4xl font-black text-gray-900 mb-1.5 sm:mb-2">50K+</div>
+              <div className="text-xs sm:text-sm font-semibold text-gray-600">Recipes Converted</div>
             </div>
             <div className="text-center group scroll-animate" style={{ transitionDelay: '200ms' }}>
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-yellow-100 text-yellow-600 mb-4 group-hover:scale-110 transition-transform duration-300">
-                <Star className="w-8 h-8 fill-current" />
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-yellow-100 text-yellow-600 mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Star className="w-6 h-6 sm:w-8 sm:h-8 fill-current" />
               </div>
-              <div className="text-4xl font-black text-gray-900 mb-2">4.9★</div>
-              <div className="text-sm font-semibold text-gray-600">User Rating</div>
+              <div className="text-3xl sm:text-4xl font-black text-gray-900 mb-1.5 sm:mb-2">4.9★</div>
+              <div className="text-xs sm:text-sm font-semibold text-gray-600">User Rating</div>
             </div>
             <div className="text-center group scroll-animate" style={{ transitionDelay: '300ms' }}>
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-100 text-purple-600 mb-4 group-hover:scale-110 transition-transform duration-300">
-                <Zap className="w-8 h-8" />
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-purple-100 text-purple-600 mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Zap className="w-6 h-6 sm:w-8 sm:h-8" />
               </div>
-              <div className="text-4xl font-black text-gray-900 mb-2">24+</div>
-              <div className="text-sm font-semibold text-gray-600">Diet Filters</div>
+              <div className="text-3xl sm:text-4xl font-black text-gray-900 mb-1.5 sm:mb-2">24+</div>
+              <div className="text-xs sm:text-sm font-semibold text-gray-600">Diet Filters</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
+      <section id="features" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 scroll-animate">
-            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              <Star className="w-4 h-4" />
+          <div className="text-center mb-12 sm:mb-16 scroll-animate">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-3 sm:mb-4">
+              <Star className="w-3 h-3 sm:w-4 sm:h-4" />
               Powerful Features
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">Why Choose Recipe Revamped?</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">The most secure and intelligent recipe converter for your dietary needs</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-3 sm:mb-4">Why Choose Recipe Revamped?</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">The most secure and intelligent recipe converter for your dietary needs</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
             <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1 scroll-animate" style={{ transitionDelay: '0ms' }}>
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Brain className="h-7 w-7" />
@@ -550,42 +550,42 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
+      <section id="pricing" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
           {/* Simple Header */}
-          <div className="text-center mb-12 scroll-animate">
-            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              <Star className="w-4 h-4" />
+          <div className="text-center mb-10 sm:mb-12 scroll-animate">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-3 sm:mb-4">
+              <Star className="w-3 h-3 sm:w-4 sm:h-4" />
               Pricing Plans
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">Choose the plan that works for you</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-3 sm:mb-4">Simple, Transparent Pricing</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-6 sm:mb-8">Choose the plan that works for you</p>
 
             {/* Billing Toggle */}
             <div className="flex items-center justify-center">
-              <div className="bg-white border-2 border-gray-200 p-1.5 rounded-full flex items-center gap-3 shadow-md">
-                <span className={cn("text-sm font-medium px-3 transition-colors",
+              <div className="bg-white border-2 border-gray-200 p-1 sm:p-1.5 rounded-full flex items-center gap-2 sm:gap-3 shadow-md">
+                <span className={cn("text-xs sm:text-sm font-medium px-2 sm:px-3 transition-colors",
                   !isYearly ? 'text-gray-900' : 'text-gray-500'
                 )}>
                   Monthly
                 </span>
                 <button
                   onClick={() => handleBillingToggle(!isYearly)}
-                  className={`relative inline-flex h-8 w-16 items-center rounded-full transition-all duration-300 ${
+                  className={`relative inline-flex h-7 w-14 sm:h-8 sm:w-16 items-center rounded-full transition-all duration-300 ${
                     isYearly ? 'bg-green-600 shadow-lg shadow-green-500/50' : 'bg-gray-300'
                   }`}
                 >
-                  <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
-                    isYearly ? 'translate-x-9' : 'translate-x-1'
+                  <span className={`inline-block h-5 w-5 sm:h-6 sm:w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                    isYearly ? 'translate-x-8 sm:translate-x-9' : 'translate-x-1'
                   }`} />
                 </button>
-                <div className="flex items-center gap-2">
-                  <span className={cn("text-sm font-medium transition-colors",
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className={cn("text-xs sm:text-sm font-medium transition-colors",
                     isYearly ? 'text-gray-900' : 'text-gray-500'
                   )}>
                     Yearly
                   </span>
-                  <span className="bg-yellow-400 text-yellow-900 text-xs font-black px-3 py-1.5 rounded-full shadow-md">
+                  <span className="bg-yellow-400 text-yellow-900 text-[10px] sm:text-xs font-black px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md">
                     Save 20%
                   </span>
                 </div>
@@ -593,7 +593,7 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
               {/* Free Plan */}
               <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-green-100 transition-all duration-500 hover:scale-105 hover:shadow-2xl flex flex-col h-full group p-6 scroll-animate-scale" style={{ transitionDelay: '0ms' }}>
                 <CardHeader className="text-center p-0 mb-6">
@@ -794,74 +794,74 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
+      <section id="testimonials" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 scroll-animate">
-            <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              <Star className="w-4 h-4 fill-current" />
+          <div className="text-center mb-12 sm:mb-16 scroll-animate">
+            <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-3 sm:mb-4">
+              <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
               Testimonials
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">Loved by Home Cooks & Professionals</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Join thousands of happy users transforming their cooking</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-3 sm:mb-4">Loved by Home Cooks & Professionals</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Join thousands of happy users transforming their cooking</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1 scroll-animate-scale" style={{ transitionDelay: '0ms' }}>
-              <div className="flex gap-1 mb-6">
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="group bg-white rounded-2xl p-6 sm:p-8 border-2 border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1 scroll-animate-scale" style={{ transitionDelay: '0ms' }}>
+              <div className="flex gap-0.5 sm:gap-1 mb-4 sm:mb-6">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  <Star key={i} className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400 fill-current" />
                 ))}
               </div>
-              <p className="text-gray-700 text-lg mb-6 leading-relaxed italic">
+              <p className="text-gray-700 text-base sm:text-lg mb-5 sm:mb-6 leading-relaxed italic">
                 "Recipe Revamped has been a game-changer for my vegan journey. I can finally enjoy all my family's traditional recipes!"
               </p>
-              <div className="flex items-center pt-6 border-t border-gray-200">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center mr-4">
-                  <span className="text-white font-bold text-lg">SM</span>
+              <div className="flex items-center pt-5 sm:pt-6 border-t border-gray-200">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center mr-3 sm:mr-4">
+                  <span className="text-white font-bold text-base sm:text-lg">SM</span>
                 </div>
                 <div>
-                  <div className="font-bold text-gray-900">Sarah Mitchell</div>
-                  <div className="text-sm text-gray-500">Home Cook</div>
+                  <div className="font-bold text-sm sm:text-base text-gray-900">Sarah Mitchell</div>
+                  <div className="text-xs sm:text-sm text-gray-500">Home Cook</div>
                 </div>
               </div>
             </div>
 
-            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-blue-300 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100 hover:-translate-y-1 scroll-animate-scale" style={{ transitionDelay: '150ms' }}>
-              <div className="flex gap-1 mb-6">
+            <div className="group bg-white rounded-2xl p-6 sm:p-8 border-2 border-gray-200 hover:border-blue-300 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100 hover:-translate-y-1 scroll-animate-scale" style={{ transitionDelay: '150ms' }}>
+              <div className="flex gap-0.5 sm:gap-1 mb-4 sm:mb-6">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  <Star key={i} className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400 fill-current" />
                 ))}
               </div>
-              <p className="text-gray-700 text-lg mb-6 leading-relaxed italic">
+              <p className="text-gray-700 text-base sm:text-lg mb-5 sm:mb-6 leading-relaxed italic">
                 "As a chef with celiac disease, this tool helps me quickly adapt recipes for my dietary needs. The AI is impressively accurate!"
               </p>
-              <div className="flex items-center pt-6 border-t border-gray-200">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mr-4">
-                  <span className="text-white font-bold text-lg">JR</span>
+              <div className="flex items-center pt-5 sm:pt-6 border-t border-gray-200">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mr-3 sm:mr-4">
+                  <span className="text-white font-bold text-base sm:text-lg">JR</span>
                 </div>
                 <div>
-                  <div className="font-bold text-gray-900">James Rodriguez</div>
-                  <div className="text-sm text-gray-500">Professional Chef</div>
+                  <div className="font-bold text-sm sm:text-base text-gray-900">James Rodriguez</div>
+                  <div className="text-xs sm:text-sm text-gray-500">Professional Chef</div>
                 </div>
               </div>
             </div>
 
-            <div className="group bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-purple-300 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-100 hover:-translate-y-1 scroll-animate-scale" style={{ transitionDelay: '300ms' }}>
-              <div className="flex gap-1 mb-6">
+            <div className="group bg-white rounded-2xl p-6 sm:p-8 border-2 border-gray-200 hover:border-purple-300 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-100 hover:-translate-y-1 scroll-animate-scale" style={{ transitionDelay: '300ms' }}>
+              <div className="flex gap-0.5 sm:gap-1 mb-4 sm:mb-6">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  <Star key={i} className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400 fill-current" />
                 ))}
               </div>
-              <p className="text-gray-700 text-lg mb-6 leading-relaxed italic">
+              <p className="text-gray-700 text-base sm:text-lg mb-5 sm:mb-6 leading-relaxed italic">
                 "The AI-powered recipe conversion is amazing! I love how it adapts my family recipes to my dietary needs perfectly."
               </p>
-              <div className="flex items-center pt-6 border-t border-gray-200">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center mr-4">
-                  <span className="text-white font-bold text-lg">EC</span>
+              <div className="flex items-center pt-5 sm:pt-6 border-t border-gray-200">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center mr-3 sm:mr-4">
+                  <span className="text-white font-bold text-base sm:text-lg">EC</span>
                 </div>
                 <div>
-                  <div className="font-bold text-gray-900">Emily Chen</div>
-                  <div className="text-sm text-gray-500">Food Blogger</div>
+                  <div className="font-bold text-sm sm:text-base text-gray-900">Emily Chen</div>
+                  <div className="text-xs sm:text-sm text-gray-500">Food Blogger</div>
                 </div>
               </div>
             </div>
@@ -870,7 +870,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-green-600 via-emerald-600 to-green-700" />
         <div className="absolute inset-0 opacity-20">
@@ -879,29 +879,29 @@ export const LandingPage: React.FC = () => {
         </div>
 
         <div className="max-w-4xl mx-auto text-center relative scroll-animate">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold mb-6">
-            <Zap className="w-4 h-4" />
+          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-5 sm:mb-6">
+            <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
             Join 50,000+ Happy Users
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-5 sm:mb-6 leading-tight">
             Ready to Transform Your Cooking?
           </h2>
-          <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed">
             Start converting recipes for free today. No credit card required, cancel anytime.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button asChild size="lg" className="text-lg px-8 py-6 bg-white text-green-600 hover:bg-gray-50 shadow-2xl transition-all duration-300 hover:scale-105 font-bold">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center w-full sm:w-auto px-0">
+            <Button asChild size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-white text-green-600 hover:bg-gray-50 shadow-2xl transition-all duration-300 hover:scale-105 font-bold min-h-[44px]">
               <Link to={user ? "/app" : "/signin"}>
                 {user ? "Go to App" : "Get Started Free"}
-                <Zap className="w-5 h-5 ml-2" />
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
               </Link>
             </Button>
-            <Button variant="outline" size="lg" onClick={() => scrollToSection('pricing')} className="text-lg px-8 py-6 border-2 border-white bg-transparent text-white hover:bg-white hover:text-green-600 transition-all duration-300">
+            <Button variant="outline" size="lg" onClick={() => scrollToSection('pricing')} className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-2 border-white bg-transparent text-white hover:bg-white hover:text-green-600 transition-all duration-300 min-h-[44px]">
               View Pricing
             </Button>
           </div>
-          <p className="mt-6 text-white/80 text-sm flex items-center justify-center gap-2">
-            <Check className="w-4 h-4" />
+          <p className="mt-5 sm:mt-6 text-white/80 text-xs sm:text-sm flex items-center justify-center gap-2">
+            <Check className="w-3 h-3 sm:w-4 sm:h-4" />
             Free forever plan • Upgrade anytime
           </p>
         </div>
