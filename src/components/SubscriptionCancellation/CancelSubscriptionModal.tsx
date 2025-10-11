@@ -112,13 +112,13 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 transition-opacity duration-300 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
       onClick={handleBackdropClick}
     >
       <div
-        className={`relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 transform transition-all duration-300 ${
+        className={`relative bg-white rounded-3xl shadow-2xl max-w-2xl w-full mx-4 transform transition-all duration-300 overflow-hidden ${
           isVisible ? 'scale-100 translate-y-0' : 'scale-95 translate-y-8'
         }`}
         onClick={(e) => e.stopPropagation()}
@@ -126,7 +126,7 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
+          className="absolute top-6 right-6 p-2 text-white/90 hover:text-white transition-all duration-200 rounded-xl hover:bg-white/20 backdrop-blur-sm z-10"
           disabled={processing}
         >
           <X className="w-5 h-5" />
@@ -136,34 +136,45 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
         <div className="p-6 sm:p-8">
           {step === 'preview' && (
             <>
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <AlertTriangle className="w-8 h-8 text-red-600" />
+              {/* Header with gradient background */}
+              <div className="bg-gradient-to-r from-red-500 to-rose-500 px-6 py-8 -mx-6 sm:-mx-8 -mt-6 sm:-mt-8 mb-8 relative overflow-hidden">
+                {/* Decorative pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  Cancel Your Subscription?
-                </h2>
-                <p className="text-gray-600">
-                  Are you sure you want to cancel your subscription?
-                </p>
+
+                <div className="relative text-center">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mb-4 shadow-lg ring-2 ring-white/30">
+                    <AlertTriangle className="w-10 h-10 text-white" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 drop-shadow-sm">
+                    Cancel Your Subscription?
+                  </h2>
+                  <p className="text-red-50 text-base sm:text-lg font-semibold">
+                    Are you sure you want to cancel your subscription?
+                  </p>
+                </div>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <p className="text-sm text-blue-700">
-                  <strong>Note:</strong> Your subscription will be cancelled at the end of your current billing period. You'll continue to have access to all features until then.
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-xl p-5 mb-8 shadow-sm">
+                <p className="text-sm sm:text-base text-blue-800 font-semibold leading-relaxed">
+                  <strong className="font-black">Note:</strong> Your subscription will be cancelled at the end of your current billing period. You'll continue to have access to all features until then.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleClose}
-                  className="flex-1 bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transform hover:scale-105"
                 >
                   Keep Subscription
                 </button>
                 <button
                   onClick={handleProceedToReasons}
-                  className="flex-1 bg-red-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-red-600 transition-colors"
+                  className="flex-1 bg-white text-red-600 font-bold py-3.5 px-6 rounded-xl border-2 border-red-300 hover:bg-red-50 hover:border-red-400 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   Continue Cancellation
                 </button>
@@ -173,36 +184,58 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
 
           {step === 'reasons' && (
             <>
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MessageCircle className="w-8 h-8 text-blue-600" />
+              {/* Header with gradient background */}
+              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-8 -mx-6 sm:-mx-8 -mt-6 sm:-mt-8 mb-8 relative overflow-hidden">
+                {/* Decorative pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  Help Us Improve
-                </h2>
-                <p className="text-gray-600">
-                  We're sorry to see you go. Could you tell us why you're cancelling?
-                </p>
+
+                <div className="relative text-center">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mb-4 shadow-lg ring-2 ring-white/30">
+                    <MessageCircle className="w-10 h-10 text-white" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 drop-shadow-sm">
+                    Help Us Improve
+                  </h2>
+                  <p className="text-green-50 text-base sm:text-lg font-semibold">
+                    We're sorry to see you go. Could you tell us why you're cancelling?
+                  </p>
+                </div>
               </div>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                  <p className="text-red-800 text-sm">{error}</p>
+                <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 shadow-sm">
+                  <p className="text-red-800 text-sm font-semibold">{error}</p>
                 </div>
               )}
 
-              <div className="space-y-3 mb-6">
+              <div className="space-y-3 mb-8">
                 {CANCELLATION_REASONS.map((reason) => (
-                  <label key={reason.value} className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <label
+                    key={reason.value}
+                    className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                      selectedReason === reason.value
+                        ? 'border-green-500 bg-gradient-to-br from-green-50 to-emerald-50/50 shadow-lg transform scale-[1.02]'
+                        : 'border-gray-200 bg-white hover:border-green-300 hover:bg-green-50/50 hover:shadow-md'
+                    }`}
+                  >
                     <input
                       type="radio"
                       name="reason"
                       value={reason.value}
                       checked={selectedReason === reason.value}
                       onChange={(e) => setSelectedReason(e.target.value)}
-                      className="mr-3"
+                      className="w-5 h-5 text-green-600 border-2 border-gray-300 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 mr-4"
                     />
-                    <span className="text-gray-700">{reason.label}</span>
+                    <span className={`text-base font-semibold ${
+                      selectedReason === reason.value ? 'text-green-900' : 'text-gray-700'
+                    }`}>
+                      {reason.label}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -210,14 +243,14 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => setStep('preview')}
-                  className="flex-1 bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex-1 bg-white text-gray-700 font-bold py-3.5 px-6 rounded-xl border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   Back
                 </button>
                 <button
                   onClick={handleReasonSelected}
                   disabled={!selectedReason}
-                  className="flex-1 bg-red-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-gradient-to-r from-red-500 to-rose-500 text-white font-bold py-3.5 px-6 rounded-xl hover:from-red-600 hover:to-rose-600 transition-all duration-200 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transform hover:scale-105 disabled:transform-none"
                 >
                   {selectedReason === 'other' ? 'Continue' : 'Cancel Subscription'}
                 </button>
@@ -227,34 +260,48 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
 
           {step === 'feedback' && (
             <>
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  Additional Feedback
-                </h2>
-                <p className="text-gray-600">
-                  Please share more details about your reason for cancelling
-                </p>
+              {/* Header with gradient background */}
+              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-8 -mx-6 sm:-mx-8 -mt-6 sm:-mt-8 mb-8 relative overflow-hidden">
+                {/* Decorative pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
+                </div>
+
+                <div className="relative text-center">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mb-4 shadow-lg ring-2 ring-white/30">
+                    <MessageCircle className="w-10 h-10 text-white" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 drop-shadow-sm">
+                    Additional Feedback
+                  </h2>
+                  <p className="text-green-50 text-base sm:text-lg font-semibold">
+                    Please share more details about your reason for cancelling
+                  </p>
+                </div>
               </div>
 
-              <div className="mb-6">
+              <div className="mb-8">
                 <textarea
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   placeholder="Tell us more about your experience..."
-                  className="w-full p-3 border rounded-lg resize-none h-24 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full p-4 border-2 border-gray-300 rounded-xl resize-none h-32 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 font-medium text-base shadow-sm"
                 />
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => setStep('reasons')}
-                  className="flex-1 bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex-1 bg-white text-gray-700 font-bold py-3.5 px-6 rounded-xl border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   Back
                 </button>
                 <button
                   onClick={processCancellation}
-                  className="flex-1 bg-red-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-red-600 transition-colors"
+                  className="flex-1 bg-gradient-to-r from-red-500 to-rose-500 text-white font-bold py-3.5 px-6 rounded-xl hover:from-red-600 hover:to-rose-600 transition-all duration-200 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 transform hover:scale-105"
                 >
                   Cancel Subscription
                 </button>
@@ -263,34 +310,60 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
           )}
 
           {step === 'processing' && (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <>
+              {/* Header with gradient background */}
+              <div className="bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-8 -mx-6 sm:-mx-8 -mt-6 sm:-mt-8 mb-8 relative overflow-hidden">
+                {/* Decorative pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
+                </div>
+
+                <div className="relative text-center">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mb-4 shadow-lg ring-2 ring-white/30">
+                    <div className="animate-spin rounded-full h-10 w-10 border-4 border-white border-t-transparent"></div>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 drop-shadow-sm">
+                    Processing Cancellation...
+                  </h2>
+                  <p className="text-blue-50 text-base sm:text-lg font-semibold">
+                    Please wait while we cancel your subscription
+                  </p>
+                </div>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Processing Cancellation...
-              </h2>
-              <p className="text-gray-600">
-                Please wait while we cancel your subscription
-              </p>
-            </div>
+            </>
           )}
 
           {step === 'completed' && (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Heart className="w-8 h-8 text-green-600" />
+            <>
+              {/* Header with gradient background */}
+              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-8 -mx-6 sm:-mx-8 -mt-6 sm:-mt-8 mb-8 relative overflow-hidden">
+                {/* Decorative pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
+                </div>
+
+                <div className="relative text-center">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mb-4 shadow-lg ring-2 ring-white/30">
+                    <Heart className="w-10 h-10 text-white" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 drop-shadow-sm">
+                    Subscription Cancelled
+                  </h2>
+                  <p className="text-green-50 text-base sm:text-lg font-semibold mb-4">
+                    Your subscription has been cancelled successfully. You're now on the free plan.
+                  </p>
+                  <p className="text-sm text-green-100 font-medium">
+                    Thank you for using Recipe Revamp. We hope to see you back soon!
+                  </p>
+                </div>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Subscription Cancelled
-              </h2>
-              <p className="text-gray-600 mb-4">
-                Your subscription has been cancelled successfully. You're now on the free plan.
-              </p>
-              <p className="text-sm text-gray-500">
-                Thank you for using Recipe Revamp. We hope to see you back soon!
-              </p>
-            </div>
+            </>
           )}
         </div>
       </div>
