@@ -211,21 +211,39 @@ export const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background">
       <SEOHead pageKey="home" />
+      {/* Skip to main content link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-green-600 focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+      >
+        Skip to main content
+      </a>
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 group">
-              <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-10 w-10 transition-transform duration-300 group-hover:scale-110" />
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex items-center gap-3 group"
+              aria-label="Return to top of page - Recipe Revamped home"
+            >
+              <img
+                src="/logo/logo.png"
+                alt="Recipe Revamped - AI Recipe Converter Logo"
+                className="h-10 w-10 transition-transform duration-300 group-hover:scale-110"
+                width="40"
+                height="40"
+              />
               <span className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
             </button>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-2">
+            <nav className="hidden md:flex items-center gap-2" aria-label="Main navigation">
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('features')}
                 className="text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold transition-colors px-4"
+                aria-label="Scroll to Features section"
               >
                 Features
               </Button>
@@ -233,6 +251,7 @@ export const LandingPage: React.FC = () => {
                 variant="ghost"
                 onClick={() => scrollToSection('pricing')}
                 className="text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold transition-colors px-4"
+                aria-label="Scroll to Pricing section"
               >
                 Pricing
               </Button>
@@ -240,6 +259,7 @@ export const LandingPage: React.FC = () => {
                 variant="ghost"
                 onClick={() => scrollToSection('testimonials')}
                 className="text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold transition-colors px-4"
+                aria-label="Scroll to Testimonials section"
               >
                 Testimonials
               </Button>
@@ -248,7 +268,7 @@ export const LandingPage: React.FC = () => {
                   {user ? "Go to App" : "Get Started Free"}
                 </Link>
               </Button>
-            </div>
+            </nav>
 
             {/* Mobile menu button */}
             <Button
@@ -256,20 +276,24 @@ export const LandingPage: React.FC = () => {
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden text-gray-700 hover:bg-green-50 hover:text-green-600"
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
             </Button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-200">
-            <div className="px-4 pt-2 pb-4 space-y-2">
+          <div id="mobile-navigation" className="md:hidden bg-white border-t border-gray-200">
+            <nav className="px-4 pt-2 pb-4 space-y-2" aria-label="Mobile navigation menu">
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('features')}
                 className="w-full justify-start text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold"
+                aria-label="Scroll to Features section"
               >
                 Features
               </Button>
@@ -277,6 +301,7 @@ export const LandingPage: React.FC = () => {
                 variant="ghost"
                 onClick={() => scrollToSection('pricing')}
                 className="w-full justify-start text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold"
+                aria-label="Scroll to Pricing section"
               >
                 Pricing
               </Button>
@@ -284,6 +309,7 @@ export const LandingPage: React.FC = () => {
                 variant="ghost"
                 onClick={() => scrollToSection('testimonials')}
                 className="w-full justify-start text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold"
+                aria-label="Scroll to Testimonials section"
               >
                 Testimonials
               </Button>
@@ -292,12 +318,13 @@ export const LandingPage: React.FC = () => {
                   {user ? "Go to App" : "Get Started Free"}
                 </Link>
               </Button>
-            </div>
+            </nav>
           </div>
         )}
       </nav>
 
       {/* Hero Section */}
+      <main id="main-content">
       <section className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50/30 to-white -z-10" />
@@ -879,14 +906,25 @@ export const LandingPage: React.FC = () => {
           </p>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer className="bg-gradient-to-b from-gray-50 to-white border-t border-gray-200 py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div className="md:col-span-1">
-              <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 mb-4 group">
-                <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="flex items-center gap-2 mb-4 group"
+                aria-label="Return to top of page - Recipe Revamped home"
+              >
+                <img
+                  src="/logo/logo.png"
+                  alt="Recipe Revamped - AI Recipe Converter Logo"
+                  className="h-8 w-8 transition-transform duration-300 group-hover:scale-110"
+                  width="32"
+                  height="32"
+                />
                 <span className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
               </button>
               <p className="text-sm text-gray-600 leading-relaxed">

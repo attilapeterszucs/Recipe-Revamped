@@ -131,12 +131,16 @@
           // Load Google Analytics
           const script = document.createElement('script');
           script.async = true;
+          script.defer = true;
           script.src = 'https://www.googletagmanager.com/gtag/js?id=G-CR787RJ2VK';
           document.head.appendChild(script);
 
           script.onload = function() {
             gtag('js', new Date());
-            gtag('config', 'G-CR787RJ2VK');
+            gtag('config', 'G-CR787RJ2VK', {
+              'send_page_view': false,
+              'transport_type': 'beacon'
+            });
             window.gtag.loaded = true;
           };
         } else if (!preferences.analytics && window.gtag.loaded) {
@@ -153,6 +157,14 @@
     
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Performance: DNS Prefetch & Preconnect for faster resource loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+    <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
 
     <!-- Enhanced Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
