@@ -3043,54 +3043,107 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
       {/* Delete Account Modal */}
       {showDeleteAccountModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-            <div className="flex items-center mb-4">
-              <AlertTriangle className="w-6 h-6 text-red-600 mr-3" />
-              <h3 className="text-lg font-semibold text-gray-900">Delete Account</h3>
-            </div>
-            
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Choose how you want to handle your account. Both options will automatically cancel any active subscription.
-            </p>
-            
-            <div className="space-y-3 mb-6">
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <h4 className="font-medium text-yellow-800 mb-2">Deactivate Account</h4>
-                <p className="text-sm text-yellow-700 mb-3">
-                  Temporarily disable your account. You can reactivate it by logging in again. All your data will be preserved.
-                </p>
-                <button
-                  onClick={() => handleDeleteAccount('deactivate')}
-                  disabled={deletingAccount}
-                  className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 transition-colors text-sm"
-                >
-                  {deletingAccount ? 'Deactivating...' : 'Deactivate Account'}
-                </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+            {/* Header with gradient background */}
+            <div className="bg-gradient-to-r from-red-600 to-rose-600 px-6 py-8 relative overflow-hidden">
+              {/* Decorative pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                  backgroundSize: '24px 24px'
+                }}></div>
               </div>
-              
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <h4 className="font-medium text-red-800 mb-2">Permanently Delete</h4>
-                <p className="text-sm text-red-700 mb-3">
-                  Permanently delete your account and all data. This action cannot be undone and all data will be lost.
+
+              {/* Close button */}
+              <button
+                onClick={() => setShowDeleteAccountModal(false)}
+                disabled={deletingAccount}
+                className="absolute top-6 right-6 p-2 text-white/90 hover:text-white transition-all duration-200 rounded-xl hover:bg-white/20 backdrop-blur-sm z-10 disabled:opacity-50"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="relative text-center">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mb-4 shadow-lg ring-2 ring-white/30">
+                  <AlertTriangle className="w-10 h-10 text-white" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-white mb-3 drop-shadow-sm">
+                  Delete Account
+                </h3>
+                <p className="text-red-50 text-base sm:text-lg font-semibold max-w-lg mx-auto">
+                  Choose how you want to handle your account. Both options will automatically cancel any active subscription.
                 </p>
-                <button
-                  onClick={() => handleDeleteAccount('delete')}
-                  disabled={deletingAccount}
-                  className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors text-sm"
-                >
-                  {deletingAccount ? 'Deleting Account...' : 'Delete Account & All Data'}
-                </button>
               </div>
             </div>
-            
-            <button
-              onClick={() => setShowDeleteAccountModal(false)}
-              disabled={deletingAccount}
-              className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
-            >
-              Cancel
-            </button>
+
+            {/* Content */}
+            <div className="p-6 sm:p-8">
+              <div className="space-y-4 mb-8">
+                {/* Deactivate Option */}
+                <div className="relative bg-gradient-to-br from-yellow-50 to-amber-50/50 border-2 border-yellow-300 rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+                  {/* Decorative gradient overlay */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-200/20 to-amber-200/20 rounded-full blur-2xl -mr-16 -mt-16"></div>
+
+                  <div className="relative">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-xl flex items-center justify-center shadow-md ring-2 ring-yellow-200 group-hover:ring-yellow-300 transition-all duration-300">
+                        <UserX className="w-6 h-6 text-yellow-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-lg font-black text-yellow-900 mb-2">Deactivate Account</h4>
+                        <p className="text-sm sm:text-base text-yellow-800 leading-relaxed font-semibold">
+                          Temporarily disable your account. You can reactivate it by logging in again. All your data will be preserved.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteAccount('deactivate')}
+                      disabled={deletingAccount}
+                      className="w-full px-6 py-3.5 bg-gradient-to-r from-yellow-500 to-amber-500 text-white rounded-xl hover:from-yellow-600 hover:to-amber-600 transition-all duration-200 font-bold shadow-lg shadow-yellow-500/30 hover:shadow-xl hover:shadow-yellow-500/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transform hover:scale-105 disabled:transform-none"
+                    >
+                      {deletingAccount ? 'Deactivating...' : 'Deactivate Account'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Permanently Delete Option */}
+                <div className="relative bg-gradient-to-br from-red-50 to-rose-50/50 border-2 border-red-300 rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+                  {/* Decorative gradient overlay */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-200/20 to-rose-200/20 rounded-full blur-2xl -mr-16 -mt-16"></div>
+
+                  <div className="relative">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-red-100 to-rose-100 rounded-xl flex items-center justify-center shadow-md ring-2 ring-red-200 group-hover:ring-red-300 transition-all duration-300">
+                        <Trash2 className="w-6 h-6 text-red-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-lg font-black text-red-900 mb-2">Permanently Delete</h4>
+                        <p className="text-sm sm:text-base text-red-800 leading-relaxed font-semibold">
+                          Permanently delete your account and all data. <span className="font-black">This action cannot be undone</span> and all data will be lost.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteAccount('delete')}
+                      disabled={deletingAccount}
+                      className="w-full px-6 py-3.5 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 transition-all duration-200 font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transform hover:scale-105 disabled:transform-none"
+                    >
+                      {deletingAccount ? 'Deleting Account...' : 'Delete Account & All Data'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cancel Button */}
+              <button
+                onClick={() => setShowDeleteAccountModal(false)}
+                disabled={deletingAccount}
+                className="w-full px-6 py-3.5 bg-white text-gray-700 font-bold rounded-xl border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
