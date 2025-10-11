@@ -191,20 +191,20 @@ export const Unsubscribe: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-green-100">
       <SEOHead pageKey="unsubscribe" />
 
       {/* Header */}
       <AuthAwareNavigation />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Back to App */}
-        <div className="mb-6">
+        <div className="mb-8">
           <Link
             to="/app"
-            className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center text-gray-700 hover:text-green-600 transition-all duration-200 font-semibold group"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
             Back to Recipe Revamped
           </Link>
         </div>
@@ -212,23 +212,33 @@ export const Unsubscribe: React.FC = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden shadow-2xl border-2 border-green-200 rounded-3xl">
               {/* Header */}
-              <CardHeader className="bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 text-white">
-                <div className="flex items-start mb-4">
-                  <Mail className="w-8 h-8 mr-3 flex-shrink-0" />
+              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 sm:px-8 py-8 relative overflow-hidden">
+                {/* Decorative pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}></div>
+                </div>
+
+                <div className="flex items-start mb-6 relative">
+                  <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mr-4 shadow-lg ring-2 ring-white/30">
+                    <Mail className="w-8 h-8 text-white" />
+                  </div>
                   <div className="flex-1">
-                    <CardTitle className="text-2xl sm:text-3xl font-bold leading-tight">
+                    <CardTitle className="text-2xl sm:text-3xl font-black leading-tight drop-shadow-sm">
                       Email Preferences
                     </CardTitle>
-                    <CardDescription className="text-orange-100 text-base sm:text-lg mt-2">
+                    <CardDescription className="text-green-50 text-base sm:text-lg mt-2 font-semibold">
                       Manage your Recipe Revamped marketing email subscriptions
                     </CardDescription>
                   </div>
                 </div>
 
                 {userEmail && (
-                  <Badge variant="secondary" className="bg-white/20 text-white w-fit">
+                  <Badge variant="secondary" className="bg-white/20 backdrop-blur-sm text-white w-fit font-bold shadow-lg ring-2 ring-white/30 px-4 py-2 relative">
                     <Mail className="w-4 h-4 mr-2" />
                     {userEmail}
                   </Badge>
@@ -403,56 +413,62 @@ export const Unsubscribe: React.FC = () => {
           <div className="lg:col-span-1">
             <div className="space-y-6">
               {/* Why We Send Emails */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Why We Send Emails</CardTitle>
+              <Card className="shadow-xl border-2 border-green-200 rounded-2xl overflow-hidden">
+                <CardHeader className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-b-2 border-green-200">
+                  <CardTitle className="text-lg font-black text-gray-900">Why We Send Emails</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-3 text-sm text-muted-foreground">
-                    <div className="flex items-start">
-                      <Heart className="w-4 h-4 text-orange-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Weekly recipe inspirations tailored to your dietary preferences</span>
+                <CardContent className="p-6">
+                  <div className="space-y-4 text-sm">
+                    <div className="flex items-start group">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-100 to-rose-100 flex items-center justify-center mr-3 flex-shrink-0 shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                        <Heart className="w-4 h-4 text-orange-600" />
+                      </div>
+                      <span className="text-gray-700 font-semibold leading-relaxed">Weekly recipe inspirations tailored to your dietary preferences</span>
                     </div>
-                    <div className="flex items-start">
-                      <Settings className="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>New features and cooking tips to enhance your experience</span>
+                    <div className="flex items-start group">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center mr-3 flex-shrink-0 shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                        <Settings className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <span className="text-gray-700 font-semibold leading-relaxed">New features and cooking tips to enhance your experience</span>
                     </div>
-                    <div className="flex items-start">
-                      <Shield className="w-4 h-4 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Important account and security updates</span>
+                    <div className="flex items-start group">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center mr-3 flex-shrink-0 shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                        <Shield className="w-4 h-4 text-green-600" />
+                      </div>
+                      <span className="text-gray-700 font-semibold leading-relaxed">Important account and security updates</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Frequency Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Email Frequency</CardTitle>
+              <Card className="shadow-xl border-2 border-green-200 rounded-2xl overflow-hidden">
+                <CardHeader className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-b-2 border-green-200">
+                  <CardTitle className="text-lg font-black text-gray-900">Email Frequency</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p><strong>Marketing Emails:</strong> Weekly or bi-weekly</p>
-                    <p><strong>Essential Emails:</strong> As needed</p>
-                    <p><strong>Promotional:</strong> Monthly (opt-in only)</p>
+                <CardContent className="p-6">
+                  <div className="space-y-3 text-sm">
+                    <p className="text-gray-700 font-semibold"><strong className="font-black text-gray-900">Marketing Emails:</strong> Weekly or bi-weekly</p>
+                    <p className="text-gray-700 font-semibold"><strong className="font-black text-gray-900">Essential Emails:</strong> As needed</p>
+                    <p className="text-gray-700 font-semibold"><strong className="font-black text-gray-900">Promotional:</strong> Monthly (opt-in only)</p>
                   </div>
-                  <Separator className="my-3" />
-                  <p className="text-xs text-muted-foreground">
+                  <Separator className="my-4 bg-green-200" />
+                  <p className="text-xs text-gray-600 font-medium leading-relaxed">
                     We respect your inbox and never spam. You can adjust preferences anytime.
                   </p>
                 </CardContent>
               </Card>
 
               {/* Contact Support */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Need Help?</CardTitle>
+              <Card className="shadow-xl border-2 border-green-200 rounded-2xl overflow-hidden">
+                <CardHeader className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-b-2 border-green-200">
+                  <CardTitle className="text-lg font-black text-gray-900">Need Help?</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-3">
+                <CardContent className="p-6">
+                  <p className="text-sm text-gray-700 mb-4 font-semibold leading-relaxed">
                     Having trouble with your email preferences? Our support team is here to help.
                   </p>
-                  <Button variant="outline" asChild className="w-full">
+                  <Button variant="outline" asChild className="w-full border-2 border-green-600 text-green-700 hover:bg-green-50 font-bold py-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
                     <Link to="/contact">
                       <Mail className="w-4 h-4 mr-2" />
                       Contact Support

@@ -123,18 +123,26 @@ const VerifyEmailPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-        <div className="text-center">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-12 w-full max-w-lg overflow-hidden transform transition-all duration-300">
+        {/* Decorative background pattern */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(34, 197, 94, 0.3) 1px, transparent 1px)',
+            backgroundSize: '24px 24px'
+          }}></div>
+        </div>
+
+        <div className="text-center relative">
           {status === 'loading' && (
             <>
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-6">
-                <Loader className="h-8 w-8 text-blue-600 animate-spin" />
+              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-2xl bg-gradient-to-br from-blue-100 to-cyan-100 mb-6 shadow-lg ring-4 ring-blue-200 ring-opacity-50">
+                <Loader className="h-10 w-10 text-blue-600 animate-spin" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900 mb-4">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-4">
                 Verifying Your Email
               </h1>
-              <p className="text-gray-600">
+              <p className="text-base sm:text-lg text-gray-600 font-semibold">
                 Please wait while we verify your email address...
               </p>
             </>
@@ -142,56 +150,56 @@ const VerifyEmailPage: React.FC = () => {
 
           {status === 'success' && (
             <div className={`transition-all duration-300 ${isClosing ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
-              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6 animate-pulse">
-                <CheckCircle className="h-10 w-10 text-green-600" />
+              <div className="mx-auto flex items-center justify-center h-24 w-24 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 mb-6 shadow-lg ring-4 ring-green-200 ring-opacity-50 animate-pulse">
+                <CheckCircle className="h-12 w-12 text-green-600" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-4">
                 Email Verified Successfully! 🎉
               </h1>
-              <p className="text-gray-600 mb-6 text-lg">
+              <p className="text-base sm:text-lg text-gray-700 mb-6 font-semibold leading-relaxed">
                 {message}
               </p>
-              
+
               {/* Countdown Circle */}
               <div className="flex items-center justify-center mb-6">
-                <div className="relative w-16 h-16">
-                  <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
+                <div className="relative w-20 h-20">
+                  <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
                     <circle
-                      cx="32" cy="32" r="28"
+                      cx="40" cy="40" r="36"
                       fill="transparent"
                       stroke="#e5e7eb"
-                      strokeWidth="4"
+                      strokeWidth="6"
                     />
                     <circle
-                      cx="32" cy="32" r="28"
+                      cx="40" cy="40" r="36"
                       fill="transparent"
                       stroke="#10b981"
-                      strokeWidth="4"
-                      strokeDasharray="175.929"
-                      strokeDashoffset={175.929 * (1 - countdown / 5)}
+                      strokeWidth="6"
+                      strokeDasharray="226.195"
+                      strokeDashoffset={226.195 * (1 - countdown / 5)}
                       className="transition-all duration-1000 ease-linear"
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xl font-bold text-green-600">{countdown}</span>
+                    <span className="text-2xl font-black text-green-600">{countdown}</span>
                   </div>
                 </div>
               </div>
-              
-              <p className="text-sm text-gray-500 mb-6">
+
+              <p className="text-sm text-gray-600 mb-8 font-semibold">
                 This window will close automatically in {countdown} seconds
               </p>
-              
+
               <div className="space-y-3">
                 <button
                   onClick={handleClose}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium text-sm transition-colors shadow-lg hover:shadow-xl"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3.5 px-6 rounded-xl font-bold text-base transition-all duration-200 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transform hover:scale-105"
                 >
                   Close Window Now
                 </button>
                 <button
                   onClick={handleReturnToSignIn}
-                  className="w-full border border-gray-300 text-gray-700 py-2.5 px-4 rounded-md font-medium text-sm transition-colors hover:bg-gray-50"
+                  className="w-full border-2 border-gray-300 text-gray-700 py-3.5 px-6 rounded-xl font-bold text-base transition-all duration-200 hover:bg-gray-50 hover:border-gray-400 shadow-sm hover:shadow-md"
                 >
                   Go to Sign In Page
                 </button>
@@ -201,25 +209,25 @@ const VerifyEmailPage: React.FC = () => {
 
           {status === 'error' && (
             <>
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
-                <AlertCircle className="h-8 w-8 text-red-600" />
+              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-2xl bg-gradient-to-br from-red-100 to-rose-100 mb-6 shadow-lg ring-4 ring-red-200 ring-opacity-50">
+                <AlertCircle className="h-10 w-10 text-red-600" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900 mb-4">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-4">
                 Email Verification Failed
               </h1>
-              <p className="text-gray-600 mb-6">
+              <p className="text-base sm:text-lg text-gray-700 mb-8 font-semibold leading-relaxed">
                 {message}
               </p>
               <div className="space-y-3">
                 <button
                   onClick={handleReturnToSignIn}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-2.5 px-4 rounded-md font-medium text-sm transition-colors"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3.5 px-6 rounded-xl font-bold text-base transition-all duration-200 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transform hover:scale-105"
                 >
                   Back to Sign In
                 </button>
                 <button
                   onClick={() => navigate('/signup')}
-                  className="w-full border border-gray-300 text-gray-700 py-2.5 px-4 rounded-md font-medium text-sm transition-colors hover:bg-gray-50"
+                  className="w-full border-2 border-gray-300 text-gray-700 py-3.5 px-6 rounded-xl font-bold text-base transition-all duration-200 hover:bg-gray-50 hover:border-gray-400 shadow-sm hover:shadow-md"
                 >
                   Sign Up Again
                 </button>
