@@ -125,18 +125,26 @@ const PasswordRecoveryPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-        <div className="text-center">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-12 w-full max-w-lg overflow-hidden transform transition-all duration-300 relative">
+        {/* Decorative background pattern */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(34, 197, 94, 0.3) 1px, transparent 1px)',
+            backgroundSize: '24px 24px'
+          }}></div>
+        </div>
+
+        <div className="text-center relative">
           {status === 'loading' && (
             <>
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-6">
-                <Loader className="h-8 w-8 text-blue-600 animate-spin" />
+              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-2xl bg-gradient-to-br from-blue-100 to-cyan-100 mb-6 shadow-lg ring-4 ring-blue-200 ring-opacity-50">
+                <Loader className="h-10 w-10 text-blue-600 animate-spin" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900 mb-4">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-4">
                 Verifying Reset Link
               </h1>
-              <p className="text-gray-600">
+              <p className="text-base sm:text-lg text-gray-600 font-semibold">
                 Please wait while we verify your password reset link...
               </p>
             </>
@@ -144,19 +152,19 @@ const PasswordRecoveryPage: React.FC = () => {
 
           {status === 'form' && (
             <>
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-6">
-                <Lock className="h-8 w-8 text-blue-600" />
+              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 mb-6 shadow-lg ring-4 ring-green-200 ring-opacity-50">
+                <Lock className="h-10 w-10 text-green-600" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900 mb-4">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-4">
                 Reset Your Password
               </h1>
-              <p className="text-gray-600 mb-6">
-                Create a new password for <strong>{email}</strong>
+              <p className="text-base sm:text-lg text-gray-700 mb-8 font-semibold">
+                Create a new password for <strong className="text-green-600">{email}</strong>
               </p>
 
-              <form onSubmit={handlePasswordReset} className="space-y-4 text-left">
+              <form onSubmit={handlePasswordReset} className="space-y-5 text-left">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-900 mb-2">
                     New Password
                   </label>
                   <div className="relative">
@@ -164,7 +172,7 @@ const PasswordRecoveryPage: React.FC = () => {
                       type={showPassword ? 'text' : 'password'}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-xl text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 font-medium transition-all duration-200 shadow-sm"
                       placeholder="Enter new password"
                       disabled={loading}
                       required
@@ -172,20 +180,20 @@ const PasswordRecoveryPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center"
                       disabled={loading}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors duration-200" />
                       ) : (
-                        <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors duration-200" />
                       )}
                     </button>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-900 mb-2">
                     Confirm New Password
                   </label>
                   <div className="relative">
@@ -193,7 +201,7 @@ const PasswordRecoveryPage: React.FC = () => {
                       type={showConfirmPassword ? 'text' : 'password'}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-xl text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 font-medium transition-all duration-200 shadow-sm"
                       placeholder="Confirm new password"
                       disabled={loading}
                       required
@@ -201,31 +209,31 @@ const PasswordRecoveryPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center"
                       disabled={loading}
                     >
                       {showConfirmPassword ? (
-                        <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors duration-200" />
                       ) : (
-                        <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors duration-200" />
                       )}
                     </button>
                   </div>
                 </div>
 
                 {/* Password Requirements */}
-                <div className="p-4 bg-gray-50 rounded-md border border-gray-200">
-                  <h4 className="text-sm font-medium text-gray-700 mb-3">Password Requirements</h4>
-                  <div className="space-y-2">
+                <div className="p-5 bg-gradient-to-br from-green-50 to-emerald-50/50 rounded-2xl border-2 border-green-200 shadow-sm">
+                  <h4 className="text-sm font-black text-gray-900 mb-4">Password Requirements</h4>
+                  <div className="space-y-3">
                     {passwordRequirements.map((req, index) => (
                       <div key={index} className="flex items-center text-sm">
                         <CheckCircle
-                          className={`w-4 h-4 mr-2 transition-colors ${
-                            req.test(newPassword) ? 'text-green-500' : 'text-gray-300'
+                          className={`w-5 h-5 mr-3 transition-all duration-200 ${
+                            req.test(newPassword) ? 'text-green-600 scale-110' : 'text-gray-300'
                           }`}
                         />
-                        <span className={`transition-colors ${
-                          req.test(newPassword) ? 'text-green-700 font-medium' : 'text-gray-500'
+                        <span className={`transition-all duration-200 ${
+                          req.test(newPassword) ? 'text-green-700 font-bold' : 'text-gray-600 font-semibold'
                         }`}>
                           {req.text}
                         </span>
@@ -235,18 +243,18 @@ const PasswordRecoveryPage: React.FC = () => {
                 </div>
 
                 {message && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                    <p className="text-sm text-red-600">{message}</p>
+                  <div className="p-4 bg-gradient-to-br from-red-50 to-rose-50/50 border-2 border-red-200 rounded-xl shadow-sm">
+                    <p className="text-sm text-red-800 font-semibold">{message}</p>
                   </div>
                 )}
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-3 px-4 rounded-md font-medium text-sm transition-colors flex items-center justify-center"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-400 text-white py-3.5 px-6 rounded-xl font-bold text-base transition-all duration-200 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 disabled:shadow-none transform hover:scale-105 disabled:transform-none flex items-center justify-center"
                 >
                   {loading ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     'Reset Password'
                   )}
@@ -257,56 +265,56 @@ const PasswordRecoveryPage: React.FC = () => {
 
           {status === 'success' && (
             <div className={`transition-all duration-300 ${isClosing ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
-              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6 animate-pulse">
-                <CheckCircle className="h-10 w-10 text-green-600" />
+              <div className="mx-auto flex items-center justify-center h-24 w-24 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 mb-6 shadow-lg ring-4 ring-green-200 ring-opacity-50 animate-pulse">
+                <CheckCircle className="h-12 w-12 text-green-600" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-4">
                 Password Reset Successfully! 🔒
               </h1>
-              <p className="text-gray-600 mb-6 text-lg">
+              <p className="text-base sm:text-lg text-gray-700 mb-6 font-semibold leading-relaxed">
                 {message}
               </p>
-              
+
               {/* Countdown Circle */}
               <div className="flex items-center justify-center mb-6">
-                <div className="relative w-16 h-16">
-                  <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
+                <div className="relative w-20 h-20">
+                  <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
                     <circle
-                      cx="32" cy="32" r="28"
+                      cx="40" cy="40" r="36"
                       fill="transparent"
                       stroke="#e5e7eb"
-                      strokeWidth="4"
+                      strokeWidth="6"
                     />
                     <circle
-                      cx="32" cy="32" r="28"
+                      cx="40" cy="40" r="36"
                       fill="transparent"
-                      stroke="#3b82f6"
-                      strokeWidth="4"
-                      strokeDasharray="175.929"
-                      strokeDashoffset={175.929 * (1 - countdown / 5)}
+                      stroke="#10b981"
+                      strokeWidth="6"
+                      strokeDasharray="226.195"
+                      strokeDashoffset={226.195 * (1 - countdown / 5)}
                       className="transition-all duration-1000 ease-linear"
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xl font-bold text-blue-600">{countdown}</span>
+                    <span className="text-2xl font-black text-green-600">{countdown}</span>
                   </div>
                 </div>
               </div>
-              
-              <p className="text-sm text-gray-500 mb-6">
+
+              <p className="text-sm text-gray-600 mb-8 font-semibold">
                 This window will close automatically in {countdown} seconds
               </p>
-              
+
               <div className="space-y-3">
                 <button
                   onClick={handleClose}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-md font-medium text-sm transition-colors shadow-lg hover:shadow-xl"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3.5 px-6 rounded-xl font-bold text-base transition-all duration-200 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transform hover:scale-105"
                 >
                   Close Window Now
                 </button>
                 <button
                   onClick={() => navigate('/signin')}
-                  className="w-full border border-gray-300 text-gray-700 py-2.5 px-4 rounded-md font-medium text-sm transition-colors hover:bg-gray-50"
+                  className="w-full border-2 border-gray-300 text-gray-700 py-3.5 px-6 rounded-xl font-bold text-base transition-all duration-200 hover:bg-gray-50 hover:border-gray-400 shadow-sm hover:shadow-md"
                 >
                   Go to Sign In Page
                 </button>
@@ -316,25 +324,25 @@ const PasswordRecoveryPage: React.FC = () => {
 
           {status === 'error' && (
             <>
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
-                <AlertCircle className="h-8 w-8 text-red-600" />
+              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-2xl bg-gradient-to-br from-red-100 to-rose-100 mb-6 shadow-lg ring-4 ring-red-200 ring-opacity-50">
+                <AlertCircle className="h-10 w-10 text-red-600" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900 mb-4">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-4">
                 Password Reset Failed
               </h1>
-              <p className="text-gray-600 mb-6">
+              <p className="text-base sm:text-lg text-gray-700 mb-8 font-semibold leading-relaxed">
                 {message}
               </p>
               <div className="space-y-3">
                 <button
                   onClick={() => navigate('/signin')}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-md font-medium text-sm transition-colors"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3.5 px-6 rounded-xl font-bold text-base transition-all duration-200 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transform hover:scale-105"
                 >
                   Back to Sign In
                 </button>
                 <button
                   onClick={handleClose}
-                  className="w-full border border-gray-300 text-gray-700 py-2.5 px-4 rounded-md font-medium text-sm transition-colors hover:bg-gray-50"
+                  className="w-full border-2 border-gray-300 text-gray-700 py-3.5 px-6 rounded-xl font-bold text-base transition-all duration-200 hover:bg-gray-50 hover:border-gray-400 shadow-sm hover:shadow-md"
                 >
                   Close Window
                 </button>
