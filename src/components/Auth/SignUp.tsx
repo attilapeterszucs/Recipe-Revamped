@@ -239,6 +239,7 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
                 size="icon"
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={loading}
+                tabIndex={-1}
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               >
                 {showPassword ? (
@@ -272,6 +273,7 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
                 size="icon"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 disabled={loading}
+                tabIndex={-1}
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               >
                 {showConfirmPassword ? (
