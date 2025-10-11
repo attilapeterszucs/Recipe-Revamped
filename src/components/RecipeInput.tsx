@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RecipeSchema } from '../lib/validation';
 import { z } from 'zod';
-import { Shuffle, Wand2, Search, ChevronLeft, ChevronRight, Filter, Trash2, Utensils } from 'lucide-react';
+import { Shuffle, Wand2, Search, ChevronLeft, ChevronRight, Filter, Trash2, Utensils, Crown, Check } from 'lucide-react';
 import type { UserSettings } from '../types/userSettings';
 
 interface RecipeInputProps {
@@ -864,28 +864,68 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
         </div>
       )}
 
-      {/* Compact Premium Features Section with Collapsible Details */}
+      {/* Premium Features Section with Enhanced Design */}
       {availableFilters.length < allFilters.length && (
-        <div className="mt-4 sm:mt-6 bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-4 sm:p-5 shadow-lg">
-          {/* Compact Header with Toggle */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🚀</span>
-              <div>
-                <h3 className="text-sm sm:text-base font-bold text-gray-900">Unlock Premium Filters</h3>
-                <p className="text-xs text-orange-600 font-medium">
-                  {allFilters.length - availableFilters.length} more filters + custom ingredients
-                </p>
+        <div className="mt-4 sm:mt-6 relative bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 border-2 border-orange-300 rounded-2xl p-6 sm:p-8 shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300">
+          {/* Decorative background pattern */}
+          <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
+              backgroundSize: '24px 24px'
+            }}></div>
+          </div>
+
+          <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-6">
+            {/* Premium Badge Icon */}
+            <div className="flex-shrink-0">
+              <div className="relative">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shadow-lg ring-4 ring-orange-200 group-hover:ring-orange-300 transition-all duration-300">
+                  <Filter className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600" />
+                </div>
+                <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-400 to-amber-500 rounded-xl p-2 shadow-lg ring-2 ring-white group-hover:scale-110 transition-transform duration-300">
+                  <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                </div>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowPremiumDetails(!showPremiumDetails)}
-              className="text-xs font-semibold text-orange-600 hover:text-orange-700 underline"
-              aria-label={showPremiumDetails ? "Hide premium details" : "Show premium details"}
-            >
-              {showPremiumDetails ? 'Hide Details' : 'View All'}
-            </button>
+
+            {/* Content */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-lg sm:text-xl font-black text-gray-900">Unlock Premium Filters</h3>
+                <span className="inline-flex items-center px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-full">
+                  PREMIUM
+                </span>
+              </div>
+              <p className="text-sm sm:text-base text-gray-700 font-semibold mb-4">
+                Get access to {allFilters.length - availableFilters.length} more dietary filters + custom ingredient preferences
+              </p>
+
+              {/* Feature Pills */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                <div className="inline-flex items-center px-3 py-1.5 bg-white/60 backdrop-blur-sm rounded-full text-xs font-semibold text-gray-700 border border-orange-200">
+                  <Check className="w-3 h-3 mr-1.5 text-orange-600" />
+                  22+ Premium Filters
+                </div>
+                <div className="inline-flex items-center px-3 py-1.5 bg-white/60 backdrop-blur-sm rounded-full text-xs font-semibold text-gray-700 border border-orange-200">
+                  <Check className="w-3 h-3 mr-1.5 text-orange-600" />
+                  Custom Ingredients
+                </div>
+                <div className="inline-flex items-center px-3 py-1.5 bg-white/60 backdrop-blur-sm rounded-full text-xs font-semibold text-gray-700 border border-orange-200">
+                  <Check className="w-3 h-3 mr-1.5 text-orange-600" />
+                  Advanced Preferences
+                </div>
+              </div>
+
+              {/* Toggle Details Button */}
+              <button
+                type="button"
+                onClick={() => setShowPremiumDetails(!showPremiumDetails)}
+                className="text-sm font-bold text-orange-600 hover:text-orange-700 underline"
+                aria-label={showPremiumDetails ? "Hide premium details" : "Show premium details"}
+              >
+                {showPremiumDetails ? '▲ Hide All Filters' : '▼ View All Premium Filters'}
+              </button>
+            </div>
           </div>
 
           {/* Preview: Show 4-6 locked filters */}
@@ -1009,34 +1049,42 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             </div>
           )}
 
-          {/* Compact CTA Button */}
-          <button
-            type="button"
-            className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm"
-            onClick={() => {
-              // Try direct global function first
-              if ((window as any).showUpgradeModal) {
-                (window as any).showUpgradeModal('chef', 'convert-filters');
-                return;
-              }
+          {/* Enhanced CTA Button */}
+          <div className="relative">
+            <button
+              type="button"
+              className="w-full inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transform hover:scale-105 text-sm sm:text-base group relative overflow-hidden"
+              onClick={() => {
+                // Try direct global function first
+                if ((window as any).showUpgradeModal) {
+                  (window as any).showUpgradeModal('chef', 'recipe-filters');
+                  return;
+                }
 
-              // Fallback to clicking the upgrade button
-              const upgradeButton = document.querySelector('[data-upgrade-plan]') as HTMLButtonElement;
-              if (upgradeButton) {
-                upgradeButton.click();
-              }
-            }}
-            aria-label="Upgrade to access all premium filters"
-          >
-            <span className="mr-2">✨</span>
-            <span>Upgrade to Unlock All Filters</span>
-            <span className="ml-2">→</span>
-          </button>
-          {currentPlan !== 'chef' && (
-            <p className="text-xs text-gray-600 mt-2 text-center font-medium">
-              Starting at $14.99/month • Cancel anytime
-            </p>
-          )}
+                // Fallback to clicking the upgrade button
+                const upgradeButton = document.querySelector('[data-upgrade-plan]') as HTMLButtonElement;
+                if (upgradeButton) {
+                  upgradeButton.click();
+                }
+              }}
+              aria-label="Upgrade to access all premium filters"
+            >
+              <Crown className="w-5 h-5 group-hover:animate-pulse" />
+              <span>Upgrade to Unlock All Filters</span>
+              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+
+              {/* Shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-700" />
+            </button>
+
+            {currentPlan !== 'chef' && (
+              <p className="text-xs text-gray-700 mt-3 text-center font-semibold">
+                ⚡ Starting at $14.99/month • Cancel anytime • 14-day free trial
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>
