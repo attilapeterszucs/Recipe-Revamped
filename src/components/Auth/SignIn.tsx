@@ -213,22 +213,22 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
   // Show password reset success screen
   if (resetSuccess) {
     return (
-      <Card className="w-full max-w-lg shadow-2xl shadow-green-100 border-2 border-green-100 backdrop-blur-sm bg-white/95">
+      <Card className="w-full max-w-lg shadow-2xl border-2 border-green-200 rounded-3xl backdrop-blur-sm bg-white/95">
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 mb-4">
-            <Mail className="h-8 w-8 text-green-600" />
+          <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 mb-6 shadow-lg ring-4 ring-green-200 ring-opacity-50">
+            <Mail className="h-10 w-10 text-green-600" />
           </div>
-          <CardTitle className="text-2xl font-black text-gray-900">Password Reset Email Sent</CardTitle>
-          <CardDescription className="mt-2 text-base">
+          <CardTitle className="text-2xl sm:text-3xl font-black text-gray-900">Password Reset Email Sent</CardTitle>
+          <CardDescription className="mt-2 text-base sm:text-lg font-semibold">
             We've sent a password reset link to <strong className="text-green-700">{resetEmail}</strong>.
             Please check your inbox and follow the instructions to reset your password.
           </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <Alert className="border-2 border-green-200 bg-green-50">
-            <AlertDescription className="text-green-700">
-              <strong>Can't find the email?</strong> Check your spam folder.
+          <Alert className="border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50/50 rounded-xl shadow-sm">
+            <AlertDescription className="text-green-800 font-semibold">
+              <strong className="font-black">Can't find the email?</strong> Check your spam folder.
               The email comes from Recipe Revamped and may take a few minutes to arrive.
             </AlertDescription>
           </Alert>
@@ -241,7 +241,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
               setShowPasswordReset(false);
               setResetEmail('');
             }}
-            className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
+            className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-green-500/40"
           >
             Back to Sign In
           </Button>
@@ -253,10 +253,10 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
   // Show password reset form
   if (showPasswordReset) {
     return (
-      <Card className="w-full max-w-lg shadow-2xl shadow-green-100 border-2 border-green-100 backdrop-blur-sm bg-white/95">
+      <Card className="w-full max-w-lg shadow-2xl border-2 border-green-200 rounded-3xl backdrop-blur-sm bg-white/95">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-black text-gray-900">Reset Password</CardTitle>
-          <CardDescription className="text-base mt-2">
+          <CardTitle className="text-2xl sm:text-3xl font-black text-gray-900">Reset Password</CardTitle>
+          <CardDescription className="text-base sm:text-lg mt-2 font-semibold">
             Enter your email address and we'll send you a link to reset your password.
           </CardDescription>
         </CardHeader>
@@ -264,7 +264,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
         <form onSubmit={handlePasswordReset}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="reset-email" className="font-semibold text-gray-900">Email address</Label>
+              <Label htmlFor="reset-email" className="font-bold text-gray-900">Email address</Label>
               <Input
                 id="reset-email"
                 type="email"
@@ -273,13 +273,13 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
                 placeholder="Enter your email address"
                 disabled={resetLoading}
                 required
-                className="w-full h-12 border-2 focus:border-green-400 focus:ring-green-400"
+                className="w-full h-12 px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-500 font-medium shadow-sm"
               />
             </div>
 
             {authError && (
-              <Alert variant="destructive">
-                <AlertDescription>{authError}</AlertDescription>
+              <Alert variant="destructive" className="rounded-xl">
+                <AlertDescription className="font-semibold">{authError}</AlertDescription>
               </Alert>
             )}
           </CardContent>
@@ -288,7 +288,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
             <Button
               type="submit"
               disabled={resetLoading}
-              className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
+              className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-green-500/40"
             >
               {resetLoading ? (
                 <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -305,7 +305,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
                 setResetEmail('');
                 setAuthError('');
               }}
-              className="w-full h-12 border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 font-semibold transition-all duration-300"
+              className="w-full h-12 border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 font-bold rounded-xl transition-all duration-300 shadow-sm hover:shadow-md"
             >
               Back to Sign In
             </Button>
@@ -317,14 +317,14 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
 
 
   return (
-    <Card className="w-full max-w-lg shadow-2xl shadow-green-100 border-2 border-green-100 backdrop-blur-sm bg-white/95">
+    <Card className="w-full max-w-lg shadow-2xl border-2 border-green-200 rounded-3xl backdrop-blur-sm bg-white/95">
       <CardHeader className="text-center pb-4">
         <Link to="/" className="flex items-center justify-center mb-6 group">
           <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-10 w-10 mr-3 transition-transform duration-300 group-hover:scale-110" />
           <span className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
         </Link>
-        <CardTitle className="text-3xl font-black text-gray-900">Sign In</CardTitle>
-        <CardDescription className="text-base mt-2">
+        <CardTitle className="text-2xl sm:text-3xl font-black text-gray-900">Sign In</CardTitle>
+        <CardDescription className="text-base sm:text-lg mt-2 font-semibold">
           Welcome back! Please sign in to your account.
         </CardDescription>
       </CardHeader>
@@ -332,7 +332,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="font-semibold text-gray-900">Email address</Label>
+            <Label htmlFor="email" className="font-bold text-gray-900">Email address</Label>
             <Input
               type="email"
               id="email"
@@ -341,15 +341,15 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
               onChange={handleChange}
               placeholder="Enter your email address"
               disabled={loading}
-              className={cn("h-12 border-2 focus:border-green-400 focus:ring-green-400", errors.email && "border-destructive")}
+              className={cn("h-12 px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-500 font-medium shadow-sm", errors.email && "border-destructive")}
             />
             {errors.email && (
-              <p className="text-sm text-destructive font-medium">{errors.email}</p>
+              <p className="text-sm text-destructive font-semibold">{errors.email}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password" className="font-semibold text-gray-900">Password</Label>
+            <Label htmlFor="password" className="font-bold text-gray-900">Password</Label>
             <div className="relative">
               <Input
                 type={showPassword ? 'text' : 'password'}
@@ -359,7 +359,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
                 onChange={handleChange}
                 placeholder="Enter your password"
                 disabled={loading}
-                className={cn("h-12 border-2 focus:border-green-400 focus:ring-green-400", errors.password && "border-destructive")}
+                className={cn("h-12 px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-500 font-medium shadow-sm", errors.password && "border-destructive")}
               />
               <Button
                 type="button"
@@ -377,26 +377,26 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
               </Button>
             </div>
             {errors.password && (
-              <p className="text-sm text-destructive font-medium">{errors.password}</p>
+              <p className="text-sm text-destructive font-semibold">{errors.password}</p>
             )}
           </div>
 
           {authError && (
-            <Alert variant="destructive">
-              <AlertDescription>
+            <Alert variant="destructive" className="rounded-xl">
+              <AlertDescription className="font-semibold">
                 {authError}
                 {showVerificationHelper && (
                   <div className="mt-3 pt-3 border-t border-destructive/20">
                     <div className="flex items-center text-blue-600 mb-2">
                       <Mail className="w-4 h-4 mr-2" />
-                      <span className="text-sm font-medium">Need help with verification?</span>
+                      <span className="text-sm font-bold">Need help with verification?</span>
                     </div>
                     <Button
                       variant="link"
                       onClick={handleResendVerification}
                       disabled={resendCooldown > 0}
                       className={cn(
-                        "h-auto p-0 text-sm underline",
+                        "h-auto p-0 text-sm underline font-semibold",
                         resendCooldown > 0
                           ? 'text-muted-foreground cursor-not-allowed'
                           : 'text-blue-600 hover:text-blue-700'
@@ -421,7 +421,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
                 setShowPasswordReset(true);
                 setResetEmail(formData.email);
               }}
-              className="h-auto p-0 text-sm font-medium text-green-600 hover:text-green-700"
+              className="h-auto p-0 text-sm font-bold text-green-600 hover:text-green-700"
             >
               Forgot password?
             </Button>
@@ -432,7 +432,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
+            className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-green-500/40"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -444,7 +444,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
             )}
           </Button>
 
-          <div className="text-center text-sm text-gray-600">
+          <div className="text-center text-sm text-gray-600 font-medium">
             Don't have an account?{' '}
             <Button
               variant="link"
@@ -458,7 +458,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
           <div className="relative w-full">
             <Separator />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="bg-card px-2 text-xs text-muted-foreground">or</span>
+              <span className="bg-card px-2 text-xs text-muted-foreground font-medium">or</span>
             </div>
           </div>
 
@@ -467,7 +467,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
             variant="outline"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full h-12 border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 font-semibold transition-all duration-300"
+            className="w-full h-12 border-2 border-gray-300 hover:border-green-400 hover:bg-green-50 font-bold rounded-xl transition-all duration-300 shadow-sm hover:shadow-md"
           >
             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
