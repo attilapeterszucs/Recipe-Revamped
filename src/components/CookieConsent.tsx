@@ -199,12 +199,14 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                       <div className="flex items-start flex-1">
                         <Eye className="w-6 h-6 text-purple-600 mr-3 mt-0.5" />
                         <div className="flex-1">
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between gap-3">
                             <CardTitle className="text-lg font-bold">Analytics Cookies</CardTitle>
-                            <Switch
-                              checked={preferences.analytics}
-                              onCheckedChange={() => togglePreference('analytics')}
-                            />
+                            <div className="p-2 -m-2">
+                              <Switch
+                                checked={preferences.analytics}
+                                onCheckedChange={() => togglePreference('analytics')}
+                              />
+                            </div>
                           </div>
                           <CardDescription className="text-sm mt-1 mb-3 text-gray-700">
                             Help us understand how you use our service to improve performance and user experience.
@@ -230,12 +232,14 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                       <div className="flex items-start flex-1">
                         <Settings className="w-6 h-6 text-blue-600 mr-3 mt-0.5" />
                         <div className="flex-1">
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between gap-3">
                             <CardTitle className="text-lg font-bold">Preference Cookies</CardTitle>
-                            <Switch
-                              checked={preferences.preferences}
-                              onCheckedChange={() => togglePreference('preferences')}
-                            />
+                            <div className="p-2 -m-2">
+                              <Switch
+                                checked={preferences.preferences}
+                                onCheckedChange={() => togglePreference('preferences')}
+                              />
+                            </div>
                           </div>
                           <CardDescription className="text-sm mt-1 mb-3 text-gray-700">
                             Remember your settings, preferences, and choices to provide a personalized experience.
@@ -261,12 +265,14 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                       <div className="flex items-start flex-1">
                         <AlertTriangle className="w-6 h-6 text-red-600 mr-3 mt-0.5" />
                         <div className="flex-1">
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between gap-3">
                             <CardTitle className="text-lg font-bold">Marketing/Advertising Cookies</CardTitle>
-                            <Switch
-                              checked={preferences.marketing}
-                              onCheckedChange={() => togglePreference('marketing')}
-                            />
+                            <div className="p-2 -m-2">
+                              <Switch
+                                checked={preferences.marketing}
+                                onCheckedChange={() => togglePreference('marketing')}
+                              />
+                            </div>
                           </div>
                           <CardDescription className="text-sm mt-1 mb-3 text-gray-700">
                             Enable personalized advertising and measurement through Google Ads integration.
