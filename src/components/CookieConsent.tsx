@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Cookie, Shield, Eye, Settings, X, CheckCircle, AlertTriangle, Info } from 'lucide-react';
 import type { CookiePreferences } from '../types/cookies';
@@ -75,141 +76,99 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
     }));
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center pointer-events-none">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/20 backdrop-blur-sm pointer-events-auto"
-        onClick={() => currentView === 'detailed' ? setCurrentView('banner') : undefined}
-      />
-
-      {/* Cookie Consent Popup */}
-      <div className="relative w-full max-w-4xl mx-4 mb-4 pointer-events-auto">
-        <Card className="shadow-2xl overflow-hidden">
+  return createPortal(
+    <div
+      className="fixed bottom-0 left-0 right-0 z-[9999] w-full"
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 9999,
+        width: '100%',
+        margin: 0,
+        padding: 0
+      }}
+    >
+      {/* Cookie Consent Banner */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+        <Card className="shadow-xl shadow-green-500/10 overflow-hidden rounded-xl sm:rounded-2xl border-2 border-green-200 bg-white">
           {currentView === 'banner' ? (
-            // Simple Banner View
-            <CardContent className="p-6">
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center">
-                  <div className="bg-gradient-to-br from-green-100 to-emerald-100 rounded-full p-2 mr-3">
-                    <Cookie className="w-6 h-6 text-green-600" />
+            // Slim Banner View
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                {/* Icon & Message */}
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 flex-shrink-0">
+                    <Cookie className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                   </div>
-                  <div>
-                    <h2 className="text-xl font-black text-gray-900">We value your privacy</h2>
-                    <p className="text-sm text-gray-600">Choose how we use cookies to improve your experience</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
+                      We use cookies to enhance your experience. By continuing, you consent to our use of cookies.
+                      {' '}
+                      <Button
+                        variant="link"
+                        onClick={() => setCurrentView('detailed')}
+                        className="h-auto p-0 text-green-600 hover:text-green-700 font-bold text-xs sm:text-sm inline underline"
+                      >
+                        Customize
+                      </Button>
+                    </p>
                   </div>
                 </div>
-                {/* Removed dismiss button - consent is required */}
-              </div>
 
-              {/* Content */}
-              <div className="mb-6">
-                <p className="text-gray-700 mb-3 leading-relaxed">
-                  We use cookies for essential functionality, preferences, analytics, and advertising. Recipe processing uses OpenAI with automatic consent for AI data sharing.
-                  <strong className="text-green-700 font-bold"> We also share analytics data with Google Ads for personalized advertising.</strong>
-                </p>
-
-                {/* Privacy Highlights */}
-                <div className="space-y-3 mb-4">
-                  <Alert className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 shadow-sm">
-                    <Shield className="w-4 h-4 text-green-600" />
-                    <AlertDescription className="text-green-800 text-sm">
-                      <span className="font-bold">Privacy compliance:</span>
-                      <span className="ml-1 font-medium">GDPR, CCPA, VCDPA & US state privacy laws</span>
-                    </AlertDescription>
-                  </Alert>
-
-                  <Alert className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 shadow-sm">
-                    <Info className="w-4 h-4 text-blue-600" />
-                    <AlertDescription className="text-blue-800 text-sm">
-                      <span className="font-bold">Data sharing:</span>
-                      <span className="ml-1 font-medium">Google Analytics + Ads for personalized advertising • OpenAI for recipe generation</span>
-                    </AlertDescription>
-                  </Alert>
-
-                  <Alert className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 shadow-sm">
-                    <AlertTriangle className="w-4 h-4 text-amber-600" />
-                    <AlertDescription className="text-amber-800 text-sm">
-                      <span className="font-bold">US residents:</span>
-                      <span className="ml-1 font-medium">This may constitute "sale/sharing" under CCPA • You can opt-out anytime</span>
-                    </AlertDescription>
-                  </Alert>
-                </div>
-
-                {/* Quick Options */}
-                <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                  <span>Essential cookies are always active</span>
+                {/* Action Buttons */}
+                <div className="flex gap-2 sm:gap-3 w-full sm:w-auto flex-shrink-0">
                   <Button
-                    variant="link"
-                    onClick={() => setCurrentView('detailed')}
-                    className="h-auto p-0 text-green-600 hover:text-green-700 font-bold"
+                    onClick={handleRejectAll}
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 sm:flex-initial border-2 border-gray-300 hover:border-green-500 hover:bg-green-50 font-semibold transition-all duration-300 text-xs sm:text-sm min-h-[44px] sm:min-h-[40px] rounded-lg"
                   >
-                    Customize settings
-                    <Settings className="w-4 h-4 ml-1" />
+                    Reject
+                  </Button>
+                  <Button
+                    onClick={handleAcceptAll}
+                    size="sm"
+                    className="flex-1 sm:flex-initial bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105 transition-all duration-300 text-xs sm:text-sm min-h-[44px] sm:min-h-[40px] rounded-lg"
+                  >
+                    Accept All
                   </Button>
                 </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  onClick={handleAcceptAll}
-                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
-                >
-                  Accept all cookies
-                </Button>
-                <Button
-                  onClick={handleRejectAll}
-                  variant="outline"
-                  className="flex-1 border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 font-semibold transition-all duration-300"
-                >
-                  Reject optional cookies
-                </Button>
-              </div>
-
-              {/* Legal Links */}
-              <Separator className="mt-4" />
-              <div className="flex flex-wrap gap-4 mt-4 text-xs text-muted-foreground">
-                <Link to="/privacy" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Privacy Policy</Link>
-                <Link to="/cookies" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Cookie Policy</Link>
-                <Link to="/terms" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Terms of Service</Link>
-                <span>•</span>
-                <span>Your choices will be saved for 6 months</span>
               </div>
             </CardContent>
           ) : (
             // Detailed Settings View
-            <div className="max-h-[80vh] overflow-y-auto">
+            <div className="max-h-[85vh] overflow-y-auto">
               {/* Header */}
-              <CardHeader className="sticky top-0 bg-background border-b">
+              <CardHeader className="sticky top-0 bg-white border-b-2 border-green-200 z-10">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-3">
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => setCurrentView('banner')}
-                      className="mr-2"
+                      className="hover:bg-green-50 hover:text-green-600 transition-colors rounded-xl"
                     >
                       <X className="w-5 h-5" />
                     </Button>
                     <div>
-                      <CardTitle className="text-xl">Cookie Settings</CardTitle>
-                      <CardDescription>Manage your cookie preferences</CardDescription>
+                      <CardTitle className="text-xl sm:text-2xl font-black text-gray-900">Cookie Settings</CardTitle>
+                      <CardDescription className="text-sm text-gray-600">Manage your cookie preferences</CardDescription>
                     </div>
                   </div>
-                  <Badge variant="outline" className="text-xs">
-                    <Info className="w-4 h-4 mr-1" />
-                    GDPR, CCPA & US State Law Compliant
+                  <Badge className="bg-green-100 text-green-700 text-xs font-semibold border-0 hidden sm:flex">
+                    <Shield className="w-3 h-3 mr-1" />
+                    Privacy Protected
                   </Badge>
                 </div>
               </CardHeader>
 
               {/* Cookie Categories */}
-              <CardContent className="p-6 space-y-6">
+              <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                 {/* Essential Cookies */}
-                <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader className="pb-3">
+                <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 rounded-xl">
+                  <CardHeader className="pb-3 p-4 sm:p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start flex-1">
                         <Shield className="w-6 h-6 text-green-600 mr-3 mt-0.5" />
@@ -234,8 +193,8 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 </Card>
 
                 {/* Analytics Cookies */}
-                <Card className="border-2 border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader className="pb-3">
+                <Card className="border-2 border-gray-200 shadow-md hover:shadow-xl hover:border-purple-300 transition-all duration-300 hover:-translate-y-0.5 rounded-xl">
+                  <CardHeader className="pb-3 p-4 sm:p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start flex-1">
                         <Eye className="w-6 h-6 text-purple-600 mr-3 mt-0.5" />
@@ -265,8 +224,8 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 </Card>
 
                 {/* Preference Cookies */}
-                <Card className="border-2 border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader className="pb-3">
+                <Card className="border-2 border-gray-200 shadow-md hover:shadow-xl hover:border-blue-300 transition-all duration-300 hover:-translate-y-0.5 rounded-xl">
+                  <CardHeader className="pb-3 p-4 sm:p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start flex-1">
                         <Settings className="w-6 h-6 text-blue-600 mr-3 mt-0.5" />
@@ -296,8 +255,8 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 </Card>
 
                 {/* Marketing/Advertising Cookies */}
-                <Card className="bg-gradient-to-br from-red-50 to-rose-50 border-2 border-red-200 shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader className="pb-3">
+                <Card className="bg-gradient-to-br from-red-50 to-rose-50 border-2 border-red-200 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 rounded-xl">
+                  <CardHeader className="pb-3 p-4 sm:p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start flex-1">
                         <AlertTriangle className="w-6 h-6 text-red-600 mr-3 mt-0.5" />
@@ -327,27 +286,27 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 </Card>
 
                 {/* Third-Party Services Info */}
-                <Alert className="bg-gradient-to-r from-yellow-50 to-amber-50 border-2 border-yellow-200 shadow-md">
-                  <Info className="w-4 h-4 text-yellow-600" />
+                <Alert className="bg-gradient-to-r from-yellow-50 to-amber-50 border-2 border-yellow-200 shadow-md hover:shadow-xl transition-all duration-300 rounded-xl">
+                  <Info className="w-4 h-4 text-yellow-600 flex-shrink-0" />
                   <AlertDescription>
-                    <h4 className="font-bold text-gray-900 mb-2">
+                    <h4 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">
                       Third-Party Services
                     </h4>
-                    <p className="text-gray-700 text-sm mb-3 font-medium">
+                    <p className="text-gray-700 text-xs sm:text-sm mb-3 font-medium">
                       We use select third-party services, each with their own privacy policies:
                     </p>
-                    <div className="grid md:grid-cols-2 gap-3 text-xs">
-                      <Card className="p-2 border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <strong className="font-bold text-gray-900">Firebase (Google):</strong> <span className="text-gray-700">Authentication & secure data storage</span>
+                    <div className="grid sm:grid-cols-2 gap-2 sm:gap-3 text-xs">
+                      <Card className="p-2 sm:p-3 border-2 border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg">
+                        <strong className="font-bold text-gray-900">Firebase:</strong> <span className="text-gray-700">Authentication & storage</span>
                       </Card>
-                      <Card className="p-2 border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <strong className="font-bold text-gray-900">Google Analytics & Ads:</strong> <span className="text-gray-700">Usage analytics & personalized advertising</span>
+                      <Card className="p-2 sm:p-3 border-2 border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg">
+                        <strong className="font-bold text-gray-900">Google Analytics:</strong> <span className="text-gray-700">Usage & advertising</span>
                       </Card>
-                      <Card className="p-2 border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <strong className="font-bold text-gray-900">OpenAI:</strong> <span className="text-gray-700">AI-powered recipe generation & processing</span>
+                      <Card className="p-2 sm:p-3 border-2 border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg">
+                        <strong className="font-bold text-gray-900">OpenAI:</strong> <span className="text-gray-700">AI recipe generation</span>
                       </Card>
-                      <Card className="p-2 border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <strong className="font-bold text-gray-900">Netlify:</strong> <span className="text-gray-700">Website hosting & content delivery</span>
+                      <Card className="p-2 sm:p-3 border-2 border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg">
+                        <strong className="font-bold text-gray-900">Netlify:</strong> <span className="text-gray-700">Website hosting</span>
                       </Card>
                     </div>
                   </AlertDescription>
@@ -355,44 +314,45 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
               </CardContent>
 
               {/* Action Buttons */}
-              <div className="sticky bottom-0 bg-background border-t p-6">
-                <div className="flex flex-col sm:flex-row gap-3">
+              <div className="sticky bottom-0 bg-white border-t-2 border-green-200 p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   <Button
                     onClick={handleSavePreferences}
-                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
+                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105 transition-all duration-300 rounded-lg min-h-[44px] text-sm"
                   >
-                    Save my preferences
+                    Save Preferences
                   </Button>
                   <Button
                     onClick={handleAcceptAll}
-                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
+                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105 transition-all duration-300 rounded-lg min-h-[44px] text-sm"
                   >
-                    Accept all
+                    Accept All
                   </Button>
                   <Button
                     onClick={handleRejectAll}
                     variant="outline"
-                    className="flex-1 border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 font-semibold transition-all duration-300"
+                    className="flex-1 border-2 border-gray-300 hover:border-green-500 hover:bg-green-50 font-semibold transition-all duration-300 rounded-lg min-h-[44px] text-sm"
                   >
-                    Reject optional
+                    Reject Optional
                   </Button>
                 </div>
 
                 {/* Legal Compliance Info */}
-                <Separator className="mt-4" />
+                <Separator className="mt-4 bg-gray-200" />
                 <div className="mt-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-muted-foreground">
-                    <div className="flex flex-wrap gap-3">
-                      <Link to="/privacy" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Privacy Policy</Link>
-                      <Link to="/cookies" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Cookie Policy</Link>
-                      <Link to="/terms" className="hover:text-green-700 transition-colors underline text-green-600 font-medium">Terms of Service</Link>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-gray-600">
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
+                      <Link to="/privacy" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Privacy</Link>
+                      <span className="hidden sm:inline text-gray-400">•</span>
+                      <Link to="/cookies" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Cookies</Link>
+                      <span className="hidden sm:inline text-gray-400">•</span>
+                      <Link to="/terms" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Terms</Link>
                     </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
-                        GDPR & CCPA Rights
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge className="bg-green-100 text-green-700 text-xs font-semibold border-0">
+                        <Shield className="w-3 h-3 mr-1" />
+                        GDPR & CCPA
                       </Badge>
-                      <span className="hidden sm:inline">•</span>
-                      <span>Consent expires in 6 months</span>
                     </div>
                   </div>
                 </div>
@@ -401,6 +361,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
           )}
         </Card>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

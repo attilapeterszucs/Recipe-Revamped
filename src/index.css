@@ -129,15 +129,13 @@ body {
   min-height: 100vh;
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   overscroll-behavior-y: contain; /* Prevent bounce scrolling */
-  /* GPU acceleration for smooth scrolling */
-  transform: translateZ(0);
   backface-visibility: hidden;
 }
 
 #root {
   min-height: 100vh;
   /* CSS containment for better rendering performance */
-  contain: layout style paint;
+  contain: layout style;
 }
 
 /* Enhanced Scroll Animations */
