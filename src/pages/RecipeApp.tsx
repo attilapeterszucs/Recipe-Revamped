@@ -877,11 +877,12 @@ export function RecipeApp() {
               />
             ) : showMealPlanner ? (
               featureAccess.canUseMealPlanning ? (
-                <MealPlannerCalendar 
-                  userId={user.uid} 
+                <MealPlannerCalendar
+                  userId={user.uid}
                   userSettings={userSettings || undefined}
                   canUseNutritionAnalysis={featureAccess.canUseNutritionAnalysis}
                   featureAccess={featureAccess}
+                  onShowUpgradeModal={() => setShowUpgradeModal(true)}
                 />
               ) : (
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-8 text-center">

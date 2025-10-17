@@ -23,6 +23,7 @@ interface MealPlannerCalendarProps {
     canUseNutritionAnalysis: boolean;
     canGenerateWeeklyMenu: boolean;
   };
+  onShowUpgradeModal?: () => void;
 }
 
 interface ShoppingListItem {
@@ -41,7 +42,7 @@ interface ShoppingListCategory {
 
 // Nutrition data is now parsed from actual recipes
 
-export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId, userSettings, canUseNutritionAnalysis = false, featureAccess }) => {
+export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId, userSettings, canUseNutritionAnalysis = false, featureAccess, onShowUpgradeModal }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [mealPlan, setMealPlan] = useState<MealPlan>({});
   const [recipes, setRecipes] = useState<SavedRecipe[]>([]);
@@ -1807,6 +1808,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
               {/* CTA Button */}
               <button
                 data-upgrade-plan
+                onClick={() => onShowUpgradeModal?.()}
                 className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
@@ -2264,6 +2266,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
               {/* CTA Button */}
               <button
                 data-upgrade-plan
+                onClick={() => onShowUpgradeModal?.()}
                 className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
