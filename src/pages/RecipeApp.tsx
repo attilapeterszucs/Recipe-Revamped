@@ -1051,16 +1051,15 @@ export function RecipeApp() {
 
       {/* Upgrade Plan Modal - Rendered after main, same level as NotificationPopup */}
       {showUpgradeModal && !isAdmin && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            {/* Background overlay */}
-            <div
-              className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity"
-              onClick={() => setShowUpgradeModal(false)}
-            ></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Background overlay */}
+          <div
+            className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowUpgradeModal(false)}
+          ></div>
 
-            {/* Modal */}
-            <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-7xl sm:w-full">
+          {/* Modal - Fixed centered with internal scroll */}
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-y-auto">
               {/* Header */}
               <div className="bg-gradient-to-r from-green-600 via-green-500 to-emerald-500 px-6 py-8 relative overflow-hidden">
                 {/* Decorative pattern */}
