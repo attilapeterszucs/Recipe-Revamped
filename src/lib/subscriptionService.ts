@@ -260,7 +260,8 @@ export class SubscriptionService {
     adminUserId: string,
     targetUserId: string,
     plan: SubscriptionPlan,
-    userEmail: string
+    userEmail: string,
+    expiryDate?: Date | null
   ): Promise<{ success: boolean; error?: string }> {
     try {
       // Verify admin privileges
@@ -276,6 +277,7 @@ export class SubscriptionService {
         plan,
         status: 'active',
         startDate: new Date(),
+        endDate: expiryDate || null,
         isAdmin: targetUserId === adminUserId // Mark admin's own account
       };
 

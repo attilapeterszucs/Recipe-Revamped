@@ -112,7 +112,17 @@ export const addAdminUser = async (
         reactivatedAt: serverTimestamp(),
         reactivatedBy: createdByUid
       });
-      
+
+      // Also set isAdmin flag in user document
+      try {
+        const userRef = doc(db, 'users', uid);
+        await updateDoc(userRef, {
+          isAdmin: true
+        });
+      } catch (error) {
+        console.error('Error updating user isAdmin flag:', error);
+      }
+
       // Log the reactivation
       await logAdminAction({
         adminUid: createdByUid,
@@ -123,7 +133,7 @@ export const addAdminUser = async (
         details: { role, displayName },
       timestamp: new Date()
       });
-      
+
       return true;
     }
     
@@ -139,7 +149,18 @@ export const addAdminUser = async (
     };
     
     await addDoc(collection(db, 'admins'), adminData);
-    
+
+    // Also set isAdmin flag in user document for security rules
+    try {
+      const userRef = doc(db, 'users', uid);
+      await updateDoc(userRef, {
+        isAdmin: true
+      });
+    } catch (error) {
+      console.error('Error updating user isAdmin flag:', error);
+      // Continue even if this fails - the admins collection is the source of truth
+    }
+
     // Log the admin action
     await logAdminAction({
       adminUid: createdByUid,
@@ -150,7 +171,7 @@ export const addAdminUser = async (
       details: { role, displayName },
       timestamp: new Date()
     });
-    
+
     return true;
   } catch (error) {
     console.error('Error adding admin user:', error);
@@ -185,7 +206,18 @@ export const removeAdminUser = async (
       removedAt: serverTimestamp(),
       removedBy: removedByUid
     });
-    
+
+    // Also remove isAdmin flag from user document
+    try {
+      const userRef = doc(db, 'users', targetUid);
+      await updateDoc(userRef, {
+        isAdmin: false
+      });
+    } catch (error) {
+      console.error('Error updating user isAdmin flag:', error);
+      // Continue even if this fails
+    }
+
     // Log the admin action
     await logAdminAction({
       adminUid: removedByUid,
@@ -196,7 +228,7 @@ export const removeAdminUser = async (
       details: { reason: 'Admin privileges revoked' },
       timestamp: new Date()
     });
-    
+
     return true;
   } catch (error) {
     console.error('Error removing admin user:', error);
@@ -266,7 +298,17 @@ export const initializeFirstAdmin = async (
         reactivatedAt: serverTimestamp(),
         reactivatedBy: 'system_init'
       });
-      
+
+      // Also set isAdmin flag in user document
+      try {
+        const userRef = doc(db, 'users', uid);
+        await updateDoc(userRef, {
+          isAdmin: true
+        });
+      } catch (error) {
+        console.error('Error updating user isAdmin flag:', error);
+      }
+
       await logAdminAction({
         adminUid: 'system',
         adminEmail: 'system',
@@ -276,7 +318,7 @@ export const initializeFirstAdmin = async (
         details: { role: 'super_admin', displayName },
         timestamp: new Date()
       });
-      
+
       return true;
     }
     
@@ -296,7 +338,17 @@ export const initializeFirstAdmin = async (
       };
       
       await addDoc(collection(db, 'admins'), adminData);
-      
+
+      // Also set isAdmin flag in user document
+      try {
+        const userRef = doc(db, 'users', uid);
+        await updateDoc(userRef, {
+          isAdmin: true
+        });
+      } catch (error) {
+        console.error('Error updating user isAdmin flag:', error);
+      }
+
       // Log the initialization
       await logAdminAction({
         adminUid: 'system',
@@ -307,7 +359,7 @@ export const initializeFirstAdmin = async (
         details: { role: 'super_admin', displayName },
         timestamp: new Date()
       });
-      
+
       return true;
     }
     
@@ -328,7 +380,17 @@ export const initializeFirstAdmin = async (
     };
     
     await addDoc(collection(db, 'admins'), adminData);
-    
+
+    // Also set isAdmin flag in user document
+    try {
+      const userRef = doc(db, 'users', uid);
+      await updateDoc(userRef, {
+        isAdmin: true
+      });
+    } catch (error) {
+      console.error('Error updating user isAdmin flag:', error);
+    }
+
     // Log the initialization
     await logAdminAction({
       adminUid: 'system',
@@ -339,7 +401,7 @@ export const initializeFirstAdmin = async (
       details: { role: 'super_admin', displayName },
       timestamp: new Date()
     });
-    
+
     return true;
   } catch (error) {
     console.error('Error initializing first admin:', error);

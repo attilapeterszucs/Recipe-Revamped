@@ -11,14 +11,16 @@ import {
   Check,
   X,
   Settings,
-  RefreshCw
+  RefreshCw,
+  Calendar,
+  Infinity
 } from 'lucide-react';
 import { getAllUsers } from '../lib/adminNotifications';
 import { getAllAdmins, addAdminUser, removeAdminUser, isUserAdmin, type AdminUser } from '../lib/adminManagement';
 import { getAllUserProfiles } from '../lib/userService';
 import { SubscriptionService } from '../lib/subscriptionService';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
-import type { SubscriptionPlan } from '../types/subscription';
+import type { SubscriptionPlan, UserSubscription } from '../types/subscription';
 import { useToast } from './ToastContainer';
 import { useSubscriptionRefresh } from '../contexts/SubscriptionContext';
 import { logger } from '../lib/logger';
@@ -50,6 +52,9 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [currentUserPlan, setCurrentUserPlan] = useState<SubscriptionPlan>('free');
   const [currentAdminData, setCurrentAdminData] = useState<AdminUser | null>(null);
+  const [selectedExpiryDate, setSelectedExpiryDate] = useState<string>('');
+  const [isForever, setIsForever] = useState<boolean>(false);
+  const [selectedPlanForChange, setSelectedPlanForChange] = useState<SubscriptionPlan | null>(null);
   const { showSuccess, showError } = useToast();
   const { refreshSubscription } = useSubscriptionRefresh();
 
@@ -245,38 +250,59 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
     }
   };
 
-  const handleChangePlan = async (plan: SubscriptionPlan, isForSelf: boolean = false) => {
+  const handleApplyPlanChange = async () => {
+    if (!selectedPlanForChange) {
+      showError('Error', 'Please select a plan');
+      return;
+    }
+
+    if (!selectedExpiryDate && !isForever) {
+      showError('Error', 'Please select an expiry date or check "Forever"');
+      return;
+    }
+
+    const expiryDate = isForever ? new Date('9999-01-01') : new Date(selectedExpiryDate);
+    await handleChangePlan(selectedPlanForChange, expiryDate, false);
+  };
+
+  const handleChangePlan = async (plan: SubscriptionPlan, expiryDate: Date | null = null, isForSelf: boolean = false) => {
     try {
       setActionLoading(`plan-${plan}`);
-      
+
       const targetUid = isForSelf ? currentAdminUid : selectedUser?.uid;
       const targetEmail = isForSelf ? currentAdminEmail : selectedUser?.email;
-      
+
       if (!targetUid || !targetEmail) {
         showError('Error', 'User information not available');
         return;
       }
-      
+
+      // Always use admin verification method
       const result = await SubscriptionService.adminSetUserPlan(
         currentAdminUid,
         targetUid,
         plan,
-        currentAdminEmail
+        currentAdminEmail,
+        expiryDate
       );
-      
+
       if (result.success) {
         const targetName = isForSelf ? 'your' : (selectedUser?.displayName || targetEmail);
+        const expiryMessage = expiryDate && !isForSelf
+          ? ` (expires ${expiryDate.toLocaleDateString()})`
+          : '';
+
         showSuccess(
-          'Plan Updated', 
-          `Successfully changed ${targetName} plan to ${SUBSCRIPTION_PLANS[plan].name}`
+          'Plan Updated',
+          `Successfully changed ${targetName} plan to ${SUBSCRIPTION_PLANS[plan].name}${expiryMessage}`
         );
-        
+
         if (isForSelf) {
           setCurrentUserPlan(plan);
           // Trigger global subscription refresh for real-time updates
           refreshSubscription();
         }
-        
+
         await loadData(); // Refresh data
         if (showUserModal) {
           setShowUserModal(false);
@@ -287,20 +313,20 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
       }
     } catch (error) {
       logger.error('Error changing plan:', { error });
-      
+
       // Handle specific error types
       if (error instanceof Error) {
         const errorMessage = error.message.toLowerCase();
-        
-        if (errorMessage.includes('network') || 
+
+        if (errorMessage.includes('network') ||
             errorMessage.includes('blocked') ||
             errorMessage.includes('fetch') ||
             error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
           showError(
-            'Network Error', 
+            'Network Error',
             'Request was blocked. Please check your ad blocker or network connection and try again.'
           );
-        } else if (errorMessage.includes('permission') || 
+        } else if (errorMessage.includes('permission') ||
                    errorMessage.includes('unauthorized')) {
           showError('Permission Denied', 'You don\'t have admin privileges to perform this action.');
         } else {
@@ -383,7 +409,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
           {Object.entries(SUBSCRIPTION_PLANS).map(([planId, plan]) => (
             <button
               key={planId}
-              onClick={() => handleChangePlan(planId as SubscriptionPlan, true)}
+              onClick={() => handleChangePlan(planId as SubscriptionPlan, null, true)}
               disabled={currentUserPlan === planId || actionLoading === `plan-${planId}`}
               className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                 currentUserPlan === planId
@@ -486,42 +512,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                 >
                   <Settings className="w-4 h-4" />
                 </button>
-
-                {user.uid !== currentAdminUid && (
-                  user.isAdmin ? (
-                    canGrantAdmin() ? (
-                      <button
-                        onClick={() => handleRevokeAdmin(user)}
-                        disabled={actionLoading === `revoke-${user.uid}`}
-                        className="px-3 py-2 text-sm bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl hover:from-red-600 hover:to-rose-600 transition-all duration-200 shadow-md shadow-red-500/30 hover:shadow-lg hover:scale-105 disabled:opacity-50 font-bold"
-                      >
-                        {actionLoading === `revoke-${user.uid}` ? (
-                          <Loader className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <UserMinus className="w-4 h-4" />
-                        )}
-                      </button>
-                    ) : (
-                      <div className="px-3 py-2 text-xs bg-gray-100 text-gray-500 rounded-xl font-bold border-2 border-gray-200">
-                        Admin
-                      </div>
-                    )
-                  ) : (
-                    canGrantAdmin() ? (
-                      <button
-                        onClick={() => handleGrantAdmin(user)}
-                        disabled={actionLoading === `grant-${user.uid}`}
-                        className="px-3 py-2 text-sm bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-md shadow-green-500/30 hover:shadow-lg hover:scale-105 disabled:opacity-50 font-bold"
-                      >
-                        {actionLoading === `grant-${user.uid}` ? (
-                          <Loader className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <UserPlus className="w-4 h-4" />
-                        )}
-                      </button>
-                    ) : null
-                  )
-                )}
               </div>
             </div>
           ))}
@@ -534,113 +524,271 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         </div>
       </div>
 
-      {/* User Detail Modal */}
+      {/* Enhanced User Management Modal */}
       {showUserModal && selectedUser && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-5 relative overflow-hidden">
-              {/* Decorative pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0" style={{
-                  backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
-                  backgroundSize: '24px 24px'
-                }} />
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95 border-2 border-gray-200 flex flex-col">
+            {/* Header - Landing Page Style */}
+            <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-6 relative overflow-hidden flex-shrink-0">
+              {/* Animated blob background */}
+              <div className="absolute inset-0 opacity-20">
+                <div className="absolute top-0 -left-4 w-32 h-32 bg-white rounded-full mix-blend-overlay filter blur-2xl animate-blob" />
+                <div className="absolute top-0 -right-4 w-32 h-32 bg-yellow-300 rounded-full mix-blend-overlay filter blur-2xl animate-blob animation-delay-2000" />
               </div>
 
               <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
-                    <Settings className="w-6 h-6 text-white" />
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-xl ring-2 ring-white/30">
+                    <Settings className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-2xl font-black text-white">
-                    Manage User: {selectedUser.displayName}
-                  </h3>
+                  <div>
+                    <h3 className="text-2xl font-black text-white leading-tight">
+                      {selectedUser.displayName}
+                    </h3>
+                    <p className="text-sm text-white/90 font-semibold mt-0.5">{selectedUser.email}</p>
+                  </div>
                 </div>
                 <button
-                  onClick={() => setShowUserModal(false)}
-                  className="text-white/90 hover:text-white transition-all duration-200 p-2 rounded-xl hover:bg-white/20 backdrop-blur-sm"
+                  onClick={() => {
+                    setShowUserModal(false);
+                    setSelectedExpiryDate('');
+                    setIsForever(false);
+                    setSelectedPlanForChange(null);
+                  }}
+                  className="text-white/90 hover:text-white transition-all duration-200 p-2.5 rounded-xl hover:bg-white/20 backdrop-blur-sm group"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-200" />
                 </button>
               </div>
             </div>
 
-            {/* Content */}
-            <div className="p-6 space-y-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-800 mb-3">
-                  Change Subscription Plan
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {Object.entries(SUBSCRIPTION_PLANS).map(([planId, plan]) => (
-                    <button
-                      key={planId}
-                      onClick={() => handleChangePlan(planId as SubscriptionPlan, false)}
-                      disabled={selectedUser.subscriptionPlan === planId || actionLoading === `plan-${planId}`}
-                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                        selectedUser.subscriptionPlan === planId
-                          ? 'border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 shadow-lg shadow-purple-500/20 transform scale-105'
-                          : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50/50 hover:shadow-md'
-                      } ${actionLoading === `plan-${planId}` ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                      {actionLoading === `plan-${planId}` ? (
-                        <Loader className="w-5 h-5 animate-spin mx-auto text-purple-600" />
-                      ) : (
-                        <>
-                          <div className="font-black text-sm text-gray-800">{plan.name}</div>
-                          <div className="text-xs text-gray-600 font-medium mt-1">${plan.basePrice}/mo</div>
-                          {selectedUser.subscriptionPlan === planId && (
-                            <Check className="w-5 h-5 text-purple-600 mx-auto mt-2" />
-                          )}
-                        </>
-                      )}
-                    </button>
-                  ))}
+            {/* Content - Scrollable */}
+            <div className="p-6 sm:p-8 space-y-6 bg-gradient-to-b from-gray-50 to-white overflow-y-auto flex-1">
+              {/* Admin Privileges Section */}
+              <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-red-300 transition-all duration-500 hover:shadow-xl hover:shadow-red-100 p-6 group">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-14 h-14 bg-gradient-to-br from-red-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Shield className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-black text-gray-900">
+                      Admin Privileges
+                    </h4>
+                    <p className="text-sm text-gray-500 font-medium">Manage user administrative access</p>
+                  </div>
                 </div>
+
+                {selectedUser.uid === currentAdminUid ? (
+                  <div className="px-4 py-3 bg-gray-50 text-gray-700 rounded-xl text-sm font-semibold border-2 border-gray-200 flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-gray-500" />
+                    Cannot modify your own admin status
+                  </div>
+                ) : !canGrantAdmin() ? (
+                  <div className="px-4 py-3 bg-orange-50 text-orange-700 rounded-xl text-sm font-semibold border-2 border-orange-200 flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-orange-500" />
+                    Only super admins can manage admin privileges
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex-1">
+                      <p className="text-sm font-bold text-gray-700 mb-1">
+                        Current Status: {selectedUser.isAdmin ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-bold">
+                            <ShieldCheck className="w-3 h-3" />
+                            Administrator
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold">
+                            <Users className="w-3 h-3" />
+                            Regular User
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-xs text-gray-500 font-medium">
+                        {selectedUser.isAdmin
+                          ? 'This user has administrative access to the system'
+                          : 'This user has standard user permissions'}
+                      </p>
+                    </div>
+                    {selectedUser.isAdmin ? (
+                      <button
+                        onClick={() => handleRevokeAdmin(selectedUser)}
+                        disabled={actionLoading === `revoke-${selectedUser.uid}`}
+                        className="px-5 py-3 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl hover:from-red-600 hover:to-rose-600 transition-all duration-300 font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2 whitespace-nowrap"
+                      >
+                        {actionLoading === `revoke-${selectedUser.uid}` ? (
+                          <>
+                            <Loader className="w-4 h-4 animate-spin" />
+                            Revoking...
+                          </>
+                        ) : (
+                          <>
+                            <UserMinus className="w-4 h-4" />
+                            Revoke Admin
+                          </>
+                        )}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleGrantAdmin(selectedUser)}
+                        disabled={actionLoading === `grant-${selectedUser.uid}`}
+                        className="px-5 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2 whitespace-nowrap"
+                      >
+                        {actionLoading === `grant-${selectedUser.uid}` ? (
+                          <>
+                            <Loader className="w-4 h-4 animate-spin" />
+                            Granting...
+                          </>
+                        ) : (
+                          <>
+                            <UserPlus className="w-4 h-4" />
+                            Grant Admin
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t-2 border-gray-200">
-                <span className="text-sm font-bold text-gray-800">Admin Status</span>
-                {selectedUser.uid !== currentAdminUid && canGrantAdmin() && (
-                  selectedUser.isAdmin ? (
-                    <button
-                      onClick={() => handleRevokeAdmin(selectedUser)}
-                      disabled={actionLoading === `revoke-${selectedUser.uid}`}
-                      className="px-5 py-2.5 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl hover:from-red-600 hover:to-rose-600 transition-all duration-200 font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:scale-105 disabled:opacity-50"
-                    >
-                      {actionLoading === `revoke-${selectedUser.uid}` ? (
-                        <Loader className="w-4 h-4 animate-spin mr-2 inline" />
-                      ) : (
-                        <UserMinus className="w-4 h-4 mr-2 inline" />
+              {/* Subscription Plan Section */}
+              <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-xl hover:shadow-green-100 p-6 group">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Crown className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-black text-gray-900">
+                      Subscription Plan
+                    </h4>
+                    <p className="text-sm text-gray-500 font-medium">Manage user subscription and expiry</p>
+                  </div>
+                </div>
+
+                <div className="space-y-5">
+                  {/* Current Plan Display */}
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-300 rounded-xl p-4">
+                    <label className="block text-xs font-bold text-green-700 uppercase tracking-wide mb-2 flex items-center gap-1">
+                      <Crown className="w-3 h-3" />
+                      Current Plan
+                    </label>
+                    <div className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                      {SUBSCRIPTION_PLANS[selectedUser.subscriptionPlan || 'free'].name}
+                    </div>
+                  </div>
+
+                  {/* Plan Selection */}
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-green-600" />
+                      Select New Plan
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {Object.entries(SUBSCRIPTION_PLANS).map(([planId, plan]) => (
+                        <button
+                          key={planId}
+                          onClick={() => setSelectedPlanForChange(planId as SubscriptionPlan)}
+                          type="button"
+                          className={`p-5 rounded-xl border-2 transition-all duration-300 group ${
+                            selectedPlanForChange === planId
+                              ? 'border-green-500 bg-gradient-to-br from-green-50 to-emerald-50 shadow-xl shadow-green-500/20 ring-2 ring-green-300'
+                              : 'border-gray-200 hover:border-green-300 hover:bg-gradient-to-br hover:from-green-50/50 hover:to-emerald-50/50 hover:shadow-lg'
+                          }`}
+                        >
+                          <div className="font-black text-base text-gray-900 group-hover:text-green-700 transition-colors">{plan.name}</div>
+                          <div className="text-sm text-gray-600 font-semibold mt-1">${plan.basePrice}<span className="text-xs">/mo</span></div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Forever Checkbox */}
+                  <div className={`flex items-center gap-3 bg-gradient-to-br border-2 rounded-xl p-4 transition-all duration-300 ${
+                    isForever
+                      ? 'from-green-50 to-emerald-50 border-green-400 shadow-lg shadow-green-500/20'
+                      : 'from-gray-50 to-white border-gray-200 hover:border-green-300'
+                  }`}>
+                    <input
+                      type="checkbox"
+                      id="forever-checkbox"
+                      checked={isForever}
+                      onChange={(e) => {
+                        setIsForever(e.target.checked);
+                        if (e.target.checked) {
+                          setSelectedExpiryDate('');
+                        }
+                      }}
+                      className="w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:ring-offset-0 cursor-pointer transition-all"
+                    />
+                    <label htmlFor="forever-checkbox" className="flex items-center gap-2 text-sm font-bold text-gray-800 cursor-pointer flex-1">
+                      <Infinity className={`w-5 h-5 transition-colors ${isForever ? 'text-green-600' : 'text-gray-400'}`} />
+                      Forever (No Expiry)
+                    </label>
+                  </div>
+
+                  {/* Expiry Date Picker */}
+                  {!isForever && (
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-green-600" />
+                        Plan Expiry Date <span className="text-red-500">*</span>
+                      </label>
+                      <p className="text-xs text-gray-500 mb-2">
+                        The plan will automatically revert to Free after this date.
+                      </p>
+                      <div className="relative">
+                        <input
+                          type="date"
+                          value={selectedExpiryDate}
+                          onChange={(e) => setSelectedExpiryDate(e.target.value)}
+                          min={new Date().toISOString().split('T')[0]}
+                          required
+                          className="w-full px-4 py-3 pl-12 border-2 border-green-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 font-medium bg-white hover:border-green-400"
+                        />
+                        <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500 pointer-events-none" />
+                      </div>
+                      {selectedExpiryDate && (
+                        <div className="mt-2 px-3 py-2 bg-green-100 border border-green-300 rounded-lg text-sm text-green-700 font-medium flex items-start gap-2">
+                          <Calendar className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <span>
+                            Plan will expire on {new Date(selectedExpiryDate).toLocaleDateString('en-US', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })} and revert to Free plan
+                          </span>
+                        </div>
                       )}
-                      Remove Admin
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleGrantAdmin(selectedUser)}
-                      disabled={actionLoading === `grant-${selectedUser.uid}`}
-                      className="px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105 disabled:opacity-50"
-                    >
-                      {actionLoading === `grant-${selectedUser.uid}` ? (
-                        <Loader className="w-4 h-4 animate-spin mr-2 inline" />
-                      ) : (
-                        <UserPlus className="w-4 h-4 mr-2 inline" />
-                      )}
-                      Grant Admin
-                    </button>
-                  )
-                )}
-                {selectedUser.uid === currentAdminUid && (
-                  <span className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold border-2 border-gray-200">
-                    Cannot modify yourself
-                  </span>
-                )}
-                {selectedUser.uid !== currentAdminUid && !canGrantAdmin() && (
-                  <span className="px-4 py-2 bg-gradient-to-r from-orange-100 to-red-100 text-orange-700 rounded-xl text-sm font-bold border-2 border-orange-200">
-                    Only super admins can manage admin privileges
-                  </span>
-                )}
+                    </div>
+                  )}
+
+                  {isForever && (
+                    <div className="px-3 py-2 bg-green-100 border border-green-300 rounded-lg text-sm text-green-700 font-medium flex items-start gap-2">
+                      <Infinity className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                      <span>This plan will remain active forever and will never expire automatically</span>
+                    </div>
+                  )}
+
+                  {/* Apply Button */}
+                  <button
+                    onClick={handleApplyPlanChange}
+                    disabled={!selectedPlanForChange || (!selectedExpiryDate && !isForever) || actionLoading !== null}
+                    className="w-full py-3.5 px-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+                  >
+                    {actionLoading ? (
+                      <>
+                        <Loader className="w-5 h-5 animate-spin" />
+                        Applying Changes...
+                      </>
+                    ) : (
+                      <>
+                        <Check className="w-5 h-5" />
+                        Apply Plan Change
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
