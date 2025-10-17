@@ -50,7 +50,7 @@ export const AppFooter: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                <Link to="/contact" onClick={scrollToTop} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                   Contact
                 </Link>
               </li>

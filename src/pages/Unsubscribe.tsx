@@ -396,7 +396,7 @@ export const Unsubscribe: React.FC = () => {
                           </Link>
                         </Button>
                         <Button variant="outline" asChild>
-                          <Link to="/contact">
+                          <Link to="/contact" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                             Contact Support
                           </Link>
                         </Button>
@@ -469,7 +469,7 @@ export const Unsubscribe: React.FC = () => {
                     Having trouble with your email preferences? Our support team is here to help.
                   </p>
                   <Button variant="outline" asChild className="w-full border-2 border-green-600 text-green-700 hover:bg-green-50 font-bold py-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
-                    <Link to="/contact">
+                    <Link to="/contact" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                       <Mail className="w-4 h-4 mr-2" />
                       Contact Support
                     </Link>
