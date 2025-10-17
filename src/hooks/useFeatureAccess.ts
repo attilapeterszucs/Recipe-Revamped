@@ -136,50 +136,9 @@ export const useFeatureAccess = (
   const featureAccess = useMemo(() => {
     const plan = subscription?.plan || 'free';
     const planDetails = SUBSCRIPTION_PLANS[plan];
-    
-    // Admins get unlimited access to all features
-    if (isAdmin) {
-      return {
-        // Recipe features - unlimited for admins
-        canSaveRecipes: true,
-        recipeLimit: 999999,
-        currentRecipeCount,
-        
-        // Conversion features - unlimited for admins
-        canConvert: true,
-        conversionLimit: -1,
-        conversionsUsedToday,
-        recordConversion,
-        
-        // All premium features enabled for admins
-        canExportPdf: true,
-        canUseAdvancedFilters: true,
-        canUseNutritionAnalysis: true,
-        canUseCollections: true,
-        canUseTeamFeatures: true,
-        canUseApiAccess: true,
-        canUseMealPlanning: true,
-        canGenerateWeeklyMenu: true,
-        canSetDefaultPreferences: true,
-        canBackupRestore: true,
-        canUploadProfilePicture: true,
-        canUseHealthConditions: true,
-        canUseHealthGoals: true,
-        
-        // Dietary filter features - admins get all filters
-        availableDietaryFilters: allDietaryFilters,
-        
-        // Plan info
-        currentPlan: plan,
-        planDetails,
-        
-        // Refresh function
-        refreshFeatures: refreshSubscription,
-        refreshConversions: fetchConversions
-      };
-    }
-    
-    // Regular subscription-based permissions
+
+    // Admins are restricted by their subscription plan, not unlimited access
+    // Feature access is determined by subscription plan for all users (including admins)
     return {
       // Recipe features
       canSaveRecipes: currentRecipeCount < planDetails.recipeLimit,
