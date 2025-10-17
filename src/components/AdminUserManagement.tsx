@@ -13,7 +13,8 @@ import {
   Settings,
   RefreshCw,
   Calendar,
-  Infinity
+  Infinity,
+  Copy
 } from 'lucide-react';
 import { getAllUsers } from '../lib/adminNotifications';
 import { getAllAdmins, addAdminUser, removeAdminUser, isUserAdmin, type AdminUser } from '../lib/adminManagement';
@@ -436,9 +437,38 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                     )}
                   </div>
                   <p className="text-sm text-gray-600 font-medium">{user.email}</p>
-                  <p className="text-xs text-gray-500 font-medium mt-1">
-                    Plan: <span className="font-bold">{SUBSCRIPTION_PLANS[user.subscriptionPlan || 'free'].name}</span> • ID: {user.uid.slice(0, 8)}...
-                  </p>
+                  <div className="flex items-center gap-2 mt-2">
+                    {/* Colored Plan Badge */}
+                    <span className={`px-3 py-1 rounded-lg text-xs font-bold shadow-sm ${
+                      user.subscriptionPlan === 'free'
+                        ? 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700'
+                        : user.subscriptionPlan === 'chef'
+                        ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-blue-500/30'
+                        : user.subscriptionPlan === 'master-chef'
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-green-500/30'
+                        : user.subscriptionPlan === 'enterprise'
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-purple-500/30'
+                        : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700'
+                    }`}>
+                      {SUBSCRIPTION_PLANS[user.subscriptionPlan || 'free'].name}
+                    </span>
+
+                    {/* User ID with Copy Button */}
+                    <div className="flex items-center gap-1 text-xs text-gray-500 font-medium">
+                      <span>ID: {user.uid.slice(0, 8)}...</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigator.clipboard.writeText(user.uid);
+                          showSuccess('Copied!', `User ID copied to clipboard`);
+                        }}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Copy full user ID"
+                      >
+                        <Copy className="w-3 h-3 text-gray-400 hover:text-gray-600" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
