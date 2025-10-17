@@ -21,6 +21,7 @@ const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
 const PasswordRecoveryPage = lazy(() => import('./pages/PasswordRecoveryPage'));
 const AuthActionPage = lazy(() => import('./pages/AuthActionPage'));
 const SimpleEmailVerification = lazy(() => import('./pages/SimpleEmailVerification'));
+const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 import { CookieProvider } from './contexts/CookieContext';
 import { CookieConsent } from './components/CookieConsent';
 import { useCookieContext } from './contexts/CookieContext';
@@ -83,7 +84,7 @@ const AppContent: React.FC = () => {
           <Route path="/blog/:blogId" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       
