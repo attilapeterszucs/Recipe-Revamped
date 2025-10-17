@@ -10,8 +10,10 @@ export const NotFound: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background">
       <SEOHead
         pageKey="home"
-        customTitle="404 - Page Not Found | Recipe Revamped"
-        customDescription="The page you're looking for doesn't exist. Return to Recipe Revamped to transform your recipes with AI."
+        customSEO={{
+          title: "404 - Page Not Found | Recipe Revamped",
+          description: "The page you're looking for doesn't exist. Return to Recipe Revamped to transform your recipes with AI."
+        }}
       />
 
       {/* Navigation */}
