@@ -270,29 +270,62 @@ export const LandingPage: React.FC = () => {
               </Button>
             </nav>
 
-            {/* Mobile menu button */}
-            <Button
-              variant="ghost"
-              size="icon"
+            {/* Mobile menu button with animated hamburger icon */}
+            <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-gray-700 hover:bg-green-50 hover:text-green-600"
+              className="md:hidden relative w-10 h-10 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
-            </Button>
+              {/* Animated hamburger icon */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-5 h-4 flex flex-col justify-between">
+                  {/* Top line */}
+                  <span
+                    className={`block h-0.5 w-full bg-current transform transition-all duration-300 ease-in-out ${
+                      mobileMenuOpen ? 'rotate-45 translate-y-1.5' : 'rotate-0 translate-y-0'
+                    }`}
+                  />
+                  {/* Middle line */}
+                  <span
+                    className={`block h-0.5 w-full bg-current transition-all duration-300 ease-in-out ${
+                      mobileMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
+                    }`}
+                  />
+                  {/* Bottom line */}
+                  <span
+                    className={`block h-0.5 w-full bg-current transform transition-all duration-300 ease-in-out ${
+                      mobileMenuOpen ? '-rotate-45 -translate-y-1.5' : 'rotate-0 translate-y-0'
+                    }`}
+                  />
+                </div>
+              </div>
+            </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div id="mobile-navigation" className="md:hidden bg-white border-t border-gray-200">
-            <nav className="px-4 pt-2 pb-4 space-y-2" aria-label="Mobile navigation menu">
+        {/* Mobile Navigation with smooth animations */}
+        <div
+          id="mobile-navigation"
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          {/* Redesigned mobile menu with gradient background */}
+          <div className="relative bg-gradient-to-b from-white via-green-50/30 to-emerald-50/50 border-t-2 border-green-200 shadow-lg">
+            {/* Decorative gradient bar */}
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500" />
+
+            <nav className="px-4 pt-3 pb-4 space-y-1.5" aria-label="Mobile navigation menu">
+              {/* Menu items with staggered animation and improved styling */}
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('features')}
-                className="w-full justify-start text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold"
+                className={`w-full justify-start text-gray-700 hover:text-green-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 font-semibold rounded-xl border-2 border-transparent hover:border-green-200 hover:shadow-md transform transition-all duration-300 ${
+                  mobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+                }`}
+                style={{ transitionDelay: mobileMenuOpen ? '50ms' : '0ms' }}
                 aria-label="Scroll to Features section"
               >
                 Features
@@ -300,7 +333,10 @@ export const LandingPage: React.FC = () => {
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('pricing')}
-                className="w-full justify-start text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold"
+                className={`w-full justify-start text-gray-700 hover:text-green-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 font-semibold rounded-xl border-2 border-transparent hover:border-green-200 hover:shadow-md transform transition-all duration-300 ${
+                  mobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+                }`}
+                style={{ transitionDelay: mobileMenuOpen ? '100ms' : '0ms' }}
                 aria-label="Scroll to Pricing section"
               >
                 Pricing
@@ -308,19 +344,40 @@ export const LandingPage: React.FC = () => {
               <Button
                 variant="ghost"
                 onClick={() => scrollToSection('testimonials')}
-                className="w-full justify-start text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold"
+                className={`w-full justify-start text-gray-700 hover:text-green-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 font-semibold rounded-xl border-2 border-transparent hover:border-green-200 hover:shadow-md transform transition-all duration-300 ${
+                  mobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+                }`}
+                style={{ transitionDelay: mobileMenuOpen ? '150ms' : '0ms' }}
                 aria-label="Scroll to Testimonials section"
               >
                 Testimonials
               </Button>
-              <Button asChild className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/30 mt-2">
-                <Link to={user ? "/app" : "/signin"}>
+
+              {/* Divider */}
+              <div className="py-1.5">
+                <div className="h-px bg-gradient-to-r from-transparent via-green-300 to-transparent" />
+              </div>
+
+              {/* CTA Button with enhanced styling */}
+              <Button
+                asChild
+                className={`w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-xl shadow-green-500/40 rounded-xl border-2 border-green-400/20 hover:border-green-400/40 transform transition-all duration-300 hover:scale-[1.02] ${
+                  mobileMenuOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-2 opacity-0 scale-95'
+                }`}
+                style={{ transitionDelay: mobileMenuOpen ? '200ms' : '0ms' }}
+              >
+                <Link to={user ? "/app" : "/signin"} className="flex items-center justify-center">
+                  <Zap className="w-4 h-4 mr-2" />
                   {user ? "Go to App" : "Get Started Free"}
                 </Link>
               </Button>
             </nav>
+
+            {/* Bottom decorative gradient */}
+            <div className="h-1 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500 opacity-30" />
           </div>
-        )}
+        </div>
+
       </nav>
 
       {/* Hero Section */}

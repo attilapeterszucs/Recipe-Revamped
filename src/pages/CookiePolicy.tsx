@@ -35,10 +35,13 @@ export const CookiePolicy: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
       {/* Header */}
-      <AuthAwareNavigation />
+      <header>
+        <AuthAwareNavigation />
+      </header>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="grid lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+      <main>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mt-20 sm:mt-24">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1 order-2 lg:order-1">
             <Card className="sticky top-20 sm:top-24 shadow-lg shadow-green-100 border-2 border-green-100">
@@ -763,7 +766,8 @@ export const CookiePolicy: React.FC = () => {
           </div>
         </div>
       </div>
-      
+      </main>
+
       {/* Cookie Settings Modal */}
       <Dialog open={showCookieSettings} onOpenChange={setShowCookieSettings}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
