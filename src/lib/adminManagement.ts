@@ -1,14 +1,15 @@
-import { 
-  collection, 
-  doc, 
-  getDocs, 
+import {
+  collection,
+  doc,
+  getDocs,
   getDoc,
   addDoc,
   updateDoc,
+  setDoc,
   deleteDoc,
   serverTimestamp,
   query,
-  where 
+  where
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -113,12 +114,12 @@ export const addAdminUser = async (
         reactivatedBy: createdByUid
       });
 
-      // Also set isAdmin flag in user document
+      // Also set isAdmin flag in user document (using setDoc with merge to create if not exists)
       try {
         const userRef = doc(db, 'users', uid);
-        await updateDoc(userRef, {
+        await setDoc(userRef, {
           isAdmin: true
-        });
+        }, { merge: true });
       } catch (error) {
         console.error('Error updating user isAdmin flag:', error);
       }
@@ -207,12 +208,12 @@ export const removeAdminUser = async (
       removedBy: removedByUid
     });
 
-    // Also remove isAdmin flag from user document
+    // Also remove isAdmin flag from user document (using setDoc with merge to create if not exists)
     try {
       const userRef = doc(db, 'users', targetUid);
-      await updateDoc(userRef, {
+      await setDoc(userRef, {
         isAdmin: false
-      });
+      }, { merge: true });
     } catch (error) {
       console.error('Error updating user isAdmin flag:', error);
       // Continue even if this fails
@@ -299,12 +300,12 @@ export const initializeFirstAdmin = async (
         reactivatedBy: 'system_init'
       });
 
-      // Also set isAdmin flag in user document
+      // Also set isAdmin flag in user document (using setDoc with merge to create if not exists)
       try {
         const userRef = doc(db, 'users', uid);
-        await updateDoc(userRef, {
+        await setDoc(userRef, {
           isAdmin: true
-        });
+        }, { merge: true });
       } catch (error) {
         console.error('Error updating user isAdmin flag:', error);
       }
@@ -339,12 +340,12 @@ export const initializeFirstAdmin = async (
       
       await addDoc(collection(db, 'admins'), adminData);
 
-      // Also set isAdmin flag in user document
+      // Also set isAdmin flag in user document (using setDoc with merge to create if not exists)
       try {
         const userRef = doc(db, 'users', uid);
-        await updateDoc(userRef, {
+        await setDoc(userRef, {
           isAdmin: true
-        });
+        }, { merge: true });
       } catch (error) {
         console.error('Error updating user isAdmin flag:', error);
       }
