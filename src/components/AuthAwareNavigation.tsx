@@ -31,7 +31,7 @@ export const AuthAwareNavigation: React.FC<AuthAwareNavigationProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20 gap-2">
           <Link to={backLink} className="flex items-center gap-2 sm:gap-3 group flex-shrink min-w-0">
-            <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110" />
+            <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-10 w-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110" />
             <span className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent truncate">{title}</span>
           </Link>
 

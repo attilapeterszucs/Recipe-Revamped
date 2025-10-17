@@ -978,9 +978,9 @@ export const LandingPage: React.FC = () => {
                 <img
                   src="/logo/logo.png"
                   alt="Recipe Revamped - AI Recipe Converter Logo"
-                  className="h-8 w-8 transition-transform duration-300 group-hover:scale-110"
-                  width="32"
-                  height="32"
+                  className="h-10 w-10 transition-transform duration-300 group-hover:scale-110"
+                  width="40"
+                  height="40"
                 />
                 <span className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
               </button>
