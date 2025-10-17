@@ -46,7 +46,7 @@ export const useSubscriptionStatus = (userId?: string, userEmail?: string): Subs
 
       try {
         const [subscription, adminStatus] = await Promise.all([
-          SubscriptionService.getUserSubscription(userId),
+          SubscriptionService.getUserSubscriptionWithExpiryCheck(userId),
           SubscriptionService.isUserAdmin(userEmail, userId)
         ]);
 
