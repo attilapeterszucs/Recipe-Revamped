@@ -1,6 +1,8 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { Download, X, Clock, ChefHat, Calendar } from 'lucide-react';
 import type { BackupData } from '../types/backup';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface RestoreConfirmationModalProps {
   isOpen: boolean;
@@ -15,6 +17,9 @@ export const RestoreConfirmationModal: React.FC<RestoreConfirmationModalProps> =
   onConfirm,
   backup
 }) => {
+  // Lock body scroll when restore confirmation modal is open
+  useBodyScrollLock(isOpen);
+
   if (!isOpen || !backup) return null;
 
   const handleConfirm = () => {
@@ -39,16 +44,10 @@ export const RestoreConfirmationModal: React.FC<RestoreConfirmationModalProps> =
     });
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      {/* Background overlay */}
-      <div
-        className="fixed inset-0"
-        onClick={onClose}
-      ></div>
-
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
       {/* Modal */}
-      <div className="relative bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+      <div className="relative bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
 
         {/* Header with Gradient */}
         <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-5 relative overflow-hidden">
@@ -189,6 +188,7 @@ export const RestoreConfirmationModal: React.FC<RestoreConfirmationModalProps> =
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

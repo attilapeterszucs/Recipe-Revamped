@@ -1,5 +1,7 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
@@ -22,6 +24,9 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
   cancelText = "Cancel",
   isDestructive = true
 }) => {
+  // Lock body scroll when delete confirmation modal is open
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   const handleConfirm = () => {
@@ -29,16 +34,10 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      {/* Background overlay */}
-      <div
-        className="fixed inset-0"
-        onClick={onClose}
-      ></div>
-
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
       {/* Modal */}
-      <div className="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+      <div className="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
 
         {/* Header with Gradient */}
         <div className={`${
@@ -129,6 +128,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { type User, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Home, Zap, BookOpen, Calendar, Menu, X, Crown, Check } from 'lucide-react';
 import { auth, logOut, db } from '../lib/firebase';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { SignIn } from '../components/Auth/SignIn';
 import { SignUp } from '../components/Auth/SignUp';
 import { EmailVerificationPrompt } from '../components/Auth/EmailVerificationPrompt';
@@ -86,6 +88,9 @@ export function RecipeApp() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [isYearly, setIsYearly] = useState(false);
   const { showSuccess, showError, showInfo } = useToast();
+
+  // Lock body scroll when upgrade modal is open
+  useBodyScrollLock(showUpgradeModal);
 
   // Payment success popup management
   const { showSuccessPopup, closeSuccessPopup } = usePaymentSuccess();
@@ -996,16 +1001,10 @@ export function RecipeApp() {
         )}
 
         {/* Upgrade Plan Modal - Inside main element */}
-        {showUpgradeModal && !isAdmin && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Background overlay */}
-            <div
-              className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity"
-              onClick={() => setShowUpgradeModal(false)}
-            ></div>
-
+        {showUpgradeModal && !isAdmin && createPortal(
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-sm transition-opacity" onClick={() => setShowUpgradeModal(false)}>
             {/* Modal - Fixed centered with internal scroll */}
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
                 <div className="bg-gradient-to-r from-green-600 via-green-500 to-emerald-500 px-6 py-8 relative overflow-hidden">
                   {/* Decorative pattern */}
@@ -1207,7 +1206,8 @@ export function RecipeApp() {
                   </div>
                 </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </main>
 

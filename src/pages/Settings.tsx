@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { type User, updateProfile, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, signOut, getAuth } from 'firebase/auth';
 import { doc, onSnapshot, updateDoc, deleteDoc, collection, query, where, getDocs, writeBatch } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { SubscriptionService } from '../lib/subscriptionService';
 import { SubscriptionCancellationService } from '../lib/subscriptionCancellationService';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import {
   Save,
   User as UserIcon,
@@ -130,6 +132,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const [cancelSectionHidden, setCancelSectionHidden] = useState(false);
   const [preventAnimations, setPreventAnimations] = useState(false);
   const { showSuccess, showError, showInfo } = useToast();
+
+  // Lock body scroll when delete account modal is open
+  useBodyScrollLock(showDeleteAccountModal);
   
   // Use subscription status hook for consistent admin checking
   const { isAdmin: isUserAdmin, loading: adminCheckLoading, refresh: refreshSubscriptionStatus, subscription } = useSubscriptionStatus(
@@ -3042,9 +3047,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
 
       {/* Delete Account Modal */}
-      {showDeleteAccountModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+      {showDeleteAccountModal && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => !deletingAccount && setShowDeleteAccountModal(false)}>
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
             {/* Header with gradient background */}
             <div className="bg-gradient-to-r from-red-600 to-rose-600 px-6 py-8 relative overflow-hidden">
               {/* Decorative pattern */}
@@ -3145,7 +3150,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

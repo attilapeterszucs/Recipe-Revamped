@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { User, AlertTriangle, CheckCircle } from 'lucide-react';
 import { updateDoc, doc } from 'firebase/firestore';
 import { updateProfile, User as FirebaseUser } from 'firebase/auth';
 import { db } from '../lib/firebase';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface ReactivationModalProps {
   isOpen: boolean;
@@ -19,6 +21,9 @@ export const ReactivationModal: React.FC<ReactivationModalProps> = ({
 }) => {
   const [isReactivating, setIsReactivating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Lock body scroll when reactivation modal is open
+  useBodyScrollLock(isOpen);
 
   if (!isOpen) return null;
 
@@ -52,9 +57,9 @@ export const ReactivationModal: React.FC<ReactivationModalProps> = ({
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black bg-opacity-50">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
         <div className="text-center mb-6">
           <div className="mx-auto flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-full mb-4">
             <User className="w-6 h-6 text-yellow-600" />
@@ -110,6 +115,7 @@ export const ReactivationModal: React.FC<ReactivationModalProps> = ({
           You can always deactivate your account again in Settings if needed.
         </p>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

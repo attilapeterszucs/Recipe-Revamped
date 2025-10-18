@@ -9,6 +9,7 @@ import { Switch } from './ui/switch';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { Alert, AlertDescription } from './ui/alert';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface CookieConsentProps {
   onAcceptAll: (preferences: CookiePreferences) => void;
@@ -29,6 +30,9 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
     preferences: true, // Default to true for better UX
     marketing: false // Default to false - user must explicitly opt-in to advertising
   });
+
+  // Lock body scroll when cookie consent is displayed
+  useBodyScrollLock(true);
 
   // Component is only rendered when consent is needed (controlled by parent)
 
@@ -78,20 +82,20 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
 
   return createPortal(
     <div
-      className="fixed bottom-0 left-0 right-0 z-[9999] w-full"
-      style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 9999,
-        width: '100%',
-        margin: 0,
-        padding: 0
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      onClick={(e) => {
+        // Prevent closing when clicking the modal content
+        if (e.target === e.currentTarget && currentView === 'banner') {
+          // Allow closing by clicking backdrop only in banner view
+          handleRejectAll();
+        }
       }}
     >
       {/* Cookie Consent Banner */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+      <div
+        className="w-full max-w-7xl px-4 sm:px-6 py-3 sm:py-4"
+        onClick={(e) => e.stopPropagation()}
+      >
         <Card className="shadow-xl shadow-green-500/10 overflow-hidden rounded-xl sm:rounded-2xl border-2 border-green-200 bg-white">
           {currentView === 'banner' ? (
             // Slim Banner View

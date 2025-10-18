@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { CheckCircle, X, CreditCard, Sparkles, Clock, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface PaymentSuccessPopupProps {
   isOpen: boolean;
@@ -11,6 +13,9 @@ export const PaymentSuccessPopup: React.FC<PaymentSuccessPopupProps> = ({ isOpen
   const [isVisible, setIsVisible] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const navigate = useNavigate();
+
+  // Lock body scroll when payment success popup is open
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (isOpen) {
@@ -47,9 +52,9 @@ export const PaymentSuccessPopup: React.FC<PaymentSuccessPopupProps> = ({ isOpen
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black bg-opacity-50 transition-opacity duration-300 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
       onClick={handleBackdropClick}
@@ -190,7 +195,8 @@ export const PaymentSuccessPopup: React.FC<PaymentSuccessPopupProps> = ({ isOpen
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

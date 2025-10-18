@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, Target, Calendar, TrendingUp, TrendingDown, Activity, User, X, Edit3, Check } from 'lucide-react';
 import type { HealthGoal, PersonalProfile } from '../types/userSettings';
 import { createHealthGoal, HEALTH_GOAL_TEMPLATES } from '../types/userSettings';
@@ -6,6 +7,7 @@ import { updateUserSettings } from '../lib/userSettings';
 import { useToast } from './ToastContainer';
 import { logger } from '../lib/logger';
 import { CustomDropdown } from './CustomDropdown';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface HealthGoalsManagerProps {
   personalProfile: PersonalProfile;
@@ -26,6 +28,9 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
   const [editingGoal, setEditingGoal] = useState<HealthGoal | null>(null);
   const [deletingGoalId, setDeletingGoalId] = useState<string | null>(null);
   const { showSuccess, showError } = useToast();
+
+  // Lock body scroll when modals are open
+  useBodyScrollLock(showAddModal || !!editingGoal || !!deletingGoalId);
 
   // Helper function to recursively remove undefined values from objects
   const cleanUndefinedValues = (obj: unknown): unknown => {
@@ -404,8 +409,8 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
       )}
 
       {/* Add Goal Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200" onClick={() => setShowAddModal(false)}>
+      {showAddModal && createPortal(
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-in fade-in duration-200" onClick={() => setShowAddModal(false)}>
           <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
 
             {/* Header with Gradient */}
@@ -592,12 +597,13 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Edit Goal Modal */}
-      {editingGoal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200" onClick={() => setEditingGoal(null)}>
+      {editingGoal && createPortal(
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-in fade-in duration-200" onClick={() => setEditingGoal(null)}>
           <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
 
             {/* Header with Gradient */}
@@ -784,13 +790,14 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Delete Confirmation Modal */}
-      {deletingGoalId && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+      {deletingGoalId && createPortal(
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[9999]" onClick={() => setDeletingGoalId(null)}>
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full" onClick={(e) => e.stopPropagation()}>
             <div className="p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-4">
@@ -822,7 +829,8 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

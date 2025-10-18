@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import DOMPurify from 'dompurify';
 import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple, Sparkles, ArrowUpDown, Filter, Utensils, AlertTriangle, Info, CheckCircle, Crown, Check } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
@@ -8,6 +9,7 @@ import { useToast } from './ToastContainer';
 import { parseNutritionFromRecipe, calculateTotalNutrition, type NutritionInfo } from '../lib/nutritionParser';
 import { MealPlanService, type MealPlan } from '../lib/mealPlanService';
 import { CustomDropdown } from './CustomDropdown';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface MealPlannerCalendarProps {
   userId: string;
@@ -64,6 +66,9 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
   const [alignWithHealthConditions, setAlignWithHealthConditions] = useState(false);
   const [alignWithDietaryPreferences, setAlignWithDietaryPreferences] = useState(false);
   const { showSuccess, showError } = useToast();
+
+  // Lock body scroll when shopping list is open
+  useBodyScrollLock(showShoppingList);
 
   // Get current week dates (Monday to Sunday)
   const getWeekDates = (date: Date) => {
@@ -2853,9 +2858,9 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       )}
 
       {/* Shopping List Modal */}
-      {showShoppingList && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+      {showShoppingList && createPortal(
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-in fade-in duration-200" onClick={() => setShowShoppingList(false)}>
+          <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
             {/* Header with gradient background */}
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-6 relative overflow-hidden">
               {/* Decorative pattern overlay */}
@@ -3007,7 +3012,8 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
               })()}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

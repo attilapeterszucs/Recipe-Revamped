@@ -1,6 +1,8 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { X, CheckCircle, Info, AlertTriangle, AlertCircle, Calendar, Sparkles } from 'lucide-react';
 import type { Notification } from '../types/notifications';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface NotificationPopupProps {
   notification: Notification;
@@ -8,6 +10,9 @@ interface NotificationPopupProps {
 }
 
 export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notification, onClose }) => {
+  // Lock body scroll when notification popup is displayed
+  useBodyScrollLock(true);
+
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'success':
@@ -76,9 +81,9 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
     }).format(date);
   };
 
-  return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+  return createPortal(
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className={`${colors.header} px-6 py-5 flex items-center justify-between relative overflow-hidden`}>
           {/* Decorative pattern */}
@@ -152,6 +157,7 @@ export const NotificationPopup: React.FC<NotificationPopupProps> = ({ notificati
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

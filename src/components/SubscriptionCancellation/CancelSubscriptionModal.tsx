@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, AlertTriangle, Heart, MessageCircle } from 'lucide-react';
 import { SubscriptionCancellationService } from '../../lib/subscriptionCancellationService';
 import { useToast } from '../ToastContainer';
 import { auth } from '../../lib/firebase';
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 
 interface CancelSubscriptionModalProps {
   isOpen: boolean;
@@ -33,6 +35,9 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
   const [isVisible, setIsVisible] = useState(false);
 
   const { showSuccess, showError } = useToast();
+
+  // Lock body scroll when cancellation modal is open
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (isOpen) {
@@ -110,9 +115,9 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
       onClick={handleBackdropClick}
@@ -367,7 +372,8 @@ export const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = (
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

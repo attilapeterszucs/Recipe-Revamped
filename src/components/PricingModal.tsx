@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Check, Star, Zap, Crown, Building, ExternalLink } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useStripeCheckout } from '../hooks/useStripeCheckout';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { calculateLocalizedPrice } from '../lib/pricing';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import { logger } from '../lib/logger';
@@ -42,6 +44,9 @@ export const PricingModal: React.FC<PricingModalProps> = ({
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(defaultPlan);
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
   const [localizedPrices, setLocalizedPrices] = useState<Record<string, any>>({});
+
+  // Lock body scroll when pricing modal is open
+  useBodyScrollLock(isOpen);
 
   // Check if user has an existing subscription
   const hasActiveSubscription = subscription && subscription.plan !== 'free' && subscription.status === 'active';
@@ -159,9 +164,9 @@ export const PricingModal: React.FC<PricingModalProps> = ({
 
   const paidPlans = Object.entries(SUBSCRIPTION_PLANS).filter(([id]) => id !== 'free' && id !== 'enterprise');
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+  return createPortal(
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center">
           <div>
@@ -329,7 +334,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
