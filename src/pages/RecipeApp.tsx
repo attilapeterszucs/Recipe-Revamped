@@ -43,7 +43,6 @@ import { SubscriptionSyncService } from '../lib/subscriptionSyncService';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan } from '../types/subscription';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
-import { logConversion } from '../lib/conversionTracking';
 
 // Stripe Payment Links for upgrade modal
 const STRIPE_PAYMENT_LINKS = {
@@ -333,13 +332,10 @@ export function RecipeApp() {
       // Conversion recorded
       
       const convertedRecipe = await convertRecipeLocal(recipe, filters, undefined, userSettings || undefined, hasValidConsent, mustUseIngredients, avoidIngredients);
-
+      
       // Track conversion with consent-based analytics
       trackRecipeConversion('convert', filters);
-
-      // Log conversion to Firestore for admin analytics
-      await logConversion(user!.uid, 'convert', filters);
-
+      
       if (convertedRecipe) {
         setResult(convertedRecipe);
         
@@ -423,13 +419,10 @@ export function RecipeApp() {
       // Surprise conversion recorded
       
       const generatedRecipe = await convertRecipeLocal(surprisePrompt, filters, undefined, userSettings || undefined, hasValidConsent, mustUseIngredients, avoidIngredients);
-
+      
       // Track surprise recipe generation with consent-based analytics
       trackRecipeConversion('surprise', filters);
-
-      // Log conversion to Firestore for admin analytics
-      await logConversion(user!.uid, 'surprise', filters);
-
+      
       if (generatedRecipe) {
         setResult(generatedRecipe);
         
