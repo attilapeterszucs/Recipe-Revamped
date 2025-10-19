@@ -351,15 +351,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
   // Count online users
   const onlineUsersCount = users.filter(user => user.isOnline).length;
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Loader className="w-8 h-8 animate-spin text-blue-600" />
-        <span className="ml-3 text-gray-600">Loading user data...</span>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       {/* Admin Panel Header */}
@@ -395,13 +386,28 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
           </div>
           <h4 className="text-xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">User Management</h4>
           <div className="ml-auto flex items-center gap-3">
-            <span className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-500/30 flex items-center gap-2">
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-              {onlineUsersCount} online
-            </span>
-            <span className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30">
-              {users.length} users
-            </span>
+            {loading ? (
+              <>
+                <span className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-500/30 flex items-center gap-2">
+                  <Loader className="w-3 h-3 animate-spin" />
+                  Loading...
+                </span>
+                <span className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30 flex items-center gap-2">
+                  <Loader className="w-3 h-3 animate-spin" />
+                  Loading...
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-500/30 flex items-center gap-2">
+                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                  {onlineUsersCount} online
+                </span>
+                <span className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30">
+                  {users.length} users
+                </span>
+              </>
+            )}
           </div>
         </div>
 
@@ -417,7 +423,17 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         </div>
 
         <div className="space-y-3 max-h-96 overflow-y-auto">
-          {filteredUsers.map((user) => (
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-12 space-y-4">
+              <Loader className="w-10 h-10 animate-spin text-blue-600" />
+              <span className="text-gray-600 font-medium">Loading users...</span>
+            </div>
+          ) : filteredUsers.length === 0 ? (
+            <div className="text-center py-8 text-gray-600 font-medium">
+              {searchTerm ? 'No users found matching your search' : 'No users found'}
+            </div>
+          ) : (
+            filteredUsers.map((user) => (
             <div
               key={user.uid}
               className={`flex items-center justify-between p-4 rounded-xl border-2 shadow-md transition-all duration-200 hover:shadow-lg ${
@@ -512,12 +528,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                 </button>
               </div>
             </div>
-          ))}
-
-          {filteredUsers.length === 0 && (
-            <div className="text-center py-8 text-gray-600 font-medium">
-              {searchTerm ? 'No users found matching your search' : 'No users found'}
-            </div>
+            ))
           )}
         </div>
       </div>
