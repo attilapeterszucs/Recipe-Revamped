@@ -143,12 +143,15 @@ service cloud.firestore {
     match /activeSessions/{sessionDocId} {
       // Anyone authenticated can read active sessions (for admin dashboard)
       allow read: if request.auth != null;
-      // Users can only create/update/delete their own sessions
+      // Users can create/update their own sessions
       allow create, update: if request.auth != null &&
         sessionDocId.split('_')[0] == request.auth.uid &&
         request.resource.data.uid == request.auth.uid;
-      allow delete: if request.auth != null &&
-        sessionDocId.split('_')[0] == request.auth.uid;
+      // Users can delete their own sessions, admins can delete any session (for cleanup)
+      allow delete: if request.auth != null && (
+        sessionDocId.split('_')[0] == request.auth.uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true
+      );
     }
 
     // Default deny all other collections
