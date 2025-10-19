@@ -660,12 +660,18 @@ export const LandingPage: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-black text-gray-900 mb-3">Input Your Recipe</h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  Paste recipe text directly into the app. Our AI understands natural recipe formats and extracts ingredients and instructions automatically.
+                  Paste recipe text or upload a text file directly in the app. Our AI understands natural recipe formats and extracts ingredients and instructions automatically.
                 </p>
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold">
-                    <FileText className="w-3 h-3" />
-                    Text input supported
+                  <div className="flex flex-wrap gap-2">
+                    <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                      <FileText className="w-3 h-3" />
+                      Text input
+                    </div>
+                    <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                      <Upload className="w-3 h-3" />
+                      File upload
+                    </div>
                   </div>
                   <div className="text-xs text-gray-600 italic">
                     Image & URL support coming soon
