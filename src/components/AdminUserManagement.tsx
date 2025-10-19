@@ -161,17 +161,30 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
 
   // Listen to real-time active sessions
   useEffect(() => {
+    console.log('[AdminUserManagement] Setting up real-time session listener');
+
     const unsubscribe = getActiveSessions((sessions) => {
+      console.log('[AdminUserManagement] Received session update:', sessions.length, 'active sessions');
       setActiveSessions(sessions);
 
       // Update users' online status based on active sessions
-      setUsers(prevUsers => prevUsers.map(user => ({
-        ...user,
-        isOnline: sessions.some(session => session.uid === user.uid)
-      })));
+      setUsers(prevUsers => {
+        const updatedUsers = prevUsers.map(user => {
+          const isOnline = sessions.some(session => session.uid === user.uid);
+          if (user.isOnline !== isOnline) {
+            console.log(`[AdminUserManagement] User ${user.email} online status changed: ${user.isOnline} -> ${isOnline}`);
+          }
+          return {
+            ...user,
+            isOnline
+          };
+        });
+        return updatedUsers;
+      });
     });
 
     return () => {
+      console.log('[AdminUserManagement] Cleaning up session listener');
       unsubscribe();
     };
   }, []);
