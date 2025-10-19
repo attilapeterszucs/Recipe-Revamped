@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { RecipeSchema } from '../lib/validation';
 import { z } from 'zod';
-import { Shuffle, Wand2, Search, ChevronLeft, ChevronRight, Filter, Trash2, Utensils, Crown, Check } from 'lucide-react';
+import { Shuffle, Wand2, Search, ChevronLeft, ChevronRight, Filter, Trash2, Utensils, Crown, Check, Upload, FileText } from 'lucide-react';
 import type { UserSettings } from '../types/userSettings';
 
 interface RecipeInputProps {
@@ -79,6 +79,10 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
   const [lockedCurrentPage, setLockedCurrentPage] = useState(0);
   const [showPremiumDetails, setShowPremiumDetails] = useState(false);
   const filtersPerPage = 8;
+
+  // File upload ref and state
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
   // Use provided dietary filters or fall back to basic filters
   const allFilters = (import.meta.env.VITE_ALLOWED_FILTERS as string).split(',');
@@ -188,6 +192,40 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
     }
     setErrors({});
     onSurpriseMe(selectedFilters, mustUseIngredients, avoidIngredients);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check if file is a text file
+    if (!file.type.startsWith('text/') && !file.name.endsWith('.txt')) {
+      setErrors({ recipe: 'Please upload a text file (.txt)' });
+      return;
+    }
+
+    // Check file size (max 1MB for safety)
+    if (file.size > 1024 * 1024) {
+      setErrors({ recipe: 'File is too large. Maximum size is 1MB.' });
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const text = e.target?.result as string;
+      if (text) {
+        setRecipe(text);
+        setUploadedFileName(file.name);
+        setErrors(prev => ({ ...prev, recipe: '' }));
+      }
+    };
+
+    reader.onerror = () => {
+      setErrors({ recipe: 'Failed to read file. Please try again.' });
+    };
+
+    reader.readAsText(file);
   };
 
   return (
@@ -300,7 +338,51 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
           <label htmlFor="recipe" className="block text-xs sm:text-sm font-medium text-gray-700">
             {mode === 'convert' ? 'Paste Your Recipe' : 'Enter Food Name or Dish Type'}
           </label>
+          {mode === 'convert' && (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={disabled}
+              className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 hover:border-green-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              aria-label="Upload recipe text file"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              Upload Text File
+            </button>
+          )}
         </div>
+        {mode === 'convert' && (
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".txt,text/*"
+              onChange={handleFileUpload}
+              className="hidden"
+              aria-label="File upload input"
+            />
+            {uploadedFileName && (
+              <div className="mb-2 inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700">
+                <FileText className="w-3.5 h-3.5" />
+                <span className="font-medium">{uploadedFileName}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUploadedFileName(null);
+                    setRecipe('');
+                    if (fileInputRef.current) {
+                      fileInputRef.current.value = '';
+                    }
+                  }}
+                  className="ml-1 text-blue-600 hover:text-blue-800"
+                  aria-label="Clear uploaded file"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+          </>
+        )}
         {mode === 'convert' ? (
           <textarea
             id="recipe"
