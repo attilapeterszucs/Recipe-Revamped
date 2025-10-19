@@ -194,38 +194,90 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
     onSurpriseMe(selectedFilters, mustUseIngredients, avoidIngredients);
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check if file is a text file
-    if (!file.type.startsWith('text/') && !file.name.endsWith('.txt')) {
-      setErrors({ recipe: 'Please upload a text file (.txt)' });
+    // Check file size (max 10MB for PDFs/Word docs)
+    if (file.size > 10 * 1024 * 1024) {
+      setErrors({ recipe: 'File is too large. Maximum size is 10MB.' });
       return;
     }
 
-    // Check file size (max 1MB for safety)
-    if (file.size > 1024 * 1024) {
-      setErrors({ recipe: 'File is too large. Maximum size is 1MB.' });
-      return;
-    }
+    const fileName = file.name.toLowerCase();
+    const fileType = file.type;
 
-    const reader = new FileReader();
+    try {
+      let text = '';
 
-    reader.onload = (e) => {
-      const text = e.target?.result as string;
+      // Handle text files
+      if (fileType.startsWith('text/') || fileName.endsWith('.txt')) {
+        text = await readTextFile(file);
+      }
+      // Handle Word documents (.docx)
+      else if (fileName.endsWith('.docx') || fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        text = await readWordFile(file);
+      }
+      // Handle PDF files
+      else if (fileName.endsWith('.pdf') || fileType === 'application/pdf') {
+        text = await readPdfFile(file);
+      }
+      else {
+        setErrors({ recipe: 'Please upload a text file (.txt), Word document (.docx), or PDF file (.pdf)' });
+        return;
+      }
+
       if (text) {
         setRecipe(text);
         setUploadedFileName(file.name);
         setErrors(prev => ({ ...prev, recipe: '' }));
+      } else {
+        setErrors({ recipe: 'No text content found in file.' });
       }
-    };
-
-    reader.onerror = () => {
+    } catch (error) {
+      console.error('File read error:', error);
       setErrors({ recipe: 'Failed to read file. Please try again.' });
-    };
+    }
+  };
 
-    reader.readAsText(file);
+  const readTextFile = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  };
+
+  const readWordFile = async (file: File): Promise<string> => {
+    const mammoth = await import('mammoth');
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer });
+    return result.value;
+  };
+
+  const readPdfFile = async (file: File): Promise<string> => {
+    const pdfjsLib = await import('pdfjs-dist');
+
+    // Set worker path
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    let fullText = '';
+
+    // Extract text from each page
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items
+        .map((item: any) => item.str)
+        .join(' ');
+      fullText += pageText + '\n\n';
+    }
+
+    return fullText.trim();
   };
 
   return (
@@ -344,10 +396,10 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
               onClick={() => fileInputRef.current?.click()}
               disabled={disabled}
               className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 hover:border-green-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-              aria-label="Upload recipe text file"
+              aria-label="Upload recipe file"
             >
               <Upload className="w-3.5 h-3.5" />
-              Upload Text File
+              Upload File
             </button>
           )}
         </div>
@@ -356,7 +408,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             <input
               ref={fileInputRef}
               type="file"
-              accept=".txt,text/*"
+              accept=".txt,.docx,.pdf,text/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               onChange={handleFileUpload}
               className="hidden"
               aria-label="File upload input"
