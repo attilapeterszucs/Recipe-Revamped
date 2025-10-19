@@ -1308,8 +1308,8 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
 
       {/* Post Editor Modal */}
       {showEditor && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-in fade-in duration-200" style={{ position: 'fixed' }}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" style={{ position: 'relative' }}>
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-5 relative overflow-hidden">
               {/* Decorative pattern */}
@@ -1591,8 +1591,8 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && postToDelete && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-100 animate-in zoom-in-95">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-in fade-in duration-200" style={{ position: 'fixed' }}>
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-100 animate-in zoom-in-95" style={{ position: 'relative' }}>
             {/* Header */}
             <div className="bg-gradient-to-r from-red-600 to-rose-600 px-6 py-5 rounded-t-3xl relative overflow-hidden">
               {/* Decorative pattern */}
@@ -1677,8 +1677,8 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
 
       {/* Post Preview Modal */}
       {showPreview && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[9999]" style={{ position: 'fixed' }}>
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col" style={{ position: 'relative' }}>
             {/* Header */}
             <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
               <div>
