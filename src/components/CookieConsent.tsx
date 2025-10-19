@@ -351,11 +351,11 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 <div className="mt-4">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-gray-600">
                     <div className="flex flex-wrap gap-2 sm:gap-3">
-                      <Link to="/privacy" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Privacy</Link>
+                      <Link to="/privacy" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Privacy Policy</Link>
                       <span className="hidden sm:inline text-gray-400">•</span>
-                      <Link to="/cookies" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Cookies</Link>
+                      <Link to="/terms" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Terms of Use</Link>
                       <span className="hidden sm:inline text-gray-400">•</span>
-                      <Link to="/terms" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Terms</Link>
+                      <Link to="/cookies" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Cookie Policy</Link>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge className="bg-green-100 text-green-700 text-xs font-semibold border-0">
