@@ -37,20 +37,31 @@ export const startSessionTracking = async (
   displayName?: string
 ): Promise<void> => {
   try {
+    // Stop any existing session first
+    if (currentSessionId && heartbeatInterval) {
+      clearInterval(heartbeatInterval);
+      heartbeatInterval = null;
+    }
+
     // Generate unique session ID for this browser tab
     currentSessionId = generateSessionId();
 
     const sessionRef = doc(db, 'activeSessions', `${uid}_${currentSessionId}`);
 
-    // Create initial session document
-    await setDoc(sessionRef, {
+    const sessionData = {
       uid,
-      email,
-      displayName,
+      email: email || '',
+      displayName: displayName || '',
       lastActive: serverTimestamp(),
       sessionId: currentSessionId
-    });
+    };
 
+    console.log('[SessionTracking] Creating session with data:', sessionData);
+
+    // Create initial session document
+    await setDoc(sessionRef, sessionData);
+
+    console.log('[SessionTracking] Session created successfully', { uid, sessionId: currentSessionId });
     logger.info('[SessionTracking] Session started', { uid, sessionId: currentSessionId });
 
     // Send heartbeat every 30 seconds to update lastActive
@@ -58,23 +69,26 @@ export const startSessionTracking = async (
       try {
         await setDoc(sessionRef, {
           uid,
-          email,
-          displayName,
+          email: email || '',
+          displayName: displayName || '',
           lastActive: serverTimestamp(),
           sessionId: currentSessionId
         }, { merge: true });
+        console.log('[SessionTracking] Heartbeat sent', { uid, sessionId: currentSessionId });
       } catch (error) {
+        console.error('[SessionTracking] Heartbeat failed', error);
         logger.error('[SessionTracking] Heartbeat failed', { error, uid });
       }
     }, 30000); // 30 seconds
 
     // Clean up session when user closes tab/window
-    window.addEventListener('beforeunload', () => {
+    const handleBeforeUnload = () => {
       stopSessionTracking(uid);
-    });
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     // Handle page visibility changes (tab switching)
-    document.addEventListener('visibilitychange', async () => {
+    const handleVisibilityChange = async () => {
       if (document.hidden) {
         // User switched away - update lastActive but keep session
         try {
@@ -85,17 +99,20 @@ export const startSessionTracking = async (
           logger.error('[SessionTracking] Visibility change update failed', { error });
         }
       }
-    });
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
   } catch (error) {
+    console.error('[SessionTracking] Failed to start session:', error);
     logger.error('[SessionTracking] Failed to start session', { error, uid });
+    throw error; // Re-throw to see the error in the app
   }
 };
 
 /**
  * Stop tracking user session - removes session document and clears heartbeat
  */
-export const stopSessionTracking = async (uid: string): Promise<void> => {
+export const stopSessionTracking = (uid: string): void => {
   try {
     if (!currentSessionId) return;
 
@@ -105,9 +122,11 @@ export const stopSessionTracking = async (uid: string): Promise<void> => {
       heartbeatInterval = null;
     }
 
-    // Delete session document
+    // Delete session document (use navigator.sendBeacon for reliable cleanup)
     const sessionRef = doc(db, 'activeSessions', `${uid}_${currentSessionId}`);
-    await deleteDoc(sessionRef);
+    deleteDoc(sessionRef).catch(error => {
+      logger.error('[SessionTracking] Failed to delete session', { error, uid });
+    });
 
     logger.info('[SessionTracking] Session stopped', { uid, sessionId: currentSessionId });
     currentSessionId = null;
@@ -126,6 +145,8 @@ export const getActiveSessions = (
   try {
     const sessionsRef = collection(db, 'activeSessions');
 
+    console.log('[SessionTracking] Setting up real-time listener for active sessions');
+
     // Listen to real-time updates
     const unsubscribe = onSnapshot(
       sessionsRef,
@@ -141,9 +162,11 @@ export const getActiveSessions = (
           };
         });
 
+        console.log('[SessionTracking] Active sessions updated:', sessions.length, sessions);
         callback(sessions);
       },
       (error) => {
+        console.error('[SessionTracking] Failed to listen to active sessions:', error);
         logger.error('[SessionTracking] Failed to listen to active sessions', { error });
         callback([]);
       }
@@ -151,6 +174,7 @@ export const getActiveSessions = (
 
     return unsubscribe;
   } catch (error) {
+    console.error('[SessionTracking] Failed to setup session listener:', error);
     logger.error('[SessionTracking] Failed to setup session listener', { error });
     return () => {};
   }
