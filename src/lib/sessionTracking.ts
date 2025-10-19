@@ -27,6 +27,8 @@ const generateSessionId = (): string => {
 
 let currentSessionId: string | null = null;
 let heartbeatInterval: NodeJS.Timeout | null = null;
+let currentUid: string | null = null;
+let cleanupHandlersAdded = false;
 
 /**
  * Start tracking user session - creates a session document and sends heartbeats
@@ -37,11 +39,13 @@ export const startSessionTracking = async (
   displayName?: string
 ): Promise<void> => {
   try {
-    // Stop any existing session first
-    if (currentSessionId && heartbeatInterval) {
-      clearInterval(heartbeatInterval);
-      heartbeatInterval = null;
+    // Stop any existing session first to prevent duplicates
+    if (currentSessionId && currentUid) {
+      stopSessionTracking(currentUid);
     }
+
+    // Store current user ID
+    currentUid = uid;
 
     // Generate unique session ID for this browser tab
     currentSessionId = generateSessionId();
@@ -76,26 +80,29 @@ export const startSessionTracking = async (
       }
     }, 30000); // 30 seconds
 
-    // Clean up session when user closes tab/window
-    const handleBeforeUnload = () => {
-      stopSessionTracking(uid);
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // Handle page visibility changes (tab switching)
-    const handleVisibilityChange = async () => {
-      if (document.hidden) {
-        // User switched away - update lastActive but keep session
-        try {
-          await setDoc(sessionRef, {
-            lastActive: serverTimestamp()
-          }, { merge: true });
-        } catch (error) {
-          logger.error('[SessionTracking] Visibility change update failed', { error });
+    // Only add cleanup handlers once
+    if (!cleanupHandlersAdded) {
+      // Clean up session when user closes tab/window
+      const handleBeforeUnload = () => {
+        if (currentUid && currentSessionId) {
+          // Use synchronous deletion for beforeunload
+          const sessionDocRef = doc(db, 'activeSessions', `${currentUid}_${currentSessionId}`);
+          deleteDoc(sessionDocRef).catch(() => {});
         }
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+      };
+      window.addEventListener('beforeunload', handleBeforeUnload);
+
+      // Clean up on page hide (more reliable than beforeunload)
+      const handlePageHide = () => {
+        if (currentUid && currentSessionId) {
+          const sessionDocRef = doc(db, 'activeSessions', `${currentUid}_${currentSessionId}`);
+          deleteDoc(sessionDocRef).catch(() => {});
+        }
+      };
+      window.addEventListener('pagehide', handlePageHide);
+
+      cleanupHandlersAdded = true;
+    }
 
   } catch (error) {
     logger.error('[SessionTracking] Failed to start session', { error, uid });
@@ -116,14 +123,17 @@ export const stopSessionTracking = (uid: string): void => {
       heartbeatInterval = null;
     }
 
-    // Delete session document (use navigator.sendBeacon for reliable cleanup)
+    // Delete session document
     const sessionRef = doc(db, 'activeSessions', `${uid}_${currentSessionId}`);
     deleteDoc(sessionRef).catch(error => {
       logger.error('[SessionTracking] Failed to delete session', { error, uid });
     });
 
     logger.info('[SessionTracking] Session stopped', { uid, sessionId: currentSessionId });
+
+    // Reset tracking variables
     currentSessionId = null;
+    currentUid = null;
 
   } catch (error) {
     logger.error('[SessionTracking] Failed to stop session', { error, uid });

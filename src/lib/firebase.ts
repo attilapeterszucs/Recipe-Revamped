@@ -111,6 +111,17 @@ export const signInWithGoogle = async () => {
 };
 
 export const logOut = async () => {
+  // Clean up session before logging out
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    try {
+      const { stopSessionTracking } = await import('./sessionTracking');
+      stopSessionTracking(currentUser.uid);
+    } catch (error) {
+      logger.error('Failed to stop session tracking during logout', { error });
+    }
+  }
+
   return await signOut(auth);
 };
 

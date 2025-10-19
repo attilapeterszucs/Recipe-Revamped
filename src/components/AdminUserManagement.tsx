@@ -22,6 +22,7 @@ import { getAllAdmins, addAdminUser, removeAdminUser, isUserAdmin, type AdminUse
 import { getAllUserProfiles } from '../lib/userService';
 import { SubscriptionService } from '../lib/subscriptionService';
 import { getActiveSessions, type UserSession } from '../lib/sessionTracking';
+import { startSessionCleanupSchedule } from '../lib/sessionCleanup';
 import { db } from '../lib/firebase';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan, UserSubscription } from '../types/subscription';
@@ -177,8 +178,12 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
     loadData();
   }, [loadData]);
 
-  // Listen to real-time active sessions
+  // Listen to real-time active sessions and start cleanup scheduler
   useEffect(() => {
+    // Start session cleanup scheduler
+    const stopCleanup = startSessionCleanupSchedule();
+
+    // Listen to real-time session updates
     const unsubscribe = getActiveSessions((sessions) => {
       setActiveSessions(sessions);
 
@@ -197,6 +202,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
 
     return () => {
       unsubscribe();
+      stopCleanup();
     };
   }, []);
 
