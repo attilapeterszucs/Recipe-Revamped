@@ -31,6 +31,7 @@ import { useOpenAIConsent } from '../hooks/useOpenAIConsent';
 import { initializeAdminSystem } from '../utils/adminUtils';
 import { createOrUpdateUserProfile } from '../lib/userService';
 import { SubscriptionProvider } from '../contexts/SubscriptionContext';
+import { startSessionTracking, stopSessionTracking } from '../lib/sessionTracking';
 import { AppFooter } from '../components/AppFooter';
 import { DailyConversionService } from '../lib/dailyConversionService';
 import { trackRecipeConversion, trackPageView } from '../lib/analytics';
@@ -258,6 +259,13 @@ export function RecipeApp() {
               user.photoURL || undefined
             );
 
+            // Start session tracking - marks user as online
+            await startSessionTracking(
+              user.uid,
+              user.email || undefined,
+              user.displayName || undefined
+            );
+
             // Initialize admin system if this is the designated admin
             await initializeAdminSystem(user);
 
@@ -294,6 +302,13 @@ export function RecipeApp() {
     };
 
     loadUserData();
+
+    // Cleanup: Stop session tracking when user logs out or component unmounts
+    return () => {
+      if (user?.uid) {
+        stopSessionTracking(user.uid);
+      }
+    };
   }, [user]);
 
 

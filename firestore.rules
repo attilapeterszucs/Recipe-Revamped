@@ -138,6 +138,19 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true;
     }
 
+    // 🟢 ACTIVE SESSIONS - Real-time online status tracking
+    // Document ID format: {userId}_{sessionId}
+    match /activeSessions/{sessionDocId} {
+      // Anyone authenticated can read active sessions (for admin dashboard)
+      allow read: if request.auth != null;
+      // Users can only create/update/delete their own sessions
+      allow create, update: if request.auth != null &&
+        sessionDocId.split('_')[0] == request.auth.uid &&
+        request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null &&
+        sessionDocId.split('_')[0] == request.auth.uid;
+    }
+
     // Default deny all other collections
     match /{document=**} {
       allow read, write: if false;

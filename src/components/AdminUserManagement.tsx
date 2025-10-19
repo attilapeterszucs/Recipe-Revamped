@@ -20,6 +20,7 @@ import { getAllUsers } from '../lib/adminNotifications';
 import { getAllAdmins, addAdminUser, removeAdminUser, isUserAdmin, type AdminUser } from '../lib/adminManagement';
 import { getAllUserProfiles } from '../lib/userService';
 import { SubscriptionService } from '../lib/subscriptionService';
+import { getActiveSessions, type UserSession } from '../lib/sessionTracking';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan, UserSubscription } from '../types/subscription';
 import { useToast } from './ToastContainer';
@@ -57,6 +58,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
   const [selectedExpiryDate, setSelectedExpiryDate] = useState<string>('');
   const [isForever, setIsForever] = useState<boolean>(false);
   const [selectedPlanForChange, setSelectedPlanForChange] = useState<SubscriptionPlan | null>(null);
+  const [activeSessions, setActiveSessions] = useState<UserSession[]>([]);
   const { showSuccess, showError } = useToast();
   const { refreshSubscription } = useSubscriptionRefresh();
 
@@ -118,11 +120,9 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
           return null; // Filter out users without real email addresses
         }
 
-        // Check if user is online (active in last 5 minutes)
-        const lastActiveAt = userProfile?.lastActiveAt;
-        const isOnline = lastActiveAt ?
-          (new Date().getTime() - lastActiveAt.toDate().getTime() < 5 * 60 * 1000) :
-          false;
+        // Online status will be set by real-time session listener
+        // Initial value is false, will be updated when session data arrives
+        const isOnline = false;
 
         return {
           uid,
@@ -131,7 +131,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
           isAdmin: !!adminData,
           adminData,
           subscriptionPlan,
-          lastActiveAt,
+          lastActiveAt: userProfile?.lastActiveAt,
           isOnline
         };
       });
@@ -158,6 +158,23 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // Listen to real-time active sessions
+  useEffect(() => {
+    const unsubscribe = getActiveSessions((sessions) => {
+      setActiveSessions(sessions);
+
+      // Update users' online status based on active sessions
+      setUsers(prevUsers => prevUsers.map(user => ({
+        ...user,
+        isOnline: sessions.some(session => session.uid === user.uid)
+      })));
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   // Check if current admin can grant admin privileges (only super admin or designated admin can)
   const canGrantAdmin = (): boolean => {
