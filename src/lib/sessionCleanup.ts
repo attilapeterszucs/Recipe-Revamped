@@ -4,6 +4,7 @@ import { logger } from './logger';
 
 /**
  * Clean up stale sessions (sessions older than 2 minutes without heartbeat)
+ * and sessions marked as "closing"
  * This catches sessions that weren't properly cleaned up due to browser crashes, etc.
  */
 export const cleanupStaleSessions = async (): Promise<void> => {
@@ -17,6 +18,12 @@ export const cleanupStaleSessions = async (): Promise<void> => {
     const deletePromises = snapshot.docs
       .filter(doc => {
         const data = doc.data();
+
+        // Delete sessions marked as closing immediately
+        if (data.status === 'closing') {
+          return true;
+        }
+
         const lastActive = data.lastActive as Timestamp;
 
         if (!lastActive || !lastActive.toDate) {
@@ -39,16 +46,16 @@ export const cleanupStaleSessions = async (): Promise<void> => {
 
 /**
  * Start periodic cleanup of stale sessions
- * Runs every 5 minutes
+ * Runs every 30 seconds for faster cleanup
  */
 export const startSessionCleanupSchedule = (): (() => void) => {
   // Run cleanup immediately
   cleanupStaleSessions();
 
-  // Then run every 5 minutes
+  // Then run every 30 seconds
   const interval = setInterval(() => {
     cleanupStaleSessions();
-  }, 5 * 60 * 1000); // 5 minutes
+  }, 30 * 1000); // 30 seconds
 
   // Return cleanup function
   return () => {

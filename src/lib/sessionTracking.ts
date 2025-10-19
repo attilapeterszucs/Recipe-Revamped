@@ -18,6 +18,7 @@ export interface UserSession {
   displayName?: string;
   lastActive: Timestamp;
   sessionId: string;
+  status?: 'active' | 'closing';
 }
 
 // Generate a unique session ID for this browser tab/window
@@ -57,7 +58,8 @@ export const startSessionTracking = async (
       email: email || '',
       displayName: displayName || '',
       lastActive: serverTimestamp(),
-      sessionId: currentSessionId
+      sessionId: currentSessionId,
+      status: 'active' as const
     };
 
     // Create initial session document
@@ -82,24 +84,26 @@ export const startSessionTracking = async (
 
     // Only add cleanup handlers once
     if (!cleanupHandlersAdded) {
-      // Clean up session when user closes tab/window
-      const handleBeforeUnload = () => {
-        if (currentUid && currentSessionId) {
-          // Use synchronous deletion for beforeunload
+      // Mark session as closing when user closes tab/window
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === 'hidden' && currentUid && currentSessionId) {
+          // User is leaving - mark session as closing immediately
           const sessionDocRef = doc(db, 'activeSessions', `${currentUid}_${currentSessionId}`);
-          deleteDoc(sessionDocRef).catch(() => {});
+          setDoc(sessionDocRef, { status: 'closing' }, { merge: true }).catch(() => {});
         }
       };
-      window.addEventListener('beforeunload', handleBeforeUnload);
+      document.addEventListener('visibilitychange', handleVisibilityChange);
 
-      // Clean up on page hide (more reliable than beforeunload)
-      const handlePageHide = () => {
+      // Also handle beforeunload and pagehide
+      const handlePageUnload = () => {
         if (currentUid && currentSessionId) {
           const sessionDocRef = doc(db, 'activeSessions', `${currentUid}_${currentSessionId}`);
+          // Try immediate deletion
           deleteDoc(sessionDocRef).catch(() => {});
         }
       };
-      window.addEventListener('pagehide', handlePageHide);
+      window.addEventListener('beforeunload', handlePageUnload);
+      window.addEventListener('pagehide', handlePageUnload);
 
       cleanupHandlersAdded = true;
     }
@@ -153,16 +157,20 @@ export const getActiveSessions = (
     const unsubscribe = onSnapshot(
       sessionsRef,
       (snapshot) => {
-        const sessions: UserSession[] = snapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            uid: data.uid,
-            email: data.email,
-            displayName: data.displayName,
-            lastActive: data.lastActive,
-            sessionId: data.sessionId
-          };
-        });
+        const sessions: UserSession[] = snapshot.docs
+          .map(doc => {
+            const data = doc.data();
+            return {
+              uid: data.uid,
+              email: data.email,
+              displayName: data.displayName,
+              lastActive: data.lastActive,
+              sessionId: data.sessionId,
+              status: data.status || 'active'
+            };
+          })
+          // Filter out sessions marked as closing
+          .filter(session => session.status === 'active');
 
         callback(sessions);
       },
