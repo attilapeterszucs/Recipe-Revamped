@@ -16,14 +16,10 @@ import {
   Infinity,
   Copy
 } from 'lucide-react';
-import { collection, getDocs } from 'firebase/firestore';
 import { getAllUsers } from '../lib/adminNotifications';
 import { getAllAdmins, addAdminUser, removeAdminUser, isUserAdmin, type AdminUser } from '../lib/adminManagement';
 import { getAllUserProfiles } from '../lib/userService';
 import { SubscriptionService } from '../lib/subscriptionService';
-import { getActiveSessions, type UserSession } from '../lib/sessionTracking';
-import { startSessionCleanupSchedule } from '../lib/sessionCleanup';
-import { db } from '../lib/firebase';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan, UserSubscription } from '../types/subscription';
 import { useToast } from './ToastContainer';
@@ -42,8 +38,6 @@ interface UserInfo {
   isAdmin: boolean;
   adminData?: AdminUser;
   subscriptionPlan?: SubscriptionPlan;
-  lastActiveAt?: any;
-  isOnline?: boolean;
 }
 
 export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
@@ -61,87 +55,66 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
   const [selectedExpiryDate, setSelectedExpiryDate] = useState<string>('');
   const [isForever, setIsForever] = useState<boolean>(false);
   const [selectedPlanForChange, setSelectedPlanForChange] = useState<SubscriptionPlan | null>(null);
-  const [activeSessions, setActiveSessions] = useState<UserSession[]>([]);
   const { showSuccess, showError } = useToast();
   const { refreshSubscription } = useSubscriptionRefresh();
 
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-
+      
       // Clear any existing state to force fresh data
       setUsers([]);
       setAdmins([]);
-
+      
       // First check if current user is actually an admin
       const isCurrentUserAdmin = await isUserAdmin(currentAdminEmail, currentAdminUid);
-
+      
       if (!isCurrentUserAdmin) {
         logger.error('[AdminUserManagement] Current user is not an admin - cannot access admin functions');
         showError('Access Denied', 'You do not have admin privileges');
         setLoading(false);
         return;
       }
-
-      // Load users and active sessions in parallel
-      const [allUserIds, adminUsers, userProfiles, activeSessionsSnapshot] = await Promise.all([
+      
+      const [allUserIds, adminUsers, userProfiles] = await Promise.all([
         getAllUsers(),
         getAllAdmins(),
-        getAllUserProfiles(),
-        // Get current active sessions immediately
-        getDocs(collection(db, 'activeSessions'))
-          .then(snapshot => {
-            return snapshot.docs.map(doc => {
-              const data = doc.data();
-              return {
-                uid: data.uid,
-                email: data.email,
-                displayName: data.displayName,
-                lastActive: data.lastActive,
-                sessionId: data.sessionId
-              } as UserSession;
-            });
-          })
-          .catch(() => [])
+        getAllUserProfiles()
       ]);
-
-
+      
+      
       setAdmins(adminUsers);
-      setActiveSessions(activeSessionsSnapshot);
-
+      
       // Get current admin's data
       const currentAdmin = adminUsers.find(admin => admin.uid === currentAdminUid);
       setCurrentAdminData(currentAdmin || null);
-
+      
       // Combine user IDs from all sources
       const allUserUids = new Set([
         ...allUserIds,
         ...adminUsers.map(admin => admin.uid),
         ...userProfiles.map(profile => profile.uid)
       ]);
-
+      
       // Build user info array
       const userInfoPromises = Array.from(allUserUids).map(async (uid) => {
         const adminData = adminUsers.find(admin => admin.uid === uid);
         const userProfile = userProfiles.find(profile => profile.uid === uid);
-
+        
         let subscriptionPlan: SubscriptionPlan = 'free';
-
+        
         try {
           const subscription = await SubscriptionService.getUserSubscription(uid);
           subscriptionPlan = subscription?.plan || 'free';
         } catch (error) {
           logger.error(`Error loading subscription for ${uid}:`, { error, uid });
         }
-
+        
         // Only include users with valid email addresses (filter out fake users)
         const hasValidEmail = userProfile?.email || adminData?.email;
         if (!hasValidEmail) {
           return null; // Filter out users without real email addresses
         }
-
-        // Check if user is currently online based on active sessions
-        const isOnline = activeSessionsSnapshot.some(session => session.uid === uid);
 
         return {
           uid,
@@ -149,23 +122,21 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
           displayName: userProfile?.displayName || adminData?.displayName || 'Unknown User',
           isAdmin: !!adminData,
           adminData,
-          subscriptionPlan,
-          lastActiveAt: userProfile?.lastActiveAt,
-          isOnline
+          subscriptionPlan
         };
       });
-
+      
       const userInfos = await Promise.all(userInfoPromises);
       // Filter out null values (fake users) and sort
       const validUsers = userInfos.filter(user => user !== null) as UserInfo[];
-
+      
       setUsers(validUsers.sort((a, b) => {
         // Sort admins first, then by email
         if (a.isAdmin && !b.isAdmin) return -1;
         if (!a.isAdmin && b.isAdmin) return 1;
         return (a.email || '').localeCompare(b.email || '');
       }));
-
+      
     } catch (error) {
       logger.error('Error loading admin data:', { error });
       showError('Load Failed', 'Failed to load user data');
@@ -177,34 +148,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
   useEffect(() => {
     loadData();
   }, [loadData]);
-
-  // Listen to real-time active sessions and start cleanup scheduler
-  useEffect(() => {
-    // Start session cleanup scheduler
-    const stopCleanup = startSessionCleanupSchedule();
-
-    // Listen to real-time session updates
-    const unsubscribe = getActiveSessions((sessions) => {
-      setActiveSessions(sessions);
-
-      // Update users' online status based on active sessions
-      setUsers(prevUsers => {
-        const updatedUsers = prevUsers.map(user => {
-          const isOnline = sessions.some(session => session.uid === user.uid);
-          return {
-            ...user,
-            isOnline
-          };
-        });
-        return updatedUsers;
-      });
-    });
-
-    return () => {
-      unsubscribe();
-      stopCleanup();
-    };
-  }, []);
 
   // Check if current admin can grant admin privileges (only super admin or designated admin can)
   const canGrantAdmin = (): boolean => {
@@ -395,8 +338,14 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
     user.uid.includes(searchTerm)
   );
 
-  // Count online users
-  const onlineUsersCount = users.filter(user => user.isOnline).length;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader className="w-8 h-8 animate-spin text-blue-600" />
+        <span className="ml-3 text-gray-600">Loading user data...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -432,30 +381,9 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
             <Users className="w-6 h-6 text-blue-600" />
           </div>
           <h4 className="text-xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">User Management</h4>
-          <div className="ml-auto flex items-center gap-3">
-            {loading ? (
-              <>
-                <span className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-500/30 flex items-center gap-2">
-                  <Loader className="w-3 h-3 animate-spin" />
-                  Loading...
-                </span>
-                <span className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30 flex items-center gap-2">
-                  <Loader className="w-3 h-3 animate-spin" />
-                  Loading...
-                </span>
-              </>
-            ) : (
-              <>
-                <span className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-500/30 flex items-center gap-2">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                  {onlineUsersCount} online
-                </span>
-                <span className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30">
-                  {users.length} users
-                </span>
-              </>
-            )}
-          </div>
+          <span className="ml-auto px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30">
+            {users.length} users
+          </span>
         </div>
 
         <div className="relative mb-4">
@@ -470,17 +398,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         </div>
 
         <div className="space-y-3 max-h-96 overflow-y-auto">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-12 space-y-4">
-              <Loader className="w-10 h-10 animate-spin text-blue-600" />
-              <span className="text-gray-600 font-medium">Loading users...</span>
-            </div>
-          ) : filteredUsers.length === 0 ? (
-            <div className="text-center py-8 text-gray-600 font-medium">
-              {searchTerm ? 'No users found matching your search' : 'No users found'}
-            </div>
-          ) : (
-            filteredUsers.map((user) => (
+          {filteredUsers.map((user) => (
             <div
               key={user.uid}
               className={`flex items-center justify-between p-4 rounded-xl border-2 shadow-md transition-all duration-200 hover:shadow-lg ${
@@ -504,18 +422,9 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
 
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
-                    <div className="flex items-center gap-2">
-                      <span className="font-black text-gray-900">
-                        {user.displayName || 'Unknown User'}
-                      </span>
-                      {/* Online Indicator */}
-                      {user.isOnline && (
-                        <div className="relative flex items-center">
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                          <div className="absolute w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
-                        </div>
-                      )}
-                    </div>
+                    <span className="font-black text-gray-900">
+                      {user.displayName || 'Unknown User'}
+                    </span>
                     {user.isAdmin && (
                       <span className="px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl text-xs font-bold shadow-md shadow-red-500/30">
                         Admin
@@ -575,7 +484,12 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                 </button>
               </div>
             </div>
-            ))
+          ))}
+
+          {filteredUsers.length === 0 && (
+            <div className="text-center py-8 text-gray-600 font-medium">
+              {searchTerm ? 'No users found matching your search' : 'No users found'}
+            </div>
           )}
         </div>
       </div>
