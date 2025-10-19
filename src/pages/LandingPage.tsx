@@ -436,7 +436,7 @@ export const LandingPage: React.FC = () => {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => scrollToSection('features')}
+                onClick={() => scrollToSection('how-it-works')}
                 className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-2 border-gray-300 hover:border-green-500 hover:bg-green-50 transition-all duration-300 min-h-[44px]"
               >
                 See How It Works
@@ -624,11 +624,11 @@ export const LandingPage: React.FC = () => {
 
             <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-indigo-300 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-1 scroll-animate" style={{ transitionDelay: '500ms' }}>
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Globe className="h-7 w-7" />
+                <FileText className="h-7 w-7" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Multi-Format Input</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Simple Text Input</h3>
               <p className="text-gray-600 leading-relaxed">
-                Convert recipes from text, URLs, images, or paste directly from websites. Works with any format you have.
+                Paste recipe text directly into the app—our AI automatically understands and formats it. Image and URL support coming soon.
               </p>
             </div>
           </div>
@@ -660,11 +660,16 @@ export const LandingPage: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-black text-gray-900 mb-3">Input Your Recipe</h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  Paste text, upload an image, or enter a URL from your favorite recipe website. Our system accepts any format.
+                  Paste recipe text directly into the app. Our AI understands natural recipe formats and extracts ingredients and instructions automatically.
                 </p>
-                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold">
-                  <FileText className="w-3 h-3" />
-                  Supports text, images & URLs
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                    <FileText className="w-3 h-3" />
+                    Text input supported
+                  </div>
+                  <div className="text-xs text-gray-600 italic">
+                    Image & URL support coming soon
+                  </div>
                 </div>
               </div>
             </div>
