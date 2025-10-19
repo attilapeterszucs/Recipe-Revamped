@@ -33,7 +33,8 @@ import {
   Crown,
   ArrowRight,
   Mail,
-  FileText
+  FileText,
+  BarChart3
 } from 'lucide-react';
 import { getUserSettings, updateUserSettings, updateUserProfile, uploadProfilePicture, deleteProfilePicture } from '../lib/userSettings';
 import { createBackup, getUserBackups, restoreFromBackup, scheduleAutoBackup, deleteBackup } from '../lib/backup';
@@ -51,6 +52,7 @@ import { AdminNotificationCreator } from '../components/AdminNotificationCreator
 import { AdminUserManagement } from '../components/AdminUserManagement';
 import { AdminBlogManagement } from '../components/AdminBlogManagement';
 import { MarketingEmailCampaign } from '../components/MarketingEmailCampaign';
+import { AdminDashboard } from '../components/AdminDashboard';
 import { checkAdminAccess, initializeAdminSystem } from '../utils/adminUtils';
 import { useSubscriptionRefresh } from '../contexts/SubscriptionContext';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
@@ -202,7 +204,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   // Auto-set admin tab when entering admin mode and load backups when data section opens
   useEffect(() => {
     if (activeSection === 'admin') {
-      setActiveSection('admin-users');
+      setActiveSection('admin-dashboard');
     }
     if (activeSection === 'data' && featureAccess?.canBackupRestore) {
       loadBackups();
@@ -2800,9 +2802,20 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             <div className="bg-gradient-to-br from-white to-red-50/20 border-2 border-red-100 rounded-2xl p-4 shadow-lg">
               <nav className="flex flex-wrap gap-3">
                 <button
+                  onClick={() => setActiveSection('admin-dashboard')}
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
+                    (activeSection === 'admin' || activeSection === 'admin-dashboard')
+                      ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:scale-105 hover:shadow-md'
+                  }`}
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  <span>Dashboard</span>
+                </button>
+                <button
                   onClick={() => setActiveSection('admin-users')}
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
-                    (activeSection === 'admin' || activeSection === 'admin-users')
+                    activeSection === 'admin-users'
                       ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
                       : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:scale-105 hover:shadow-md'
                   }`}
@@ -2848,7 +2861,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
             {/* Admin Content */}
             <div key={activeSection} className="bg-gradient-to-br from-white to-gray-50/50 border-2 border-gray-200 rounded-2xl p-6 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-              {activeSection === 'admin-notifications' ? (
+              {activeSection === 'admin-dashboard' || activeSection === 'admin' ? (
+                <AdminDashboard key="admin-dashboard" />
+              ) : activeSection === 'admin-notifications' ? (
                 <AdminNotificationCreator
                   key="admin-notifications"
                   adminUserId={user.uid}
@@ -2933,7 +2948,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               <div className="flex gap-3 min-w-max">
                 {sections.map((section) => {
                   const Icon = section.icon;
-                  const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'));
+                  const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-dashboard' || activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'));
                   const showPremiumBadge = section.premium && !section.hasAccess;
                   return (
                     <button
