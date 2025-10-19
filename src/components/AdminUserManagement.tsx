@@ -338,14 +338,23 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
     user.uid.includes(searchTerm)
   );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Loader className="w-8 h-8 animate-spin text-blue-600" />
-        <span className="ml-3 text-gray-600">Loading user data...</span>
+  // Skeleton loader component for user items
+  const UserSkeleton = () => (
+    <div className="flex items-center justify-between p-4 rounded-xl border-2 border-gray-200 bg-white animate-pulse">
+      <div className="flex items-center space-x-3 flex-1">
+        <div className="w-12 h-12 rounded-xl bg-gray-300"></div>
+        <div className="flex-1 space-y-2">
+          <div className="h-5 bg-gray-300 rounded w-1/3"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="flex gap-2">
+            <div className="h-6 bg-gray-200 rounded w-16"></div>
+            <div className="h-6 bg-gray-200 rounded w-20"></div>
+          </div>
+        </div>
       </div>
-    );
-  }
+      <div className="w-10 h-10 bg-gray-300 rounded-xl"></div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -381,8 +390,12 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
             <Users className="w-6 h-6 text-blue-600" />
           </div>
           <h4 className="text-xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">User Management</h4>
-          <span className="ml-auto px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30">
-            {users.length} users
+          <span className="ml-auto px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30 min-w-[100px] flex items-center justify-center">
+            {loading ? (
+              <Loader className="w-4 h-4 animate-spin" />
+            ) : (
+              `${users.length} users`
+            )}
           </span>
         </div>
 
@@ -398,7 +411,21 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         </div>
 
         <div className="space-y-3 max-h-96 overflow-y-auto">
-          {filteredUsers.map((user) => (
+          {loading ? (
+            // Show skeleton loaders while loading
+            <>
+              <UserSkeleton />
+              <UserSkeleton />
+              <UserSkeleton />
+              <UserSkeleton />
+              <UserSkeleton />
+            </>
+          ) : filteredUsers.length === 0 ? (
+            <div className="text-center py-8 text-gray-600 font-medium">
+              {searchTerm ? 'No users found matching your search' : 'No users found'}
+            </div>
+          ) : (
+            filteredUsers.map((user) => (
             <div
               key={user.uid}
               className={`flex items-center justify-between p-4 rounded-xl border-2 shadow-md transition-all duration-200 hover:shadow-lg ${
@@ -484,12 +511,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                 </button>
               </div>
             </div>
-          ))}
-
-          {filteredUsers.length === 0 && (
-            <div className="text-center py-8 text-gray-600 font-medium">
-              {searchTerm ? 'No users found matching your search' : 'No users found'}
-            </div>
+            ))
           )}
         </div>
       </div>
