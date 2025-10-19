@@ -30,7 +30,8 @@ import {
   AlignRight,
   Link,
   Image,
-  Sparkles
+  Sparkles,
+  Loader
 } from 'lucide-react';
 import { CustomDropdown } from './CustomDropdown';
 import { useToast } from './ToastContainer';
@@ -958,39 +959,53 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
     setShowPreview(true);
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-        <span className="ml-3 text-gray-600">Loading blog posts...</span>
+  // Skeleton loader component for blog posts
+  const BlogPostSkeleton = () => (
+    <div className="bg-white border-2 border-gray-200 rounded-2xl p-5 sm:p-6 shadow-md animate-pulse">
+      <div className="relative">
+        {/* Action Buttons Skeleton */}
+        <div className="absolute top-0 right-0 flex gap-2">
+          <div className="w-9 h-9 bg-gray-300 rounded-lg"></div>
+          <div className="w-9 h-9 bg-gray-300 rounded-lg"></div>
+        </div>
+
+        {/* Meta Info Skeleton */}
+        <div className="flex flex-wrap items-center gap-2 mb-4 pr-20">
+          <div className="h-7 w-24 bg-gray-300 rounded-xl"></div>
+          <div className="h-7 w-20 bg-gray-300 rounded-xl"></div>
+          <div className="h-5 w-28 bg-gray-200 rounded"></div>
+        </div>
+
+        {/* Content Skeleton */}
+        <div className="flex gap-4">
+          {/* Featured Image Skeleton */}
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-300 rounded-xl flex-shrink-0"></div>
+
+          {/* Post Content Skeleton */}
+          <div className="flex-1 min-w-0 space-y-3">
+            {/* Title Skeleton */}
+            <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+
+            {/* Excerpt Skeleton */}
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            </div>
+
+            {/* Tags Skeleton */}
+            <div className="flex gap-2">
+              <div className="h-6 w-16 bg-gray-200 rounded-lg"></div>
+              <div className="h-6 w-20 bg-gray-200 rounded-lg"></div>
+              <div className="h-6 w-14 bg-gray-200 rounded-lg"></div>
+            </div>
+          </div>
+        </div>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
     <div className="space-y-6">
-
-      {/* Header */}
-      <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-6 shadow-lg">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
-              <FileText className="w-6 h-6 text-green-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Blog Management</h2>
-              <p className="text-green-700 font-medium">Create and manage blog posts for RecipeRevamped</p>
-            </div>
-          </div>
-          <button
-            onClick={handleCreatePost}
-            className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            New Post
-          </button>
-        </div>
-      </div>
 
       {/* Search and Filters */}
       <div className="space-y-4">
@@ -1003,8 +1018,12 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               </div>
               <div>
                 <p className="text-xs text-blue-700 font-bold uppercase tracking-wide">Total Posts</p>
-                <p className="text-3xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                  {posts.length}
+                <p className="text-3xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent min-w-[50px] flex items-center justify-start">
+                  {loading ? (
+                    <Loader className="w-6 h-6 animate-spin" />
+                  ) : (
+                    posts.length
+                  )}
                 </p>
               </div>
             </div>
@@ -1017,8 +1036,12 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               </div>
               <div>
                 <p className="text-xs text-green-700 font-bold uppercase tracking-wide">Published</p>
-                <p className="text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                  {posts.filter(p => p.status === 'published').length}
+                <p className="text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent min-w-[50px] flex items-center justify-start">
+                  {loading ? (
+                    <Loader className="w-6 h-6 animate-spin" />
+                  ) : (
+                    posts.filter(p => p.status === 'published').length
+                  )}
                 </p>
               </div>
             </div>
@@ -1031,8 +1054,12 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               </div>
               <div>
                 <p className="text-xs text-yellow-700 font-bold uppercase tracking-wide">Drafts</p>
-                <p className="text-3xl font-black bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">
-                  {posts.filter(p => p.status === 'draft').length}
+                <p className="text-3xl font-black bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent min-w-[50px] flex items-center justify-start">
+                  {loading ? (
+                    <Loader className="w-6 h-6 animate-spin" />
+                  ) : (
+                    posts.filter(p => p.status === 'draft').length
+                  )}
                 </p>
               </div>
             </div>
@@ -1126,9 +1153,24 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
             Blog Posts
             <span className="ml-2 text-sm font-medium text-gray-500">({filteredPosts.length} {filteredPosts.length === 1 ? 'post' : 'posts'})</span>
           </h3>
+          <button
+            onClick={handleCreatePost}
+            className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            New Post
+          </button>
         </div>
 
-        {filteredPosts.length === 0 ? (
+        {loading ? (
+          <div className="space-y-4">
+            <BlogPostSkeleton />
+            <BlogPostSkeleton />
+            <BlogPostSkeleton />
+            <BlogPostSkeleton />
+            <BlogPostSkeleton />
+          </div>
+        ) : filteredPosts.length === 0 ? (
           <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg text-center py-16 px-4">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full mb-4 shadow-md">
               <FileText className="w-10 h-10 text-green-600" />
