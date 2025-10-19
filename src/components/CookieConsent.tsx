@@ -93,7 +93,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                     <Cookie className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-2">
                       We use cookies to enhance your experience. By continuing, you consent to our use of cookies.
                       {' '}
                       <Button
@@ -104,6 +104,19 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                         Customize
                       </Button>
                     </p>
+                    <div className="flex flex-wrap gap-2 text-xs">
+                      <Link to="/privacy" className="text-green-600 hover:text-green-700 underline font-medium">
+                        Privacy Policy
+                      </Link>
+                      <span className="text-gray-400">•</span>
+                      <Link to="/terms" className="text-green-600 hover:text-green-700 underline font-medium">
+                        Terms of Use
+                      </Link>
+                      <span className="text-gray-400">•</span>
+                      <Link to="/cookies" className="text-green-600 hover:text-green-700 underline font-medium">
+                        Cookie Policy
+                      </Link>
+                    </div>
                   </div>
                 </div>
 
