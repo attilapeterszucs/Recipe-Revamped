@@ -55,7 +55,8 @@ export const createOrUpdateUserProfile = async (
       uid,
       email,
       displayName: finalDisplayName,
-      lastLoginAt: serverTimestamp()
+      lastLoginAt: serverTimestamp(),
+      lastActiveAt: serverTimestamp()
     };
     
     // Only include photoURL if it's not undefined
