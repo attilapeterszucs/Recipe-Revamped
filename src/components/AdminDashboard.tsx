@@ -15,13 +15,39 @@ import {
 } from '../lib/adminAnalytics';
 
 export const AdminDashboard: React.FC = () => {
-  const [userStats, setUserStats] = useState<UserActivityStats | null>(null);
-  const [conversionStats, setConversionStats] = useState<ConversionStats | null>(null);
+  // Initialize with default empty values instead of null
+  const [userStats, setUserStats] = useState<UserActivityStats>({
+    totalUsers: 0,
+    activeToday: 0,
+    activeThisWeek: 0,
+    activeThisMonth: 0,
+    currentOnlineUsers: 0,
+    newUsersToday: 0,
+    newUsersThisWeek: 0,
+    newUsersThisMonth: 0
+  });
+  const [conversionStats, setConversionStats] = useState<ConversionStats>({
+    totalConversions: 0,
+    conversionsToday: 0,
+    conversionsThisWeek: 0,
+    conversionsThisMonth: 0
+  });
   const [dailyData, setDailyData] = useState<DailyDataPoint[]>([]);
-  const [subscriptionStats, setSubscriptionStats] = useState<SubscriptionStats | null>(null);
-  const [systemStats, setSystemStats] = useState<SystemStats | null>(null);
+  const [subscriptionStats, setSubscriptionStats] = useState<SubscriptionStats>({
+    free: 0,
+    chef: 0,
+    masterChef: 0,
+    totalRevenue: 0
+  });
+  const [systemStats, setSystemStats] = useState<SystemStats>({
+    totalRecipes: 0,
+    averageRecipesPerUser: 0,
+    topDietaryFilters: [],
+    peakUsageHours: []
+  });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<7 | 30 | 90>(30);
 
   useEffect(() => {
@@ -31,6 +57,7 @@ export const AdminDashboard: React.FC = () => {
   const loadAllData = async () => {
     try {
       setLoading(true);
+      setError(null);
       const [users, conversions, daily, subscriptions, system] = await Promise.all([
         getUserActivityStats(),
         getConversionStats(),
@@ -46,6 +73,8 @@ export const AdminDashboard: React.FC = () => {
       setSystemStats(system);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
+      setError(error instanceof Error ? error.message : 'Failed to load dashboard data');
+      // Keep default zero values on error
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -69,11 +98,11 @@ export const AdminDashboard: React.FC = () => {
   }
 
   // Prepare subscription chart data
-  const subscriptionChartData = subscriptionStats ? [
-    { name: 'Free', value: subscriptionStats.free, color: '#9CA3AF' },
-    { name: 'Chef', value: subscriptionStats.chef, color: '#10B981' },
-    { name: 'Master Chef', value: subscriptionStats.masterChef, color: '#F59E0B' }
-  ] : [];
+  const subscriptionChartData = [
+    { name: 'Free', value: subscriptionStats.free || 0, color: '#9CA3AF' },
+    { name: 'Chef', value: subscriptionStats.chef || 0, color: '#10B981' },
+    { name: 'Master Chef', value: subscriptionStats.masterChef || 0, color: '#F59E0B' }
+  ];
 
   return (
     <div className="space-y-6">
@@ -110,6 +139,22 @@ export const AdminDashboard: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <div className="bg-red-500 bg-opacity-20 p-2 rounded-lg">
+              <TrendingUp className="w-5 h-5 text-red-700" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-red-900 mb-1">Error Loading Dashboard</h3>
+              <p className="text-xs text-red-700">{error}</p>
+              <p className="text-xs text-red-600 mt-2">Showing default values. Click Refresh to try again.</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Key Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
