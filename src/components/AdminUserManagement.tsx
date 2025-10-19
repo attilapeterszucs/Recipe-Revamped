@@ -16,11 +16,13 @@ import {
   Infinity,
   Copy
 } from 'lucide-react';
+import { collection, getDocs } from 'firebase/firestore';
 import { getAllUsers } from '../lib/adminNotifications';
 import { getAllAdmins, addAdminUser, removeAdminUser, isUserAdmin, type AdminUser } from '../lib/adminManagement';
 import { getAllUserProfiles } from '../lib/userService';
 import { SubscriptionService } from '../lib/subscriptionService';
 import { getActiveSessions, type UserSession } from '../lib/sessionTracking';
+import { db } from '../lib/firebase';
 import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan, UserSubscription } from '../types/subscription';
 import { useToast } from './ToastContainer';
@@ -65,64 +67,80 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       // Clear any existing state to force fresh data
       setUsers([]);
       setAdmins([]);
-      
+
       // First check if current user is actually an admin
       const isCurrentUserAdmin = await isUserAdmin(currentAdminEmail, currentAdminUid);
-      
+
       if (!isCurrentUserAdmin) {
         logger.error('[AdminUserManagement] Current user is not an admin - cannot access admin functions');
         showError('Access Denied', 'You do not have admin privileges');
         setLoading(false);
         return;
       }
-      
-      const [allUserIds, adminUsers, userProfiles] = await Promise.all([
+
+      // Load users and active sessions in parallel
+      const [allUserIds, adminUsers, userProfiles, activeSessionsSnapshot] = await Promise.all([
         getAllUsers(),
         getAllAdmins(),
-        getAllUserProfiles()
+        getAllUserProfiles(),
+        // Get current active sessions immediately
+        getDocs(collection(db, 'activeSessions'))
+          .then(snapshot => {
+            return snapshot.docs.map(doc => {
+              const data = doc.data();
+              return {
+                uid: data.uid,
+                email: data.email,
+                displayName: data.displayName,
+                lastActive: data.lastActive,
+                sessionId: data.sessionId
+              } as UserSession;
+            });
+          })
+          .catch(() => [])
       ]);
-      
-      
+
+
       setAdmins(adminUsers);
-      
+      setActiveSessions(activeSessionsSnapshot);
+
       // Get current admin's data
       const currentAdmin = adminUsers.find(admin => admin.uid === currentAdminUid);
       setCurrentAdminData(currentAdmin || null);
-      
+
       // Combine user IDs from all sources
       const allUserUids = new Set([
         ...allUserIds,
         ...adminUsers.map(admin => admin.uid),
         ...userProfiles.map(profile => profile.uid)
       ]);
-      
+
       // Build user info array
       const userInfoPromises = Array.from(allUserUids).map(async (uid) => {
         const adminData = adminUsers.find(admin => admin.uid === uid);
         const userProfile = userProfiles.find(profile => profile.uid === uid);
-        
+
         let subscriptionPlan: SubscriptionPlan = 'free';
-        
+
         try {
           const subscription = await SubscriptionService.getUserSubscription(uid);
           subscriptionPlan = subscription?.plan || 'free';
         } catch (error) {
           logger.error(`Error loading subscription for ${uid}:`, { error, uid });
         }
-        
+
         // Only include users with valid email addresses (filter out fake users)
         const hasValidEmail = userProfile?.email || adminData?.email;
         if (!hasValidEmail) {
           return null; // Filter out users without real email addresses
         }
 
-        // Online status will be set by real-time session listener
-        // Initial value is false, will be updated when session data arrives
-        const isOnline = false;
+        // Check if user is currently online based on active sessions
+        const isOnline = activeSessionsSnapshot.some(session => session.uid === uid);
 
         return {
           uid,
@@ -135,18 +153,18 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
           isOnline
         };
       });
-      
+
       const userInfos = await Promise.all(userInfoPromises);
       // Filter out null values (fake users) and sort
       const validUsers = userInfos.filter(user => user !== null) as UserInfo[];
-      
+
       setUsers(validUsers.sort((a, b) => {
         // Sort admins first, then by email
         if (a.isAdmin && !b.isAdmin) return -1;
         if (!a.isAdmin && b.isAdmin) return 1;
         return (a.email || '').localeCompare(b.email || '');
       }));
-      
+
     } catch (error) {
       logger.error('Error loading admin data:', { error });
       showError('Load Failed', 'Failed to load user data');
@@ -161,19 +179,13 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
 
   // Listen to real-time active sessions
   useEffect(() => {
-    console.log('[AdminUserManagement] Setting up real-time session listener');
-
     const unsubscribe = getActiveSessions((sessions) => {
-      console.log('[AdminUserManagement] Received session update:', sessions.length, 'active sessions');
       setActiveSessions(sessions);
 
       // Update users' online status based on active sessions
       setUsers(prevUsers => {
         const updatedUsers = prevUsers.map(user => {
           const isOnline = sessions.some(session => session.uid === user.uid);
-          if (user.isOnline !== isOnline) {
-            console.log(`[AdminUserManagement] User ${user.email} online status changed: ${user.isOnline} -> ${isOnline}`);
-          }
           return {
             ...user,
             isOnline
@@ -184,7 +196,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
     });
 
     return () => {
-      console.log('[AdminUserManagement] Cleaning up session listener');
       unsubscribe();
     };
   }, []);

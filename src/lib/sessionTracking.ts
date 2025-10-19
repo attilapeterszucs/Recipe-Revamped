@@ -56,12 +56,9 @@ export const startSessionTracking = async (
       sessionId: currentSessionId
     };
 
-    console.log('[SessionTracking] Creating session with data:', sessionData);
-
     // Create initial session document
     await setDoc(sessionRef, sessionData);
 
-    console.log('[SessionTracking] Session created successfully', { uid, sessionId: currentSessionId });
     logger.info('[SessionTracking] Session started', { uid, sessionId: currentSessionId });
 
     // Send heartbeat every 30 seconds to update lastActive
@@ -74,9 +71,7 @@ export const startSessionTracking = async (
           lastActive: serverTimestamp(),
           sessionId: currentSessionId
         }, { merge: true });
-        console.log('[SessionTracking] Heartbeat sent', { uid, sessionId: currentSessionId });
       } catch (error) {
-        console.error('[SessionTracking] Heartbeat failed', error);
         logger.error('[SessionTracking] Heartbeat failed', { error, uid });
       }
     }, 30000); // 30 seconds
@@ -103,7 +98,6 @@ export const startSessionTracking = async (
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
   } catch (error) {
-    console.error('[SessionTracking] Failed to start session:', error);
     logger.error('[SessionTracking] Failed to start session', { error, uid });
     throw error; // Re-throw to see the error in the app
   }
@@ -145,8 +139,6 @@ export const getActiveSessions = (
   try {
     const sessionsRef = collection(db, 'activeSessions');
 
-    console.log('[SessionTracking] Setting up real-time listener for active sessions');
-
     // Listen to real-time updates
     const unsubscribe = onSnapshot(
       sessionsRef,
@@ -162,11 +154,9 @@ export const getActiveSessions = (
           };
         });
 
-        console.log('[SessionTracking] Active sessions updated:', sessions.length, sessions);
         callback(sessions);
       },
       (error) => {
-        console.error('[SessionTracking] Failed to listen to active sessions:', error);
         logger.error('[SessionTracking] Failed to listen to active sessions', { error });
         callback([]);
       }
@@ -174,7 +164,6 @@ export const getActiveSessions = (
 
     return unsubscribe;
   } catch (error) {
-    console.error('[SessionTracking] Failed to setup session listener:', error);
     logger.error('[SessionTracking] Failed to setup session listener', { error });
     return () => {};
   }
