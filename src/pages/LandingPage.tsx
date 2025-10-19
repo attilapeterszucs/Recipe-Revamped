@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Zap, Check, Star, Menu, X, Brain, Lock, Utensils, Globe, Crown, ChevronDown } from 'lucide-react';
+import { Shield, Zap, Check, Star, Menu, X, Brain, Lock, Utensils, Globe, Crown, ChevronDown, Upload, Settings, Sparkles, Download, AlertCircle, FileText } from 'lucide-react';
 import { basePlans } from '../lib/pricing';
 import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
@@ -249,6 +249,14 @@ export const LandingPage: React.FC = () => {
               </Button>
               <Button
                 variant="ghost"
+                onClick={() => scrollToSection('how-it-works')}
+                className="text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold transition-colors px-4"
+                aria-label="Scroll to How It Works section"
+              >
+                How It Works
+              </Button>
+              <Button
+                variant="ghost"
                 onClick={() => scrollToSection('pricing')}
                 className="text-gray-700 hover:text-green-600 hover:bg-green-50 font-semibold transition-colors px-4"
                 aria-label="Scroll to Pricing section"
@@ -329,6 +337,17 @@ export const LandingPage: React.FC = () => {
                 aria-label="Scroll to Features section"
               >
                 Features
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => scrollToSection('how-it-works')}
+                className={`w-full justify-start text-gray-700 hover:text-green-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 font-semibold rounded-xl border-2 border-transparent hover:border-green-200 hover:shadow-md transform transition-all duration-300 ${
+                  mobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+                }`}
+                style={{ transitionDelay: mobileMenuOpen ? '75ms' : '0ms' }}
+                aria-label="Scroll to How It Works section"
+              >
+                How It Works
               </Button>
               <Button
                 variant="ghost"
@@ -577,10 +596,20 @@ export const LandingPage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-red-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Lock className="h-7 w-7" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Secure & Private</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Your data is protected with Firebase authentication and secure cloud storage. Only you have access to your saved recipes.
+              <h3 className="text-xl font-bold text-gray-900 mb-3">100% Private & Secure</h3>
+              <p className="text-gray-600 leading-relaxed mb-3">
+                Your data is protected with enterprise-grade security. Free users enjoy local processing—your recipes never leave your device.
               </p>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+                  <span>No data selling, ever</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+                  <span>Encrypted cloud storage for paid plans</span>
+                </div>
+              </div>
             </div>
 
             <div className="group relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-yellow-300 transition-all duration-500 hover:shadow-2xl hover:shadow-yellow-100 hover:-translate-y-1 scroll-animate" style={{ transitionDelay: '400ms' }}>
@@ -606,6 +635,135 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16 scroll-animate">
+            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-3 sm:mb-4">
+              <Brain className="w-3 h-3 sm:w-4 sm:h-4" />
+              How It Works
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-3 sm:mb-4">AI-Powered Recipe Conversion</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Simple, fast, and accurate recipe transformation in 3 easy steps</p>
+          </div>
+
+          {/* Process Steps */}
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            {/* Step 1 */}
+            <div className="relative scroll-animate" style={{ transitionDelay: '0ms' }}>
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 border-2 border-blue-200 h-full">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex-shrink-0 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-black text-xl">1</div>
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white">
+                    <Upload className="h-7 w-7" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-black text-gray-900 mb-3">Input Your Recipe</h3>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  Paste text, upload an image, or enter a URL from your favorite recipe website. Our system accepts any format.
+                </p>
+                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                  <FileText className="w-3 h-3" />
+                  Supports text, images & URLs
+                </div>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="relative scroll-animate" style={{ transitionDelay: '150ms' }}>
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 border-2 border-purple-200 h-full">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex-shrink-0 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center font-black text-xl">2</div>
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white">
+                    <Sparkles className="h-7 w-7" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-black text-gray-900 mb-3">AI Analyzes & Converts</h3>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  Our GPT-4 powered AI understands your dietary needs and intelligently substitutes ingredients while maintaining flavor and nutrition.
+                </p>
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-semibold mr-2">
+                    <Check className="w-3 h-3" />
+                    Smart substitutions
+                  </div>
+                  <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                    <Check className="w-3 h-3" />
+                    Nutrition preserved
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative scroll-animate" style={{ transitionDelay: '300ms' }}>
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 border-2 border-green-200 h-full">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex-shrink-0 w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center font-black text-xl">3</div>
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-white">
+                    <Download className="h-7 w-7" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-black text-gray-900 mb-3">Get Your Converted Recipe</h3>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  Receive a perfectly formatted recipe with adjusted ingredients, updated instructions, and accurate nutrition information.
+                </p>
+                <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                  <Zap className="w-3 h-3" />
+                  Ready in seconds
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quality & Accuracy Info */}
+          <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-8 border-2 border-gray-200 scroll-animate">
+            <div className="grid md:grid-cols-2 gap-8 mb-6">
+              <div>
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                    <Brain className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-black text-gray-900 mb-2">Advanced AI Technology</h4>
+                    <p className="text-gray-700 leading-relaxed">
+                      Powered by GPT-4, our AI understands complex dietary restrictions, ingredient relationships, and cooking techniques to provide accurate conversions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <Settings className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-black text-gray-900 mb-2">Quality Assurance</h4>
+                    <p className="text-gray-700 leading-relaxed">
+                      Every conversion is validated for dietary compliance and nutritional accuracy. Our system learns from thousands of successful conversions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Nutrition Accuracy Disclaimer */}
+            <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h5 className="text-sm font-bold text-yellow-900 mb-1">Nutrition Information Notice</h5>
+                  <p className="text-xs text-yellow-800 leading-relaxed">
+                    Nutritional data is calculated using AI analysis and USDA databases. While we strive for accuracy, values are estimates and may vary based on specific ingredients and preparation methods.
+                    <span className="font-semibold"> If you have medical conditions or strict dietary requirements, please verify nutritional information with your healthcare provider or a registered dietitian.</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <section id="pricing" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
@@ -616,7 +774,13 @@ export const LandingPage: React.FC = () => {
               Pricing Plans
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-3 sm:mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-6 sm:mb-8">Choose the plan that works for you</p>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-4">Choose the plan that works for you</p>
+
+            {/* Free Plan Highlight */}
+            <div className="inline-flex items-center gap-2 bg-green-50 border-2 border-green-200 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6 sm:mb-8">
+              <Check className="w-4 h-4" />
+              Free plan available forever • No credit card required • Upgrade anytime
+            </div>
 
             {/* Billing Toggle */}
             <div className="flex items-center justify-center">
@@ -680,6 +844,10 @@ export const LandingPage: React.FC = () => {
                       <span className="text-sm text-gray-700 font-medium">Basic diet filters</span>
                     </li>
                     <li className="flex items-start">
+                      <Lock className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">Local processing (100% private)</span>
+                    </li>
+                    <li className="flex items-start">
                       <X className="h-4 w-4 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
                       <span className="text-sm text-gray-500 line-through">Meal planning</span>
                     </li>
@@ -689,7 +857,7 @@ export const LandingPage: React.FC = () => {
                     </li>
                     <li className="flex items-start">
                       <X className="h-4 w-4 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-gray-500 line-through">Backup/restore</span>
+                      <span className="text-sm text-gray-500 line-through">Cloud backup/restore</span>
                     </li>
                   </ul>
                 </CardContent>
@@ -1025,7 +1193,7 @@ export const LandingPage: React.FC = () => {
                 </li>
                 <li>
                   <Link to="/contact" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
-                    Contact
+                    Contact & FAQ
                   </Link>
                 </li>
               </ul>
