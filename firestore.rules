@@ -138,6 +138,16 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true;
     }
 
+    // 📊 CONVERSIONS - Analytics tracking for recipe conversions
+    // Users can create conversion logs, only admins can read for analytics
+    match /conversions/{conversionId} {
+      allow read: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true;
+      allow create: if request.auth != null &&
+        request.auth.uid == request.resource.data.userId;
+      allow update, delete: if false; // Conversions are immutable once created
+    }
+
     // Default deny all other collections
     match /{document=**} {
       allow read, write: if false;
