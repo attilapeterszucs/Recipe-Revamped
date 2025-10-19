@@ -38,6 +38,8 @@ interface UserInfo {
   isAdmin: boolean;
   adminData?: AdminUser;
   subscriptionPlan?: SubscriptionPlan;
+  lastActiveAt?: any;
+  isOnline?: boolean;
 }
 
 export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
@@ -116,13 +118,21 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
           return null; // Filter out users without real email addresses
         }
 
+        // Check if user is online (active in last 5 minutes)
+        const lastActiveAt = userProfile?.lastActiveAt;
+        const isOnline = lastActiveAt ?
+          (new Date().getTime() - lastActiveAt.toDate().getTime() < 5 * 60 * 1000) :
+          false;
+
         return {
           uid,
           email: userProfile?.email || adminData?.email || '',
           displayName: userProfile?.displayName || adminData?.displayName || 'Unknown User',
           isAdmin: !!adminData,
           adminData,
-          subscriptionPlan
+          subscriptionPlan,
+          lastActiveAt,
+          isOnline
         };
       });
       
@@ -338,6 +348,9 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
     user.uid.includes(searchTerm)
   );
 
+  // Count online users
+  const onlineUsersCount = users.filter(user => user.isOnline).length;
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -381,9 +394,15 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
             <Users className="w-6 h-6 text-blue-600" />
           </div>
           <h4 className="text-xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">User Management</h4>
-          <span className="ml-auto px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30">
-            {users.length} users
-          </span>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-500/30 flex items-center gap-2">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              {onlineUsersCount} online
+            </span>
+            <span className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30">
+              {users.length} users
+            </span>
+          </div>
         </div>
 
         <div className="relative mb-4">
@@ -422,9 +441,18 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
 
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
-                    <span className="font-black text-gray-900">
-                      {user.displayName || 'Unknown User'}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-black text-gray-900">
+                        {user.displayName || 'Unknown User'}
+                      </span>
+                      {/* Online Indicator */}
+                      {user.isOnline && (
+                        <div className="relative flex items-center">
+                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                          <div className="absolute w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
+                        </div>
+                      )}
+                    </div>
                     {user.isAdmin && (
                       <span className="px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl text-xs font-bold shadow-md shadow-red-500/30">
                         Admin
