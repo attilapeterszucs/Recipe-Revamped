@@ -655,10 +655,10 @@ export const LandingPage: React.FC = () => {
           <div className="grid md:grid-cols-3 gap-8 mb-12">
             {/* Step 1 */}
             <div className="relative scroll-animate" style={{ transitionDelay: '0ms' }}>
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 border-2 border-blue-200 h-full">
+              <div className="group bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 border-2 border-blue-200 h-full hover:border-blue-300 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100 hover:-translate-y-1">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="flex-shrink-0 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-black text-xl">1</div>
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white">
+                  <div className="flex-shrink-0 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-black text-xl group-hover:scale-110 transition-transform duration-300">1</div>
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white group-hover:scale-110 transition-transform duration-300">
                     <Upload className="h-7 w-7" />
                   </div>
                 </div>
@@ -686,10 +686,10 @@ export const LandingPage: React.FC = () => {
 
             {/* Step 2 */}
             <div className="relative scroll-animate" style={{ transitionDelay: '150ms' }}>
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 border-2 border-purple-200 h-full">
+              <div className="group bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 border-2 border-purple-200 h-full hover:border-purple-300 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-100 hover:-translate-y-1">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="flex-shrink-0 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center font-black text-xl">2</div>
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white">
+                  <div className="flex-shrink-0 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center font-black text-xl group-hover:scale-110 transition-transform duration-300">2</div>
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white group-hover:scale-110 transition-transform duration-300">
                     <Sparkles className="h-7 w-7" />
                   </div>
                 </div>
@@ -712,10 +712,10 @@ export const LandingPage: React.FC = () => {
 
             {/* Step 3 */}
             <div className="relative scroll-animate" style={{ transitionDelay: '300ms' }}>
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 border-2 border-green-200 h-full">
+              <div className="group bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 border-2 border-green-200 h-full hover:border-green-300 transition-all duration-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="flex-shrink-0 w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center font-black text-xl">3</div>
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-white">
+                  <div className="flex-shrink-0 w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center font-black text-xl group-hover:scale-110 transition-transform duration-300">3</div>
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-white group-hover:scale-110 transition-transform duration-300">
                     <Download className="h-7 w-7" />
                   </div>
                 </div>
