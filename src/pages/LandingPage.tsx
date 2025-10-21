@@ -831,7 +831,7 @@ export const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
               {/* Free Plan */}
-              <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1 flex flex-col h-full group p-6 scroll-animate-scale" style={{ transitionDelay: '0ms' }}>
+              <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-green-100 transition-all duration-500 hover:scale-105 hover:shadow-2xl flex flex-col h-full group p-6 scroll-animate-scale" style={{ transitionDelay: '0ms' }}>
                 <CardHeader className="text-center p-0 mb-6">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 text-gray-600 mb-4 mx-auto">
                     <Star className="w-8 h-8" />
@@ -879,7 +879,7 @@ export const LandingPage: React.FC = () => {
               </Card>
 
               {/* Chef Plan - Most Popular */}
-              <Card className="relative rounded-2xl border-2 border-green-400 hover:border-green-500 bg-gradient-to-b from-green-50 via-emerald-50 to-white ring-4 ring-green-300 hover:ring-green-400 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1 flex flex-col h-full p-6 scroll-animate-scale" style={{ transitionDelay: '150ms' }}>
+              <Card className="relative rounded-2xl border-2 border-green-400 bg-gradient-to-b from-green-50 via-emerald-50 to-white shadow-xl ring-4 ring-green-300 hover:ring-green-400 hover:shadow-2xl transition-all duration-500 transform scale-105 flex flex-col h-full p-6 scroll-animate-scale" style={{ transitionDelay: '150ms' }}>
                 {/* Most Popular Badge */}
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <span className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-xl border-2 border-white flex items-center gap-1">
@@ -963,7 +963,7 @@ export const LandingPage: React.FC = () => {
               </Card>
 
               {/* Master Chef Plan */}
-              <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1 flex flex-col h-full group p-6 scroll-animate-scale" style={{ transitionDelay: '300ms' }}>
+              <Card className="relative rounded-2xl border-2 border-gray-200 hover:border-green-300 bg-white hover:shadow-green-100 transition-all duration-500 hover:scale-105 hover:shadow-2xl flex flex-col h-full group p-6 scroll-animate-scale" style={{ transitionDelay: '300ms' }}>
                 <CardHeader className="text-center p-0 mb-6">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-50 text-purple-600 mb-4 mx-auto">
                     <Crown className="w-8 h-8" />
