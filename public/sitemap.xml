@@ -103,24 +103,24 @@
 
   <!-- Privacy Policy - GDPR/CCPA Compliance -->
   <url>
-    <loc>https://reciperevamped.com/privacy</loc>
-    <lastmod>2025-09-23</lastmod>
+    <loc>https://reciperevamped.com/privacy-policy</loc>
+    <lastmod>2025-10-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.35</priority>
   </url>
 
   <!-- Terms of Service - Legal Protection -->
   <url>
-    <loc>https://reciperevamped.com/terms</loc>
-    <lastmod>2025-09-23</lastmod>
+    <loc>https://reciperevamped.com/terms-of-service</loc>
+    <lastmod>2025-10-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.35</priority>
   </url>
 
   <!-- Cookie Policy - EU Cookie Law Compliance -->
   <url>
-    <loc>https://reciperevamped.com/cookies</loc>
-    <lastmod>2025-09-23</lastmod>
+    <loc>https://reciperevamped.com/cookie-policy</loc>
+    <lastmod>2025-10-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

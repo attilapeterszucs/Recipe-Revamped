@@ -19,6 +19,22 @@ export default defineConfig({
     commonjsOptions: {
       include: [/firebase/, /node_modules/]
     },
+    // Performance optimizations
+    target: 'es2015',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug']
+      },
+      format: {
+        comments: false
+      }
+    },
+    cssMinify: true,
+    cssCodeSplit: true,
+    reportCompressedSize: false,
     // Reduce module preloading to prevent unused preload warnings
     modulePreload: {
       polyfill: false,

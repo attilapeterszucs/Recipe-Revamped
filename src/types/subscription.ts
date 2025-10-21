@@ -99,7 +99,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
       'Everything in Free',
       '100 recipes in Recipe Book',
       '100 conversions per day',
-      'All diet filters (12+ options)',
+      'All diet filters (24+ options)',
       'Meal planning calendar',
       'Default recipe preferences',
       'Custom profile pictures',

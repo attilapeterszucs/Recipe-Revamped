@@ -17,7 +17,7 @@ export interface SEOConfig {
 export const SEO_CONFIGS: Record<string, SEOConfig> = {
   home: {
     title: 'Recipe Revamped - #1 AI Recipe Converter for Dietary Restrictions & Meal Planning',
-    description: 'Transform any recipe instantly for gluten-free, vegan, keto, low-carb & 12+ dietary needs. Free AI recipe converter with meal planning, nutrition analysis & recipe storage. Start converting recipes today!',
+    description: 'Transform any recipe instantly for gluten-free, vegan, keto, low-carb & 24+ dietary needs. Free AI recipe converter with meal planning, nutrition analysis & recipe storage. Start converting recipes today!',
     keywords: 'recipe converter, AI recipe converter, dietary restrictions, gluten-free recipes, vegan recipes, keto recipes, paleo recipes, low carb recipes, dairy-free recipes, nut-free recipes, meal planning app, nutrition analysis, recipe book, recipe storage, healthy recipes, diet meal planner, food allergy recipes, diabetes recipes, weight loss recipes, recipe modification, cooking app, recipe organizer',
     canonical: 'https://reciperevamped.com',
     ogType: 'website',
@@ -113,16 +113,16 @@ export const SEO_CONFIGS: Record<string, SEOConfig> = {
     title: 'Privacy Policy - Recipe Revamped Data Protection & Security',
     description: 'Recipe Revamped privacy policy. Learn how we protect your data, recipe information, and personal details. GDPR compliant with transparent data practices.',
     keywords: 'recipe revamped privacy policy, data protection, GDPR compliance, recipe data security, privacy policy',
-    canonical: 'https://reciperevamped.com/privacy',
+    canonical: 'https://reciperevamped.com/privacy-policy',
     ogType: 'website',
     noindex: false
   },
 
   terms: {
-    title: 'Terms of Use - Recipe Revamped Service Agreement',
-    description: 'Recipe Revamped terms of use and service agreement. Understand your rights and responsibilities when using our AI recipe converter platform.',
-    keywords: 'recipe revamped terms of use, service agreement, terms and conditions, recipe converter terms',
-    canonical: 'https://reciperevamped.com/terms',
+    title: 'Terms of Service - Recipe Revamped Service Agreement',
+    description: 'Recipe Revamped terms of service and service agreement. Understand your rights and responsibilities when using our AI recipe converter platform.',
+    keywords: 'recipe revamped terms of service, service agreement, terms and conditions, recipe converter terms',
+    canonical: 'https://reciperevamped.com/terms-of-service',
     ogType: 'website',
     noindex: false
   },
@@ -131,7 +131,7 @@ export const SEO_CONFIGS: Record<string, SEOConfig> = {
     title: 'Cookie Policy - Recipe Revamped Cookie Usage & Preferences',
     description: 'Learn about Recipe Revamped\'s cookie usage, manage your preferences, and understand how we use cookies to improve your recipe conversion experience.',
     keywords: 'recipe revamped cookie policy, cookie preferences, website cookies, tracking preferences',
-    canonical: 'https://reciperevamped.com/cookies',
+    canonical: 'https://reciperevamped.com/cookie-policy',
     ogType: 'website',
     noindex: false
   }

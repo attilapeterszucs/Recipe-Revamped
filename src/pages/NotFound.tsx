@@ -98,13 +98,13 @@ export const NotFound: React.FC = () => {
               AI-powered recipe conversion for 24+ dietary needs
             </p>
             <div className="flex flex-wrap justify-center gap-6 mb-6">
-              <Link to="/privacy" className="text-sm text-gray-600 hover:text-green-600 transition-colors font-medium">
+              <Link to="/privacy-policy" className="text-sm text-gray-600 hover:text-green-600 transition-colors font-medium">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="text-sm text-gray-600 hover:text-green-600 transition-colors font-medium">
-                Terms of Use
+              <Link to="/terms-of-service" className="text-sm text-gray-600 hover:text-green-600 transition-colors font-medium">
+                Terms of Service
               </Link>
-              <Link to="/cookies" className="text-sm text-gray-600 hover:text-green-600 transition-colors font-medium">
+              <Link to="/cookie-policy" className="text-sm text-gray-600 hover:text-green-600 transition-colors font-medium">
                 Cookie Policy
               </Link>
             </div>

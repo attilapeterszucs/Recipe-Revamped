@@ -245,9 +245,9 @@ export const CookieSettings: React.FC = () => {
               <li>• All recipe processing happens locally in your browser</li>
             </ul>
             <div className="mt-3 flex flex-wrap gap-3 text-xs">
-              <Link to="/privacy" className="text-green-600 hover:text-green-700 underline font-medium">Privacy Policy</Link>
-              <Link to="/cookies" className="text-green-600 hover:text-green-700 underline font-medium">Cookie Policy</Link>
-              <Link to="/terms" className="text-green-600 hover:text-green-700 underline font-medium">Terms of Service</Link>
+              <Link to="/privacy-policy" className="text-green-600 hover:text-green-700 underline font-medium">Privacy Policy</Link>
+              <Link to="/cookie-policy" className="text-green-600 hover:text-green-700 underline font-medium">Cookie Policy</Link>
+              <Link to="/terms-of-service" className="text-green-600 hover:text-green-700 underline font-medium">Terms of Service</Link>
             </div>
           </div>
         </AlertDescription>

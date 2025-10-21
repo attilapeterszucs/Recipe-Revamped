@@ -8,7 +8,7 @@ import { RecipeApp } from './pages/RecipeApp';
 import { Settings } from './pages/Settings';
 
 // Lazy load non-critical components for better code splitting
-const TermsOfUse = lazy(() => import('./pages/TermsOfUse').then(module => ({ default: module.TermsOfUse })));
+const TermsOfService = lazy(() => import('./pages/TermsOfService').then(module => ({ default: module.TermsOfService })));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(module => ({ default: module.PrivacyPolicy })));
 const CookiePolicy = lazy(() => import('./pages/CookiePolicy').then(module => ({ default: module.CookiePolicy })));
 const AboutUs = lazy(() => import('./pages/AboutUs').then(module => ({ default: module.AboutUs })));
@@ -76,9 +76,12 @@ const AppContent: React.FC = () => {
           <Route path="/emulator/auth/handler" element={<AuthActionPage />} />
           <Route path="/action" element={<AuthActionPage />} />
           <Route path="/handler" element={<AuthActionPage />} />
-          <Route path="/terms" element={<TermsOfUse />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/cookies" element={<CookiePolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/terms" element={<Navigate to="/terms-of-service" replace />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/cookies" element={<Navigate to="/cookie-policy" replace />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:blogId" element={<Blog />} />

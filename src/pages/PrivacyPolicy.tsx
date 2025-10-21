@@ -1,29 +1,11 @@
 import React, { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Lock, Database, Eye, Globe, Users, Settings, Mail, MapPin, Calendar, FileText, Zap, Server, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
-import { useAuth } from '../hooks/useAuth';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Separator } from '../components/ui/separator';
 
 export const PrivacyPolicy: React.FC = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  const handleManageAccount = () => {
-    if (user) {
-      navigate('/app');
-    } else {
-      navigate('/signin');
-    }
-  };
-
-  // Set page title and scroll to top
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = 'Privacy Policy | Recipe Revamped - Data Protection & Privacy';
+    document.title = 'Privacy Policy | Recipe Revamped';
 
     const metaDescription = document.querySelector('meta[name="description"]') || document.createElement('meta');
     metaDescription.setAttribute('name', 'description');
@@ -33,804 +15,428 @@ export const PrivacyPolicy: React.FC = () => {
     }
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <header>
         <AuthAwareNavigation />
       </header>
 
-      <main>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="grid lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mt-20 sm:mt-24">
-          {/* Sidebar Navigation */}
-          <div className="lg:col-span-1 order-2 lg:order-1">
-            <Card className="sticky top-20 sm:top-24 shadow-lg shadow-green-100 border-2 border-green-100">
-              <CardHeader>
-                <CardTitle className="text-base sm:text-lg">Contents</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <nav className="space-y-2">
-                  {[
-                    { id: 'commitment', title: 'Our Commitment', icon: Shield },
-                    { id: 'information', title: 'Information We Collect', icon: Database },
-                    { id: 'usage', title: 'How We Use Information', icon: Settings },
-                    { id: 'local-processing', title: 'Local Processing Tech', icon: Zap },
-                    { id: 'security', title: 'Data Security', icon: Lock },
-                    { id: 'sharing', title: 'Information Sharing', icon: Users },
-                    { id: 'rights', title: 'Your Rights', icon: CheckCircle },
-                    { id: 'cookies', title: 'Cookies & Tracking', icon: Eye },
-                    { id: 'international', title: 'International Transfers', icon: Globe },
-                    { id: 'contact', title: 'Contact Us', icon: Mail }
-                  ].map(({ id, title, icon: Icon }) => (
-                    <Button
-                      key={id}
-                      variant="ghost"
-                      onClick={() => scrollToSection(id)}
-                      className="flex items-center w-full justify-start text-xs sm:text-sm h-auto py-2 px-2 sm:px-3 hover:bg-green-50 hover:text-green-700"
-                    >
-                      <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                      <span className="truncate">{title}</span>
-                    </Button>
-                  ))}
-                </nav>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-3 order-1 lg:order-2">
-            <Card className="overflow-hidden shadow-2xl shadow-green-100 border-2 border-green-100">
-              {/* Hero Section */}
-              <CardHeader className="bg-gradient-to-r from-green-600 via-emerald-600 to-green-500 text-white relative overflow-hidden">
-                {/* Decorative circles */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12" />
-
-                <div className="flex items-start sm:items-center mb-3 sm:mb-4 relative z-10">
-                  <Shield className="w-5 h-5 sm:w-6 sm:h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 mr-2 sm:mr-3 flex-shrink-0" />
-                  <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-white">Privacy Policy</CardTitle>
-                </div>
-                <CardDescription className="text-base sm:text-lg lg:text-xl text-white/90 mb-4 sm:mb-6 leading-relaxed relative z-10 font-medium">
-                  Your privacy is our priority - built into every line of code
-                </CardDescription>
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6 relative z-10">
-                  <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 w-fit border-white/30">
-                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Effective: January 1, 2025
-                  </Badge>
-                  <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 w-fit border-white/30">
-                    <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Last Updated: January 1, 2025
-                  </Badge>
-                </div>
-              </CardHeader>
-
-              <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 lg:space-y-12">
-                {/* Privacy Highlights Banner */}
-                <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
-                  <CardHeader>
-                    <CardTitle className="text-lg sm:text-xl flex items-center">
-                      <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mr-2" />
-                      Privacy at a Glance
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <Card className="p-4">
-                        <Server className="w-8 h-8 text-green-600 mb-2" />
-                        <h4 className="font-semibold text-foreground">AI Processing</h4>
-                        <p className="text-sm text-muted-foreground">AI-powered recipe conversion with data protection</p>
-                      </Card>
-                      <Card className="p-4">
-                        <Lock className="w-8 h-8 text-blue-600 mb-2" />
-                        <h4 className="font-semibold text-foreground">Encrypted Storage</h4>
-                        <p className="text-sm text-muted-foreground">All user data securely stored with Firebase encryption</p>
-                      </Card>
-                      <Card className="p-4">
-                        <Eye className="w-8 h-8 text-purple-600 mb-2" />
-                        <h4 className="font-semibold text-foreground">Smart Analytics</h4>
-                        <p className="text-sm text-muted-foreground">Google Analytics with Ads integration for service optimization</p>
-                      </Card>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Section 1: Our Commitment */}
-                <section id="commitment" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-green-100 rounded-full p-2 sm:p-3 mr-3 sm:mr-4 flex-shrink-0">
-                      <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">Our Commitment to Privacy</h2>
-                      <p className="text-muted-foreground">Privacy isn't just a feature - it's our foundation</p>
-                    </div>
-                  </div>
-                  <Card className="bg-muted/30">
-                    <CardContent className="p-6">
-                      <p className="text-sm sm:text-base text-foreground leading-relaxed mb-3 sm:mb-4">
-                        At Recipe Revamped, privacy is not just a feature—it's the foundation of our service. We've built our entire
-                        architecture around the principle that your recipes and dietary preferences are yours alone.
-                      </p>
-                      <Card className="bg-green-50 border-green-200">
-                        <CardContent className="p-4">
-                          <p className="text-green-800 font-semibold">🔒 Privacy-First Architecture</p>
-                          <p className="text-green-700 mt-1">This Privacy Policy explains how we achieve maximum privacy and what limited information we do collect to provide you with the best service.</p>
-                        </CardContent>
-                      </Card>
-                    </CardContent>
-                  </Card>
-                </section>
-
-                {/* Section 2: Information We Collect */}
-                <section id="information" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-blue-100 rounded-full p-3 mr-4">
-                      <Database className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">1. Information We Collect</h2>
-                      <p className="text-muted-foreground">Only what's necessary to provide our service</p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <Card className="bg-blue-50 border-blue-200">
-                      <CardHeader>
-                        <CardTitle className="text-base sm:text-lg flex items-center">
-                          <Users className="w-5 h-5 text-blue-600 mr-2" />
-                          Account Information
-                        </CardTitle>
-                        <CardDescription>When you create an account, we collect:</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid md:grid-cols-2 gap-3">
-                          <ul className="space-y-2 text-foreground">
-                            <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Email address</li>
-                            <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Password (encrypted and hashed)</li>
-                          </ul>
-                          <ul className="space-y-2 text-foreground">
-                            <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Display name (optional)</li>
-                            <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-500 mr-2" /> Subscription plan information</li>
-                          </ul>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card className="bg-green-50 border-green-200">
-                      <CardHeader>
-                        <CardTitle className="text-base sm:text-lg flex items-center">
-                          <Server className="w-5 h-5 text-green-600 mr-2" />
-                          Recipe Data
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <Card className="bg-green-100 border-green-300 mb-4">
-                          <CardContent className="p-4">
-                            <p className="text-green-800 font-semibold">🔥 Important: AI Data Processing</p>
-                            <p className="text-green-700 mt-1">Free plan users get local processing only (no data sharing). Paid plan users can access cloud-based AI features powered by OpenAI's API, where recipe data and dietary preferences may be processed externally to provide enhanced recipe suggestions. Personal information like email addresses are never shared with third parties.</p>
-                          </CardContent>
-                        </Card>
-                        <p className="text-foreground mb-3">For saved recipes (paid plans only), we store:</p>
-                        <div className="grid md:grid-cols-2 gap-3">
-                          <ul className="space-y-2 text-foreground">
-                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Recipe title and ingredients (encrypted)</li>
-                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Dietary filters applied</li>
-                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Health conditions (encrypted)</li>
-                          </ul>
-                          <ul className="space-y-2 text-foreground">
-                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Date saved</li>
-                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> User-added notes (encrypted)</li>
-                            <li className="flex items-center"><Lock className="w-4 h-4 text-green-600 mr-2" /> Notification preferences</li>
-                          </ul>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card className="bg-purple-50 border-purple-200">
-                      <CardHeader>
-                        <CardTitle className="text-base sm:text-lg flex items-center">
-                          <Eye className="w-5 h-5 text-purple-600 mr-2" />
-                          Analytics & Advertising Information
-                        </CardTitle>
-                        <CardDescription>We collect analytics data to improve our service and enable advertising measurement:</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid md:grid-cols-2 gap-3 mb-4">
-                          <ul className="space-y-2 text-foreground">
-                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Daily conversion counts and feature usage</li>
-                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Page views, user flows, and engagement metrics</li>
-                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Demographic information (age, gender, interests)</li>
-                          </ul>
-                          <ul className="space-y-2 text-foreground">
-                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Device and browser information</li>
-                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Geographic location (city/region level)</li>
-                            <li className="flex items-center"><Eye className="w-4 h-4 text-purple-600 mr-2" /> Advertising interaction data</li>
-                          </ul>
-                        </div>
-                        <Card className="bg-amber-50 border-amber-200">
-                          <CardContent className="p-4">
-                            <p className="text-amber-800 font-semibold">🔗 Google Analytics & Google Ads Integration</p>
-                            <p className="text-amber-700 mt-1">We share analytics data with Google Ads to measure advertising effectiveness, create audience segments, and show you relevant ads across Google's advertising network. You can opt-out via our cookie settings.</p>
-                          </CardContent>
-                        </Card>
-                      </CardContent>
-                    </Card>
-
-                    <Card className="bg-muted/30">
-                      <CardHeader>
-                        <CardTitle className="text-base sm:text-lg flex items-center">
-                          <Settings className="w-5 h-5 text-muted-foreground mr-2" />
-                          Technical Information
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid md:grid-cols-2 gap-3">
-                          <ul className="space-y-2 text-foreground">
-                            <li className="flex items-center"><Settings className="w-4 h-4 text-muted-foreground mr-2" /> Browser type and version</li>
-                            <li className="flex items-center"><Settings className="w-4 h-4 text-muted-foreground mr-2" /> Device type (desktop/mobile)</li>
-                          </ul>
-                          <ul className="space-y-2 text-foreground">
-                            <li className="flex items-center"><Settings className="w-4 h-4 text-muted-foreground mr-2" /> IP address (for security only)</li>
-                            <li className="flex items-center"><Settings className="w-4 h-4 text-muted-foreground mr-2" /> Performance data</li>
-                          </ul>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </section>
-
-                {/* Section 3: How We Use Information */}
-                <section id="usage" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-purple-100 rounded-full p-3 mr-4">
-                      <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">2. How We Use Information</h2>
-                      <p className="text-gray-500">Solely for providing and improving our service</p>
-                    </div>
-                  </div>
-                  <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">We use collected information solely for:</p>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <ul className="space-y-3 text-gray-700">
-                        <li className="flex items-center">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3" />
-                          Providing and maintaining the Service
-                        </li>
-                        <li className="flex items-center">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3" />
-                          Processing payments and managing subscriptions
-                        </li>
-                        <li className="flex items-center">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3" />
-                          Sending service-related communications
-                        </li>
-                      </ul>
-                      <ul className="space-y-3 text-gray-700">
-                        <li className="flex items-center">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3" />
-                          Improving AI models (aggregate, anonymized data)
-                        </li>
-                        <li className="flex items-center">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3" />
-                          Preventing fraud and ensuring security
-                        </li>
-                        <li className="flex items-center">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3" />
-                          Complying with legal obligations
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 4: Local Processing Technology */}
-                <section id="local-processing" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-emerald-100 rounded-full p-3 mr-4">
-                      <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">3. Local Processing Technology</h2>
-                      <p className="text-gray-500">Cutting-edge privacy protection</p>
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg p-6 border border-emerald-200">
-                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">
-                      Recipe Revamped uses cutting-edge technology to ensure your privacy:
-                    </p>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <div className="bg-white rounded-lg p-4 border border-emerald-200">
-                          <div className="flex items-center mb-2">
-                            <Server className="w-5 h-5 text-emerald-600 mr-2" />
-                            <h4 className="font-semibold text-gray-900">OpenAI Integration</h4>
-                          </div>
-                          <p className="text-sm text-gray-600">Recipe conversion powered by OpenAI's advanced AI models via secure API</p>
-                        </div>
-                        <div className="bg-white rounded-lg p-4 border border-emerald-200">
-                          <div className="flex items-center mb-2">
-                            <Lock className="w-5 h-5 text-emerald-600 mr-2" />
-                            <h4 className="font-semibold text-gray-900">Secure API Processing</h4>
-                          </div>
-                          <p className="text-sm text-gray-600">Recipe data is processed securely through encrypted API calls</p>
-                        </div>
-                      </div>
-                      <div className="space-y-4">
-                        <div className="bg-white rounded-lg p-4 border border-emerald-200">
-                          <div className="flex items-center mb-2">
-                            <Globe className="w-5 h-5 text-emerald-600 mr-2" />
-                            <h4 className="font-semibold text-gray-900">Internet Required</h4>
-                          </div>
-                          <p className="text-sm text-gray-600">Active internet connection required for AI recipe processing</p>
-                        </div>
-                        <div className="bg-white rounded-lg p-4 border border-emerald-200">
-                          <div className="flex items-center mb-2">
-                            <Database className="w-5 h-5 text-emerald-600 mr-2" />
-                            <h4 className="font-semibold text-gray-900">Cloud Storage</h4>
-                          </div>
-                          <p className="text-sm text-gray-600">All user data and preferences are securely stored in the cloud</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 5: Data Storage and Security */}
-                <section id="security" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-red-100 rounded-full p-3 mr-4">
-                      <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">4. Data Storage and Security</h2>
-                      <p className="text-gray-500">Bank-level security measures</p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div className="bg-red-50 rounded-lg p-6 border border-red-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
-                        <Lock className="w-5 h-5 text-red-600 mr-2" />
-                        Security Measures
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <ul className="space-y-3 text-gray-700">
-                          <li className="flex items-center">
-                            <Lock className="w-4 h-4 text-red-600 mr-3" />
-                            End-to-end encryption for saved recipes
-                          </li>
-                          <li className="flex items-center">
-                            <Lock className="w-4 h-4 text-red-600 mr-3" />
-                            TLS/SSL encryption for all data transmission
-                          </li>
-                          <li className="flex items-center">
-                            <Lock className="w-4 h-4 text-red-600 mr-3" />
-                            Firebase Authentication with 2FA support
-                          </li>
-                        </ul>
-                        <ul className="space-y-3 text-gray-700">
-                          <li className="flex items-center">
-                            <Lock className="w-4 h-4 text-red-600 mr-3" />
-                            Regular security audits and penetration testing
-                          </li>
-                          <li className="flex items-center">
-                            <Lock className="w-4 h-4 text-red-600 mr-3" />
-                            Content Security Policy (CSP) headers
-                          </li>
-                          <li className="flex items-center">
-                            <Lock className="w-4 h-4 text-red-600 mr-3" />
-                            OWASP compliance and best practices
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
-                        <Database className="w-5 h-5 text-blue-600 mr-2" />
-                        Data Retention Policy
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <ul className="space-y-3 text-gray-700">
-                          <li className="flex items-center">
-                            <Calendar className="w-4 h-4 text-blue-600 mr-3" />
-                            Account data: Retained until account deletion
-                          </li>
-                          <li className="flex items-center">
-                            <Calendar className="w-4 h-4 text-blue-600 mr-3" />
-                            Saved recipes: Retained until you delete them
-                          </li>
-                        </ul>
-                        <ul className="space-y-3 text-gray-700">
-                          <li className="flex items-center">
-                            <Calendar className="w-4 h-4 text-blue-600 mr-3" />
-                            Analytics data: Anonymized after 90 days
-                          </li>
-                          <li className="flex items-center">
-                            <Calendar className="w-4 h-4 text-blue-600 mr-3" />
-                            Server logs: Deleted after 30 days
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 6: Information Sharing */}
-                <section id="sharing" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-orange-100 rounded-full p-3 mr-4">
-                      <Users className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">5. Information Sharing</h2>
-                      <p className="text-gray-500">We NEVER sell your data</p>
-                    </div>
-                  </div>
-                  <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
-                    <div className="bg-red-100 rounded-lg p-4 mb-4 border border-red-300">
-                      <p className="text-red-800 font-bold">🚫 We do NOT sell your personal information for monetary consideration.</p>
-                      <p className="text-red-700 text-sm mt-1">However, we do share certain data with advertising partners as described below.</p>
-                    </div>
-                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">We share information in the following circumstances:</p>
-                    <div className="space-y-4">
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <ul className="space-y-3 text-gray-700">
-                          <li className="flex items-start">
-                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                            <div>
-                              <strong>With your consent:</strong> When you explicitly authorize sharing
-                            </div>
-                          </li>
-                          <li className="flex items-start">
-                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                            <div>
-                              <strong>Service providers:</strong> Trusted partners (payment, hosting, analytics)
-                            </div>
-                          </li>
-                          <li className="flex items-start">
-                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                            <div>
-                              <strong>AI processing:</strong> Recipe data shared with OpenAI for generation
-                            </div>
-                          </li>
-                        </ul>
-                        <ul className="space-y-3 text-gray-700">
-                          <li className="flex items-start">
-                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                            <div>
-                              <strong>Legal requirements:</strong> When required by law or legal process
-                            </div>
-                          </li>
-                          <li className="flex items-start">
-                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                            <div>
-                              <strong>Business transfers:</strong> M&A events (with user notice)
-                            </div>
-                          </li>
-                          <li className="flex items-start">
-                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 mt-1" />
-                            <div>
-                              <strong>Safety & security:</strong> To protect rights and prevent fraud
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                      <Card className="bg-blue-50 border-blue-200">
-                        <CardHeader>
-                          <CardTitle className="text-lg">Google Analytics & Advertising Data Sharing</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-gray-700 mb-3">We share analytics and behavioral data with Google for advertising purposes:</p>
-                          <div className="grid md:grid-cols-2 gap-3">
-                            <ul className="space-y-2 text-gray-600">
-                              <li>• Website usage patterns and user behavior</li>
-                              <li>• Demographics and interest data</li>
-                              <li>• Conversion events and engagement metrics</li>
-                            </ul>
-                            <ul className="space-y-2 text-gray-600">
-                              <li>• Device and browser characteristics</li>
-                              <li>• Geographic location (city/region level)</li>
-                              <li>• Marketing campaign effectiveness data</li>
-                            </ul>
-                          </div>
-                          <div className="mt-3 p-3 bg-blue-100 rounded">
-                            <p className="text-blue-800 text-sm"><strong>Purpose:</strong> This sharing enables advertising measurement, audience creation, and personalized ad delivery across Google's network. You can opt-out in your cookie preferences.</p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 7: Your Rights */}
-                <section id="rights" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-indigo-100 rounded-full p-3 mr-4">
-                      <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">6. Your Rights and Choices</h2>
-                      <p className="text-gray-500">Complete control over your data</p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
-                        <CheckCircle className="w-5 h-5 text-indigo-600 mr-2" />
-                        Access and Control
-                      </h3>
-                      <p className="text-gray-700 mb-3">You have the right to:</p>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-indigo-600 mr-2" /> Access your personal information</li>
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-indigo-600 mr-2" /> Correct inaccurate data</li>
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-indigo-600 mr-2" /> Delete your account and data</li>
-                        </ul>
-                        <ul className="space-y-2 text-gray-700">
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-indigo-600 mr-2" /> Export your saved recipes</li>
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-indigo-600 mr-2" /> Opt-out of marketing communications</li>
-                          <li className="flex items-center"><CheckCircle className="w-4 h-4 text-indigo-600 mr-2" /> Disable analytics collection</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
-                          <Database className="w-5 h-5 text-green-600 mr-2" />
-                          Data Portability
-                        </h3>
-                        <p className="text-gray-700">
-                          Export all saved recipes in standard formats (JSON, PDF) anytime through your account settings.
-                        </p>
-                      </div>
-                      <div className="bg-red-50 rounded-lg p-6 border border-red-200">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
-                          <Settings className="w-5 h-5 text-red-600 mr-2" />
-                          Account Deletion
-                        </h3>
-                        <p className="text-gray-700">
-                          Delete your account anytime. This immediately removes all personal data and saved recipes from our systems.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 8: Cookies and Tracking */}
-                <section id="cookies" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-yellow-100 rounded-full p-3 mr-4">
-                      <Eye className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">7. Cookies and Tracking</h2>
-                      <p className="text-gray-500">Minimal cookies, no tracking</p>
-                    </div>
-                  </div>
-                  <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
-                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">We use minimal cookies for:</p>
-                    <div className="grid md:grid-cols-3 gap-4 mb-4">
-                      <div className="bg-white rounded-lg p-4 border border-yellow-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Essential Cookies</h4>
-                        <p className="text-sm text-gray-600">Required for authentication and security</p>
-                      </div>
-                      <div className="bg-white rounded-lg p-4 border border-yellow-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Preference Cookies</h4>
-                        <p className="text-sm text-gray-600">Remember your settings and preferences</p>
-                      </div>
-                      <div className="bg-white rounded-lg p-4 border border-yellow-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Analytics Cookies</h4>
-                        <p className="text-sm text-gray-600">Understand usage patterns (can be disabled)</p>
-                      </div>
-                    </div>
-                    <div className="bg-green-100 rounded-lg p-4 border border-green-300">
-                      <p className="text-green-800 font-semibold">✨ No Third-Party Tracking</p>
-                      <p className="text-green-700 mt-1">We do NOT use third-party tracking cookies or advertising networks. <Link to="/cookies" className="text-green-600 hover:text-green-700 underline">Learn more in our Cookie Policy</Link>.</p>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 9: International Data Transfers */}
-                <section id="international" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-teal-100 rounded-full p-3 mr-4">
-                      <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">8. US & International Privacy Compliance</h2>
-                      <p className="text-gray-500">Comprehensive compliance with US state laws, GDPR, and global privacy standards</p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    {/* US State Privacy Laws */}
-                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <MapPin className="w-5 h-5 text-blue-600 mr-2" />
-                        US State Privacy Rights
-                      </h3>
-                      <div className="space-y-4">
-                        <div className="bg-white rounded-lg p-4 border border-purple-200">
-                          <h4 className="font-semibold text-gray-900 mb-2">California (CCPA/CPRA)</h4>
-                          <div className="grid md:grid-cols-2 gap-3">
-                            <ul className="space-y-1 text-gray-700 text-sm">
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> Right to know what personal information is collected</li>
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> Right to delete personal information</li>
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> Right to correct inaccurate information</li>
-                            </ul>
-                            <ul className="space-y-1 text-gray-700 text-sm">
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> Right to opt-out of sale/sharing for advertising</li>
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> Right to limit use of sensitive personal information</li>
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-purple-600 mr-2" /> No discrimination for exercising rights</li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="grid md:grid-cols-3 gap-4">
-                          <div className="bg-white rounded-lg p-4 border border-blue-200">
-                            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Virginia (VCDPA)</h4>
-                            <ul className="space-y-1 text-gray-600 text-xs">
-                              <li>• Right to access, correct, delete</li>
-                              <li>• Right to data portability</li>
-                              <li>• Right to opt-out of targeted advertising</li>
-                            </ul>
-                          </div>
-                          <div className="bg-white rounded-lg p-4 border border-blue-200">
-                            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Colorado (CPA)</h4>
-                            <ul className="space-y-1 text-gray-600 text-xs">
-                              <li>• Right to access, correct, delete</li>
-                              <li>• Right to opt-out of processing</li>
-                              <li>• Right to data portability</li>
-                            </ul>
-                          </div>
-                          <div className="bg-white rounded-lg p-4 border border-blue-200">
-                            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Connecticut (CTDPA)</h4>
-                            <ul className="space-y-1 text-gray-600 text-xs">
-                              <li>• Right to access, correct, delete</li>
-                              <li>• Right to data portability</li>
-                              <li>• Right to opt-out of sales/targeted ads</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Federal and Additional US Laws */}
-                    <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                        <Shield className="w-5 h-5 text-green-600 mr-2" />
-                        Federal & Sector-Specific US Laws
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="bg-white rounded-lg p-4 border border-green-200">
-                          <h4 className="font-semibold text-gray-900 mb-2">COPPA Compliance</h4>
-                          <ul className="space-y-1 text-gray-600 text-sm">
-                            <li className="flex items-center"><Shield className="w-3 h-3 text-green-600 mr-2" /> No collection from children under 13</li>
-                            <li className="flex items-center"><Shield className="w-3 h-3 text-green-600 mr-2" /> Parental consent required for minors</li>
-                            <li className="flex items-center"><Shield className="w-3 h-3 text-green-600 mr-2" /> Age verification mechanisms</li>
-                          </ul>
-                        </div>
-                        <div className="bg-white rounded-lg p-4 border border-green-200">
-                          <h4 className="font-semibold text-gray-900 mb-2">CAN-SPAM Act</h4>
-                          <ul className="space-y-1 text-gray-600 text-sm">
-                            <li className="flex items-center"><Mail className="w-3 h-3 text-green-600 mr-2" /> Clear opt-out mechanisms</li>
-                            <li className="flex items-center"><Mail className="w-3 h-3 text-green-600 mr-2" /> Honest subject lines and sender info</li>
-                            <li className="flex items-center"><Mail className="w-3 h-3 text-green-600 mr-2" /> Physical address disclosure</li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div className="mt-4 p-3 bg-green-100 rounded border border-green-300">
-                        <p className="text-green-800 font-semibold text-sm">Emerging State Laws</p>
-                        <p className="text-green-700 text-xs mt-1">We monitor and comply with new state privacy laws in Utah, Oregon, Montana, Texas, Florida, and other states as they come into effect.</p>
-                      </div>
-                    </div>
-
-                    {/* International Compliance */}
-                    <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center">
-                        <Globe className="w-5 h-5 text-blue-600 mr-2" />
-                        International Privacy Compliance
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="bg-white rounded-lg p-4 border border-blue-200">
-                          <h4 className="font-semibold text-gray-900 mb-2">GDPR (EU/UK)</h4>
-                          <ul className="space-y-1 text-gray-600 text-sm">
-                            <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Legal basis: Consent or legitimate interests</li>
-                            <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Data minimization principles</li>
-                            <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Right to erasure and portability</li>
-                            <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> DPO contact: privacy@reciperevamped.com</li>
-                          </ul>
-                        </div>
-                        <div className="bg-white rounded-lg p-4 border border-blue-200">
-                          <h4 className="font-semibold text-gray-900 mb-2">Other Jurisdictions</h4>
-                          <ul className="space-y-1 text-gray-600 text-sm">
-                            <li className="flex items-center"><Globe className="w-3 h-3 text-blue-600 mr-2" /> Canada (PIPEDA)</li>
-                            <li className="flex items-center"><Globe className="w-3 h-3 text-blue-600 mr-2" /> Australia (Privacy Act)</li>
-                            <li className="flex items-center"><Globe className="w-3 h-3 text-blue-600 mr-2" /> Brazil (LGPD)</li>
-                            <li className="flex items-center"><Globe className="w-3 h-3 text-blue-600 mr-2" /> Other applicable local laws</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 10: Contact Us */}
-                <section id="contact" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-blue-100 rounded-full p-3 mr-4">
-                      <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">9. Contact Us</h2>
-                      <p className="text-gray-500">Privacy questions? We're here to help</p>
-                    </div>
-                  </div>
-                  <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4">
-                      For privacy-related questions or to exercise your rights, contact us at:
-                    </p>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center text-gray-700">
-                          <Mail className="w-5 h-5 text-blue-600 mr-3" />
-                          <div>
-                            <strong>Privacy Team:</strong><br />
-                            privacy@reciperevamped.com
-                          </div>
-                        </div>
-                        <div className="flex items-center text-gray-700">
-                          <Shield className="w-5 h-5 text-blue-600 mr-3" />
-                          <div>
-                            <strong>Data Protection Officer:</strong><br />
-                            dpo@reciperevamped.com
-                          </div>
-                        </div>
-                        <div className="flex items-start text-gray-700">
-                          <MapPin className="w-5 h-5 text-blue-600 mr-3 mt-0.5" />
-                          <div>
-                            <strong>Mailing Address:</strong><br />
-                            Recipe Revamped<br />
-                            Attn: Privacy Team<br />
-                            Besnyő, Akácfa utca 8<br />
-                            2456 Hungary
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-white rounded-lg p-4">
-                        <h4 className="font-semibold text-gray-900 mb-3">Quick Actions</h4>
-                        <div className="space-y-2">
-                          <Link to="/terms" className="block text-blue-600 hover:text-blue-700">Terms of Use</Link>
-                          <Link to="/cookies" className="block text-blue-600 hover:text-blue-700">Cookie Policy</Link>
-                          <Button
-                            variant="link"
-                            onClick={handleManageAccount}
-                            className="h-auto p-0 text-green-600 hover:text-green-700 justify-start"
-                          >
-                            Manage Account Settings
-                          </Button>
-                        </div>
-                        <div className="mt-4 pt-4 border-t border-gray-200">
-                          <p className="text-sm text-gray-600">
-                            <strong>Response Time:</strong> We respond to all privacy requests within 30 days.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              </CardContent>
-            </Card>
+      {/* Main Content - Paper-like Document */}
+      <main className="max-w-4xl mx-auto px-6 py-24">
+        {/* Document Header */}
+        <div className="text-center mb-16 pb-8 border-b-2 border-gray-900">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+            PRIVACY POLICY
+          </h1>
+          <p className="text-lg text-gray-700" style={{ fontFamily: 'Georgia, serif' }}>
+            Recipe Revamped
+          </p>
+          <div className="mt-6 text-sm text-gray-600">
+            <p><strong>Effective Date:</strong> November 21, 2025</p>
+            <p><strong>Last Updated:</strong> October 21, 2025</p>
           </div>
         </div>
-      </div>
+
+        {/* Document Body */}
+        <div className="space-y-12 text-gray-800" style={{ fontFamily: 'Georgia, serif', lineHeight: '1.8' }}>
+
+          {/* Section 1 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">1. INTRODUCTION</h2>
+            <p className="mb-4 text-justify">
+              Recipe Revamped ("we", "us", or "our") is committed to protecting your privacy and personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our AI-powered recipe conversion service ("the Service"). By using the Service, you consent to the data practices described in this policy.
+            </p>
+            <p className="mb-4 text-justify">
+              This Privacy Policy applies to all users of Recipe Revamped, regardless of their subscription plan (Free, Chef, or Master Chef), and covers both our website and application services.
+            </p>
+          </section>
+
+          {/* Section 2 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">2. INFORMATION WE COLLECT</h2>
+
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">2.1 Account Information</h3>
+            <p className="mb-2">When you create an account, we collect:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Email address (required for authentication and communication)</li>
+              <li>Password (encrypted and hashed using industry-standard security)</li>
+              <li>Display name (optional)</li>
+              <li>Profile picture (optional, for paid plan users)</li>
+              <li>Subscription plan information and payment status</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.2 Recipe and Dietary Information</h3>
+            <p className="mb-2">To provide our AI-powered recipe conversion service, we collect and process:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Recipe content you input (ingredients, instructions, dish names)</li>
+              <li>Dietary preferences and restrictions you select</li>
+              <li>Health conditions and medical dietary requirements</li>
+              <li>Personal health goals and nutritional targets</li>
+              <li>Medical restrictions related to food and nutrition</li>
+              <li>Recipe conversion requests and modification preferences</li>
+              <li>Saved recipes in your Recipe Book (paid plans only)</li>
+              <li>Meal planning data and calendar information (paid plans only)</li>
+              <li>User-added notes and custom recipe tags</li>
+            </ul>
+
+            <p className="mb-4 text-justify font-semibold">
+              IMPORTANT: All users (Free, Chef, and Master Chef) who use our recipe conversion service automatically consent to sharing recipe-related data with OpenAI's ChatGPT 4o mini model for AI-powered recipe generation. Personal identifying information (name, address, email, payment details) is NEVER shared with OpenAI.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.3 Analytics and Usage Information</h3>
+            <p className="mb-2">We collect analytics data through Google Analytics with Google Ads integration:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Daily conversion counts and feature usage statistics</li>
+              <li>Page views, user flows, and navigation patterns</li>
+              <li>Engagement metrics and time spent on features</li>
+              <li>Demographic information (age, gender, interests - estimated by Google)</li>
+              <li>Device and browser information (type, version, screen resolution)</li>
+              <li>Geographic location (city/region level, not precise location)</li>
+              <li>Advertising interaction data and conversion events</li>
+              <li>Referral sources and marketing campaign attribution</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.4 Technical and Security Information</h3>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>IP address (for security, fraud prevention, and geographic compliance)</li>
+              <li>Browser type, version, and language preferences</li>
+              <li>Operating system and device characteristics</li>
+              <li>Performance data and error logs</li>
+              <li>Authentication tokens and session identifiers</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.5 Payment Information</h3>
+            <p className="mb-4 text-justify">
+              Payment processing is handled securely by Stripe. We do not store your complete credit card information on our servers. We receive and store only transaction confirmations, subscription status, and billing history necessary for account management.
+            </p>
+          </section>
+
+          {/* Section 3 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">3. HOW WE USE YOUR INFORMATION</h2>
+            <p className="mb-2">We use collected information for the following purposes:</p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">3.1 Service Provision and Improvement</h3>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Providing AI-powered recipe conversion using OpenAI's ChatGPT 4o mini model</li>
+              <li>Storing and managing your saved recipes and meal plans</li>
+              <li>Maintaining your account and authentication</li>
+              <li>Processing payments and managing subscriptions via Stripe</li>
+              <li>Improving our AI algorithms and service quality (using aggregated, anonymized data)</li>
+              <li>Developing new features and optimizing user experience</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">3.2 Communication</h3>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Sending service-related notifications (account verification, password resets)</li>
+              <li>Providing customer support and responding to inquiries</li>
+              <li>Sending subscription and billing notifications</li>
+              <li>Notifying you of important service updates or changes</li>
+              <li>Sending marketing communications (only with your consent, with easy opt-out)</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">3.3 Analytics and Advertising</h3>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Analyzing user behavior and service usage patterns</li>
+              <li>Measuring advertising campaign effectiveness</li>
+              <li>Creating audience segments for targeted advertising</li>
+              <li>Personalizing ad delivery across Google's advertising network</li>
+              <li>Conducting A/B testing and feature experimentation</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">3.4 Security and Legal Compliance</h3>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Preventing fraud, abuse, and unauthorized access</li>
+              <li>Ensuring platform security and data integrity</li>
+              <li>Complying with legal obligations and regulatory requirements</li>
+              <li>Responding to law enforcement requests when legally required</li>
+              <li>Enforcing our Terms of Service and protecting our legal rights</li>
+            </ul>
+          </section>
+
+          {/* Section 4 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">4. INFORMATION SHARING AND DISCLOSURE</h2>
+            <p className="mb-4 text-justify font-bold">
+              We do NOT sell your personal information for monetary consideration. However, we share certain data with third parties as described below.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">4.1 OpenAI (ChatGPT 4o Mini)</h3>
+            <p className="mb-2">We share the following recipe-related data with OpenAI for all users:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Complete recipe content (ingredients, instructions, dish names)</li>
+              <li>Dietary preferences and restrictions</li>
+              <li>Health conditions and medical dietary requirements</li>
+              <li>Recipe conversion requests and modification preferences</li>
+              <li>Personal health goals and nutritional targets</li>
+              <li>Medical restrictions related to food and nutrition</li>
+            </ul>
+            <p className="mb-4 text-justify font-semibold">
+              Personal identifying information (name, email address, physical address, payment information, account credentials) is NEVER shared with OpenAI.
+            </p>
+            <p className="mb-4 text-justify">
+              OpenAI processes this data according to their own Terms of Use and Privacy Policy. They may use submitted data to improve their AI models and services. By using Recipe Revamped, you acknowledge and consent to this data sharing with OpenAI.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">4.2 Google Analytics and Google Ads</h3>
+            <p className="mb-2">We share analytics and behavioral data with Google for advertising and analytics purposes:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Website usage patterns and user behavior</li>
+              <li>Demographics and interest data</li>
+              <li>Conversion events and engagement metrics</li>
+              <li>Device and browser characteristics</li>
+              <li>Geographic location (city/region level)</li>
+              <li>Marketing campaign effectiveness data</li>
+            </ul>
+            <p className="mb-4 text-justify">
+              This data sharing enables advertising measurement, audience creation for targeted ads, and personalized ad delivery across Google's advertising network. You can opt-out of this sharing through our cookie settings.
+            </p>
+            <p className="mb-4 text-justify font-semibold">
+              Note for US Residents: Under certain state privacy laws (CCPA, VCDPA, etc.), sharing data with Google Ads may be considered a "sale" or "sharing" of personal information. You have the right to opt-out.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">4.3 Service Providers</h3>
+            <p className="mb-2">We share information with trusted third-party service providers:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li><strong>Firebase (Google):</strong> Authentication, cloud storage, and database services</li>
+              <li><strong>Google Cloud Platform:</strong> Serverless computing and API hosting (Cloud Run)</li>
+              <li><strong>Stripe:</strong> Payment processing and subscription management</li>
+              <li><strong>Email Service Provider:</strong> Transactional and marketing email delivery</li>
+            </ul>
+            <p className="mb-4 text-justify">
+              These service providers are contractually bound to protect your information and use it only for the purposes we specify.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">4.4 Legal Requirements and Safety</h3>
+            <p className="mb-2">We may disclose your information when required by law or to protect rights and safety:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Compliance with legal obligations, court orders, or government requests</li>
+              <li>Enforcement of our Terms of Service and other agreements</li>
+              <li>Protection of our legal rights and property</li>
+              <li>Prevention of fraud, security threats, or illegal activity</li>
+              <li>Protection of the safety of our users or the public</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">4.5 Business Transfers</h3>
+            <p className="mb-4 text-justify">
+              In the event of a merger, acquisition, reorganization, or sale of assets, your information may be transferred to the acquiring entity. We will notify you via email and/or a prominent notice on our website before your information is transferred and becomes subject to a different privacy policy.
+            </p>
+          </section>
+
+          {/* Section 5 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">5. DATA SECURITY</h2>
+            <p className="mb-4 text-justify">
+              We implement industry-standard security measures to protect your personal information from unauthorized access, disclosure, alteration, and destruction. However, no method of transmission over the Internet or electronic storage is one hundred percent (100%) secure.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">5.1 Security Measures</h3>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>End-to-end encryption for saved recipes and sensitive data</li>
+              <li>TLS/SSL encryption for all data transmission (HTTPS)</li>
+              <li>Firebase Authentication with two-factor authentication (2FA) support</li>
+              <li>Encrypted password storage using bcrypt hashing</li>
+              <li>Regular security audits and vulnerability assessments</li>
+              <li>Content Security Policy (CSP) headers to prevent XSS attacks</li>
+              <li>OWASP compliance and security best practices</li>
+              <li>Secure API endpoints with authentication and rate limiting</li>
+              <li>Regular backups with encrypted storage</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">5.2 Data Retention</h3>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Account data: Retained until you delete your account</li>
+              <li>Saved recipes: Retained until you manually delete them</li>
+              <li>Analytics data: Anonymized after ninety (90) days</li>
+              <li>Server logs: Deleted after thirty (30) days</li>
+              <li>Payment records: Retained for seven (7) years for tax and legal compliance</li>
+              <li>Deleted account data: Permanently removed within thirty (30) days</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">5.3 Data Breach Notification</h3>
+            <p className="mb-4 text-justify">
+              In the event of a data breach that may compromise your personal information, we will notify affected users within seventy-two (72) hours via email and provide details about the breach, data affected, and steps being taken to address the situation.
+            </p>
+          </section>
+
+          {/* Section 6 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">6. YOUR PRIVACY RIGHTS</h2>
+
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">6.1 General Rights (All Users)</h3>
+            <p className="mb-2">You have the following rights regarding your personal information:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li><strong>Right to Access:</strong> Request a copy of your personal information</li>
+              <li><strong>Right to Correction:</strong> Update or correct inaccurate data</li>
+              <li><strong>Right to Deletion:</strong> Request deletion of your account and personal data</li>
+              <li><strong>Right to Data Portability:</strong> Export your saved recipes in JSON or PDF format</li>
+              <li><strong>Right to Opt-Out:</strong> Unsubscribe from marketing communications</li>
+              <li><strong>Right to Object:</strong> Object to certain data processing activities</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">6.2 US State Privacy Rights</h3>
+
+            <div className="ml-6 mb-4">
+              <p className="font-semibold mb-2">California (CCPA/CPRA):</p>
+              <ul className="list-disc ml-6 space-y-1">
+                <li>Right to know what personal information is collected</li>
+                <li>Right to delete personal information</li>
+                <li>Right to correct inaccurate information</li>
+                <li>Right to opt-out of sale/sharing for advertising purposes</li>
+                <li>Right to limit use of sensitive personal information</li>
+                <li>Right to non-discrimination for exercising privacy rights</li>
+              </ul>
+            </div>
+
+            <div className="ml-6 mb-4">
+              <p className="font-semibold mb-2">Virginia (VCDPA), Colorado (CPA), Connecticut (CTDPA), Utah, Oregon, Montana, Texas, Florida:</p>
+              <ul className="list-disc ml-6 space-y-1">
+                <li>Right to access, correct, and delete personal information</li>
+                <li>Right to data portability</li>
+                <li>Right to opt-out of targeted advertising</li>
+                <li>Right to opt-out of sale of personal information</li>
+                <li>Right to opt-out of profiling for significant decisions</li>
+              </ul>
+            </div>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">6.3 GDPR Rights (European Union & UK)</h3>
+            <p className="mb-2">If you are located in the EU or UK, you have additional rights under GDPR:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Right to withdraw consent at any time</li>
+              <li>Right to restriction of processing</li>
+              <li>Right to lodge a complaint with a supervisory authority</li>
+              <li>Right to object to automated decision-making</li>
+              <li>Right to erasure ("right to be forgotten")</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">6.4 Exercising Your Rights</h3>
+            <p className="mb-4 text-justify">
+              To exercise any of these rights, please contact us at <strong>privacy@reciperevamped.com</strong> or through your account settings. We will respond to verified requests within thirty (30) days (forty-five (45) days for complex requests). We may require identity verification before processing requests.
+            </p>
+          </section>
+
+          {/* Section 7 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">7. COOKIES AND TRACKING TECHNOLOGIES</h2>
+            <p className="mb-4 text-justify">
+              We use cookies and similar tracking technologies to enhance your experience, analyze usage, and enable advertising. For detailed information about our cookie practices, please review our <Link to="/cookie-policy" className="underline text-blue-600 hover:text-blue-800">Cookie Policy</Link>.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">7.1 Types of Cookies We Use</h3>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li><strong>Essential Cookies:</strong> Required for authentication and security (cannot be disabled)</li>
+              <li><strong>Preference Cookies:</strong> Remember your settings and choices</li>
+              <li><strong>Analytics Cookies:</strong> Google Analytics for usage analysis (can be disabled)</li>
+              <li><strong>Advertising Cookies:</strong> Google Ads integration for personalized advertising (can be disabled)</li>
+            </ul>
+
+            <p className="mb-4 text-justify">
+              You can manage your cookie preferences through our cookie consent banner or in your account settings.
+            </p>
+          </section>
+
+          {/* Section 8 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">8. INTERNATIONAL DATA TRANSFERS</h2>
+            <p className="mb-4 text-justify">
+              Recipe Revamped is operated from Hungary (European Union). Your information may be transferred to, stored, and processed in the United States and other countries where our service providers (OpenAI, Google Cloud, Firebase, Stripe) operate.
+            </p>
+            <p className="mb-4 text-justify">
+              When transferring data internationally, we ensure appropriate safeguards are in place, including:
+            </p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Standard Contractual Clauses (SCCs) approved by the European Commission</li>
+              <li>Adequacy decisions recognizing equivalent data protection levels</li>
+              <li>Data Processing Agreements with third-party service providers</li>
+              <li>Compliance with GDPR requirements for international transfers</li>
+            </ul>
+          </section>
+
+          {/* Section 9 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">9. CHILDREN'S PRIVACY</h2>
+            <p className="mb-4 text-justify">
+              The Service is not directed to children under the age of thirteen (13). We do not knowingly collect personal information from children under 13. If you are under 13, do not use the Service or provide any information to us.
+            </p>
+            <p className="mb-4 text-justify">
+              Users between thirteen (13) and eighteen (18) years of age must have parental or guardian consent before creating an account. If we learn that we have collected personal information from a child under 13 without verified parental consent, we will delete that information immediately.
+            </p>
+            <p className="mb-4 text-justify">
+              Parents or guardians who believe their child has provided personal information to us should contact us at <strong>privacy@reciperevamped.com</strong>.
+            </p>
+          </section>
+
+          {/* Section 10 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">10. CHANGES TO THIS PRIVACY POLICY</h2>
+            <p className="mb-4 text-justify">
+              We may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal requirements, or other factors. When we make material changes, we will notify you by:
+            </p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Sending an email to the address associated with your account</li>
+              <li>Posting a prominent notice on our website</li>
+              <li>Requiring acknowledgment when you next log in</li>
+            </ul>
+            <p className="mb-4 text-justify">
+              Material changes will be effective thirty (30) days after notification. For non-material changes, we will update the "Last Updated" date at the top of this policy. Your continued use of the Service after changes become effective constitutes acceptance of the revised Privacy Policy.
+            </p>
+          </section>
+
+          {/* Section 11 - Contact */}
+          <section className="border-t-2 border-gray-300 pt-12 mt-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">11. CONTACT INFORMATION</h2>
+
+            <p className="mb-6 text-justify">
+              For questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:
+            </p>
+
+            <div className="ml-6 space-y-3">
+              <p>
+                <strong>Recipe Revamped - Privacy Team</strong><br />
+                Besnyő, Akácfa utca 8<br />
+                2456 Hungary
+              </p>
+
+              <p>
+                <strong>Email:</strong> privacy@reciperevamped.com
+              </p>
+
+              <p>
+                <strong>Data Protection Officer:</strong> dpo@reciperevamped.com
+              </p>
+
+              <p>
+                <strong>Website:</strong> <Link to="/" className="underline text-blue-600 hover:text-blue-800">https://reciperevamped.com</Link>
+              </p>
+
+              <p className="text-sm text-gray-600">
+                <strong>Response Time:</strong> We respond to all privacy requests within thirty (30) days.
+              </p>
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-gray-300">
+              <p className="text-sm text-gray-600">
+                <strong>Related Legal Documents:</strong>
+              </p>
+              <ul className="text-sm text-gray-600 mt-2 space-y-1">
+                <li>• <Link to="/terms-of-service" className="underline text-blue-600 hover:text-blue-800">Terms of Service</Link></li>
+                <li>• <Link to="/cookie-policy" className="underline text-blue-600 hover:text-blue-800">Cookie Policy</Link></li>
+              </ul>
+            </div>
+          </section>
+
+          {/* Document Footer */}
+          <div className="border-t-2 border-gray-900 pt-8 mt-16 text-center">
+            <p className="text-sm text-gray-600 mb-2">
+              <strong>END OF PRIVACY POLICY</strong>
+            </p>
+            <p className="text-xs text-gray-500">
+              © 2025 Recipe Revamped. All rights reserved.
+            </p>
+          </div>
+
+        </div>
       </main>
     </div>
   );

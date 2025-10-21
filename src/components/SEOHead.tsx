@@ -31,11 +31,11 @@ export const SEOHead: React.FC<SEOHeadProps> = ({ pageKey, customSEO }) => {
         currentPageKey = 'signin';
       } else if (path === '/signup') {
         currentPageKey = 'signup';
-      } else if (path === '/privacy') {
+      } else if (path === '/privacy' || path === '/privacy-policy') {
         currentPageKey = 'privacy';
-      } else if (path === '/terms') {
+      } else if (path === '/terms' || path === '/terms-of-service') {
         currentPageKey = 'terms';
-      } else if (path === '/cookies') {
+      } else if (path === '/cookies' || path === '/cookie-policy') {
         currentPageKey = 'cookies';
       } else {
         currentPageKey = 'home'; // fallback

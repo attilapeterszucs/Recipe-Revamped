@@ -586,9 +586,9 @@ export const LandingPage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Shield className="h-7 w-7" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">12+ Diet Filters</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">24+ Diet Filters</h3>
               <p className="text-gray-600 leading-relaxed">
-                Support for 12+ dietary preferences including vegan, gluten-free, keto, paleo, and specific health conditions like diabetes and heart disease.
+                Support for 24+ dietary preferences including vegan, gluten-free, keto, paleo, and specific health conditions like diabetes and heart disease.
               </p>
             </div>
 
@@ -596,9 +596,9 @@ export const LandingPage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-red-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Lock className="h-7 w-7" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">100% Private & Secure</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Private & Secure</h3>
               <p className="text-gray-600 leading-relaxed mb-3">
-                Your data is protected with enterprise-grade security. Free users enjoy local processing—your recipes never leave your device.
+                Your data is protected with enterprise-grade security using Firebase and Google Cloud infrastructure. All recipe processing is handled securely in the cloud with encrypted connections.
               </p>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-gray-700">
@@ -607,7 +607,11 @@ export const LandingPage: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
                   <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
-                  <span>Encrypted cloud storage for paid plans</span>
+                  <span>Encrypted storage & transmission</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+                  <span>GDPR compliant</span>
                 </div>
               </div>
             </div>
@@ -626,9 +630,9 @@ export const LandingPage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                 <FileText className="h-7 w-7" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Simple Text Input</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Flexible Recipe Input</h3>
               <p className="text-gray-600 leading-relaxed">
-                Paste recipe text directly into the app—our AI automatically understands and formats it. Image and URL support coming soon.
+                Paste recipe text or upload a text file directly in the app. Our AI understands natural recipe formats and extracts ingredients and instructions automatically. Image & URL support coming soon.
               </p>
             </div>
           </div>
@@ -856,7 +860,7 @@ export const LandingPage: React.FC = () => {
                     </li>
                     <li className="flex items-start">
                       <Lock className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-gray-700 font-medium">Local processing (100% private)</span>
+                      <span className="text-sm text-gray-700 font-medium">Secure cloud processing</span>
                     </li>
                     <li className="flex items-start">
                       <X className="h-4 w-4 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
@@ -1002,6 +1006,10 @@ export const LandingPage: React.FC = () => {
                     <li className="flex items-start">
                       <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
                       <span className="text-sm text-gray-700 font-medium">Recipe collections & tags</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-medium">All dietary filters (24+ options)</span>
                     </li>
                     <li className="flex items-start">
                       <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
@@ -1214,17 +1222,17 @@ export const LandingPage: React.FC = () => {
               <h4 className="text-gray-900 font-bold mb-4">Legal</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link to="/privacy" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  <Link to="/privacy-policy" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/terms" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
-                    Terms of Use
+                  <Link to="/terms-of-service" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    Terms of Service
                   </Link>
                 </li>
                 <li>
-                  <Link to="/cookies" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  <Link to="/cookie-policy" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                     Cookie Policy
                   </Link>
                 </li>

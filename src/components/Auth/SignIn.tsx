@@ -487,11 +487,11 @@ export const SignIn: React.FC<SignInProps> = ({ onSignIn, onSwitchToSignUp }) =>
             <p>
               See our{' '}
               <Button variant="link" asChild className="h-auto p-0 text-xs underline text-green-600 hover:text-green-700 font-medium">
-                <Link to="/terms">Terms of Use</Link>
+                <Link to="/terms-of-service">Terms of Service</Link>
               </Button>
               {' '}and{' '}
               <Button variant="link" asChild className="h-auto p-0 text-xs underline text-green-600 hover:text-green-700 font-medium">
-                <Link to="/privacy">Privacy Policy</Link>
+                <Link to="/privacy-policy">Privacy Policy</Link>
               </Button>
               {' '}for details.
             </p>

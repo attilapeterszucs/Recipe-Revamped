@@ -61,17 +61,17 @@ export const AppFooter: React.FC = () => {
             <h4 className="text-gray-900 font-bold mb-4">Legal</h4>
             <ul className="space-y-3">
               <li>
-                <Link to="/privacy" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                <Link to="/privacy-policy" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
-                  Terms of Use
+                <Link to="/terms-of-service" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  Terms of Service
                 </Link>
               </li>
               <li>
-                <Link to="/cookies" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                <Link to="/cookie-policy" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                   Cookie Policy
                 </Link>
               </li>

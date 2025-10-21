@@ -26,8 +26,11 @@ Allow: /signin
 Allow: /signup
 
 # Legal compliance pages (required but lower priority)
+Allow: /privacy-policy
 Allow: /privacy
+Allow: /terms-of-service
 Allow: /terms
+Allow: /cookie-policy
 Allow: /cookies
 
 # ========================================

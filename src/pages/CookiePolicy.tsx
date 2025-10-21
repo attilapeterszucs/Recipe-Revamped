@@ -1,23 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Cookie, Shield, Calendar, Settings, Eye, ToggleLeft, ToggleRight, CheckCircle, AlertTriangle, Mail, MapPin, FileText, Zap } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
-import { useCookieContext } from '../contexts/CookieContext';
-import { CookieSettings } from '../components/CookieSettings';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Separator } from '../components/ui/separator';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 
 export const CookiePolicy: React.FC = () => {
-  const { showConsentPopup } = useCookieContext();
-  const [showCookieSettings, setShowCookieSettings] = useState(false);
-
-  // Set page title and scroll to top
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = 'Cookie Policy | Recipe Revamped - Cookie Usage & Management';
+    document.title = 'Cookie Policy | Recipe Revamped';
 
     const metaDescription = document.querySelector('meta[name="description"]') || document.createElement('meta');
     metaDescription.setAttribute('name', 'description');
@@ -27,761 +15,425 @@ export const CookiePolicy: React.FC = () => {
     }
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/30 to-white">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <header>
         <AuthAwareNavigation />
       </header>
 
-      <main>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="grid lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mt-20 sm:mt-24">
-          {/* Sidebar Navigation */}
-          <div className="lg:col-span-1 order-2 lg:order-1">
-            <Card className="sticky top-20 sm:top-24 shadow-lg shadow-green-100 border-2 border-green-100">
-              <CardHeader>
-                <CardTitle className="text-base sm:text-lg">Contents</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <nav className="space-y-2">
-                  {[
-                    { id: 'overview', title: 'Cookie Overview', icon: Cookie },
-                    { id: 'essential', title: 'Essential Cookies', icon: Shield },
-                    { id: 'analytics', title: 'Analytics Cookies', icon: Eye },
-                    { id: 'preferences', title: 'Preference Cookies', icon: Settings },
-                    { id: 'advertising', title: 'Advertising Cookies', icon: Zap },
-                    { id: 'third-party', title: 'Third-Party Cookies', icon: AlertTriangle },
-                    { id: 'management', title: 'Cookie Management', icon: ToggleLeft },
-                    { id: 'updates', title: 'Policy Updates', icon: Calendar },
-                    { id: 'contact', title: 'Contact Us', icon: Mail }
-                  ].map(({ id, title, icon: Icon }) => (
-                    <Button
-                      key={id}
-                      variant="ghost"
-                      onClick={() => scrollToSection(id)}
-                      className="flex items-center w-full justify-start text-xs sm:text-sm h-auto py-2 px-2 sm:px-3 hover:bg-green-50 hover:text-green-700"
-                    >
-                      <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0" />
-                      <span className="truncate">{title}</span>
-                    </Button>
-                  ))}
-                </nav>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-3 order-1 lg:order-2">
-            <Card className="overflow-hidden shadow-2xl shadow-green-100 border-2 border-green-100">
-              {/* Hero Section */}
-              <CardHeader className="bg-gradient-to-r from-green-600 via-emerald-600 to-green-500 text-white relative overflow-hidden">
-                {/* Decorative circles */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12" />
-
-                <div className="flex items-start sm:items-center mb-3 sm:mb-4 relative z-10">
-                  <Cookie className="w-5 h-5 sm:w-6 sm:h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 mr-2 sm:mr-3 flex-shrink-0" />
-                  <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-white">Cookie Policy</CardTitle>
-                </div>
-                <CardDescription className="text-base sm:text-lg lg:text-xl text-white/90 mb-4 sm:mb-6 leading-relaxed relative z-10 font-medium">
-                  Transparent cookie usage for enhanced user experience
-                </CardDescription>
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6 relative z-10">
-                  <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 w-fit border-white/30">
-                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Effective: January 1, 2025
-                  </Badge>
-                  <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 w-fit border-white/30">
-                    <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Last Updated: January 1, 2025
-                  </Badge>
-                </div>
-              </CardHeader>
-
-              <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 lg:space-y-12">
-                {/* Cookie Summary Banner */}
-                <Card className="bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200">
-                  <CardHeader>
-                    <CardTitle className="text-lg sm:text-xl flex items-center">
-                      <Cookie className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mr-2" />
-                      Our Cookie Approach
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <Card className="p-4">
-                        <Shield className="w-8 h-8 text-green-600 mb-2" />
-                        <h4 className="font-semibold text-foreground">Privacy-First</h4>
-                        <p className="text-sm text-muted-foreground">Minimal data collection with maximum user control</p>
-                      </Card>
-                      <Card className="p-4">
-                        <ToggleLeft className="w-8 h-8 text-blue-600 mb-2" />
-                        <h4 className="font-semibold text-foreground">Your Choice</h4>
-                        <p className="text-sm text-muted-foreground">Easy controls to manage your cookie preferences</p>
-                      </Card>
-                      <Card className="p-4">
-                        <Eye className="w-8 h-8 text-purple-600 mb-2" />
-                        <h4 className="font-semibold text-foreground">Smart Advertising</h4>
-                        <p className="text-sm text-muted-foreground">Google Analytics with Ads integration for personalized experiences</p>
-                      </Card>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Section 1: Cookie Overview */}
-                <section id="overview" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-orange-100 rounded-full p-2 sm:p-3 mr-3 sm:mr-4 flex-shrink-0">
-                      <Cookie className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">What Are Cookies?</h2>
-                      <p className="text-gray-500">Understanding cookies and how we use them</p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">What Are Cookies?</h3>
-                      <p className="text-gray-700 leading-relaxed mb-4">
-                        Cookies are small text files stored on your device when you visit a website. They help websites remember information about your visit, making your experience more efficient and personalized.
-                      </p>
-                      <div className="bg-white rounded-lg p-4 border border-orange-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">How Recipe Revamped Uses Cookies</h4>
-                        <p className="text-gray-700">
-                          We use cookies sparingly and responsibly to enhance your experience, remember your preferences, and ensure our application works properly. We prioritize your privacy and only collect what's necessary.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 2: Essential Cookies */}
-                <section id="essential" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-green-100 rounded-full p-3 mr-4">
-                      <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">1. Essential Cookies</h2>
-                      <p className="text-gray-500">Required for basic website functionality</p>
-                    </div>
-                  </div>
-                  <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                    <div className="bg-green-100 rounded-lg p-4 mb-4 border border-green-300">
-                      <p className="text-green-800 font-semibold">🔒 Cannot be disabled</p>
-                      <p className="text-green-700 mt-1">These cookies are essential for the website to function and cannot be disabled without breaking core functionality.</p>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">What Essential Cookies Do:</h3>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="bg-white rounded-lg p-4 border border-green-200">
-                        <div className="flex items-center mb-2">
-                          <Shield className="w-5 h-5 text-green-600 mr-2" />
-                          <h4 className="font-semibold text-gray-900">Authentication</h4>
-                        </div>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          <li>• Keep you logged in between pages</li>
-                          <li>• Verify your identity securely</li>
-                          <li>• Protect against unauthorized access</li>
-                        </ul>
-                      </div>
-                      <div className="bg-white rounded-lg p-4 border border-green-200">
-                        <div className="flex items-center mb-2">
-                          <Settings className="w-5 h-5 text-green-600 mr-2" />
-                          <h4 className="font-semibold text-gray-900">Security & Session</h4>
-                        </div>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          <li>• Prevent cross-site request forgery</li>
-                          <li>• Maintain secure session state</li>
-                          <li>• Enable proper form submissions</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="mt-4 bg-white rounded-lg p-4 border border-green-200">
-                      <h4 className="font-semibold text-gray-900 mb-2">Essential Cookies We Use:</h4>
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="border-b border-gray-200">
-                              <th className="text-left py-2 font-semibold">Cookie Name</th>
-                              <th className="text-left py-2 font-semibold">Purpose</th>
-                              <th className="text-left py-2 font-semibold">Duration</th>
-                            </tr>
-                          </thead>
-                          <tbody className="text-gray-600">
-                            <tr className="border-b border-gray-100">
-                              <td className="py-2 font-mono">auth_token</td>
-                              <td className="py-2">User authentication</td>
-                              <td className="py-2">24 hours</td>
-                            </tr>
-                            <tr className="border-b border-gray-100">
-                              <td className="py-2 font-mono">session_id</td>
-                              <td className="py-2">Session management</td>
-                              <td className="py-2">Session only</td>
-                            </tr>
-                            <tr className="border-b border-gray-100">
-                              <td className="py-2 font-mono">csrf_token</td>
-                              <td className="py-2">Security protection</td>
-                              <td className="py-2">Session only</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 3: Analytics Cookies */}
-                <section id="analytics" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-purple-100 rounded-full p-3 mr-4">
-                      <Eye className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">2. Analytics Cookies</h2>
-                      <p className="text-gray-500">Help us understand how you use our service</p>
-                    </div>
-                  </div>
-                  <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-                    <div className="bg-blue-100 rounded-lg p-4 mb-4 border border-blue-300">
-                      <p className="text-blue-800 font-semibold">✨ Can be disabled</p>
-                      <p className="text-blue-700 mt-1">These cookies help us improve our service but are not required for functionality.</p>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">What Analytics Cookies Do:</h3>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="bg-white rounded-lg p-4 border border-purple-200">
-                        <div className="flex items-center mb-2">
-                          <Eye className="w-5 h-5 text-purple-600 mr-2" />
-                          <h4 className="font-semibold text-gray-900">Usage Analytics</h4>
-                        </div>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          <li>• Track page views and user flows</li>
-                          <li>• Measure feature popularity</li>
-                          <li>• Identify performance issues</li>
-                        </ul>
-                      </div>
-                      <div className="bg-white rounded-lg p-4 border border-purple-200">
-                        <div className="flex items-center mb-2">
-                          <Zap className="w-5 h-5 text-purple-600 mr-2" />
-                          <h4 className="font-semibold text-gray-900">Performance Monitoring</h4>
-                        </div>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          <li>• Monitor app load times</li>
-                          <li>• Detect errors and bugs</li>
-                          <li>• Optimize user experience</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="space-y-4 mt-4">
-                      <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Google Analytics & Ads Integration</h4>
-                        <div className="grid md:grid-cols-2 gap-3">
-                          <div>
-                            <p className="text-sm text-gray-700 font-medium mb-1">Analytics Features:</p>
-                            <ul className="text-gray-600 space-y-1 text-sm">
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-green-600 mr-2" /> Page views and user interactions</li>
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-green-600 mr-2" /> User demographics and interests</li>
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-green-600 mr-2" /> Device and location data</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-700 font-medium mb-1">Advertising Features:</p>
-                            <ul className="text-gray-600 space-y-1 text-sm">
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Conversion tracking and attribution</li>
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Audience segmentation for ads</li>
-                              <li className="flex items-center"><CheckCircle className="w-3 h-3 text-blue-600 mr-2" /> Cross-device advertising measurement</li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="mt-3 p-3 bg-blue-50 rounded border border-blue-200">
-                          <p className="text-blue-800 text-sm font-semibold">🔗 Google Ads Data Sharing</p>
-                          <p className="text-blue-700 text-xs mt-1">Analytics data is automatically shared with Google Ads to enable personalized advertising, remarketing campaigns, and conversion measurement across Google's advertising network.</p>
-                        </div>
-                        <div className="mt-2 flex items-center text-green-700 text-sm">
-                          <Settings className="w-4 h-4 mr-2" />
-                          <span>Can be disabled via cookie settings - affects both analytics and advertising features</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 4: Preference Cookies */}
-                <section id="preferences" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-blue-100 rounded-full p-3 mr-4">
-                      <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">3. Preference Cookies</h2>
-                      <p className="text-gray-500">Remember your personal settings</p>
-                    </div>
-                  </div>
-                  <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">What Preference Cookies Do:</h3>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="bg-white rounded-lg p-4 border border-blue-200">
-                        <div className="flex items-center mb-2">
-                          <Settings className="w-5 h-5 text-blue-600 mr-2" />
-                          <h4 className="font-semibold text-gray-900">UI Preferences</h4>
-                        </div>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          <li>• Remember theme preferences</li>
-                          <li>• Save language settings</li>
-                          <li>• Store layout preferences</li>
-                        </ul>
-                      </div>
-                      <div className="bg-white rounded-lg p-4 border border-blue-200">
-                        <div className="flex items-center mb-2">
-                          <Cookie className="w-5 h-5 text-blue-600 mr-2" />
-                          <h4 className="font-semibold text-gray-900">Cookie Preferences</h4>
-                        </div>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          <li>• Remember cookie consent choices</li>
-                          <li>• Store privacy preferences</li>
-                          <li>• Save notification settings</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="mt-4 bg-white rounded-lg p-4 border border-blue-200">
-                      <h4 className="font-semibold text-gray-900 mb-2">Preference Cookies We Use:</h4>
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="border-b border-gray-200">
-                              <th className="text-left py-2 font-semibold">Cookie Name</th>
-                              <th className="text-left py-2 font-semibold">Purpose</th>
-                              <th className="text-left py-2 font-semibold">Duration</th>
-                            </tr>
-                          </thead>
-                          <tbody className="text-gray-600">
-                            <tr className="border-b border-gray-100">
-                              <td className="py-2 font-mono">user_preferences</td>
-                              <td className="py-2">UI settings and preferences</td>
-                              <td className="py-2">1 year</td>
-                            </tr>
-                            <tr className="border-b border-gray-100">
-                              <td className="py-2 font-mono">cookie_consent</td>
-                              <td className="py-2">Cookie preference choices</td>
-                              <td className="py-2">1 year</td>
-                            </tr>
-                            <tr>
-                              <td className="py-2 font-mono">theme_preference</td>
-                              <td className="py-2">Dark/light mode choice</td>
-                              <td className="py-2">1 year</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 4.5: Advertising Cookies */}
-                <section id="advertising" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-red-100 rounded-full p-3 mr-4">
-                      <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">4. Advertising Cookies</h2>
-                      <p className="text-gray-500">Personalized advertising and measurement</p>
-                    </div>
-                  </div>
-                  <div className="bg-red-50 rounded-lg p-6 border border-red-200">
-                    <div className="bg-orange-100 rounded-lg p-4 mb-4 border border-orange-300">
-                      <p className="text-orange-800 font-semibold">🎯 Can be disabled</p>
-                      <p className="text-orange-700 mt-1">These cookies enable personalized advertising but can be opted out of via cookie settings.</p>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">What Advertising Cookies Do:</h3>
-                    <div className="space-y-4">
-                      <div className="bg-white rounded-lg p-4 border border-red-200">
-                        <div className="flex items-center mb-2">
-                          <Zap className="w-5 h-5 text-red-600 mr-2" />
-                          <h4 className="font-semibold text-gray-900">Google Ads Integration</h4>
-                        </div>
-                        <p className="text-gray-600 text-sm mb-3">We share analytics data with Google Ads to provide you with relevant advertising experiences:</p>
-                        <div className="grid md:grid-cols-2 gap-3">
-                          <ul className="text-sm text-gray-600 space-y-1">
-                            <li>• Measure advertising campaign effectiveness</li>
-                            <li>• Create audience segments for targeted ads</li>
-                            <li>• Enable remarketing to previous visitors</li>
-                            <li>• Track conversions across devices</li>
-                          </ul>
-                          <ul className="text-sm text-gray-600 space-y-1">
-                            <li>• Show relevant ads on Google properties</li>
-                            <li>• Optimize ad delivery and performance</li>
-                            <li>• Support attribution modeling</li>
-                            <li>• Enable lookalike audience creation</li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div className="bg-white rounded-lg p-4 border border-red-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Data Shared with Google Ads:</h4>
-                        <div className="grid md:grid-cols-3 gap-3">
-                          <div>
-                            <p className="text-sm font-medium text-gray-800 mb-1">User Behavior</p>
-                            <ul className="text-xs text-gray-600 space-y-1">
-                              <li>• Page views and engagement</li>
-                              <li>• Time spent on site</li>
-                              <li>• Recipe interactions</li>
-                              <li>• Conversion events</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-800 mb-1">Demographics</p>
-                            <ul className="text-xs text-gray-600 space-y-1">
-                              <li>• Age and gender (estimated)</li>
-                              <li>• Interests and affinities</li>
-                              <li>• Geographic location</li>
-                              <li>• Device characteristics</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-800 mb-1">Technical Data</p>
-                            <ul className="text-xs text-gray-600 space-y-1">
-                              <li>• Browser and device info</li>
-                              <li>• Network and IP address</li>
-                              <li>• Referral sources</li>
-                              <li>• Campaign attribution</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Your Advertising Privacy Rights</h4>
-                        <p className="text-gray-700 text-sm mb-2">You have multiple ways to control advertising cookies:</p>
-                        <ul className="text-gray-600 text-sm space-y-1">
-                          <li className="flex items-center"><CheckCircle className="w-3 h-3 text-yellow-600 mr-2" /> Use our cookie settings to opt-out</li>
-                          <li className="flex items-center"><CheckCircle className="w-3 h-3 text-yellow-600 mr-2" /> Visit Google Ad Settings to manage preferences</li>
-                          <li className="flex items-center"><CheckCircle className="w-3 h-3 text-yellow-600 mr-2" /> Use browser settings to block third-party cookies</li>
-                          <li className="flex items-center"><CheckCircle className="w-3 h-3 text-yellow-600 mr-2" /> Install ad blockers or privacy tools</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 5: Third-Party Cookies */}
-                <section id="third-party" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-red-100 rounded-full p-3 mr-4">
-                      <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">4. Third-Party Cookies</h2>
-                      <p className="text-gray-500">External services we use</p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                      <div className="bg-blue-100 rounded-lg p-4 mb-4 border border-blue-300">
-                        <p className="text-blue-800 font-semibold">📊 Analytics & Advertising Integration</p>
-                        <p className="text-blue-700 mt-1">We use Google Analytics with Google Ads integration to provide personalized experiences and measure advertising effectiveness.</p>
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Third-Party Services We Use:</h3>
-                      <div className="space-y-4">
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <div className="bg-white rounded-lg p-4 border border-blue-200">
-                            <div className="flex items-center mb-2">
-                              <Shield className="w-5 h-5 text-green-600 mr-2" />
-                              <h4 className="font-semibold text-gray-900">Firebase (Google)</h4>
-                            </div>
-                            <p className="text-sm text-gray-600 mb-2">Authentication and secure data storage</p>
-                            <ul className="text-xs text-gray-500 space-y-1">
-                              <li>• __session (authentication)</li>
-                              <li>• firebase-heartbeat-* (service health)</li>
-                            </ul>
-                          </div>
-                          <div className="bg-white rounded-lg p-4 border border-blue-200">
-                            <div className="flex items-center mb-2">
-                              <Eye className="w-5 h-5 text-blue-600 mr-2" />
-                              <h4 className="font-semibold text-gray-900">Google Analytics</h4>
-                            </div>
-                            <p className="text-sm text-gray-600 mb-2">Usage analytics with consent (ID: G-CR787RJ2VK)</p>
-                            <ul className="text-xs text-gray-500 space-y-1">
-                              <li>• _ga (2 years) - visitor identification</li>
-                              <li>• _ga_* (2 years) - session storage</li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="bg-white rounded-lg p-4 border border-purple-200">
-                          <div className="flex items-center mb-2">
-                            <Zap className="w-5 h-5 text-purple-600 mr-2" />
-                            <h4 className="font-semibold text-gray-900">Google Ads Integration</h4>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-2">Advertising measurement and personalization</p>
-                          <ul className="text-xs text-gray-500 space-y-1 mb-2">
-                            <li>• Conversion tracking and attribution</li>
-                            <li>• Audience segmentation for targeted ads</li>
-                            <li>• Remarketing and lookalike audiences</li>
-                            <li>• Cross-platform advertising measurement</li>
-                          </ul>
-                          <div className="p-2 bg-purple-50 rounded border border-purple-200">
-                            <p className="text-purple-800 text-xs">
-                              <strong>Data Sharing:</strong> Analytics data is shared with Google Ads to enable personalized advertising and measure campaign effectiveness across Google's network.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                        <AlertTriangle className="w-5 h-5 text-orange-600 mr-2" />
-                        Third-Party Services We Use & Don't Use
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div>
-                          <h4 className="font-semibold text-green-800 mb-2">✅ Services We Use</h4>
-                          <ul className="space-y-2 text-gray-700">
-                            <li className="flex items-center">
-                              <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                              Google Analytics (with Ads integration)
-                            </li>
-                            <li className="flex items-center">
-                              <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                              Google Ads (for advertising measurement)
-                            </li>
-                            <li className="flex items-center">
-                              <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                              Firebase (authentication & storage)
-                            </li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-red-800 mb-2">❌ Services We Don't Use</h4>
-                          <ul className="space-y-2 text-gray-700">
-                            <li className="flex items-center">
-                              <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
-                              No Facebook/Meta pixels
-                            </li>
-                            <li className="flex items-center">
-                              <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
-                              No other advertising networks
-                            </li>
-                            <li className="flex items-center">
-                              <CheckCircle className="w-4 h-4 text-red-600 mr-2" />
-                              No social media widgets
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div className="mt-4 p-3 bg-amber-100 rounded border border-amber-300">
-                        <p className="text-amber-800 font-semibold text-sm">🎯 Important for US Users</p>
-                        <p className="text-amber-700 text-xs mt-1">Under state privacy laws (CCPA, VCDPA, etc.), sharing data with Google Ads may be considered a "sale" or "sharing" of personal information. You have the right to opt-out through our cookie settings.</p>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 6: Cookie Management */}
-                <section id="management" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-indigo-100 rounded-full p-3 mr-4">
-                      <ToggleLeft className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">5. Managing Your Cookie Preferences</h2>
-                      <p className="text-gray-500">You have full control over your cookies</p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Cookie Controls</h3>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-4">
-                          <div className="bg-white rounded-lg p-4 border border-indigo-200">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-gray-900">Essential Cookies</h4>
-                              <ToggleRight className="w-5 h-5 text-green-600" />
-                            </div>
-                            <p className="text-sm text-gray-600">Always active - required for basic functionality</p>
-                          </div>
-                          <div className="bg-white rounded-lg p-4 border border-indigo-200">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-gray-900">Analytics Cookies</h4>
-                              <ToggleLeft className="w-5 h-5 text-gray-400" />
-                            </div>
-                            <p className="text-sm text-gray-600">Optional - help us improve our service</p>
-                          </div>
-                        </div>
-                        <div className="space-y-4">
-                          <div className="bg-white rounded-lg p-4 border border-indigo-200">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-gray-900">Preference Cookies</h4>
-                              <ToggleRight className="w-5 h-5 text-green-600" />
-                            </div>
-                            <p className="text-sm text-gray-600">Remember your settings and choices</p>
-                          </div>
-                          <div className="bg-white rounded-lg p-4 border border-indigo-200">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-gray-900">Third-Party Cookies</h4>
-                              <ToggleLeft className="w-5 h-5 text-gray-400" />
-                            </div>
-                            <p className="text-sm text-gray-600">Limited essential services only</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Browser-Level Cookie Management</h3>
-                      <p className="text-gray-700 mb-4">You can also control cookies directly in your browser:</p>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="bg-white rounded-lg p-4 border border-yellow-200">
-                          <h4 className="font-semibold text-gray-900 mb-2">Desktop Browsers</h4>
-                          <ul className="text-sm text-gray-600 space-y-1">
-                            <li>• Chrome: Settings → Privacy → Cookies</li>
-                            <li>• Firefox: Preferences → Privacy → Cookies</li>
-                            <li>• Safari: Preferences → Privacy → Cookies</li>
-                            <li>• Edge: Settings → Privacy → Cookies</li>
-                          </ul>
-                        </div>
-                        <div className="bg-white rounded-lg p-4 border border-yellow-200">
-                          <h4 className="font-semibold text-gray-900 mb-2">Mobile Browsers</h4>
-                          <ul className="text-sm text-gray-600 space-y-1">
-                            <li>• iOS Safari: Settings → Safari → Privacy</li>
-                            <li>• Android Chrome: Settings → Site settings</li>
-                            <li>• Samsung Internet: Settings → Privacy</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                      <p className="text-blue-800 font-semibold">💡 Tip: Update Your Preferences</p>
-                      <p className="text-blue-700 mt-1">You can change your cookie preferences anytime by visiting your <Link to="/app" className="text-blue-600 hover:text-blue-800 underline">account settings</Link> or clicking the cookie banner when it appears.</p>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 7: Policy Updates */}
-                <section id="updates" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-teal-100 rounded-full p-3 mr-4">
-                      <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">6. Policy Updates</h2>
-                      <p className="text-gray-500">How we handle changes to this policy</p>
-                    </div>
-                  </div>
-                  <div className="bg-teal-50 rounded-lg p-6 border border-teal-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">When We Update This Policy</h3>
-                    <div className="space-y-4">
-                      <div className="bg-white rounded-lg p-4 border border-teal-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Minor Changes</h4>
-                        <p className="text-gray-700 text-sm">
-                          For clarifications or minor updates, we'll update this page and note the revision date. 
-                          We recommend checking this policy periodically.
-                        </p>
-                      </div>
-                      <div className="bg-white rounded-lg p-4 border border-teal-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Major Changes</h4>
-                        <p className="text-gray-700 text-sm">
-                          For significant changes affecting how we use cookies, we'll notify you via email and/or 
-                          a prominent notice on our website at least 30 days before changes take effect.
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mt-4 bg-teal-100 rounded-lg p-4 border border-teal-300">
-                      <p className="text-teal-800 font-semibold">📅 Current Version</p>
-                      <p className="text-teal-700 mt-1">This Cookie Policy was last updated on January 1, 2025. Version 1.0</p>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 8: Contact Us */}
-                <section id="contact" className="scroll-mt-24">
-                  <div className="flex items-start sm:items-center mb-4 sm:mb-6">
-                    <div className="bg-blue-100 rounded-full p-3 mr-4">
-                      <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">7. Questions About Cookies?</h2>
-                      <p className="text-gray-500">We're here to help with any cookie-related questions</p>
-                    </div>
-                  </div>
-                  <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                    <p className="text-gray-700 leading-relaxed mb-4">
-                      If you have questions about our cookie policy or want to exercise your cookie preferences, contact us:
-                    </p>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center text-gray-700">
-                          <Mail className="w-5 h-5 text-blue-600 mr-3" />
-                          <div>
-                            <strong>Privacy Team:</strong><br />
-                            privacy@reciperevamped.com
-                          </div>
-                        </div>
-                        <div className="flex items-center text-gray-700">
-                          <Cookie className="w-5 h-5 text-blue-600 mr-3" />
-                          <div>
-                            <strong>Cookie Questions:</strong><br />
-                            cookies@reciperevamped.com
-                          </div>
-                        </div>
-                        <div className="flex items-start text-gray-700">
-                          <MapPin className="w-5 h-5 text-blue-600 mr-3 mt-0.5" />
-                          <div>
-                            <strong>Mailing Address:</strong><br />
-                            Recipe Revamped<br />
-                            Attn: Cookie Policy<br />
-                            Besnyő, Akácfa utca 8<br />
-                            2456 Hungary
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-white rounded-lg p-4">
-                        <h4 className="font-semibold text-gray-900 mb-3">Related Policies</h4>
-                        <div className="space-y-2">
-                          <Link to="/privacy" className="block text-blue-600 hover:text-blue-700">Privacy Policy</Link>
-                          <Link to="/terms" className="block text-blue-600 hover:text-blue-700">Terms of Use</Link>
-                          <Button
-                            variant="link"
-                            onClick={() => setShowCookieSettings(true)}
-                            className="h-auto p-0 text-green-600 hover:text-green-700 justify-start"
-                          >
-                            Manage Cookie Preferences
-                          </Button>
-                        </div>
-                        <div className="mt-4 pt-4 border-t border-gray-200">
-                          <p className="text-sm text-gray-600">
-                            <strong>Quick Response:</strong> Cookie questions answered within 5 business days.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              </CardContent>
-            </Card>
+      {/* Main Content - Paper-like Document */}
+      <main className="max-w-4xl mx-auto px-6 py-24">
+        {/* Document Header */}
+        <div className="text-center mb-16 pb-8 border-b-2 border-gray-900">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+            COOKIE POLICY
+          </h1>
+          <p className="text-lg text-gray-700" style={{ fontFamily: 'Georgia, serif' }}>
+            Recipe Revamped
+          </p>
+          <div className="mt-6 text-sm text-gray-600">
+            <p><strong>Effective Date:</strong> November 21, 2025</p>
+            <p><strong>Last Updated:</strong> October 21, 2025</p>
           </div>
         </div>
-      </div>
-      </main>
 
-      {/* Cookie Settings Modal */}
-      <Dialog open={showCookieSettings} onOpenChange={setShowCookieSettings}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
-          <DialogHeader>
-            <DialogTitle className="sr-only">Cookie Settings</DialogTitle>
-            <DialogDescription className="sr-only">
-              Manage your cookie preferences and privacy settings
-            </DialogDescription>
-          </DialogHeader>
-          <div className="max-h-[75vh] overflow-y-auto pr-2">
-            <CookieSettings />
+        {/* Document Body */}
+        <div className="space-y-12 text-gray-800" style={{ fontFamily: 'Georgia, serif', lineHeight: '1.8' }}>
+
+          {/* Section 1 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">1. INTRODUCTION</h2>
+            <p className="mb-4 text-justify">
+              This Cookie Policy explains how Recipe Revamped ("we", "us", or "our") uses cookies and similar tracking technologies when you visit our website and use our AI-powered recipe conversion service ("the Service"). This policy should be read in conjunction with our <Link to="/privacy-policy" className="underline text-blue-600 hover:text-blue-800">Privacy Policy</Link> and <Link to="/terms-of-service" className="underline text-blue-600 hover:text-blue-800">Terms of Service</Link>.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">1.1 What Are Cookies?</h3>
+            <p className="mb-4 text-justify">
+              Cookies are small text files that are placed on your device (computer, tablet, or mobile phone) when you visit a website. Cookies are widely used by website owners to make their websites work more efficiently, provide a better user experience, and gather analytics information.
+            </p>
+            <p className="mb-4 text-justify">
+              Cookies can be "session cookies" (which are deleted when you close your browser) or "persistent cookies" (which remain on your device until deleted or until they reach their expiration date).
+            </p>
+          </section>
+
+          {/* Section 2 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">2. TYPES OF COOKIES WE USE</h2>
+            <p className="mb-4 text-justify">
+              Recipe Revamped uses the following categories of cookies:
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">2.1 Essential Cookies (Strictly Necessary)</h3>
+            <p className="mb-2">These cookies are absolutely necessary for the Service to function properly. They cannot be disabled without severely impacting your ability to use the Service.</p>
+
+            <p className="mb-2 font-semibold mt-4">Purpose:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>User authentication and session management</li>
+              <li>Security and fraud prevention (CSRF protection)</li>
+              <li>Load balancing and server routing</li>
+              <li>Remembering items in your shopping cart or form inputs</li>
+              <li>Enabling core features of the Service</li>
+            </ul>
+
+            <p className="mb-2 font-semibold">Specific Cookies:</p>
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-300 px-4 py-2 text-left">Cookie Name</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Purpose</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2 font-mono text-sm">auth_token</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">User authentication via Firebase</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">24 hours</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2 font-mono text-sm">session_id</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">Session management</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">Session only</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2 font-mono text-sm">csrf_token</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">Cross-site request forgery protection</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">Session only</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2 font-mono text-sm">__session</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">Firebase authentication session</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">Persistent</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p className="mb-4 text-justify font-semibold">
+              Legal Basis: These cookies are necessary for the legitimate operation of the Service and do not require consent under applicable law.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.2 Preference Cookies (Functionality)</h3>
+            <p className="mb-2">These cookies remember your preferences and choices to provide a personalized experience.</p>
+
+            <p className="mb-2 font-semibold mt-4">Purpose:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Remembering your cookie consent choices</li>
+              <li>Storing theme preferences (dark mode/light mode)</li>
+              <li>Saving language and regional settings</li>
+              <li>Remembering UI layout preferences</li>
+              <li>Storing notification preferences</li>
+            </ul>
+
+            <p className="mb-2 font-semibold">Specific Cookies:</p>
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-300 px-4 py-2 text-left">Cookie Name</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Purpose</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2 font-mono text-sm">cookie_consent</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">Your cookie preference choices</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">1 year</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2 font-mono text-sm">user_preferences</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">UI settings and preferences</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">1 year</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2 font-mono text-sm">theme_preference</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">Dark/light mode selection</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">1 year</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.3 Analytics Cookies (Performance)</h3>
+            <p className="mb-2">These cookies collect information about how you use the Service to help us improve it. All data collected is aggregated and anonymous.</p>
+
+            <p className="mb-2 font-semibold mt-4">Purpose:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Analyzing website traffic and user behavior patterns</li>
+              <li>Tracking page views, user flows, and engagement metrics</li>
+              <li>Measuring feature popularity and usage statistics</li>
+              <li>Identifying performance issues and optimization opportunities</li>
+              <li>Conducting A/B testing and feature experimentation</li>
+              <li>Understanding demographics and user interests (estimated by Google)</li>
+            </ul>
+
+            <p className="mb-2 font-semibold">Google Analytics Integration:</p>
+            <p className="mb-4 text-justify">
+              We use Google Analytics (ID: G-CR787RJ2VK) to collect and analyze usage data. Google Analytics sets the following cookies:
+            </p>
+
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-300 px-4 py-2 text-left">Cookie Name</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Purpose</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2 font-mono text-sm">_ga</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">Unique visitor identification</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">2 years</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2 font-mono text-sm">_ga_*</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">Session state storage for Google Analytics 4</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">2 years</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2 font-mono text-sm">_gid</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">User session identification</td>
+                    <td className="border border-gray-300 px-4 py-2 text-sm">24 hours</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p className="mb-4 text-justify font-semibold">
+              Note: Analytics cookies can be disabled through your cookie preferences. Disabling these cookies will also disable advertising features described in Section 2.4.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.4 Advertising Cookies (Targeting/Marketing)</h3>
+            <p className="mb-2">These cookies are used to deliver personalized advertising and measure the effectiveness of advertising campaigns.</p>
+
+            <p className="mb-2 font-semibold mt-4">Google Ads Integration:</p>
+            <p className="mb-4 text-justify">
+              We integrate Google Analytics with Google Ads to enable personalized advertising experiences. This integration allows us to:
+            </p>
+
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Measure advertising campaign effectiveness and conversion rates</li>
+              <li>Create audience segments for targeted advertising</li>
+              <li>Enable remarketing to show relevant ads to previous visitors</li>
+              <li>Track conversions across multiple devices and platforms</li>
+              <li>Show personalized ads on Google properties and partner websites</li>
+              <li>Optimize ad delivery and bidding strategies</li>
+              <li>Support attribution modeling for marketing analytics</li>
+              <li>Create lookalike audiences for similar user targeting</li>
+            </ul>
+
+            <p className="mb-2 font-semibold">Data Shared with Google Ads:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Page views, user engagement, and interaction events</li>
+              <li>Conversion events (sign-ups, subscription purchases)</li>
+              <li>Demographics and interests (estimated by Google)</li>
+              <li>Device and browser characteristics</li>
+              <li>Geographic location (city/region level)</li>
+              <li>Referral sources and campaign attribution data</li>
+            </ul>
+
+            <p className="mb-4 text-justify font-semibold">
+              Important for US Residents: Under certain state privacy laws (CCPA, VCDPA, etc.), sharing data with Google Ads may be considered a "sale" or "sharing" of personal information. You have the right to opt-out through our cookie settings.
+            </p>
+
+            <p className="mb-4 text-justify">
+              You can control advertising cookies through our cookie consent banner or by visiting <a href="https://adssettings.google.com" className="underline text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">Google Ad Settings</a>.
+            </p>
+          </section>
+
+          {/* Section 3 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">3. THIRD-PARTY COOKIES</h2>
+            <p className="mb-4 text-justify">
+              In addition to our own cookies, we use cookies from trusted third-party service providers to deliver specific functionality and features.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">3.1 Third-Party Services We Use</h3>
+
+            <div className="mb-6">
+              <h4 className="font-semibold text-gray-900 mb-2">Firebase (Google Cloud)</h4>
+              <p className="mb-2 text-justify">Used for authentication, database, and cloud storage services.</p>
+              <ul className="list-disc ml-6 space-y-1 mb-2 text-sm">
+                <li>Cookie: __session (authentication session management)</li>
+                <li>Cookie: firebase-heartbeat-* (service health monitoring)</li>
+                <li>Duration: Persistent</li>
+              </ul>
+              <p className="text-sm italic">Privacy Policy: <a href="https://firebase.google.com/support/privacy" className="underline text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">https://firebase.google.com/support/privacy</a></p>
+            </div>
+
+            <div className="mb-6">
+              <h4 className="font-semibold text-gray-900 mb-2">Google Analytics</h4>
+              <p className="mb-2 text-justify">Website analytics and user behavior tracking (with Google Ads integration).</p>
+              <ul className="list-disc ml-6 space-y-1 mb-2 text-sm">
+                <li>Cookies: _ga, _ga_*, _gid (described in Section 2.3)</li>
+                <li>Analytics ID: G-CR787RJ2VK</li>
+                <li>Includes: Google Ads integration for advertising measurement</li>
+              </ul>
+              <p className="text-sm italic">Privacy Policy: <a href="https://policies.google.com/privacy" className="underline text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">https://policies.google.com/privacy</a></p>
+            </div>
+
+            <div className="mb-6">
+              <h4 className="font-semibold text-gray-900 mb-2">Stripe</h4>
+              <p className="mb-2 text-justify">Payment processing and subscription management services.</p>
+              <ul className="list-disc ml-6 space-y-1 mb-2 text-sm">
+                <li>Cookies set by Stripe for fraud detection and payment security</li>
+                <li>Duration: Varies by cookie type</li>
+              </ul>
+              <p className="text-sm italic">Privacy Policy: <a href="https://stripe.com/privacy" className="underline text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">https://stripe.com/privacy</a></p>
+            </div>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">3.2 Services We Do NOT Use</h3>
+            <p className="mb-2">For transparency, we want to clarify that we do NOT use the following services:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>No Facebook/Meta pixels or tracking cookies</li>
+              <li>No TikTok, Twitter/X, or other social media advertising pixels</li>
+              <li>No third-party advertising networks beyond Google Ads</li>
+              <li>No social media widgets or sharing buttons that track users</li>
+              <li>No affiliate marketing tracking cookies</li>
+            </ul>
+          </section>
+
+          {/* Section 4 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">4. MANAGING YOUR COOKIE PREFERENCES</h2>
+            <p className="mb-4 text-justify">
+              You have several options to control and manage cookies on your device.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">4.1 Our Cookie Consent Tool</h3>
+            <p className="mb-4 text-justify">
+              When you first visit Recipe Revamped, you will see a cookie consent banner allowing you to accept or customize your cookie preferences. You can change your preferences at any time by:
+            </p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Clicking the cookie settings link in the website footer</li>
+              <li>Accessing cookie preferences through your account settings</li>
+              <li>Clearing the cookie_consent cookie to reset your choices</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">4.2 Browser-Level Cookie Control</h3>
+            <p className="mb-4 text-justify">
+              Most web browsers allow you to control cookies through their settings. You can typically find cookie settings in the "Options", "Preferences", or "Settings" menu of your browser.
+            </p>
+
+            <div className="mb-4">
+              <p className="font-semibold mb-2">Desktop Browsers:</p>
+              <ul className="list-disc ml-6 space-y-1">
+                <li><strong>Google Chrome:</strong> Settings → Privacy and security → Cookies and other site data</li>
+                <li><strong>Mozilla Firefox:</strong> Preferences → Privacy & Security → Cookies and Site Data</li>
+                <li><strong>Safari:</strong> Preferences → Privacy → Manage Website Data</li>
+                <li><strong>Microsoft Edge:</strong> Settings → Cookies and site permissions → Cookies and site data</li>
+              </ul>
+            </div>
+
+            <div className="mb-4">
+              <p className="font-semibold mb-2">Mobile Browsers:</p>
+              <ul className="list-disc ml-6 space-y-1">
+                <li><strong>iOS Safari:</strong> Settings → Safari → Privacy & Security</li>
+                <li><strong>Android Chrome:</strong> Settings → Site settings → Cookies</li>
+                <li><strong>Samsung Internet:</strong> Settings → Privacy and security → Block cookies</li>
+              </ul>
+            </div>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">4.3 Opting Out of Targeted Advertising</h3>
+            <p className="mb-2">You can opt-out of personalized advertising through:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li><strong>Google Ad Settings:</strong> <a href="https://adssettings.google.com" className="underline text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">https://adssettings.google.com</a></li>
+              <li><strong>Google Analytics Opt-out:</strong> <a href="https://tools.google.com/dlpage/gaoptout" className="underline text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">https://tools.google.com/dlpage/gaoptout</a></li>
+              <li><strong>Network Advertising Initiative:</strong> <a href="https://optout.networkadvertising.org" className="underline text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">https://optout.networkadvertising.org</a></li>
+              <li><strong>Digital Advertising Alliance:</strong> <a href="https://optout.aboutads.info" className="underline text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">https://optout.aboutads.info</a></li>
+            </ul>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">4.4 Do Not Track (DNT) Signals</h3>
+            <p className="mb-4 text-justify">
+              Some browsers offer a "Do Not Track" (DNT) signal. However, there is no universal standard for how websites should respond to DNT signals. Currently, we do not alter our data collection and use practices in response to DNT signals. We respect your privacy choices made through our cookie consent tool and browser settings.
+            </p>
+
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">4.5 Impact of Disabling Cookies</h3>
+            <p className="mb-2">Please note that disabling certain cookies may impact your experience:</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li><strong>Essential Cookies:</strong> Disabling these will prevent you from logging in and using core features</li>
+              <li><strong>Preference Cookies:</strong> Your settings and preferences will not be remembered across sessions</li>
+              <li><strong>Analytics Cookies:</strong> We will not be able to improve the Service based on usage data</li>
+              <li><strong>Advertising Cookies:</strong> Ads may be less relevant to your interests</li>
+            </ul>
+          </section>
+
+          {/* Section 5 */}
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">5. UPDATES TO THIS COOKIE POLICY</h2>
+            <p className="mb-4 text-justify">
+              We may update this Cookie Policy from time to time to reflect changes in technology, legal requirements, or our cookie practices. When we make material changes, we will notify you by:
+            </p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Posting a prominent notice on our website</li>
+              <li>Sending an email to registered users (for significant changes)</li>
+              <li>Requiring acknowledgment through the cookie consent banner</li>
+            </ul>
+            <p className="mb-4 text-justify">
+              Minor clarifications and updates will be reflected by updating the "Last Updated" date at the top of this policy. Material changes will be effective thirty (30) days after notification.
+            </p>
+          </section>
+
+          {/* Section 6 - Contact */}
+          <section className="border-t-2 border-gray-300 pt-12 mt-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">6. CONTACT INFORMATION</h2>
+
+            <p className="mb-6 text-justify">
+              If you have questions, concerns, or requests regarding this Cookie Policy or our use of cookies, please contact us at:
+            </p>
+
+            <div className="ml-6 space-y-3">
+              <p>
+                <strong>Recipe Revamped - Privacy Team</strong><br />
+                Besnyő, Akácfa utca 8<br />
+                2456 Hungary
+              </p>
+
+              <p>
+                <strong>Email:</strong> privacy@reciperevamped.com
+              </p>
+
+              <p>
+                <strong>Cookie Questions:</strong> cookies@reciperevamped.com
+              </p>
+
+              <p>
+                <strong>Website:</strong> <Link to="/" className="underline text-blue-600 hover:text-blue-800">https://reciperevamped.com</Link>
+              </p>
+
+              <p className="text-sm text-gray-600">
+                <strong>Response Time:</strong> Cookie questions answered within five (5) business days.
+              </p>
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-gray-300">
+              <p className="text-sm text-gray-600">
+                <strong>Related Legal Documents:</strong>
+              </p>
+              <ul className="text-sm text-gray-600 mt-2 space-y-1">
+                <li>• <Link to="/terms-of-service" className="underline text-blue-600 hover:text-blue-800">Terms of Service</Link></li>
+                <li>• <Link to="/privacy-policy" className="underline text-blue-600 hover:text-blue-800">Privacy Policy</Link></li>
+              </ul>
+            </div>
+          </section>
+
+          {/* Document Footer */}
+          <div className="border-t-2 border-gray-900 pt-8 mt-16 text-center">
+            <p className="text-sm text-gray-600 mb-2">
+              <strong>END OF COOKIE POLICY</strong>
+            </p>
+            <p className="text-xs text-gray-500">
+              © 2025 Recipe Revamped. All rights reserved.
+            </p>
           </div>
-        </DialogContent>
-      </Dialog>
+
+        </div>
+      </main>
     </div>
   );
 };

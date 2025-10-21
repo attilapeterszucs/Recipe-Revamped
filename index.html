@@ -156,19 +156,22 @@
     </script>
     
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- Performance: DNS Prefetch & Preconnect for faster resource loading -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://www.google-analytics.com" />
     <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
     <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
 
     <!-- Preconnect to Firebase services for faster initial load -->
     <link rel="preconnect" href="https://identitytoolkit.googleapis.com" />
     <link rel="preconnect" href="https://securetoken.googleapis.com" />
+
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/logo/logo.png" as="image" type="image/png" fetchpriority="high" />
 
     <!-- Enhanced Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
@@ -209,7 +212,7 @@
     
     <!-- SEO Meta Tags -->
     <title>Recipe Revamped - #1 AI Recipe Converter for Dietary Restrictions & Meal Planning</title>
-    <meta name="description" content="Transform any recipe instantly for gluten-free, vegan, keto, low-carb & 12+ dietary needs. Free AI recipe converter with meal planning, nutrition analysis & recipe storage. Start converting recipes today!" />
+    <meta name="description" content="Transform any recipe instantly for gluten-free, vegan, keto, low-carb & 24+ dietary needs. Free AI recipe converter with meal planning, nutrition analysis & recipe storage. Start converting recipes today!" />
     <meta name="keywords" content="recipe converter, AI recipe converter, dietary restrictions, gluten-free recipes, vegan recipes, keto recipes, paleo recipes, low carb recipes, dairy-free recipes, nut-free recipes, meal planning app, nutrition analysis, recipe book, recipe storage, healthy recipes, diet meal planner, food allergy recipes, diabetes recipes, weight loss recipes, recipe modification, cooking app, recipe organizer" />
     <meta name="author" content="Recipe Revamped Team" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -233,7 +236,7 @@
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Recipe Revamped - #1 AI Recipe Converter for Dietary Restrictions" />
-    <meta property="og:description" content="Transform any recipe instantly for gluten-free, vegan, keto & 12+ dietary needs. Free AI-powered recipe converter with meal planning and nutrition analysis. Start converting recipes today!" />
+    <meta property="og:description" content="Transform any recipe instantly for gluten-free, vegan, keto & 24+ dietary needs. Free AI-powered recipe converter with meal planning and nutrition analysis. Start converting recipes today!" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://reciperevamped.com" />
     <meta property="og:site_name" content="Recipe Revamped" />
@@ -249,7 +252,7 @@
     <meta name="twitter:site" content="@RecipeRevamped" />
     <meta name="twitter:creator" content="@RecipeRevamped" />
     <meta name="twitter:title" content="Recipe Revamped - #1 AI Recipe Converter for Dietary Restrictions" />
-    <meta name="twitter:description" content="Transform any recipe instantly for gluten-free, vegan, keto & 12+ dietary needs. Free AI recipe converter with meal planning and nutrition analysis." />
+    <meta name="twitter:description" content="Transform any recipe instantly for gluten-free, vegan, keto & 24+ dietary needs. Free AI recipe converter with meal planning and nutrition analysis." />
     <meta name="twitter:image" content="https://reciperevamped.com/images/twitter-card.jpg" />
     <meta name="twitter:image:alt" content="Recipe Revamped AI Recipe Converter Interface" />
 
@@ -261,7 +264,7 @@
       "name": "Recipe Revamped",
       "alternateName": "Recipe Revamped - AI Recipe Converter",
       "url": "https://reciperevamped.com",
-      "description": "AI-powered recipe converter that transforms any recipe to match your dietary restrictions and preferences. Supports gluten-free, vegan, keto, and 12+ other dietary needs.",
+      "description": "AI-powered recipe converter that transforms any recipe to match your dietary restrictions and preferences. Supports gluten-free, vegan, keto, and 24+ other dietary needs.",
       "applicationCategory": "LifestyleApplication",
       "operatingSystem": "Web Browser",
       "offers": {
@@ -308,10 +311,12 @@
     </script>
     
     <!-- Additional SEO Tags -->
-    <meta name="theme-color" content="#16a34a" />
+    <meta name="theme-color" content="#16a34a" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#065f46" media="(prefers-color-scheme: dark)" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Recipe Revamped" />
   </head>
   <body>
     <div id="root"></div>
