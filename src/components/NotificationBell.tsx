@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bell, CheckCircle, Info, AlertTriangle, AlertCircle, Trash2, Check } from 'lucide-react';
-import { subscribeToUserNotifications, markNotificationAsRead, deleteNotification, deleteAllNotifications } from '../lib/notifications';
+import { Bell, CheckCircle, Info, AlertTriangle, AlertCircle, Trash2 } from 'lucide-react';
+import { subscribeToUserNotifications, markNotificationAsRead, deleteNotification } from '../lib/notifications';
 import type { Notification } from '../types/notifications';
 
 interface NotificationBellProps {
@@ -69,14 +69,6 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId, onNo
     }
   };
 
-  const handleDeleteAllNotifications = async () => {
-    try {
-      await deleteAllNotifications(userId);
-    } catch (error) {
-      console.error('Error deleting all notifications:', error);
-    }
-  };
-
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'success':
@@ -129,41 +121,32 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId, onNo
             className="absolute -right-32 sm:right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border-2 border-green-100 z-[9999] max-h-[500px] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
           >
             {/* Header */}
-            <div className="px-5 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border-b-2 border-green-100">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-xl">
-                    <Bell className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                      Notifications
-                    </h3>
-                    {unreadCount > 0 && (
-                      <p className="text-xs text-gray-600 font-medium">{unreadCount} unread</p>
-                    )}
-                  </div>
+            <div className="px-5 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border-b-2 border-green-100 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-xl">
+                  <Bell className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    Notifications
+                  </h3>
+                  {unreadCount > 0 && (
+                    <p className="text-xs text-gray-600 font-medium">{unreadCount} unread</p>
+                  )}
                 </div>
               </div>
               {notifications.length > 0 && (
-                <div className="flex items-center gap-2">
-                  {unreadCount > 0 && (
-                    <button
-                      onClick={handleMarkAllAsRead}
-                      className="flex-1 inline-flex items-center justify-center gap-2 text-xs text-green-700 bg-green-100 hover:bg-green-200 font-semibold transition-all duration-200 px-3 py-2 rounded-lg border border-green-200 hover:border-green-300"
-                    >
-                      <Check className="w-3.5 h-3.5" />
-                      Mark all as read
-                    </button>
-                  )}
-                  <button
-                    onClick={handleDeleteAllNotifications}
-                    className="flex-1 inline-flex items-center justify-center gap-2 text-xs text-red-700 bg-red-50 hover:bg-red-100 font-semibold transition-all duration-200 px-3 py-2 rounded-lg border border-red-200 hover:border-red-300"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    Delete all
-                  </button>
-                </div>
+                <button
+                  onClick={handleMarkAllAsRead}
+                  disabled={unreadCount === 0}
+                  className={`text-xs font-medium transition-all duration-200 ${
+                    unreadCount === 0
+                      ? 'text-gray-400 cursor-not-allowed'
+                      : 'text-green-600 hover:text-green-700 hover:underline cursor-pointer'
+                  }`}
+                >
+                  Mark all as read
+                </button>
               )}
             </div>
 
