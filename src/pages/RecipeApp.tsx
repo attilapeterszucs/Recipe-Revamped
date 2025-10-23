@@ -563,10 +563,42 @@ export function RecipeApp() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-green-50/30 via-emerald-50/20 to-white flex items-center justify-center relative overflow-hidden">
+        {/* Animated background blobs */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
+          <div className="absolute top-20 right-10 w-72 h-72 bg-emerald-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+          <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
+        </div>
+
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Loading Recipe Revamp...</p>
+          {/* Logo with pulse animation */}
+          <div className="mb-6 animate-pulse">
+            <img
+              src="/logo/logo.png"
+              alt="Recipe Revamped Logo"
+              className="h-24 w-24 mx-auto drop-shadow-lg"
+            />
+          </div>
+
+          {/* Spinner with gradient */}
+          <div className="relative inline-flex items-center justify-center mb-6">
+            <div className="absolute inline-block h-16 w-16 rounded-full bg-gradient-to-r from-green-400 to-emerald-400 opacity-20 animate-ping" />
+            <div className="relative inline-block animate-spin rounded-full h-16 w-16 border-4 border-transparent bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-padding" style={{
+              maskImage: 'linear-gradient(transparent 50%, black 50%)',
+              WebkitMaskImage: 'linear-gradient(transparent 50%, black 50%)'
+            }}>
+              <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-r-transparent border-b-green-600 border-l-green-600" />
+            </div>
+          </div>
+
+          {/* Text with gradient */}
+          <h2 className="text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
+            Loading Recipe Revamped
+          </h2>
+          <p className="text-sm text-gray-600 font-medium animate-pulse">
+            Preparing your culinary workspace...
+          </p>
         </div>
       </div>
     );
