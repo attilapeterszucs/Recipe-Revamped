@@ -393,18 +393,6 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
           <label htmlFor="recipe" className="block text-xs sm:text-sm font-medium text-gray-700">
             {mode === 'convert' ? 'Paste Your Recipe' : 'Enter Food Name or Dish Type'}
           </label>
-          {mode === 'convert' && (
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={disabled}
-              className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 hover:border-green-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-              aria-label="Upload recipe file"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              Upload File
-            </button>
-          )}
         </div>
         {mode === 'convert' && (
           <>
@@ -478,18 +466,30 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
             }`}>
               {recipe.length.toLocaleString()} / 20,000 characters
             </p>
-            {recipe.length > 0 && (
-              <div className="h-1.5 w-32 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className={`h-full transition-all duration-300 ${
-                    recipe.length > 18000 ? 'bg-red-500' :
-                    recipe.length > 15000 ? 'bg-amber-500' :
-                    'bg-green-500'
-                  }`}
-                  style={{ width: `${Math.min((recipe.length / 20000) * 100, 100)}%` }}
+            <div className="flex items-center gap-3">
+              {recipe.length > 0 && (
+                <div className="h-1.5 w-32 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-300 ${
+                      recipe.length > 18000 ? 'bg-red-500' :
+                      recipe.length > 15000 ? 'bg-amber-500' :
+                      'bg-green-500'
+                    }`}
+                    style={{ width: `${Math.min((recipe.length / 20000) * 100, 100)}%` }}
                 />
               </div>
-            )}
+              )}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={disabled}
+                className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 hover:border-green-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                aria-label="Upload recipe file"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                Upload File
+              </button>
+            </div>
           </div>
         )}
         {mode === 'create' && (
