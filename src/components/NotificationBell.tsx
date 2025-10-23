@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bell, CheckCircle, Info, AlertTriangle, AlertCircle } from 'lucide-react';
-import { subscribeToUserNotifications, markNotificationAsRead } from '../lib/notifications';
+import { Bell, CheckCircle, Info, AlertTriangle, AlertCircle, Trash2, Check } from 'lucide-react';
+import { subscribeToUserNotifications, markNotificationAsRead, deleteNotification, deleteAllNotifications } from '../lib/notifications';
 import type { Notification } from '../types/notifications';
 
 interface NotificationBellProps {
@@ -60,6 +60,23 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId, onNo
     }
   };
 
+  const handleDeleteNotification = async (e: React.MouseEvent, notificationId: string) => {
+    e.stopPropagation(); // Prevent triggering the notification click
+    try {
+      await deleteNotification(notificationId);
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
+  };
+
+  const handleDeleteAllNotifications = async () => {
+    try {
+      await deleteAllNotifications(userId);
+    } catch (error) {
+      console.error('Error deleting all notifications:', error);
+    }
+  };
+
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'success':
@@ -112,27 +129,41 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId, onNo
             className="absolute -right-32 sm:right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border-2 border-green-100 z-[9999] max-h-[500px] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
           >
             {/* Header */}
-            <div className="px-5 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border-b-2 border-green-100 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-xl">
-                  <Bell className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                    Notifications
-                  </h3>
-                  {unreadCount > 0 && (
-                    <p className="text-xs text-gray-600 font-medium">{unreadCount} unread</p>
-                  )}
+            <div className="px-5 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border-b-2 border-green-100">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-xl">
+                    <Bell className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                      Notifications
+                    </h3>
+                    {unreadCount > 0 && (
+                      <p className="text-xs text-gray-600 font-medium">{unreadCount} unread</p>
+                    )}
+                  </div>
                 </div>
               </div>
-              {unreadCount > 0 && (
-                <button
-                  onClick={handleMarkAllAsRead}
-                  className="text-sm text-green-600 hover:text-green-700 font-semibold transition-all duration-200 px-3 py-1.5 rounded-lg hover:bg-green-100"
-                >
-                  Mark all read
-                </button>
+              {notifications.length > 0 && (
+                <div className="flex items-center gap-2">
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={handleMarkAllAsRead}
+                      className="flex-1 inline-flex items-center justify-center gap-2 text-xs text-green-700 bg-green-100 hover:bg-green-200 font-semibold transition-all duration-200 px-3 py-2 rounded-lg border border-green-200 hover:border-green-300"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      Mark all as read
+                    </button>
+                  )}
+                  <button
+                    onClick={handleDeleteAllNotifications}
+                    className="flex-1 inline-flex items-center justify-center gap-2 text-xs text-red-700 bg-red-50 hover:bg-red-100 font-semibold transition-all duration-200 px-3 py-2 rounded-lg border border-red-200 hover:border-red-300"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete all
+                  </button>
+                </div>
               )}
             </div>
 
@@ -150,14 +181,16 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId, onNo
                 notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    onClick={() => handleNotificationClick(notification)}
-                    className={`p-4 cursor-pointer transition-all duration-200 border-b border-gray-100 last:border-0 ${
+                    className={`group relative p-4 transition-all duration-200 border-b border-gray-100 last:border-0 ${
                       notification.isRead
                         ? 'hover:bg-gray-50'
                         : 'bg-gradient-to-r from-green-50/30 to-emerald-50/30 hover:from-green-50 hover:to-emerald-50 border-l-4 border-l-green-500'
                     }`}
                   >
-                    <div className="flex items-start gap-3">
+                    <div
+                      onClick={() => handleNotificationClick(notification)}
+                      className="cursor-pointer flex items-start gap-3"
+                    >
                       <div className="flex-shrink-0 mt-1">
                         <div className={`p-2 rounded-lg ${
                           notification.type === 'success' ? 'bg-green-100' :
@@ -168,7 +201,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId, onNo
                           {getNotificationIcon(notification.type)}
                         </div>
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 pr-8">
                         <div className="flex items-start justify-between gap-2">
                           <h4 className={`text-sm font-bold ${
                             notification.isRead ? 'text-gray-700' : 'text-gray-900'
@@ -192,6 +225,14 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId, onNo
                         )}
                       </div>
                     </div>
+                    {/* Delete button - appears on hover */}
+                    <button
+                      onClick={(e) => handleDeleteNotification(e, notification.id)}
+                      className="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100"
+                      aria-label="Delete notification"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 ))
               )}

@@ -1,14 +1,16 @@
-import { 
-  collection, 
-  doc, 
-  addDoc, 
-  updateDoc, 
-  query, 
-  where, 
-  orderBy, 
-  onSnapshot, 
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
   serverTimestamp,
-  Timestamp 
+  Timestamp
 } from 'firebase/firestore';
 import { db } from './firebase';
 import type { Notification, NotificationData } from '../types/notifications';
@@ -89,6 +91,38 @@ export const subscribeToUserNotifications = (
   }, (error) => {
     logger.error('Error subscribing to notifications:', { error });
   });
+};
+
+// Delete a single notification
+export const deleteNotification = async (notificationId: string): Promise<void> => {
+  try {
+    const notificationRef = doc(db, COLLECTION_NAME, notificationId);
+    await deleteDoc(notificationRef);
+    logger.info('Notification deleted successfully');
+  } catch (error) {
+    logger.error('Error deleting notification:', { error });
+    throw error;
+  }
+};
+
+// Delete all notifications for a user
+export const deleteAllNotifications = async (userId: string): Promise<void> => {
+  try {
+    const q = query(
+      collection(db, COLLECTION_NAME),
+      where('userId', '==', userId)
+    );
+    const snapshot = await getDocs(q);
+
+    // Delete all notifications in batch
+    const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
+
+    logger.info('All notifications deleted successfully', { userId });
+  } catch (error) {
+    logger.error('Error deleting all notifications:', { error });
+    throw error;
+  }
 };
 
 // Create system-wide update notifications (admin function)
