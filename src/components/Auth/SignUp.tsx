@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, CheckCircle, Mail } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, CheckCircle, Mail, User } from 'lucide-react';
 import { signUpWithEmail, signInWithGoogle } from '../../lib/firebase';
 import { SignUpSchema, type SignUpInput } from '../../lib/validation';
 import { z } from 'zod';
@@ -81,6 +81,7 @@ interface SignUpProps {
 
 export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) => {
   const [formData, setFormData] = useState<SignUpInput>({
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -115,7 +116,7 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
       const validatedData = SignUpSchema.parse(formData);
       setLoading(true);
 
-      await signUpWithEmail(validatedData.email, validatedData.password);
+      await signUpWithEmail(validatedData.email, validatedData.password, validatedData.username);
       setEmailSent(true);
       // Note: We do NOT call onSignUp() for email signups
       // The user must verify their email first
@@ -203,6 +204,23 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
 
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="username" className="font-bold text-gray-900">Username</Label>
+            <Input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Choose a username"
+              disabled={loading}
+              className={cn("h-12 px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-500 font-medium shadow-sm", errors.username && "border-destructive")}
+            />
+            {errors.username && (
+              <p className="text-sm text-destructive font-semibold">{errors.username}</p>
+            )}
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="email" className="font-bold text-gray-900">Email address</Label>
             <Input

@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { logger } from './logger';
-import { 
-  getAuth, 
+import {
+  getAuth,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -13,6 +13,7 @@ import {
   checkActionCode,
   verifyPasswordResetCode,
   confirmPasswordReset,
+  updateProfile,
   type User,
   type ActionCodeSettings
 } from 'firebase/auth';
@@ -81,8 +82,15 @@ const passwordResetSettings: ActionCodeSettings = {
 };
 
 // Auth functions
-export const signUpWithEmail = async (email: string, password: string) => {
+export const signUpWithEmail = async (email: string, password: string, username?: string) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+  // Set display name (username) if provided
+  if (username) {
+    await updateProfile(userCredential.user, {
+      displayName: username
+    });
+  }
 
   // Send Firebase's built-in email verification
   await sendEmailVerification(userCredential.user);
