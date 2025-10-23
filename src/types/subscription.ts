@@ -68,10 +68,11 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
     features: [
       '5 recipes in Recipe Book',
       '3 recipe conversions per day',
-      'Basic diet filters (Vegan, Gluten-Free, Vegetarian, Dairy-Free)',
-      '✗ No meal planning',
-      '✗ No default preferences',
-      '✗ No backup/restore'
+      'Basic diet filters',
+      'Secure cloud processing',
+      '✗ Meal planning',
+      '✗ Default preferences',
+      '✗ Cloud backup/restore'
     ]
   },
   chef: {
@@ -99,11 +100,10 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
       'Everything in Free',
       '100 recipes in Recipe Book',
       '100 conversions per day',
-      'All diet filters (24+ options)',
+      'Unlock up to 12 dietary filters',
       'Meal planning calendar',
       'Default recipe preferences',
       'Custom profile pictures',
-      'Health Goals tracking',
       '✗ Backup & restore recipes',
       '✗ Health Conditions'
     ]
@@ -134,7 +134,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, SubscriptionPlanDetail
       '1,000 recipes in Recipe Book',
       'Advanced nutrition analysis',
       'Recipe collections & tags',
-      'Health Goals tracking',
+      'All dietary filters (24+ options)',
       'Health Conditions',
       'Backup & restore recipes',
       'Priority support'
