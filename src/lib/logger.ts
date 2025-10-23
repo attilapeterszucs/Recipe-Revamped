@@ -17,22 +17,27 @@ const SENSITIVE_PATTERNS = [
 ];
 
 class Logger {
-  private isDevelopment = process.env.NODE_ENV === 'development';
-  
+  private isDevelopment = import.meta.env.DEV;
+
   private sanitize(input: string): string {
     let sanitized = input;
-    
+
     SENSITIVE_PATTERNS.forEach(pattern => {
       sanitized = sanitized.replace(pattern, '[REDACTED]');
     });
-    
+
     return sanitized;
   }
-  
+
   private log(level: LogLevel, message: string, data?: Record<string, any>): void {
+    // Skip all logging in production to keep console clean
+    if (!this.isDevelopment) {
+      return;
+    }
+
     // Always sanitize the message
     const sanitizedMessage = this.sanitize(message);
-    
+
     // Sanitize data object if provided
     let sanitizedData: Record<string, any> | undefined;
     if (data) {
@@ -48,34 +53,29 @@ class Logger {
         }
       });
     }
-    
+
     const logEntry: LogEntry = {
       level,
       message: sanitizedMessage,
       timestamp: new Date().toISOString(),
       data: sanitizedData,
     };
-    
-    // Only log to console in development
-    if (this.isDevelopment) {
-      switch (level) {
-        case 'debug':
-          console.debug(`[${logEntry.timestamp}] DEBUG:`, logEntry.message, logEntry.data);
-          break;
-        case 'info':
-          // Suppress INFO logs in development for cleaner console
-          break;
-        case 'warn':
-          console.warn(`[${logEntry.timestamp}] WARN:`, logEntry.message, logEntry.data);
-          break;
-        case 'error':
-          console.error(`[${logEntry.timestamp}] ERROR:`, logEntry.message, logEntry.data);
-          break;
-      }
+
+    // Log to console in development only
+    switch (level) {
+      case 'debug':
+        console.debug(`[${logEntry.timestamp}] DEBUG:`, logEntry.message, logEntry.data);
+        break;
+      case 'info':
+        // Suppress INFO logs for cleaner console
+        break;
+      case 'warn':
+        console.warn(`[${logEntry.timestamp}] WARN:`, logEntry.message, logEntry.data);
+        break;
+      case 'error':
+        console.error(`[${logEntry.timestamp}] ERROR:`, logEntry.message, logEntry.data);
+        break;
     }
-    
-    // In production, you could send logs to a service like Firebase Analytics, Sentry, etc.
-    // Example: this.sendToLogService(logEntry);
   }
   
   debug(message: string, data?: Record<string, any>): void {

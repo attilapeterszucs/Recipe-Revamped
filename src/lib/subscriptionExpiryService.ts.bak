@@ -77,6 +77,7 @@ export class SubscriptionExpiryService {
       return { wasExpired: false };
 
     } catch (error) {
+      console.error('❌ Error checking subscription expiry:', error);
       return { wasExpired: false };
     }
   }
@@ -126,6 +127,7 @@ export class SubscriptionExpiryService {
       };
 
     } catch (error) {
+      console.error('❌ Error getting subscription status:', error);
       return {
         plan: 'free',
         status: 'active',
@@ -159,6 +161,7 @@ export class SubscriptionExpiryService {
       return { hasCancelledActive: false };
 
     } catch (error) {
+      console.error('❌ Error checking cancelled but active subscription:', error);
       return { hasCancelledActive: false };
     }
   }
@@ -172,6 +175,7 @@ export class SubscriptionExpiryService {
     downgradedUsers: string[];
   }> {
     try {
+      console.log('🔄 Starting batch expiry check...');
 
       // Query for subscriptions that might be expired
       const now = new Date();
@@ -185,6 +189,7 @@ export class SubscriptionExpiryService {
       const checkedCount = querySnapshot.size;
       const downgradedUsers: string[] = [];
 
+      console.log(`📊 Found ${checkedCount} potentially expired subscriptions`);
 
       for (const docSnapshot of querySnapshot.docs) {
         const userId = docSnapshot.id;
@@ -201,6 +206,7 @@ export class SubscriptionExpiryService {
             downgradedUsers.push(userId);
           }
         } catch (error) {
+          console.error(`❌ Error processing expiry for user ${userId}:`, error);
         }
       }
 
@@ -213,6 +219,7 @@ export class SubscriptionExpiryService {
       };
 
     } catch (error) {
+      console.error('❌ Error in batch expiry check:', error);
       return {
         checkedCount: 0,
         expiredCount: 0,
@@ -237,6 +244,7 @@ export class SubscriptionExpiryService {
       return intervalId;
 
     } catch (error) {
+      console.error('❌ Error initializing expiry check:', error);
       return null;
     }
   }
@@ -261,6 +269,7 @@ export class SubscriptionExpiryService {
 export const setupExpiryEventListeners = () => {
   // Listen for subscription expiry events
   window.addEventListener('subscription-expired', (event: CustomEvent) => {
+    console.log('🔔 Subscription expiry event received:', event.detail);
 
     // Force refresh subscription context
     window.dispatchEvent(new CustomEvent('refresh-subscription'));

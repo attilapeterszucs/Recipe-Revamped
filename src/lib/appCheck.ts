@@ -13,38 +13,26 @@ export let appCheck: any = null;
 
 export const initializeAppCheckService = async (): Promise<void> => {
   try {
-    // Only initialize in production or when reCAPTCHA key is provided
-    if (APP_CHECK_SITE_KEY && import.meta.env.PROD) {
+    // Temporarily disabled in production until reCAPTCHA Enterprise is properly configured in Firebase Console
+    // To enable: Register the reCAPTCHA Enterprise site key in Firebase Console > App Check
+    if (APP_CHECK_SITE_KEY && import.meta.env.PROD && false) { // Disabled with false flag
       appCheck = initializeAppCheck(app, {
         provider: new ReCaptchaEnterpriseProvider(APP_CHECK_SITE_KEY),
-        isTokenAutoRefreshEnabled: true, // Automatically refresh tokens
+        isTokenAutoRefreshEnabled: true,
       });
-      
-      logger.info('Firebase App Check initialized with reCAPTCHA Enterprise');
-      
-      // Test token generation
+
+      // Test token generation silently
       try {
         await getToken(appCheck, /* forceRefresh */ false);
-        logger.info('App Check token generated successfully');
       } catch (tokenError) {
-        logger.error('Failed to generate App Check token', { error: tokenError });
+        // Silent fail - App Check is optional
+        appCheck = null;
       }
-      
-    } else if (import.meta.env.DEV) {
-      // In development, use debug tokens
-      // Debug tokens allow you to test your app with App Check enforcement enabled
-      logger.info('App Check skipped in development environment');
-      
-      // For development, you can set debug tokens
-      // See: https://firebase.google.com/docs/app-check/web/debug-provider
-      
-    } else {
-      logger.warn('App Check not initialized: Missing reCAPTCHA site key');
     }
+    // App Check disabled - will be enabled when properly configured
   } catch (error) {
-    logger.error('Failed to initialize Firebase App Check', { error });
-    // Don't throw error to prevent app from breaking
-    // App Check is an additional security layer, not a requirement for basic functionality
+    // Silent fail - App Check is optional security layer
+    appCheck = null;
   }
 };
 

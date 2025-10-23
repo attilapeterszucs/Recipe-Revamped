@@ -80,7 +80,6 @@ export class SubscriptionCancellationService {
       }
 
     } catch (error) {
-      console.error('❌ Cancellation request failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -143,7 +142,6 @@ export class SubscriptionCancellationService {
       }
 
     } catch (error) {
-      console.error('❌ Immediate cancellation request failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -173,9 +171,7 @@ export class SubscriptionCancellationService {
 // Helper function to listen for subscription events
 export const setupSubscriptionEventListeners = () => {
   // Listen for subscription cancellation requests (webhook will update Firestore)
-  window.addEventListener('subscription-cancellation-requested', (event: CustomEvent) => {
-    console.log('🔔 Subscription cancellation requested:', event.detail);
-
+  window.addEventListener('subscription-cancellation-requested', () => {
     // Force refresh subscription context after a delay to allow webhook to process
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('refresh-subscription'));
@@ -183,9 +179,7 @@ export const setupSubscriptionEventListeners = () => {
   });
 
   // Listen for subscription expiry events
-  window.addEventListener('subscription-expired', (event: CustomEvent) => {
-    console.log('🔔 Subscription expired and downgraded:', event.detail);
-
+  window.addEventListener('subscription-expired', () => {
     // Force refresh subscription context
     window.dispatchEvent(new CustomEvent('refresh-subscription'));
   });

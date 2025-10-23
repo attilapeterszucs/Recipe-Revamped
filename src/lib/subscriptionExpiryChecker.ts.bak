@@ -40,6 +40,7 @@ export class SubscriptionExpiryChecker {
       }
 
     } catch (error) {
+      console.error('❌ Error checking subscription expiry:', error);
     }
   }
 
@@ -77,6 +78,7 @@ export class SubscriptionExpiryChecker {
 
       return null;
     } catch (error) {
+      console.error('❌ Error finding user subscription:', error);
       return null;
     }
   }
@@ -101,6 +103,7 @@ export class SubscriptionExpiryChecker {
       });
 
     } catch (error) {
+      console.error('❌ Error downgrading expired subscription:', error);
       throw error;
     }
   }
