@@ -119,14 +119,6 @@
     </image:image>
   </url>
 
-  <!-- Password Recovery - User Experience -->
-  <url>
-    <loc>https://reciperevamped.com/password-recovery</loc>
-    <lastmod>2025-09-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-
   <!-- Privacy Policy - GDPR/CCPA Compliance -->
   <url>
     <loc>https://reciperevamped.com/privacy-policy</loc>
@@ -149,14 +141,6 @@
     <lastmod>2025-10-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
-  </url>
-
-  <!-- Email Verification - User Onboarding -->
-  <url>
-    <loc>https://reciperevamped.com/verify-email</loc>
-    <lastmod>2025-09-23</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
   </url>
 
 </urlset>

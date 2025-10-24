@@ -164,6 +164,22 @@ export const SEO_CONFIGS: Record<string, SEOConfig> = {
       description: 'Explore partnership opportunities with Recipe Revamped for influencers, businesses, and affiliates.',
       url: 'https://reciperevamped.com/partnerships'
     }
+  },
+
+  'verify-email': {
+    title: 'Verify Your Email - Recipe Revamped',
+    description: 'Verify your email address to complete your Recipe Revamped account setup.',
+    canonical: 'https://reciperevamped.com/verify-email',
+    ogType: 'website',
+    noindex: true
+  },
+
+  'password-recovery': {
+    title: 'Password Recovery - Recipe Revamped',
+    description: 'Reset your Recipe Revamped account password.',
+    canonical: 'https://reciperevamped.com/password-recovery',
+    ogType: 'website',
+    noindex: true
   }
 };
 

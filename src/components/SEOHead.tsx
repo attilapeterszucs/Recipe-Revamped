@@ -41,6 +41,10 @@ export const SEOHead: React.FC<SEOHeadProps> = ({ pageKey, customSEO }) => {
         currentPageKey = 'careers';
       } else if (path === '/partnerships') {
         currentPageKey = 'partnerships';
+      } else if (path === '/verify-email') {
+        currentPageKey = 'verify-email';
+      } else if (path === '/password-recovery') {
+        currentPageKey = 'password-recovery';
       } else {
         currentPageKey = 'home'; // fallback
       }
