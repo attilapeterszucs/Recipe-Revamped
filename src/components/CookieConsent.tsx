@@ -99,21 +99,21 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                       <Button
                         variant="link"
                         onClick={() => setCurrentView('detailed')}
-                        className="h-auto p-0 text-green-600 hover:text-green-700 font-bold text-xs sm:text-sm inline underline"
+                        className="h-auto p-0 text-green-700 hover:text-green-800 font-bold text-xs sm:text-sm inline underline"
                       >
                         Customize
                       </Button>
                     </p>
                     <div className="flex flex-wrap gap-2 text-xs">
-                      <Link to="/privacy-policy" className="text-green-600 hover:text-green-700 underline font-medium">
+                      <Link to="/privacy-policy" className="text-green-700 hover:text-green-800 underline font-medium">
                         Privacy Policy
                       </Link>
                       <span className="text-gray-400">•</span>
-                      <Link to="/terms-of-service" className="text-green-600 hover:text-green-700 underline font-medium">
+                      <Link to="/terms-of-service" className="text-green-700 hover:text-green-800 underline font-medium">
                         Terms of Service
                       </Link>
                       <span className="text-gray-400">•</span>
-                      <Link to="/cookie-policy" className="text-green-600 hover:text-green-700 underline font-medium">
+                      <Link to="/cookie-policy" className="text-green-700 hover:text-green-800 underline font-medium">
                         Cookie Policy
                       </Link>
                     </div>
@@ -351,11 +351,11 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                 <div className="mt-4">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-gray-600">
                     <div className="flex flex-wrap gap-2 sm:gap-3">
-                      <Link to="/privacy-policy" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Privacy Policy</Link>
+                      <Link to="/privacy-policy" className="hover:text-green-800 transition-colors underline text-green-700 font-semibold">Privacy Policy</Link>
                       <span className="hidden sm:inline text-gray-400">•</span>
-                      <Link to="/terms-of-service" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Terms of Service</Link>
+                      <Link to="/terms-of-service" className="hover:text-green-800 transition-colors underline text-green-700 font-semibold">Terms of Service</Link>
                       <span className="hidden sm:inline text-gray-400">•</span>
-                      <Link to="/cookie-policy" className="hover:text-green-700 transition-colors underline text-green-600 font-semibold">Cookie Policy</Link>
+                      <Link to="/cookie-policy" className="hover:text-green-800 transition-colors underline text-green-700 font-semibold">Cookie Policy</Link>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge className="bg-green-100 text-green-700 text-xs font-semibold border-0">

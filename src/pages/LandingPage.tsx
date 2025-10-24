@@ -477,13 +477,13 @@ export const LandingPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="space-y-2 sm:space-y-3">
-                    <div className="flex items-center gap-2 text-green-600 text-xs sm:text-sm font-semibold uppercase tracking-wide">
-                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-600 animate-pulse" />
+                    <div className="flex items-center gap-2 text-green-700 text-xs sm:text-sm font-semibold uppercase tracking-wide">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-700 animate-pulse" />
                       Converted Recipe
                     </div>
                     <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 p-4 sm:p-6 rounded-xl sm:rounded-2xl relative overflow-hidden">
                       <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2">
-                        <div className="bg-green-600 text-white text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">Vegan • GF</div>
+                        <div className="bg-green-700 text-white text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">Vegan • GF</div>
                       </div>
                       <p className="font-bold text-base sm:text-lg text-green-700 mb-3 sm:mb-4">Plant-Based Lasagna</p>
                       <div className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-gray-700">
@@ -810,6 +810,9 @@ export const LandingPage: React.FC = () => {
                   className={`relative inline-flex h-7 w-14 sm:h-8 sm:w-16 items-center rounded-full transition-all duration-300 ${
                     isYearly ? 'bg-green-600 shadow-lg shadow-green-500/50' : 'bg-gray-300'
                   }`}
+                  aria-label={`Switch to ${isYearly ? 'monthly' : 'yearly'} billing`}
+                  role="switch"
+                  aria-checked={isYearly}
                 >
                   <span className={`inline-block h-5 w-5 sm:h-6 sm:w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
                     isYearly ? 'translate-x-8 sm:translate-x-9' : 'translate-x-1'
