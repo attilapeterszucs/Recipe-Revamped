@@ -14,6 +14,8 @@ const CookiePolicy = lazy(() => import('./pages/CookiePolicy').then(module => ({
 const AboutUs = lazy(() => import('./pages/AboutUs').then(module => ({ default: module.AboutUs })));
 const Blog = lazy(() => import('./pages/Blog').then(module => ({ default: module.Blog })));
 const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
+const Careers = lazy(() => import('./pages/Careers').then(module => ({ default: module.Careers })));
+const Partnerships = lazy(() => import('./pages/Partnerships').then(module => ({ default: module.Partnerships })));
 const Unsubscribe = lazy(() => import('./pages/Unsubscribe').then(module => ({ default: module.Unsubscribe })));
 const SignInPage = lazy(() => import('./pages/SignInPage').then(module => ({ default: module.SignInPage })));
 const SignUpPage = lazy(() => import('./pages/SignUpPage').then(module => ({ default: module.SignUpPage })));
@@ -86,6 +88,8 @@ const AppContent: React.FC = () => {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:blogId" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/partnerships" element={<Partnerships />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
