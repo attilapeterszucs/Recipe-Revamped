@@ -129,20 +129,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <!-- Performance: DNS Prefetch & Preconnect for faster resource loading -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://www.googletagmanager.com" />
-    <link rel="preconnect" href="https://www.google-analytics.com" />
-    <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
-    <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+    <!-- Performance: Critical Preconnects (limit to 4 most important) -->
+    <!-- Firebase Auth iframe - saves 310ms per PageSpeed -->
+    <link rel="preconnect" href="https://reciperevamped.firebaseapp.com" crossorigin />
+    <!-- Google APIs - saves 300ms per PageSpeed -->
+    <link rel="preconnect" href="https://apis.google.com" crossorigin />
+    <!-- Firebase Auth & Firestore -->
+    <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
 
-    <!-- Preconnect to Firebase services for faster initial load -->
-    <link rel="preconnect" href="https://identitytoolkit.googleapis.com" />
-    <link rel="preconnect" href="https://securetoken.googleapis.com" />
+    <!-- Secondary DNS Prefetch (lower priority) -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+    <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
+    <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
+    <link rel="dns-prefetch" href="https://firebase.googleapis.com" />
+    <link rel="dns-prefetch" href="https://firebaseinstallations.googleapis.com" />
 
     <!-- Preload critical assets -->
     <link rel="preload" href="/logo/logo.png" as="image" type="image/png" fetchpriority="high" />
+
+    <!-- Note: CSS files are loaded by Vite with proper priorities -->
+    <!-- Main CSS is critical and loads synchronously -->
+    <!-- Settings CSS is loaded async/defer for non-critical routes -->
 
     <!-- Enhanced Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="

@@ -28,18 +28,26 @@ export default defineConfig({
     target: 'es2020', // Modern target for better tree-shaking
     minify: 'esbuild', // Fast and effective minification
     cssMinify: true,
-    cssCodeSplit: true,
+    cssCodeSplit: true, // Split CSS by route for better caching
     reportCompressedSize: false,
-    // Reduce module preloading to prevent unused preload warnings
+    // Inline small CSS to reduce render-blocking requests
+    assetsInlineLimit: 4096, // Inline assets < 4KB (default)
+    // Optimize module preloading for critical path
     modulePreload: {
       polyfill: false,
-      resolveDependencies: (_filename, deps) => {
-        // Only preload critical dependencies
-        return deps.filter(dep =>
-          dep.includes('firebase') ||
-          dep.includes('react') ||
-          dep.includes('router')
-        );
+      resolveDependencies: (filename, deps) => {
+        // Only preload dependencies for entry point and critical routes
+        // Avoid preloading for lazy-loaded routes to reduce initial payload
+        if (filename.includes('index')) {
+          // For main entry, preload only core dependencies
+          return deps.filter(dep =>
+            dep.includes('firebase-core') ||
+            dep.includes('react-vendor') ||
+            dep.includes('router')
+          );
+        }
+        // For other routes, don't preload to avoid network congestion
+        return [];
       }
     },
     rollupOptions: {
