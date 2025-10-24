@@ -121,9 +121,23 @@ export const TermsOfService: React.FC = () => {
               IMPORTANT: Personal identifying information such as your name, physical address, email address, account credentials, and payment information is NOT shared with OpenAI under any circumstances.
             </p>
 
-            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">3.3 Google Analytics and Advertising</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">3.3 Google Analytics Data Collection</h3>
             <p className="mb-4 text-justify">
-              We share usage data, analytics, and behavioral information with Google for advertising and analytics purposes. This includes demographic information, usage patterns, and engagement metrics to enable targeted advertising and service improvement.
+              We use Google Analytics 4 (GA4) to collect usage data and analytics. <strong>This tracking is consent-based and only occurs after you explicitly accept analytics cookies.</strong> When you consent, we share the following data with Google:
+            </p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Page views, navigation patterns, and feature interactions</li>
+              <li>Geographic location (country, region, city - derived from IP address)</li>
+              <li>Demographic estimates (age range, gender, interests via Google Signals)</li>
+              <li>Device and browser information (type, version, operating system)</li>
+              <li>Traffic sources and marketing campaign attribution</li>
+              <li>User engagement metrics and conversion events</li>
+            </ul>
+            <p className="mb-4 text-justify">
+              <strong>Ad Personalization:</strong> We have DISABLED ad personalization in our Google Analytics configuration. Your data is NOT used for personalized advertising, remarketing, or individual audience targeting. Google Signals is enabled solely for demographic reporting, not for ad personalization.
+            </p>
+            <p className="mb-4 text-justify">
+              You may opt-out of Google Analytics tracking at any time through our cookie settings or by using browser extensions. See our <Link to="/cookie-policy" className="underline text-blue-600 hover:text-blue-800">Cookie Policy</Link> for detailed information about analytics data collection.
             </p>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">3.4 Data Processing by Third Parties</h3>

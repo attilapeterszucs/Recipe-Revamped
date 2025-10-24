@@ -85,17 +85,25 @@ export const PrivacyPolicy: React.FC = () => {
             </p>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.3 Analytics and Usage Information</h3>
-            <p className="mb-2">We collect analytics data through Google Analytics with Google Ads integration:</p>
+            <p className="mb-2">We use Google Analytics 4 (GA4) to collect analytics data. This tracking is consent-based and only occurs after you accept analytics cookies. The following data is collected:</p>
             <ul className="list-disc ml-6 space-y-2 mb-4">
-              <li>Daily conversion counts and feature usage statistics</li>
-              <li>Page views, user flows, and navigation patterns</li>
-              <li>Engagement metrics and time spent on features</li>
-              <li>Demographic information (age, gender, interests - estimated by Google)</li>
-              <li>Device and browser information (type, version, screen resolution)</li>
-              <li>Geographic location (city/region level, not precise location)</li>
-              <li>Advertising interaction data and conversion events</li>
-              <li>Referral sources and marketing campaign attribution</li>
+              <li><strong>Page View Data:</strong> Page URLs, page titles, referring URLs, and time spent on pages</li>
+              <li><strong>User Engagement:</strong> Navigation patterns, button clicks, feature interactions, and conversion events</li>
+              <li><strong>Geographic Information:</strong> Country, region, and city (derived from IP address, not precise GPS location)</li>
+              <li><strong>Demographic Data:</strong> Estimated age range, gender, and interests (provided by Google Signals when enabled)</li>
+              <li><strong>Device Information:</strong> Browser type and version, operating system, screen resolution, and device category (mobile/desktop/tablet)</li>
+              <li><strong>Traffic Sources:</strong> Referral websites, search engines, campaign parameters, and marketing attribution</li>
+              <li><strong>Usage Statistics:</strong> Daily recipe conversion counts, feature usage frequency, and session duration</li>
+              <li><strong>Custom Dimensions:</strong> User type (free/paid), subscription status, and user segment (when applicable)</li>
             </ul>
+
+            <p className="mb-4 text-justify">
+              <strong>Google Analytics Configuration:</strong> We have configured GA4 with the following settings: (1) Automatic page view tracking enabled for all route changes, (2) Google Signals enabled to collect demographics and interests data, (3) Ad personalization disabled - we do NOT use your data for personalized advertising, (4) Geographic data collection enabled (non-anonymized IP) to provide location-based insights, and (5) Secure cookie handling with SameSite=None and Secure flags.
+            </p>
+
+            <p className="mb-4 text-justify">
+              <strong>Data Sharing with Google:</strong> When you consent to analytics cookies, your usage data is transmitted to Google Analytics servers. Google processes this data according to their Privacy Policy and our Data Processing Agreement. You can opt-out of Google Analytics tracking at any time through our cookie settings or by using browser extensions like Google Analytics Opt-out Add-on.
+            </p>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.4 Technical and Security Information</h3>
             <ul className="list-disc ml-6 space-y-2 mb-4">

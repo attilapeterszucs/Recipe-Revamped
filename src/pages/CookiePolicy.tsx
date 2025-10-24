@@ -158,22 +158,38 @@ export const CookiePolicy: React.FC = () => {
             </div>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.3 Analytics Cookies (Performance)</h3>
-            <p className="mb-2">These cookies collect information about how you use the Service to help us improve it. All data collected is aggregated and anonymous.</p>
+            <p className="mb-2">These cookies collect information about how you use the Service to help us improve it. <strong>Analytics tracking only occurs after you explicitly consent to analytics cookies.</strong></p>
 
-            <p className="mb-2 font-semibold mt-4">Purpose:</p>
+            <p className="mb-2 font-semibold mt-4">What We Track:</p>
             <ul className="list-disc ml-6 space-y-2 mb-4">
-              <li>Analyzing website traffic and user behavior patterns</li>
-              <li>Tracking page views, user flows, and engagement metrics</li>
-              <li>Measuring feature popularity and usage statistics</li>
-              <li>Identifying performance issues and optimization opportunities</li>
-              <li>Conducting A/B testing and feature experimentation</li>
-              <li>Understanding demographics and user interests (estimated by Google)</li>
+              <li><strong>Page Views:</strong> All page navigation including single-page app (SPA) route changes</li>
+              <li><strong>User Engagement:</strong> Button clicks, feature interactions, time spent on pages, and scroll depth</li>
+              <li><strong>Traffic Sources:</strong> Referral websites, search engines, campaign parameters, and UTM tracking</li>
+              <li><strong>Geographic Data:</strong> Country, region, and city derived from your IP address (not precise GPS location)</li>
+              <li><strong>Demographic Information:</strong> Estimated age range, gender, and interests provided by Google Signals</li>
+              <li><strong>Device Information:</strong> Browser type/version, operating system, screen resolution, device category</li>
+              <li><strong>Performance Metrics:</strong> Page load times, error rates, and feature usage statistics</li>
+              <li><strong>Custom Events:</strong> Recipe conversions, user type (free/paid), and subscription status</li>
             </ul>
 
-            <p className="mb-2 font-semibold">Google Analytics Integration:</p>
+            <p className="mb-2 font-semibold">Google Analytics 4 (GA4) Configuration:</p>
             <p className="mb-4 text-justify">
-              We use Google Analytics (ID: G-CR787RJ2VK) to collect and analyze usage data. Google Analytics sets the following cookies:
+              We use Google Analytics 4 (Property ID: G-CR787RJ2VK) with the following configuration:
             </p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li><strong>Automatic Page View Tracking:</strong> Enabled - all route changes are automatically tracked</li>
+              <li><strong>Google Signals:</strong> Enabled - collects demographics and interests data for logged-in Google users</li>
+              <li><strong>Ad Personalization:</strong> Disabled - your data is NOT used for personalized advertising</li>
+              <li><strong>IP Anonymization:</strong> Disabled - full IP addresses are collected to provide accurate geographic insights</li>
+              <li><strong>Cookie Security:</strong> All cookies use SameSite=None and Secure flags for enhanced security</li>
+              <li><strong>Data Retention:</strong> User-level data retained for 14 months, event-level data for 2 months</li>
+            </ul>
+
+            <p className="mb-4 text-justify">
+              <strong>Data Sharing with Google:</strong> When you consent to analytics cookies, your usage data is transmitted to Google's servers in the United States. Google processes this data as a data processor on our behalf according to their <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline text-blue-600 hover:text-blue-800">Privacy Policy</a> and our Data Processing Agreement.
+            </p>
+
+            <p className="mb-2 font-semibold">Google Analytics Cookies:</p>
 
             <div className="overflow-x-auto mb-4">
               <table className="w-full border-collapse border border-gray-300">
@@ -204,37 +220,34 @@ export const CookiePolicy: React.FC = () => {
               </table>
             </div>
 
-            <p className="mb-4 text-justify font-semibold">
-              Note: Analytics cookies can be disabled through your cookie preferences. Disabling these cookies will also disable advertising features described in Section 2.4.
+            <p className="mb-4 text-justify">
+              <strong>Opt-Out Options:</strong> You can disable analytics cookies through our cookie settings banner or by using the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="underline text-blue-600 hover:text-blue-800">Google Analytics Opt-out Browser Add-on</a>.
             </p>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.4 Advertising Cookies (Targeting/Marketing)</h3>
-            <p className="mb-2">These cookies are used to deliver personalized advertising and measure the effectiveness of advertising campaigns.</p>
-
-            <p className="mb-2 font-semibold mt-4">Google Ads Integration:</p>
             <p className="mb-4 text-justify">
-              We integrate Google Analytics with Google Ads to enable personalized advertising experiences. This integration allows us to:
+              <strong>IMPORTANT:</strong> Recipe Revamped has <strong>DISABLED ad personalization</strong> in our Google Analytics configuration. We do NOT use your personal data to serve personalized advertisements. Our advertising integration is limited to:
             </p>
 
+            <p className="mb-2 font-semibold mt-4">What We Track for Marketing (Non-Personalized):</p>
             <ul className="list-disc ml-6 space-y-2 mb-4">
-              <li>Measure advertising campaign effectiveness and conversion rates</li>
-              <li>Create audience segments for targeted advertising</li>
-              <li>Enable remarketing to show relevant ads to previous visitors</li>
-              <li>Track conversions across multiple devices and platforms</li>
-              <li>Show personalized ads on Google properties and partner websites</li>
-              <li>Optimize ad delivery and bidding strategies</li>
-              <li>Support attribution modeling for marketing analytics</li>
-              <li>Create lookalike audiences for similar user targeting</li>
+              <li><strong>Campaign Effectiveness:</strong> Measuring which marketing campaigns drive traffic and conversions</li>
+              <li><strong>Conversion Attribution:</strong> Understanding which traffic sources lead to sign-ups and subscriptions</li>
+              <li><strong>Aggregated Demographics:</strong> Viewing general audience characteristics (age ranges, interests) at the aggregate level</li>
+              <li><strong>Geographic Performance:</strong> Analyzing which regions respond best to our marketing efforts</li>
+              <li><strong>Device Insights:</strong> Understanding device preferences (mobile vs desktop) for optimization</li>
             </ul>
 
-            <p className="mb-2 font-semibold">Data Shared with Google Ads:</p>
+            <p className="mb-4 text-justify">
+              <strong>What We Do NOT Do:</strong> We do not enable personalized advertising features, remarketing, or audience targeting based on individual user behavior. Google Signals is enabled solely for demographic reporting purposes, NOT for ad personalization.
+            </p>
+
+            <p className="mb-2 font-semibold">Marketing Data Processing:</p>
             <ul className="list-disc ml-6 space-y-2 mb-4">
-              <li>Page views, user engagement, and interaction events</li>
-              <li>Conversion events (sign-ups, subscription purchases)</li>
-              <li>Demographics and interests (estimated by Google)</li>
-              <li>Device and browser characteristics</li>
-              <li>Geographic location (city/region level)</li>
-              <li>Referral sources and campaign attribution data</li>
+              <li>All marketing analytics data is processed in aggregate form</li>
+              <li>Individual user profiles are NOT created for advertising purposes</li>
+              <li>Your browsing behavior on our site is NOT used to show you personalized ads elsewhere</li>
+              <li>We do not share personally identifiable information with advertising networks</li>
             </ul>
 
             <p className="mb-4 text-justify font-semibold">
