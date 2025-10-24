@@ -1194,6 +1194,11 @@ export const LandingPage: React.FC = () => {
                     Pricing
                   </button>
                 </li>
+                <li>
+                  <Link to="/blog" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    Blog
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -1206,18 +1211,13 @@ export const LandingPage: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/blog" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
-                    Blog
+                  <Link to="/partnerships" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    Partnerships
                   </Link>
                 </li>
                 <li>
                   <Link to="/careers" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                     Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/partnerships" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
-                    Partnerships
                   </Link>
                 </li>
                 <li>

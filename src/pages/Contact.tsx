@@ -461,7 +461,6 @@ export const Contact: React.FC = () => {
                       { value: 'support', label: 'Technical Support', icon: '🛠️' },
                       { value: 'business', label: 'Business Partnership', icon: '🤝' },
                       { value: 'careers', label: 'Careers', icon: '💼' },
-                      { value: 'partnerships', label: 'Partnerships', icon: '🤝' },
                       { value: 'legal', label: 'Legal Matters', icon: '⚖️' },
                       { value: 'privacy', label: 'Privacy Policy Questions', icon: '🔒' },
                       { value: 'cookies', label: 'Cookie Questions', icon: '🍪' },
