@@ -212,14 +212,15 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
                             </div>
                           </div>
                           <CardDescription className="text-sm mt-1 mb-3 text-gray-700">
-                            Help us understand how you use our service to improve performance and user experience.
+                            <strong>Disabled by default.</strong> When enabled, we use Google Analytics 4 to understand how you use our service.
                           </CardDescription>
-                          <div className="text-xs text-gray-600 mb-2">
-                            <strong className="font-bold">Google Analytics + Ads:</strong> Page views, user behavior, demographics, advertising measurement
+                          <div className="text-xs text-gray-600 mb-2 space-y-1">
+                            <div><strong className="font-bold">Collects:</strong> Page views, navigation patterns, geographic location (city/region), demographics (age/gender estimates), device info, traffic sources</div>
+                            <div><strong className="font-bold">Data Retention:</strong> 14 months (user-level), 2 months (events)</div>
                           </div>
-                          <Alert className="border-2 border-gray-200 bg-gray-50">
+                          <Alert className="border-2 border-green-200 bg-green-50">
                             <AlertDescription className="text-xs text-gray-700">
-                              <strong className="font-bold">Data sharing:</strong> Analytics data shared with Google Ads for personalized advertising • You can opt-out anytime
+                              <strong className="font-bold">Privacy:</strong> Ad personalization is DISABLED • Google Signals enabled for demographics only • No personal recipe content tracked • You can opt-out anytime
                             </AlertDescription>
                           </Alert>
                         </div>
