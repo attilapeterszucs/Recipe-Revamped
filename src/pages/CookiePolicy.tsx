@@ -158,9 +158,21 @@ export const CookiePolicy: React.FC = () => {
             </div>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.3 Analytics Cookies (Performance)</h3>
-            <p className="mb-2">These cookies collect information about how you use the Service to help us improve it. <strong>Analytics tracking only occurs after you explicitly consent to analytics cookies.</strong></p>
+            <div className="mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+              <p className="font-semibold text-gray-900 mb-2">⚠️ CONSENT REQUIRED - NO TRACKING WITHOUT YOUR PERMISSION</p>
+              <p className="text-sm text-gray-700">
+                These cookies are <strong>DISABLED by default</strong>. Analytics tracking ONLY occurs after you explicitly consent by either:
+              </p>
+              <ul className="list-disc ml-6 mt-2 text-sm text-gray-700 space-y-1">
+                <li>Clicking "Accept All" in the cookie consent banner</li>
+                <li>Enabling "Analytics Cookies" in the customize cookie settings popup</li>
+              </ul>
+              <p className="text-sm text-gray-700 mt-2">
+                <strong>Google Analytics will NOT load, NO cookies will be set, and NO data will be collected until you provide explicit consent.</strong>
+              </p>
+            </div>
 
-            <p className="mb-2 font-semibold mt-4">What We Track:</p>
+            <p className="mb-2 font-semibold mt-4">What We Track (Only With Your Consent):</p>
             <ul className="list-disc ml-6 space-y-2 mb-4">
               <li><strong>Page Views:</strong> All page navigation including single-page app (SPA) route changes</li>
               <li><strong>User Engagement:</strong> Button clicks, feature interactions, time spent on pages, and scroll depth</li>

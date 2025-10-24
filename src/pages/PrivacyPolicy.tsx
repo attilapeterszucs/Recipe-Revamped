@@ -85,7 +85,10 @@ export const PrivacyPolicy: React.FC = () => {
             </p>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">2.3 Analytics and Usage Information</h3>
-            <p className="mb-2">We use Google Analytics 4 (GA4) to collect analytics data. This tracking is consent-based and only occurs after you accept analytics cookies. The following data is collected:</p>
+            <p className="mb-4 text-justify font-semibold bg-yellow-50 border-l-4 border-yellow-400 p-4">
+              CONSENT REQUIRED: We use Google Analytics 4 (GA4) to collect analytics data. <strong>NO analytics tracking occurs unless you explicitly accept analytics cookies</strong> by either (1) clicking "Accept All" in our cookie banner, or (2) enabling "Analytics Cookies" in the customize cookie settings. Google Analytics will NOT load or track your activity until you provide consent.
+            </p>
+            <p className="mb-2">When you consent to analytics cookies, the following data is collected:</p>
             <ul className="list-disc ml-6 space-y-2 mb-4">
               <li><strong>Page View Data:</strong> Page URLs, page titles, referring URLs, and time spent on pages</li>
               <li><strong>User Engagement:</strong> Navigation patterns, button clicks, feature interactions, and conversion events</li>
