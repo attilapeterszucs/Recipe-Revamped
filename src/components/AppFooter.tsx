@@ -11,7 +11,7 @@ export const AppFooter: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div className="md:col-span-1">
-            <button onClick={scrollToTop} className="flex items-center gap-2 mb-4 group">
+            <button onClick={scrollToTop} className="flex items-center gap-2 mb-4 group" aria-label="Return to top of page - Recipe Revamped home">
               <img src="/logo/logo.png" alt="Recipe Revamped Logo" className="h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
               <span className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Revamped</span>
             </button>
