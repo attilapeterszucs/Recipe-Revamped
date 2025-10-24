@@ -383,7 +383,7 @@ export const Contact: React.FC = () => {
 
               {/* Response Time */}
               <div className="mt-8 p-5 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
-                <h4 className="font-bold text-green-800 mb-2">Response Time</h4>
+                <h3 className="font-bold text-green-800 mb-2">Response Time</h3>
                 <p className="text-sm text-green-700 leading-relaxed">
                   We typically respond to all inquiries within 24 hours during business days.
                 </p>

@@ -1177,7 +1177,7 @@ export const LandingPage: React.FC = () => {
             </div>
 
             <div>
-              <h4 className="text-gray-900 font-bold mb-4">Product</h4>
+              <h3 className="text-gray-900 font-bold mb-4">Product</h3>
               <ul className="space-y-3">
                 <li>
                   <Link to={user ? "/app" : "/signin"} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
@@ -1203,7 +1203,7 @@ export const LandingPage: React.FC = () => {
             </div>
 
             <div>
-              <h4 className="text-gray-900 font-bold mb-4">Company</h4>
+              <h3 className="text-gray-900 font-bold mb-4">Company</h3>
               <ul className="space-y-3">
                 <li>
                   <Link to="/about" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
@@ -1229,7 +1229,7 @@ export const LandingPage: React.FC = () => {
             </div>
 
             <div>
-              <h4 className="text-gray-900 font-bold mb-4">Legal</h4>
+              <h3 className="text-gray-900 font-bold mb-4">Legal</h3>
               <ul className="space-y-3">
                 <li>
                   <Link to="/privacy-policy" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
