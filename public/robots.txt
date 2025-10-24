@@ -122,11 +122,12 @@ Allow: /about
 Allow: /contact
 Allow: /careers
 Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
 Crawl-delay: 0
-Request-rate: 1/1s
 
 # Microsoft Bing
 User-agent: Bingbot
@@ -135,11 +136,12 @@ Allow: /about
 Allow: /contact
 Allow: /careers
 Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
 Crawl-delay: 1
-Request-rate: 1/2s
 
 # Yahoo (Verizon Media)
 User-agent: Slurp
@@ -148,6 +150,8 @@ Allow: /about
 Allow: /contact
 Allow: /careers
 Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -160,22 +164,110 @@ Allow: /about
 Allow: /contact
 Allow: /careers
 Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
 Crawl-delay: 1
 
-# Yandex (important for international users)
+# Yandex (Russia, Eastern Europe)
 User-agent: YandexBot
 Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
 Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
 Crawl-delay: 2
+
+# Baidu (China - largest Chinese search engine)
+User-agent: Baiduspider
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /careers
+Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
+Disallow: /app
+Disallow: /signin
+Disallow: /signup
+Crawl-delay: 2
+
+# Naver (South Korea - leading Korean search engine)
+User-agent: Yeti
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /careers
+Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
+Disallow: /app
+Disallow: /signin
+Disallow: /signup
+Crawl-delay: 1
+
+# Seznam (Czech Republic)
+User-agent: SeznamBot
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /careers
+Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
+Disallow: /app
+Disallow: /signin
+Disallow: /signup
+Crawl-delay: 1
+
+# Ecosia (Privacy-focused, tree-planting search)
+User-agent: EcosiaBot
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /careers
+Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
+Disallow: /app
+Disallow: /signin
+Disallow: /signup
+Crawl-delay: 1
+
+# Brave Search (Privacy-focused)
+User-agent: Brave-Indexer
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /careers
+Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
+Disallow: /app
+Disallow: /signin
+Disallow: /signup
+Crawl-delay: 1
+
+# Qwant (European privacy-focused search)
+User-agent: Qwantify
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /careers
+Allow: /partnerships
+Allow: /blog
+Allow: /blog/*
+Disallow: /app
+Disallow: /signin
+Disallow: /signup
+Crawl-delay: 1
 
 # ========================================
 # AI & SPECIALIZED CRAWLERS
