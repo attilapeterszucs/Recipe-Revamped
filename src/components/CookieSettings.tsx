@@ -131,10 +131,13 @@ export const CookieSettings: React.FC = () => {
                     />
                   </div>
                   <CardDescription className="text-sm mb-2">
-                    Help us understand how you use our service to improve performance and user experience.
+                    <strong>Disabled by default.</strong> When enabled, we use Google Analytics 4 to collect usage data: page views, navigation patterns, geographic location (city/region), demographics (age/gender estimates), device info, and traffic sources.
                   </CardDescription>
-                  <div className="text-xs text-muted-foreground">
-                    Data anonymized after 90 days • No personal recipe content tracked
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    <div>• Ad personalization is DISABLED - no personalized ads</div>
+                    <div>• Google Signals enabled for demographics only</div>
+                    <div>• Data retained: 14 months (user-level), 2 months (events)</div>
+                    <div>• No personal recipe content tracked</div>
                   </div>
                 </div>
               </div>
@@ -241,8 +244,9 @@ export const CookieSettings: React.FC = () => {
             <ul className="text-sm text-foreground space-y-1">
               <li>• Your preferences are stored locally and will expire after 6 months</li>
               <li>• Essential cookies are always active to ensure proper functionality</li>
-              <li>• We never use tracking or advertising cookies</li>
-              <li>• All recipe processing happens locally in your browser</li>
+              <li>• Analytics cookies are disabled by default - only enabled with your consent</li>
+              <li>• Ad personalization is disabled - we don't use your data for targeted ads</li>
+              <li>• Recipe processing happens securely via OpenAI API (no personal data shared)</li>
             </ul>
             <div className="mt-3 flex flex-wrap gap-3 text-xs">
               <Link to="/privacy-policy" className="text-green-600 hover:text-green-700 underline font-medium">Privacy Policy</Link>
