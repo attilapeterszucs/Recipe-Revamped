@@ -37,6 +37,10 @@ export const SEOHead: React.FC<SEOHeadProps> = ({ pageKey, customSEO }) => {
         currentPageKey = 'terms';
       } else if (path === '/cookies' || path === '/cookie-policy') {
         currentPageKey = 'cookies';
+      } else if (path === '/careers') {
+        currentPageKey = 'careers';
+      } else if (path === '/partnerships') {
+        currentPageKey = 'partnerships';
       } else {
         currentPageKey = 'home'; // fallback
       }

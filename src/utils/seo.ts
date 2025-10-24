@@ -16,8 +16,8 @@ export interface SEOConfig {
 
 export const SEO_CONFIGS: Record<string, SEOConfig> = {
   home: {
-    title: 'Recipe Revamped - #1 AI Recipe Converter for Dietary Restrictions & Meal Planning',
-    description: 'Transform any recipe instantly for gluten-free, vegan, keto, low-carb & 24+ dietary needs. Free AI recipe converter with meal planning, nutrition analysis & recipe storage. Start converting recipes today!',
+    title: 'Recipe Revamped - AI Recipe Converter for Dietary Needs',
+    description: 'Transform any recipe for gluten-free, vegan, keto & 24+ dietary needs. Free AI recipe converter with meal planning and nutrition analysis.',
     keywords: 'recipe converter, AI recipe converter, dietary restrictions, gluten-free recipes, vegan recipes, keto recipes, paleo recipes, low carb recipes, dairy-free recipes, nut-free recipes, meal planning app, nutrition analysis, recipe book, recipe storage, healthy recipes, diet meal planner, food allergy recipes, diabetes recipes, weight loss recipes, recipe modification, cooking app, recipe organizer',
     canonical: 'https://reciperevamped.com',
     ogType: 'website',
@@ -39,16 +39,16 @@ export const SEO_CONFIGS: Record<string, SEOConfig> = {
   },
 
   app: {
-    title: 'Recipe Converter App - Transform Recipes for Your Diet | Recipe Revamped',
-    description: 'Convert recipes instantly with our AI-powered app. Transform any recipe for gluten-free, vegan, keto, paleo & more dietary needs. Free recipe converter with meal planning tools.',
+    title: 'Recipe Converter App - Transform Recipes for Your Diet',
+    description: 'Convert recipes instantly with AI. Transform any recipe for gluten-free, vegan, keto & more dietary needs. Free with meal planning tools.',
     keywords: 'recipe converter app, AI recipe conversion, dietary recipe modification, gluten free recipe converter, vegan recipe converter, keto recipe app, meal planning app, recipe organizer',
     canonical: 'https://reciperevamped.com/app',
     ogType: 'webapp'
   },
 
   about: {
-    title: 'About Recipe Revamped - AI Recipe Converter for Dietary Needs',
-    description: 'Learn about Recipe Revamped, the leading AI-powered recipe converter helping millions transform recipes for dietary restrictions. Meet our team and discover our mission.',
+    title: 'About Recipe Revamped - AI Recipe Converter for Your Diet',
+    description: 'Learn about Recipe Revamped, the AI-powered recipe converter transforming recipes for dietary needs. Meet our team and discover our mission.',
     keywords: 'about recipe revamped, AI recipe converter company, dietary restrictions solution, recipe conversion technology, food allergy recipes, healthy eating app',
     canonical: 'https://reciperevamped.com/about',
     ogType: 'website',
@@ -62,8 +62,8 @@ export const SEO_CONFIGS: Record<string, SEOConfig> = {
   },
 
   contact: {
-    title: 'Contact Recipe Revamped - Support for AI Recipe Converter',
-    description: 'Get help with Recipe Revamped! Contact our support team for questions about recipe conversion, dietary filters, meal planning, or technical issues. We\'re here to help!',
+    title: 'Contact Recipe Revamped - Support & Help Center',
+    description: 'Get help with Recipe Revamped! Contact our support team for recipe conversion, dietary filters, meal planning or technical issues.',
     keywords: 'contact recipe revamped, recipe converter support, customer service, technical help, recipe conversion assistance, dietary restrictions help',
     canonical: 'https://reciperevamped.com/contact',
     ogType: 'website',
@@ -134,6 +134,36 @@ export const SEO_CONFIGS: Record<string, SEOConfig> = {
     canonical: 'https://reciperevamped.com/cookie-policy',
     ogType: 'website',
     noindex: false
+  },
+
+  careers: {
+    title: 'Careers at Recipe Revamped - Join Our AI Food Tech Team',
+    description: 'Join Recipe Revamped and build the future of cooking with AI. Explore career opportunities in food tech, AI, and dietary innovation.',
+    keywords: 'recipe revamped careers, food tech jobs, AI cooking jobs, recipe converter jobs, startup careers, culinary technology careers, remote food tech jobs',
+    canonical: 'https://reciperevamped.com/careers',
+    ogType: 'website',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'Careers at Recipe Revamped',
+      description: 'Join our team and help transform cooking for millions with dietary restrictions.',
+      url: 'https://reciperevamped.com/careers'
+    }
+  },
+
+  partnerships: {
+    title: 'Partnerships - Collaborate with Recipe Revamped',
+    description: 'Partner with Recipe Revamped for influencer programs, business integrations, and affiliate opportunities in food tech and dietary cooking.',
+    keywords: 'recipe revamped partnerships, food tech partnerships, influencer partnerships, business collaboration, affiliate program, recipe converter partnership',
+    canonical: 'https://reciperevamped.com/partnerships',
+    ogType: 'website',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'Partnerships with Recipe Revamped',
+      description: 'Explore partnership opportunities with Recipe Revamped for influencers, businesses, and affiliates.',
+      url: 'https://reciperevamped.com/partnerships'
+    }
   }
 };
 

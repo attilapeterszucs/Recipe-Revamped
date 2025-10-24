@@ -20,6 +20,8 @@ Allow: /about
 Allow: /contact
 Allow: /blog
 Allow: /blog/*
+Allow: /careers
+Allow: /partnerships
 
 # Authentication pages (user acquisition)
 Allow: /signin
@@ -118,6 +120,8 @@ User-agent: Googlebot
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -129,6 +133,8 @@ User-agent: Bingbot
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -140,6 +146,8 @@ User-agent: Slurp
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -150,6 +158,8 @@ User-agent: DuckDuckBot
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -160,6 +170,8 @@ User-agent: YandexBot
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -174,6 +186,8 @@ User-agent: ChatGPT-User
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -182,6 +196,8 @@ User-agent: CCBot
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -191,6 +207,8 @@ User-agent: Claude-Web
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -200,6 +218,8 @@ User-agent: Google-Extended
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -208,6 +228,8 @@ User-agent: OAI-SearchBot
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -216,6 +238,8 @@ User-agent: PerplexityBot
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -224,6 +248,8 @@ User-agent: ClaudeBot
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -237,6 +263,8 @@ User-agent: facebookexternalhit
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -247,6 +275,8 @@ User-agent: Twitterbot
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup
@@ -257,6 +287,8 @@ User-agent: LinkedInBot
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /careers
+Allow: /partnerships
 Disallow: /app
 Disallow: /signin
 Disallow: /signup

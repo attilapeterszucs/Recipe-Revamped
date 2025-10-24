@@ -67,6 +67,32 @@
     </image:image>
   </url>
 
+  <!-- Careers - Recruitment and Employer Brand -->
+  <url>
+    <loc>https://reciperevamped.com/careers</loc>
+    <lastmod>2025-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reciperevamped.com/images/careers-team.jpg</image:loc>
+      <image:title>Careers at Recipe Revamped - Join Our AI Food Tech Team</image:title>
+      <image:caption>Build the future of cooking with AI technology - Join our team transforming dietary recipe conversion</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Partnerships - Business Development -->
+  <url>
+    <loc>https://reciperevamped.com/partnerships</loc>
+    <lastmod>2025-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reciperevamped.com/images/partnerships-collab.jpg</image:loc>
+      <image:title>Partnerships - Collaborate with Recipe Revamped</image:title>
+      <image:caption>Partner with Recipe Revamped for influencer programs, business integrations, and affiliate opportunities</image:caption>
+    </image:image>
+  </url>
+
   <!-- Sign Up - Primary Conversion Point -->
   <url>
     <loc>https://reciperevamped.com/signup</loc>
