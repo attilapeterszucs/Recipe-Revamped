@@ -1211,6 +1211,11 @@ export const LandingPage: React.FC = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/contact" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                    Contact & FAQ
+                  </Link>
+                </li>
+                <li>
                   <Link to="/partnerships" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                     Partnerships
                   </Link>
@@ -1218,11 +1223,6 @@ export const LandingPage: React.FC = () => {
                 <li>
                   <Link to="/careers" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                     Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/contact" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
-                    Contact & FAQ
                   </Link>
                 </li>
               </ul>

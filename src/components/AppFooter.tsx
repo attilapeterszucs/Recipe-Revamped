@@ -50,6 +50,11 @@ export const AppFooter: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/contact" onClick={scrollToTop} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  Contact & FAQ
+                </Link>
+              </li>
+              <li>
                 <Link to="/partnerships" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                   Partnerships
                 </Link>
@@ -57,11 +62,6 @@ export const AppFooter: React.FC = () => {
               <li>
                 <Link to="/careers" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                   Careers
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" onClick={scrollToTop} className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
-                  Contact & FAQ
                 </Link>
               </li>
             </ul>
