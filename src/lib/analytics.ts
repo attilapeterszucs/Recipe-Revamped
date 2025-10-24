@@ -71,29 +71,42 @@ class AnalyticsService {
 
     // Initialize Google Analytics if consent is given
     if (!(window as any).gtag?.loaded) {
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-CR787RJ2VK';
-      document.head.appendChild(script);
+      // Defer script loading to improve initial page load
+      const loadScript = () => {
+        const script = document.createElement('script');
+        script.async = true;
+        script.defer = true; // Defer execution
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-CR787RJ2VK';
+        document.head.appendChild(script);
 
-      script.onload = () => {
-        window.gtag('js', new Date());
-        window.gtag('config', 'G-CR787RJ2VK', {
-          'send_page_view': true, // Enable automatic page view tracking
-          'anonymize_ip': false, // Allow geographic data collection
-          'allow_google_signals': true, // Enable demographics and interests
-          'allow_ad_personalization_signals': false, // No ad personalization
-          'cookie_flags': 'SameSite=None;Secure', // Cookie security
-          'custom_map': {
-            'dimension1': 'user_type',
-            'dimension2': 'subscription_status'
-          }
-        });
-        (window.gtag as any).loaded = true;
+        script.onload = () => {
+          window.gtag('js', new Date());
+          window.gtag('config', 'G-CR787RJ2VK', {
+            'send_page_view': true, // Enable automatic page view tracking
+            'anonymize_ip': false, // Allow geographic data collection
+            'allow_google_signals': true, // Enable demographics and interests
+            'allow_ad_personalization_signals': false, // No ad personalization
+            'cookie_flags': 'SameSite=None;Secure', // Cookie security
+            'custom_map': {
+              'dimension1': 'user_type',
+              'dimension2': 'subscription_status'
+            }
+          });
+          (window.gtag as any).loaded = true;
 
-        // Track initial page view after initialization
-        this.trackPageView(window.location.pathname, document.title);
+          // Track initial page view after initialization
+          this.trackPageView(window.location.pathname, document.title);
+        };
       };
+
+      // Load GA after page is interactive to avoid blocking render
+      if (document.readyState === 'complete') {
+        // Page already loaded
+        loadScript();
+      } else {
+        // Wait for page load
+        window.addEventListener('load', loadScript, { once: true });
+      }
     }
   }
 

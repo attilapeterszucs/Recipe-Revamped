@@ -18,8 +18,8 @@ import {
   type ActionCodeSettings
 } from 'firebase/auth';
 import { getFirestore, enableNetwork, disableNetwork } from 'firebase/firestore';
-import { getAnalytics, isSupported } from 'firebase/analytics';
 import { getStorage } from 'firebase/storage';
+// Note: Firebase Analytics removed - we use Google Analytics 4 directly via gtag
 
 // Firebase configuration from environment variables
 const firebaseConfig = {
@@ -59,18 +59,9 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// Initialize analytics only if supported and measurement ID is provided
-export let analytics: any = null;
-if (typeof window !== 'undefined' && import.meta.env.VITE_FIREBASE_MEASUREMENT_ID) {
-  isSupported().then((supported) => {
-    if (supported) {
-      analytics = getAnalytics(app);
-    }
-  }).catch(() => {
-    // Analytics not supported in this environment
-    analytics = null;
-  });
-}
+// Firebase Analytics removed - we use Google Analytics 4 directly via gtag
+// This reduces bundle size by ~50KB and avoids duplicate analytics tracking
+export const analytics = null;
 
 // Auth providers
 export const googleProvider = new GoogleAuthProvider();

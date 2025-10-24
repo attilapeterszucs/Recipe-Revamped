@@ -11,6 +11,11 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // esbuild minification options (applies to both dev and build)
+  esbuild: {
+    drop: ['console', 'debugger'], // Remove console.log and debugger in production
+    legalComments: 'none' // Remove all comments
+  },
   optimizeDeps: {
     include: ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/functions'],
     exclude: ['firebase/analytics']
@@ -20,8 +25,8 @@ export default defineConfig({
       include: [/firebase/, /node_modules/]
     },
     // Performance optimizations
-    target: 'es2015',
-    minify: 'esbuild',
+    target: 'es2020', // Modern target for better tree-shaking
+    minify: 'esbuild', // Fast and effective minification
     cssMinify: true,
     cssCodeSplit: true,
     reportCompressedSize: false,
@@ -40,21 +45,36 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Vendor chunks for large libraries
-          if (id.includes('firebase')) return 'firebase';
+          // Split Firebase into smaller chunks
+          if (id.includes('node_modules/firebase/auth')) return 'firebase-auth';
+          if (id.includes('node_modules/firebase/firestore') ||
+              id.includes('node_modules/@firebase/firestore')) return 'firebase-firestore';
+          if (id.includes('node_modules/firebase') ||
+              id.includes('node_modules/@firebase')) return 'firebase-core';
+
+          // React ecosystem
+          if (id.includes('react-dom')) return 'react-vendor';
           if (id.includes('react') && !id.includes('react-router')) return 'react-vendor';
           if (id.includes('react-router-dom')) return 'router';
-          if (id.includes('lucide-react')) return 'ui-vendor';
-          if (id.includes('class-variance-authority')) return 'ui-vendor';
 
-          // Keep Settings isolated but allow UI components to be in main bundle
+          // UI libraries
+          if (id.includes('lucide-react')) return 'ui-icons';
+          if (id.includes('class-variance-authority') ||
+              id.includes('clsx') ||
+              id.includes('tailwind-merge')) return 'ui-utils';
+          if (id.includes('@radix-ui')) return 'ui-components';
+
+          // PDF library (large)
+          if (id.includes('pdfjs-dist') || id.includes('pdf.worker')) return 'pdf';
+
+          // Feature-based chunks
           if (id.includes('src/pages/Settings.tsx') ||
               id.includes('src/lib/userSettings.ts') ||
-              id.includes('src/lib/backup.ts')) {
+              id.includes('src/lib/backup.ts') ||
+              id.includes('src/components/Settings/')) {
             return 'settings';
           }
 
-          // Other feature chunks
           if (id.includes('src/components/AdminUserManagement.tsx') ||
               id.includes('src/components/AdminNotificationCreator.tsx') ||
               id.includes('src/lib/adminManagement.ts') ||
@@ -70,7 +90,15 @@ export default defineConfig({
             return 'auth';
           }
 
-          // Let UI components and other modules fall into main bundle
+          // Subscription and payment features
+          if (id.includes('src/lib/stripe') ||
+              id.includes('src/lib/subscription') ||
+              id.includes('src/components/Subscription') ||
+              id.includes('src/hooks/useStripeCheckout')) {
+            return 'payments';
+          }
+
+          // Let smaller modules fall into main bundle
           return undefined;
         }
       }
