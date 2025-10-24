@@ -1,5 +1,5 @@
 import React, { useEffect, Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { initializeAppCheckService } from './lib/appCheck';
 import { logger } from './lib/logger';
 import { LandingPage } from './pages/LandingPage';
@@ -33,14 +33,23 @@ import { NetworkStatusBanner } from './components/NetworkStatusBanner';
 import { trackPageView } from './lib/analytics';
 import './lib/consentStorage'; // Initialize consent storage
 
+// Router content with route tracking
+const RouterContent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+
+  // Track page views on route changes
+  useEffect(() => {
+    // Get page title from document
+    const pageTitle = document.title;
+    trackPageView(location.pathname, pageTitle);
+  }, [location.pathname]);
+
+  return <>{children}</>;
+};
+
 // Inner App component that uses cookie context
 const AppContent: React.FC = () => {
   const { needsConsent, acceptAll, rejectAll, saveCurrentPreferences } = useCookieContext();
-  
-  // Track page views with consent-based analytics
-  useEffect(() => {
-    trackPageView(window.location.pathname);
-  }, []);
 
   const handleAcceptAll = () => {
     acceptAll();
@@ -56,53 +65,55 @@ const AppContent: React.FC = () => {
 
   return (
     <Router>
-      {/* Network Status Banner - appears at top when network issues detected */}
-      <NetworkStatusBanner />
+      <RouterContent>
+        {/* Network Status Banner - appears at top when network issues detected */}
+        <NetworkStatusBanner />
 
-      <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        </div>
-      }>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/app" element={<RecipeApp />} />
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/verify-email" element={<SimpleEmailVerification />} />
-          <Route path="/verify-email-debug" element={<VerifyEmailPage />} />
-          <Route path="/password-recovery" element={<PasswordRecoveryPage />} />
-          <Route path="/auth/action" element={<AuthActionPage />} />
-          <Route path="/__/auth/action" element={<AuthActionPage />} />
-          <Route path="/finishSignUp" element={<AuthActionPage />} />
-          <Route path="/emulator/auth/handler" element={<AuthActionPage />} />
-          <Route path="/action" element={<AuthActionPage />} />
-          <Route path="/handler" element={<AuthActionPage />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/terms" element={<Navigate to="/terms-of-service" replace />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
-          <Route path="/cookie-policy" element={<CookiePolicy />} />
-          <Route path="/cookies" element={<Navigate to="/cookie-policy" replace />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:blogId" element={<Blog />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/partnerships" element={<Partnerships />} />
-          <Route path="/unsubscribe" element={<Unsubscribe />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-      
-      {/* Cookie Consent Popup */}
-      {needsConsent && (
-        <CookieConsent
-          onAcceptAll={handleAcceptAll}
-          onSavePreferences={handleSavePreferences}
-          onReject={handleReject}
-        />
-      )}
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/app" element={<RecipeApp />} />
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/verify-email" element={<SimpleEmailVerification />} />
+            <Route path="/verify-email-debug" element={<VerifyEmailPage />} />
+            <Route path="/password-recovery" element={<PasswordRecoveryPage />} />
+            <Route path="/auth/action" element={<AuthActionPage />} />
+            <Route path="/__/auth/action" element={<AuthActionPage />} />
+            <Route path="/finishSignUp" element={<AuthActionPage />} />
+            <Route path="/emulator/auth/handler" element={<AuthActionPage />} />
+            <Route path="/action" element={<AuthActionPage />} />
+            <Route path="/handler" element={<AuthActionPage />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/terms" element={<Navigate to="/terms-of-service" replace />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/cookies" element={<Navigate to="/cookie-policy" replace />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:blogId" element={<Blog />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/partnerships" element={<Partnerships />} />
+            <Route path="/unsubscribe" element={<Unsubscribe />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+
+        {/* Cookie Consent Popup */}
+        {needsConsent && (
+          <CookieConsent
+            onAcceptAll={handleAcceptAll}
+            onSavePreferences={handleSavePreferences}
+            onReject={handleReject}
+          />
+        )}
+      </RouterContent>
     </Router>
   );
 };

@@ -120,39 +120,10 @@
         };
       })();
 
-      // Placeholder for consent-based Google Analytics loading
+      // Initialize Google Analytics dataLayer
+      // Actual GA loading is handled by analytics.ts based on cookie consent
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-
-      // Listen for cookie consent updates
-      window.addEventListener('cookieConsentUpdated', function(event) {
-        const preferences = event.detail.preferences;
-        if (preferences.analytics && !window.gtag.loaded) {
-          // Load Google Analytics
-          const script = document.createElement('script');
-          script.async = true;
-          script.defer = true;
-          script.src = 'https://www.googletagmanager.com/gtag/js?id=G-CR787RJ2VK';
-          document.head.appendChild(script);
-
-          script.onload = function() {
-            gtag('js', new Date());
-            gtag('config', 'G-CR787RJ2VK', {
-              'send_page_view': false,
-              'transport_type': 'beacon'
-            });
-            window.gtag.loaded = true;
-          };
-        } else if (!preferences.analytics && window.gtag.loaded) {
-          // Disable Google Analytics
-          gtag('config', 'G-CR787RJ2VK', {
-            'anonymize_ip': true,
-            'storage': 'none',
-            'ad_storage': 'denied',
-            'analytics_storage': 'denied'
-          });
-        }
-      });
     </script>
     
     <meta charset="UTF-8" />

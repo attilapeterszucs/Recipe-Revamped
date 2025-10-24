@@ -75,15 +75,24 @@ class AnalyticsService {
       script.async = true;
       script.src = 'https://www.googletagmanager.com/gtag/js?id=G-CR787RJ2VK';
       document.head.appendChild(script);
-      
+
       script.onload = () => {
         window.gtag('js', new Date());
         window.gtag('config', 'G-CR787RJ2VK', {
-          'anonymize_ip': false,
-          'allow_google_signals': true,
-          'allow_ad_personalization_signals': false
+          'send_page_view': true, // Enable automatic page view tracking
+          'anonymize_ip': false, // Allow geographic data collection
+          'allow_google_signals': true, // Enable demographics and interests
+          'allow_ad_personalization_signals': false, // No ad personalization
+          'cookie_flags': 'SameSite=None;Secure', // Cookie security
+          'custom_map': {
+            'dimension1': 'user_type',
+            'dimension2': 'subscription_status'
+          }
         });
         (window.gtag as any).loaded = true;
+
+        // Track initial page view after initialization
+        this.trackPageView(window.location.pathname, document.title);
       };
     }
   }
@@ -109,10 +118,12 @@ class AnalyticsService {
     if (!this.hasConsent) return;
 
     if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('config', 'G-CR787RJ2VK', {
+      // Use the proper GA4 page_view event
+      window.gtag('event', 'page_view', {
         page_title: title || document.title,
         page_location: window.location.href,
-        page_path: page
+        page_path: page,
+        send_to: 'G-CR787RJ2VK'
       });
     }
   }
