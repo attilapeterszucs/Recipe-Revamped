@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Save, Edit3, Filter, ChefHat, Clock, Users, Plus, Trash2, Heart, Lightbulb, Minus, Image, Upload } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import { updateRecipe } from '../lib/firestore';
 import { useToast } from './ToastContainer';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface RecipeEditorProps {
   recipe: SavedRecipe;
@@ -269,13 +271,16 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [saving, setSaving] = useState(false);
-  
+
   // Time state with structured values
   const [prepTime, setPrepTime] = useState(() => parseTimeValue(parseRecipe(recipe.convertedRecipe).prepTime));
   const [cookTime, setCookTime] = useState(() => parseTimeValue(parseRecipe(recipe.convertedRecipe).cookTime));
   const [totalTime, setTotalTime] = useState(() => parseTimeValue(parseRecipe(recipe.convertedRecipe).totalTime));
-  
+
   const { showSuccess, showError } = useToast();
+
+  // Lock body scroll when editor is open
+  useBodyScrollLock(isOpen);
 
   // Get available dietary filters from environment
   const availableFilters = (import.meta.env.VITE_ALLOWED_FILTERS as string).split(',');
@@ -558,59 +563,59 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        {/* Background overlay */}
-        <div 
-          className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity"
-          onClick={handleCancel}
-        ></div>
-
-        {/* Modal */}
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full max-h-[90vh]">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-green-500 to-blue-500 px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <Edit3 className="h-6 w-6 text-white" />
-                <h2 className="text-xl font-bold text-white">Edit Recipe</h2>
-              </div>
-              <button
-                onClick={handleCancel}
-                disabled={saving}
-                className="text-white hover:text-gray-200 transition-colors disabled:opacity-50"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
+  return createPortal(
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
+        {/* Header */}
+        <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-5 flex items-center justify-between relative overflow-hidden">
+          {/* Decorative pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)',
+              backgroundSize: '24px 24px'
+            }} />
           </div>
 
-          {/* Form Content */}
-          <div className="px-6 py-6 max-h-[60vh] overflow-y-auto">
-            <div className="space-y-8">
-              {/* Recipe Title */}
-              <div>
-                <label htmlFor="recipe-title" className="block text-sm font-medium text-gray-700 mb-2">
-                  Recipe Name
-                </label>
-                <div className="relative">
-                  <ChefHat className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <input
-                    id="recipe-title"
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Enter recipe name"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    disabled={saving}
-                  />
-                </div>
-              </div>
+          <div className="flex items-center space-x-3 relative z-10">
+            <div className="text-white bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+              <Edit3 className="h-6 w-6" />
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-white">Edit Recipe</h2>
+          </div>
+          <button
+            onClick={handleCancel}
+            disabled={saving}
+            className="text-white/90 hover:text-white transition-all duration-200 p-2 rounded-xl hover:bg-white/20 backdrop-blur-sm relative z-10 disabled:opacity-50"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
-              {/* Recipe Image Upload */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+        {/* Form Content */}
+        <div className="px-6 py-6 max-h-[60vh] overflow-y-auto">
+          <div className="space-y-8">
+            {/* Recipe Title */}
+            <div>
+              <label htmlFor="recipe-title" className="block text-sm font-medium text-gray-700 mb-2">
+                Recipe Name
+              </label>
+              <div className="relative">
+                <ChefHat className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  id="recipe-title"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter recipe name"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  disabled={saving}
+                />
+              </div>
+            </div>
+
+            {/* Recipe Image Upload */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                   <Image className="inline w-4 h-4 mr-2" />
                   Recipe Image
                 </label>
@@ -1038,60 +1043,60 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
                   </>
                 )}
               </div>
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="bg-gradient-to-br from-gray-50 to-green-50/30 px-6 py-4 flex justify-between items-center border-t-2 border-gray-100">
+          <div className="text-sm text-gray-500">
+            <div className="flex items-center">
+              Last updated: {recipe.updatedAt?.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
             </div>
           </div>
-
-          {/* Footer Actions */}
-          <div className="bg-gray-50 px-6 py-4 flex justify-between items-center border-t border-gray-200">
-            <div className="text-sm text-gray-500">
-              <div className="flex items-center">
-                Last updated: {recipe.updatedAt?.toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
-              </div>
-            </div>
-            <div className="flex space-x-3">
-              <button
-                onClick={handleCancel}
-                disabled={saving}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={
-                  saving || 
-                  uploadingImage || 
-                  !title.trim() || 
-                  parsedRecipe.ingredients.length === 0 || 
-                  !parsedRecipe.ingredients.some(ing => ing.trim()) ||
-                  parsedRecipe.instructions.length === 0 || 
-                  !parsedRecipe.instructions.some(inst => inst.trim())
-                }
-                className="inline-flex items-center px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {(saving || uploadingImage) ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
-                    {uploadingImage ? 'Uploading...' : 'Saving...'}
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Changes
-                  </>
-                )}
-              </button>
-            </div>
+          <div className="flex space-x-3">
+            <button
+              onClick={handleCancel}
+              disabled={saving}
+              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={
+                saving ||
+                uploadingImage ||
+                !title.trim() ||
+                parsedRecipe.ingredients.length === 0 ||
+                !parsedRecipe.ingredients.some(ing => ing.trim()) ||
+                parsedRecipe.instructions.length === 0 ||
+                !parsedRecipe.instructions.some(inst => inst.trim())
+              }
+              className="inline-flex items-center px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+            >
+              {(saving || uploadingImage) ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                  {uploadingImage ? 'Uploading...' : 'Saving...'}
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Changes
+                </>
+              )}
+            </button>
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
