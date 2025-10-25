@@ -53,24 +53,54 @@ const extractRecipeInfo = (content: string) => {
   }
 };
 
+// SessionStorage keys for persisting state
+const STORAGE_KEY_PREFIX = 'recipeBook_';
+const STORAGE_KEYS = {
+  searchTerm: `${STORAGE_KEY_PREFIX}searchTerm`,
+  selectedFilter: `${STORAGE_KEY_PREFIX}selectedFilter`,
+  selectedHealthCondition: `${STORAGE_KEY_PREFIX}selectedHealthCondition`,
+  sortBy: `${STORAGE_KEY_PREFIX}sortBy`,
+  sortOrder: `${STORAGE_KEY_PREFIX}sortOrder`,
+  selectedCategory: `${STORAGE_KEY_PREFIX}selectedCategory`,
+  viewMode: `${STORAGE_KEY_PREFIX}viewMode`,
+};
+
+// Helper functions for sessionStorage
+const loadFromSession = <T,>(key: string, defaultValue: T): T => {
+  try {
+    const stored = sessionStorage.getItem(key);
+    return stored ? JSON.parse(stored) : defaultValue;
+  } catch {
+    return defaultValue;
+  }
+};
+
+const saveToSession = <T,>(key: string, value: T): void => {
+  try {
+    sessionStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Silently fail if sessionStorage is not available
+  }
+};
+
 export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, onViewRecipe, userSettings, featureAccess }) => {
   const [recipes, setRecipes] = useState<SavedRecipe[]>([]);
   const [filteredRecipes, setFilteredRecipes] = useState<SavedRecipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState<string>('');
-  const [selectedHealthCondition, setSelectedHealthCondition] = useState<string>('');
-  const [sortBy, setSortBy] = useState<'date' | 'name' | 'rating'>('date');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState(() => loadFromSession(STORAGE_KEYS.searchTerm, ''));
+  const [selectedFilter, setSelectedFilter] = useState<string>(() => loadFromSession(STORAGE_KEYS.selectedFilter, ''));
+  const [selectedHealthCondition, setSelectedHealthCondition] = useState<string>(() => loadFromSession(STORAGE_KEYS.selectedHealthCondition, ''));
+  const [sortBy, setSortBy] = useState<'date' | 'name' | 'rating'>(() => loadFromSession(STORAGE_KEYS.sortBy, 'date'));
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(() => loadFromSession(STORAGE_KEYS.sortOrder, 'desc'));
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => loadFromSession(STORAGE_KEYS.selectedCategory, ''));
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [editingRecipe, setEditingRecipe] = useState<SavedRecipe | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [filterApplied, setFilterApplied] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => loadFromSession(STORAGE_KEYS.viewMode, 'grid'));
   const recipesPerPage = 8;
   const { showSuccess, showError } = useToast();
 
@@ -237,6 +267,35 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     const timer = setTimeout(() => setIsPageLoaded(true), 100);
     return () => clearTimeout(timer);
   }, [loadRecipes]);
+
+  // Save state to sessionStorage whenever it changes
+  useEffect(() => {
+    saveToSession(STORAGE_KEYS.searchTerm, searchTerm);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    saveToSession(STORAGE_KEYS.selectedFilter, selectedFilter);
+  }, [selectedFilter]);
+
+  useEffect(() => {
+    saveToSession(STORAGE_KEYS.selectedHealthCondition, selectedHealthCondition);
+  }, [selectedHealthCondition]);
+
+  useEffect(() => {
+    saveToSession(STORAGE_KEYS.sortBy, sortBy);
+  }, [sortBy]);
+
+  useEffect(() => {
+    saveToSession(STORAGE_KEYS.sortOrder, sortOrder);
+  }, [sortOrder]);
+
+  useEffect(() => {
+    saveToSession(STORAGE_KEYS.selectedCategory, selectedCategory);
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    saveToSession(STORAGE_KEYS.viewMode, viewMode);
+  }, [viewMode]);
 
   // Force grid view on mobile screens
   useEffect(() => {
@@ -621,10 +680,10 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                     isPageLoaded && !isTransitioning ? `animate-recipe-card-enter ${staggerClass}` : 'opacity-0'
                   } ${filterApplied ? 'animate-filter-change' : ''}`}
                 >
-                  <div className="flex flex-col sm:flex-row">
+                  <div className="flex flex-col sm:flex-row sm:h-64">
                     {/* List View Image */}
                     <div
-                      className="relative h-48 sm:h-auto sm:w-64 flex-shrink-0 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 cursor-pointer overflow-hidden group/image"
+                      className="relative h-48 sm:h-64 sm:w-64 flex-shrink-0 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 cursor-pointer overflow-hidden group/image"
                       onClick={() => onViewRecipe && onViewRecipe(recipe)}
                     >
                       {recipe.imageUrl ? (
