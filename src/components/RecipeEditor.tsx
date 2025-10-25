@@ -673,36 +673,33 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
                 </div>
               </div>
 
-            {/* Recipe Details Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Recipe Details - Single Row */}
+            <div className="grid grid-cols-4 gap-3">
               {/* Prep Time */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <Clock className="inline w-4 h-4 mr-1" />
                   Prep Time
                 </label>
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <input
                     type="number"
                     value={prepTime.value || ''}
                     onChange={(e) => setPrepTime(prev => ({...prev, value: parseInt(e.target.value) || 0}))}
                     placeholder="15"
                     min="0"
-                    className="flex-1 px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold"
+                    className="flex-1 px-3 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold h-[46px]"
                     disabled={saving}
                   />
-                  <div className="w-28">
-                    <CustomDropdown
-                      value={prepTime.unit}
-                      onChange={(value) => setPrepTime(prev => ({...prev, unit: value}))}
-                      options={[
-                        { value: 'minutes', label: 'min' },
-                        { value: 'hours', label: 'hrs' }
-                      ]}
-                      placeholder="Unit"
-                      className="h-full"
-                    />
-                  </div>
+                  <select
+                    value={prepTime.unit}
+                    onChange={(e) => setPrepTime(prev => ({...prev, unit: e.target.value}))}
+                    className="w-16 px-2 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-xs font-semibold bg-white h-[46px]"
+                    disabled={saving}
+                  >
+                    <option value="minutes">min</option>
+                    <option value="hours">hrs</option>
+                  </select>
                 </div>
               </div>
 
@@ -712,28 +709,25 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
                   <Clock className="inline w-4 h-4 mr-1" />
                   Cook Time
                 </label>
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <input
                     type="number"
                     value={cookTime.value || ''}
                     onChange={(e) => setCookTime(prev => ({...prev, value: parseInt(e.target.value) || 0}))}
                     placeholder="30"
                     min="0"
-                    className="flex-1 px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold"
+                    className="flex-1 px-3 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold h-[46px]"
                     disabled={saving}
                   />
-                  <div className="w-28">
-                    <CustomDropdown
-                      value={cookTime.unit}
-                      onChange={(value) => setCookTime(prev => ({...prev, unit: value}))}
-                      options={[
-                        { value: 'minutes', label: 'min' },
-                        { value: 'hours', label: 'hrs' }
-                      ]}
-                      placeholder="Unit"
-                      className="h-full"
-                    />
-                  </div>
+                  <select
+                    value={cookTime.unit}
+                    onChange={(e) => setCookTime(prev => ({...prev, unit: e.target.value}))}
+                    className="w-16 px-2 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-xs font-semibold bg-white h-[46px]"
+                    disabled={saving}
+                  >
+                    <option value="minutes">min</option>
+                    <option value="hours">hrs</option>
+                  </select>
                 </div>
               </div>
 
@@ -743,28 +737,25 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
                   <Clock className="inline w-4 h-4 mr-1" />
                   Total Time
                 </label>
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <input
                     type="number"
                     value={totalTime.value || ''}
                     onChange={(e) => setTotalTime(prev => ({...prev, value: parseInt(e.target.value) || 0}))}
                     placeholder="45"
                     min="0"
-                    className="flex-1 px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold"
+                    className="flex-1 px-3 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold h-[46px]"
                     disabled={saving}
                   />
-                  <div className="w-28">
-                    <CustomDropdown
-                      value={totalTime.unit}
-                      onChange={(value) => setTotalTime(prev => ({...prev, unit: value}))}
-                      options={[
-                        { value: 'minutes', label: 'min' },
-                        { value: 'hours', label: 'hrs' }
-                      ]}
-                      placeholder="Unit"
-                      className="h-full"
-                    />
-                  </div>
+                  <select
+                    value={totalTime.unit}
+                    onChange={(e) => setTotalTime(prev => ({...prev, unit: e.target.value}))}
+                    className="w-16 px-2 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-xs font-semibold bg-white h-[46px]"
+                    disabled={saving}
+                  >
+                    <option value="minutes">min</option>
+                    <option value="hours">hrs</option>
+                  </select>
                 </div>
               </div>
 
@@ -779,7 +770,7 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
                   value={parsedRecipe.servings}
                   onChange={(e) => updateRecipeField('servings', e.target.value)}
                   placeholder="4"
-                  className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold"
+                  className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold h-[46px]"
                   disabled={saving}
                 />
               </div>
