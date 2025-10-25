@@ -3,7 +3,7 @@ import { getUserRecipes, deleteRecipe } from '../lib/firestore';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
 import { useToast } from './ToastContainer';
-import { Search, Trash2, Calendar, Filter, ChefHat, RefreshCcw, Edit, Clock, Users, Image, Star, Crown, Heart, ArrowUpDown, Grid3x3, List } from 'lucide-react';
+import { Search, Trash2, Calendar, Filter, ChefHat, RefreshCcw, Edit, Clock, Users, Image, Star, Crown, Heart, ArrowUpDown, Grid3x3, List, X } from 'lucide-react';
 import { RecipeEditor } from './RecipeEditor';
 import { CustomDropdown } from './CustomDropdown';
 
@@ -356,16 +356,23 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
   };
 
   const handleRecipeUpdate = (updatedRecipe: SavedRecipe) => {
-    
+
     // Update the recipes array immediately
     setRecipes(prev => {
-      const updated = prev.map(recipe => 
+      const updated = prev.map(recipe =>
         recipe.id === updatedRecipe.id ? updatedRecipe : recipe
       );
       return updated;
     });
-    
+
     setEditingRecipe(null);
+  };
+
+  // Clear all filters except search and sort
+  const handleClearFilters = () => {
+    setSelectedFilter('');
+    setSelectedHealthCondition('');
+    setSelectedCategory('');
   };
 
   // Loading skeleton cards will be shown in the main UI below
@@ -599,18 +606,31 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
           {/* Enhanced Results Counter */}
           {(searchTerm || selectedFilter || selectedHealthCondition || selectedCategory) && (
             <div className="mt-4 pt-4 border-t-2 border-green-100">
-              <div className="flex items-center gap-2">
-                <div className="bg-green-100 rounded-lg px-3 py-1.5">
-                  <p className="text-sm font-bold text-green-800">
-                    {filteredRecipes.length} of {recipes.length}
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <div className="bg-green-100 rounded-lg px-3 py-1.5 flex-shrink-0">
+                    <p className="text-sm font-bold text-green-800">
+                      {filteredRecipes.length} of {recipes.length}
+                    </p>
+                  </div>
+                  <p className="text-sm text-gray-700 font-medium truncate">
+                    {searchTerm && <span>matching "<span className="text-green-600 font-bold">{searchTerm}</span>"</span>}
+                    {selectedFilter && <span>{searchTerm ? ' • ' : ''}with <span className="text-green-600 font-bold">{selectedFilter}</span></span>}
+                    {selectedHealthCondition && <span>{(searchTerm || selectedFilter) ? ' • ' : ''}for <span className="text-green-600 font-bold">{selectedHealthCondition}</span></span>}
+                    {selectedCategory && <span>{(searchTerm || selectedFilter || selectedHealthCondition) ? ' • ' : ''}in <span className="text-green-600 font-bold">{categoryFilters.find(c => c.value === selectedCategory)?.label}</span></span>}
                   </p>
                 </div>
-                <p className="text-sm text-gray-700 font-medium">
-                  {searchTerm && <span>matching "<span className="text-green-600 font-bold">{searchTerm}</span>"</span>}
-                  {selectedFilter && <span>{searchTerm ? ' • ' : ''}with <span className="text-green-600 font-bold">{selectedFilter}</span></span>}
-                  {selectedHealthCondition && <span>{(searchTerm || selectedFilter) ? ' • ' : ''}for <span className="text-green-600 font-bold">{selectedHealthCondition}</span></span>}
-                  {selectedCategory && <span>{(searchTerm || selectedFilter || selectedHealthCondition) ? ' • ' : ''}in <span className="text-green-600 font-bold">{categoryFilters.find(c => c.value === selectedCategory)?.label}</span></span>}
-                </p>
+                {/* Clear Filters Button - Only show if any filters are active (not search or sort) */}
+                {(selectedFilter || selectedHealthCondition || selectedCategory) && (
+                  <button
+                    onClick={handleClearFilters}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-50 to-orange-50 text-red-700 border-2 border-red-200 rounded-lg hover:border-red-400 hover:shadow-md transition-all duration-300 text-sm font-bold sm:hover:scale-105 flex-shrink-0"
+                  >
+                    <X className="w-4 h-4" />
+                    <span className="hidden sm:inline">Clear Filters</span>
+                    <span className="sm:hidden">Clear</span>
+                  </button>
+                )}
               </div>
             </div>
           )}
