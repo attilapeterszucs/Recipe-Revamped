@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Calendar, Filter, Clock, ChefHat, Edit } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import { StructuredRecipeDisplay } from './StructuredRecipeDisplay';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { useToast } from './ToastContainer';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface RecipeViewerProps {
   recipe: SavedRecipe;
@@ -104,20 +106,15 @@ const formatRecipeForCopy = (recipe: SavedRecipe): string => {
 
 export const RecipeViewer: React.FC<RecipeViewerProps> = ({ recipe, isOpen, onClose, onEdit }) => {
   const { showSuccess, showError } = useToast();
-  
+
+  // Lock body scroll when viewer is open
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen p-4">
-        {/* Background overlay */}
-        <div 
-          className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity"
-          onClick={onClose}
-        ></div>
-
-        {/* Modal - Centered and Fixed height to prevent button cut-off */}
-        <div className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all max-w-6xl w-full max-h-[90vh] flex flex-col">
+  return createPortal(
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95 flex flex-col" onClick={(e) => e.stopPropagation()}>
           {/* Header - Show image if available, otherwise simple title bar */}
           {(() => {
             // Check if there's an actual image available
@@ -248,8 +245,8 @@ export const RecipeViewer: React.FC<RecipeViewerProps> = ({ recipe, isOpen, onCl
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>,
+    document.body
   );
 };
 
