@@ -44,6 +44,37 @@ import { SUBSCRIPTION_PLANS } from '../types/subscription';
 import type { SubscriptionPlan } from '../types/subscription';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
 
+// SessionStorage keys for persisting page state
+const PAGE_STATE_STORAGE_KEY = 'recipeApp_currentPage';
+const SETTINGS_SECTION_STORAGE_KEY = 'recipeApp_settingsSection';
+
+// Helper functions for sessionStorage
+const savePageState = (showSaved: boolean, showSettings: boolean, showMealPlanner: boolean, settingsSection?: string) => {
+  try {
+    const pageState = {
+      showSaved,
+      showSettings,
+      showMealPlanner,
+      settingsSection: showSettings ? settingsSection : undefined
+    };
+    sessionStorage.setItem(PAGE_STATE_STORAGE_KEY, JSON.stringify(pageState));
+  } catch {
+    // Silently fail if sessionStorage is not available
+  }
+};
+
+const loadPageState = () => {
+  try {
+    const stored = sessionStorage.getItem(PAGE_STATE_STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch {
+    // Silently fail if sessionStorage is not available
+  }
+  return null;
+};
+
 // Stripe Payment Links for upgrade modal
 const STRIPE_PAYMENT_LINKS = {
   chef: {
@@ -68,9 +99,13 @@ export function RecipeApp() {
   const [recipeSaved, setRecipeSaved] = useState(false);
   const [currentRecipe, setCurrentRecipe] = useState<{ original: string; filters: string[] } | null>(null);
   const [selectedSavedRecipe, setSelectedSavedRecipe] = useState<SavedRecipe | null>(null);
-  const [showSaved, setShowSaved] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showMealPlanner, setShowMealPlanner] = useState(false);
+
+  // Load saved page state from sessionStorage
+  const savedPageState = loadPageState();
+  const [showSaved, setShowSaved] = useState(savedPageState?.showSaved || false);
+  const [showSettings, setShowSettings] = useState(savedPageState?.showSettings || false);
+  const [showMealPlanner, setShowMealPlanner] = useState(savedPageState?.showMealPlanner || false);
+  const [settingsSection, setSettingsSection] = useState<string | undefined>(savedPageState?.settingsSection);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   const [userSettingsLoading, setUserSettingsLoading] = useState(false);
@@ -133,8 +168,14 @@ export function RecipeApp() {
       setShowSettings(true);
       setShowSaved(false);
       setShowMealPlanner(false);
+      setSettingsSection(section);
     }
   }, [location.search]);
+
+  // Save page state to sessionStorage whenever it changes
+  useEffect(() => {
+    savePageState(showSaved, showSettings, showMealPlanner, settingsSection);
+  }, [showSaved, showSettings, showMealPlanner, settingsSection]);
 
   // Refresh recipe limit info when subscription changes
   useEffect(() => {
@@ -616,6 +657,8 @@ export function RecipeApp() {
               onClick={() => {
                 setShowSaved(false);
                 setShowSettings(false);
+                setShowMealPlanner(false);
+                setSettingsSection(undefined);
               }}
               className="flex items-center gap-3 group"
             >
@@ -634,6 +677,7 @@ export function RecipeApp() {
                         setShowSaved(false);
                         setShowSettings(false);
                         setShowMealPlanner(false);
+                        setSettingsSection(undefined);
                       }}
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
                         !showSaved && !showSettings && !showMealPlanner
@@ -651,6 +695,7 @@ export function RecipeApp() {
                         setShowSaved(true);
                         setShowSettings(false);
                         setShowMealPlanner(false);
+                        setSettingsSection(undefined);
                       }}
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
                         showSaved
@@ -679,6 +724,7 @@ export function RecipeApp() {
                         setShowMealPlanner(true);
                         setShowSaved(false);
                         setShowSettings(false);
+                        setSettingsSection(undefined);
                       }}
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
                         !featureAccess.canUseMealPlanning
@@ -711,11 +757,15 @@ export function RecipeApp() {
                         setShowSaved(!showSaved);
                         setShowSettings(false);
                         setShowMealPlanner(false);
+                        setSettingsSection(undefined);
                       }}
                       onShowSettings={() => {
                         setShowSettings(!showSettings);
                         setShowSaved(false);
                         setShowMealPlanner(false);
+                        if (!showSettings) {
+                          setSettingsSection(undefined);
+                        }
                       }}
                       onSignOut={handleSignOut}
                       onShowUpgradeModal={() => setShowUpgradeModal(true)}
@@ -753,6 +803,7 @@ export function RecipeApp() {
                   setShowSaved(false);
                   setShowSettings(false);
                   setShowMealPlanner(false);
+                  setSettingsSection(undefined);
                   setShowMobileMenu(false);
                 }}
                 className={`w-full justify-start flex items-center gap-2 px-3 py-2.5 rounded-lg font-semibold transition-all duration-200 ${
@@ -774,6 +825,7 @@ export function RecipeApp() {
                   setShowSaved(true);
                   setShowSettings(false);
                   setShowMealPlanner(false);
+                  setSettingsSection(undefined);
                   setShowMobileMenu(false);
                 }}
                 className={`w-full justify-start flex items-center gap-2 px-3 py-2.5 rounded-lg font-semibold transition-all duration-200 ${
@@ -807,6 +859,7 @@ export function RecipeApp() {
                   setShowMealPlanner(true);
                   setShowSaved(false);
                   setShowSettings(false);
+                  setSettingsSection(undefined);
                   setShowMobileMenu(false);
                 }}
                 className={`w-full justify-start flex items-center gap-2 px-3 py-2.5 rounded-lg font-semibold transition-all duration-200 ${
@@ -883,10 +936,13 @@ export function RecipeApp() {
             {showSettings ? (
               <Settings
                 user={user}
-                onBack={() => setShowSettings(false)}
+                onBack={() => {
+                  setShowSettings(false);
+                  setSettingsSection(undefined);
+                }}
                 onSettingsUpdate={(updatedSettings) => setUserSettings(updatedSettings)}
                 onShowUpgradeModal={() => setShowUpgradeModal(true)}
-                initialActiveSection={new URLSearchParams(location.search).get('section') || undefined}
+                initialActiveSection={settingsSection || new URLSearchParams(location.search).get('section') || undefined}
                 featureAccess={{
                   canSetDefaultPreferences: featureAccess.canSetDefaultPreferences,
                   canBackupRestore: featureAccess.canBackupRestore,
