@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Save, Edit3, Filter, ChefHat, Clock, Users, Plus, Trash2, Heart, Lightbulb, Minus, Image, Upload } from 'lucide-react';
+import { X, Save, Edit3, Filter, ChefHat, Clock, Users, Plus, Trash2, Heart, Lightbulb, Minus, Image, Upload, Check } from 'lucide-react';
 import type { SavedRecipe } from '../lib/validation';
 import { updateRecipe } from '../lib/firestore';
 import { useToast } from './ToastContainer';
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
+import { CustomDropdown } from './CustomDropdown';
 
 interface RecipeEditorProps {
   recipe: SavedRecipe;
@@ -672,145 +673,181 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
                 </div>
               </div>
 
-              {/* Recipe Details Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Clock className="inline w-4 h-4 mr-1" />
-                    Prep Time
-                  </label>
-                  <div className="flex space-x-2">
-                    <input
-                      type="number"
-                      value={prepTime.value || ''}
-                      onChange={(e) => setPrepTime(prev => ({...prev, value: parseInt(e.target.value) || 0}))}
-                      placeholder="15"
-                      min="0"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
-                      disabled={saving}
-                    />
-                    <select
-                      value={prepTime.unit}
-                      onChange={(e) => setPrepTime(prev => ({...prev, unit: e.target.value}))}
-                      className="px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm bg-white"
-                      disabled={saving}
-                    >
-                      <option value="minutes">min</option>
-                      <option value="hours">hrs</option>
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Clock className="inline w-4 h-4 mr-1" />
-                    Cook Time
-                  </label>
-                  <div className="flex space-x-2">
-                    <input
-                      type="number"
-                      value={cookTime.value || ''}
-                      onChange={(e) => setCookTime(prev => ({...prev, value: parseInt(e.target.value) || 0}))}
-                      placeholder="30"
-                      min="0"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
-                      disabled={saving}
-                    />
-                    <select
-                      value={cookTime.unit}
-                      onChange={(e) => setCookTime(prev => ({...prev, unit: e.target.value}))}
-                      className="px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm bg-white"
-                      disabled={saving}
-                    >
-                      <option value="minutes">min</option>
-                      <option value="hours">hrs</option>
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Clock className="inline w-4 h-4 mr-1" />
-                    Total Time
-                  </label>
-                  <div className="flex space-x-2">
-                    <input
-                      type="number"
-                      value={totalTime.value || ''}
-                      onChange={(e) => setTotalTime(prev => ({...prev, value: parseInt(e.target.value) || 0}))}
-                      placeholder="45"
-                      min="0"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
-                      disabled={saving}
-                    />
-                    <select
-                      value={totalTime.unit}
-                      onChange={(e) => setTotalTime(prev => ({...prev, unit: e.target.value}))}
-                      className="px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm bg-white"
-                      disabled={saving}
-                    >
-                      <option value="minutes">min</option>
-                      <option value="hours">hrs</option>
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Users className="inline w-4 h-4 mr-1" />
-                    Servings
-                  </label>
+            {/* Recipe Details Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Prep Time */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Clock className="inline w-4 h-4 mr-1" />
+                  Prep Time
+                </label>
+                <div className="flex gap-2">
                   <input
-                    type="text"
-                    value={parsedRecipe.servings}
-                    onChange={(e) => updateRecipeField('servings', e.target.value)}
-                    placeholder="4"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                    type="number"
+                    value={prepTime.value || ''}
+                    onChange={(e) => setPrepTime(prev => ({...prev, value: parseInt(e.target.value) || 0}))}
+                    placeholder="15"
+                    min="0"
+                    className="flex-1 px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold"
                     disabled={saving}
                   />
+                  <div className="w-28">
+                    <CustomDropdown
+                      value={prepTime.unit}
+                      onChange={(value) => setPrepTime(prev => ({...prev, unit: value}))}
+                      options={[
+                        { value: 'minutes', label: 'min' },
+                        { value: 'hours', label: 'hrs' }
+                      ]}
+                      placeholder="Unit"
+                      className="h-full"
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Dietary Filters */}
+              {/* Cook Time */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  <Filter className="inline w-4 h-4 mr-2" />
-                  Dietary Filters
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Clock className="inline w-4 h-4 mr-1" />
+                  Cook Time
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {availableFilters.map(filter => (
-                    <button
-                      key={filter}
-                      type="button"
-                      onClick={() => handleFilterToggle(filter)}
-                      disabled={saving}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        dietaryFilters.includes(filter)
-                          ? 'bg-green-600 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      } disabled:opacity-50 disabled:cursor-not-allowed`}
-                    >
-                      {filter}
-                    </button>
-                  ))}
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    value={cookTime.value || ''}
+                    onChange={(e) => setCookTime(prev => ({...prev, value: parseInt(e.target.value) || 0}))}
+                    placeholder="30"
+                    min="0"
+                    className="flex-1 px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold"
+                    disabled={saving}
+                  />
+                  <div className="w-28">
+                    <CustomDropdown
+                      value={cookTime.unit}
+                      onChange={(value) => setCookTime(prev => ({...prev, unit: value}))}
+                      options={[
+                        { value: 'minutes', label: 'min' },
+                        { value: 'hours', label: 'hrs' }
+                      ]}
+                      placeholder="Unit"
+                      className="h-full"
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Recipe Category */}
+              {/* Total Time */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  <ChefHat className="inline w-4 h-4 mr-2" />
-                  Recipe Category
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Clock className="inline w-4 h-4 mr-1" />
+                  Total Time
                 </label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    value={totalTime.value || ''}
+                    onChange={(e) => setTotalTime(prev => ({...prev, value: parseInt(e.target.value) || 0}))}
+                    placeholder="45"
+                    min="0"
+                    className="flex-1 px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold"
+                    disabled={saving}
+                  />
+                  <div className="w-28">
+                    <CustomDropdown
+                      value={totalTime.unit}
+                      onChange={(value) => setTotalTime(prev => ({...prev, unit: value}))}
+                      options={[
+                        { value: 'minutes', label: 'min' },
+                        { value: 'hours', label: 'hrs' }
+                      ]}
+                      placeholder="Unit"
+                      className="h-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Servings */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Users className="inline w-4 h-4 mr-1" />
+                  Servings
+                </label>
+                <input
+                  type="text"
+                  value={parsedRecipe.servings}
+                  onChange={(e) => updateRecipeField('servings', e.target.value)}
+                  placeholder="4"
+                  className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm font-semibold"
                   disabled={saving}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
-                >
-                  <option value="appetizer">🍤 Appetizer</option>
-                  <option value="main-dish">🍽️ Main Dish</option>
-                  <option value="side-dish">🥔 Side Dish</option>
-                  <option value="dessert">🍰 Dessert</option>
-                </select>
+                />
               </div>
+            </div>
+
+            {/* Dietary Filters */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                <Filter className="inline w-4 h-4 mr-2" />
+                Dietary Filters
+                {dietaryFilters.length > 0 && (
+                  <span className="ml-2 px-2.5 py-0.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold rounded-full">
+                    {dietaryFilters.length} selected
+                  </span>
+                )}
+              </label>
+              <div className="bg-gradient-to-br from-green-50/50 to-emerald-50/30 border-2 border-green-100 rounded-2xl p-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                  {availableFilters.map(filter => {
+                    const isSelected = dietaryFilters.includes(filter);
+                    return (
+                      <button
+                        key={filter}
+                        type="button"
+                        onClick={() => handleFilterToggle(filter)}
+                        disabled={saving}
+                        className={`relative px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 transform hover:scale-105 ${
+                          isSelected
+                            ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/30'
+                            : 'bg-white text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 border-2 border-gray-200 hover:border-green-300'
+                        } disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
+                      >
+                        <span className="flex items-center justify-center gap-2">
+                          {isSelected && <Check className="w-4 h-4" strokeWidth={3} />}
+                          {filter}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {dietaryFilters.length === 0 && (
+                  <p className="text-center text-sm text-gray-500 mt-3 italic">
+                    No dietary filters selected
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Recipe Category */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                <ChefHat className="inline w-4 h-4 mr-2" />
+                Recipe Category
+              </label>
+              <CustomDropdown
+                value={category}
+                onChange={setCategory}
+                options={[
+                  { value: 'appetizer', label: 'Appetizer', icon: '🍤' },
+                  { value: 'main-dish', label: 'Main Dish', icon: '🍽️' },
+                  { value: 'side-dish', label: 'Side Dish', icon: '🥔' },
+                  { value: 'dessert', label: 'Dessert', icon: '🍰' }
+                ]}
+                placeholder="Select category"
+                icon={<ChefHat className="w-5 h-5 text-green-500" />}
+                ariaLabel="Select recipe category"
+              />
+            </div>
 
               {/* Ingredients Section */}
               <div>
