@@ -731,29 +731,32 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                   const pageNumbers: (number | 'ellipsis-start' | 'ellipsis-end')[] = [];
                   const maxPagesToShow = 5;
 
-                  if (totalPages <= maxPagesToShow + 2) {
-                    // Show all pages if total is small
+                  if (totalPages <= maxPagesToShow) {
+                    // Show all pages if 5 or fewer total pages
                     for (let i = 1; i <= totalPages; i++) {
                       pageNumbers.push(i);
                     }
                   } else {
+                    // More than 5 pages - show first, last, and up to 3 middle pages
                     // Always show first page
                     pageNumbers.push(1);
 
-                    // Calculate the range of pages to show (up to 5 pages)
-                    let startPage = Math.max(2, currentPage - 2);
-                    let endPage = Math.min(totalPages - 1, currentPage + 2);
+                    // Calculate the middle pages to show (max 3 pages)
+                    let startPage: number;
+                    let endPage: number;
 
-                    // Adjust if we're near the beginning
                     if (currentPage <= 3) {
+                      // Near the beginning: show pages 2, 3, 4
                       startPage = 2;
-                      endPage = Math.min(totalPages - 1, maxPagesToShow);
-                    }
-
-                    // Adjust if we're near the end
-                    if (currentPage >= totalPages - 2) {
-                      startPage = Math.max(2, totalPages - maxPagesToShow);
+                      endPage = 4;
+                    } else if (currentPage >= totalPages - 2) {
+                      // Near the end: show last 3 pages before the final page
+                      startPage = totalPages - 3;
                       endPage = totalPages - 1;
+                    } else {
+                      // In the middle: show current page and one on each side
+                      startPage = currentPage - 1;
+                      endPage = currentPage + 1;
                     }
 
                     // Add ellipsis after first page if needed
