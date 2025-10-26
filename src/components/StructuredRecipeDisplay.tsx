@@ -63,14 +63,32 @@ export const StructuredRecipeDisplay: React.FC<StructuredRecipeDisplayProps> = (
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-        <div className="flex items-center justify-center py-8 sm:py-12">
-          <div className="flex space-x-2">
-            <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
-            <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse delay-75"></div>
-            <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse delay-150"></div>
+        <div className="flex flex-col items-center justify-center py-8 sm:py-12">
+          {/* Logo with pulse animation */}
+          <div className="mb-6 animate-pulse">
+            <img
+              src="/logo/logo.png"
+              alt="Recipe Revamped Logo"
+              className="h-20 w-20 sm:h-24 sm:w-24 mx-auto drop-shadow-lg"
+            />
           </div>
+
+          {/* Spinner with gradient */}
+          <div className="relative inline-flex items-center justify-center mb-6">
+            <div className="absolute inline-block h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gradient-to-r from-green-400 to-emerald-400 opacity-20 animate-ping" />
+            <div className="relative inline-block animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-4 border-transparent bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-padding">
+              <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-r-transparent border-b-green-600 border-l-green-600" />
+            </div>
+          </div>
+
+          {/* Text with gradient */}
+          <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
+            Creating your recipe...
+          </h2>
+          <p className="text-xs sm:text-sm text-gray-600 font-medium animate-pulse">
+            Crafting the perfect culinary masterpiece...
+          </p>
         </div>
-        <p className="text-center text-gray-600 mt-4 text-sm sm:text-base">Creating your recipe...</p>
       </div>
     );
   }
