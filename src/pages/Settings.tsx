@@ -2066,24 +2066,46 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'recipe-settings':
         return (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Recipe Settings</h3>
-              <p className="text-gray-700 leading-relaxed">
-                Configure your recipe conversion preferences and cooking defaults. Set up auto-save, serving sizes, and measurement units to streamline your cooking experience.
-              </p>
+            {/* Header Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-green-50/30 to-emerald-50/20 rounded-3xl border-2 border-green-100 p-6 sm:p-8 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-lg shadow-green-500/30">
+                    <Bot className="w-7 h-7 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Recipe Settings</h3>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed font-medium">
+                  Configure your recipe conversion preferences and cooking defaults. Set up auto-save, serving sizes, and measurement units to streamline your cooking experience.
+                </p>
+              </div>
             </div>
 
             {featureAccess?.canSetDefaultPreferences ? (
               <div className="space-y-6">
                 {/* Auto-save Recipes */}
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-6 shadow-lg">
-                  <div className="flex items-center justify-between">
+                <div className="relative overflow-hidden bg-gradient-to-br from-white via-green-50/30 to-emerald-50/20 rounded-3xl border-2 border-green-100 p-6 sm:p-8 shadow-xl">
+                  {/* Animated background blobs */}
+                  <div className="absolute inset-0 -z-10">
+                    <div className="absolute top-0 left-0 w-32 h-32 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob" />
+                    <div className="absolute bottom-0 right-0 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000" />
+                  </div>
+
+                  <div className="relative z-10 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
-                        <Save className="w-6 h-6 text-green-600" />
+                      <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                        <Save className="w-7 h-7 text-white" strokeWidth={2.5} />
                       </div>
                       <div>
-                        <h4 className="text-lg font-black text-gray-900">Auto-save Recipes</h4>
+                        <h4 className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Auto-save Recipes</h4>
                         <p className="text-sm text-gray-600 font-medium">Automatically save recipes as you work</p>
                       </div>
                     </div>
@@ -2095,32 +2117,53 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       size="lg"
                     />
                   </div>
+
+                  {settings.autoSaveRecipes && (
+                    <div className="mt-4 flex items-start gap-2 p-3 bg-green-50/50 border-l-4 border-green-500 rounded-lg animate-in slide-in-from-top-2 fade-in duration-300">
+                      <Info className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <div className="text-xs text-green-800">
+                        <p className="font-semibold mb-1">Auto-save is enabled</p>
+                        <p>Your recipes will be automatically saved when you generate them.</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Recipe Conversion Defaults */}
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-6 shadow-lg">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
-                      <Bot className="w-6 h-6 text-green-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-black text-gray-900">Recipe Conversion Defaults</h4>
-                      <p className="text-sm text-gray-600 font-medium">Set your preferred recipe generation settings</p>
-                    </div>
+                <div className="relative overflow-hidden bg-gradient-to-br from-white via-blue-50/20 to-green-50/20 rounded-3xl border-2 border-green-100 p-6 sm:p-8 shadow-xl">
+                  {/* Animated background blobs */}
+                  <div className="absolute inset-0 -z-10">
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob" />
+                    <div className="absolute bottom-0 left-0 w-40 h-40 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000" />
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Default Serving Size */}
-                    <div className="bg-gradient-to-br from-white to-green-50/20 rounded-2xl p-6 border-2 border-green-200 shadow-lg hover:shadow-xl transition-all duration-200">
-                      <div className="flex items-center gap-3 mb-5">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
-                          <span className="text-2xl">🍽️</span>
-                        </div>
-                        <div>
-                          <label className="block text-base font-black text-gray-900">Default Serving Size</label>
-                          <p className="text-xs text-gray-600 font-medium">Choose how many people to cook for</p>
-                        </div>
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-green-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        <Bot className="w-7 h-7 text-white" strokeWidth={2.5} />
                       </div>
+                      <div>
+                        <h4 className="text-xl font-black bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">Recipe Conversion Defaults</h4>
+                        <p className="text-sm text-gray-600 font-medium">Set your preferred recipe generation settings</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Default Serving Size */}
+                      <div className="relative overflow-hidden bg-gradient-to-br from-white to-green-50/30 rounded-2xl p-6 border-2 border-green-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                        {/* Subtle animated blob */}
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-green-200 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob"></div>
+
+                        <div className="relative z-10">
+                          <div className="flex items-center gap-3 mb-5">
+                            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+                              <span className="text-2xl">🍽️</span>
+                            </div>
+                            <div>
+                              <label className="block text-base font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Default Serving Size</label>
+                              <p className="text-xs text-gray-600 font-medium">Choose how many people to cook for</p>
+                            </div>
+                          </div>
 
                       {/* Quick Selection Buttons */}
                       <div className="space-y-3">
@@ -2195,24 +2238,29 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                             +
                           </button>
                         </div>
-                        <div className="flex items-center justify-between px-1">
-                          <span className="text-xs text-gray-500 font-medium">Min: 1</span>
-                          <span className="text-xs text-gray-500 font-medium">Max: 20</span>
+                          <div className="flex items-center justify-between px-1">
+                            <span className="text-xs text-gray-500 font-medium">Min: 1</span>
+                            <span className="text-xs text-gray-500 font-medium">Max: 20</span>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Preferred Units */}
-                    <div className="bg-gradient-to-br from-white to-green-50/20 rounded-2xl p-6 border-2 border-green-200 shadow-lg hover:shadow-xl transition-all duration-200">
-                      <div className="flex items-center gap-3 mb-5">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
-                          <span className="text-2xl">📏</span>
-                        </div>
-                        <div>
-                          <label className="block text-base font-black text-gray-900">Measurement Units</label>
-                          <p className="text-xs text-gray-600 font-medium">Choose your preferred system</p>
-                        </div>
-                      </div>
+                      {/* Preferred Units */}
+                      <div className="relative overflow-hidden bg-gradient-to-br from-white to-blue-50/30 rounded-2xl p-6 border-2 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                        {/* Subtle animated blob */}
+                        <div className="absolute top-0 left-0 w-24 h-24 bg-blue-200 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-2000"></div>
+
+                        <div className="relative z-10">
+                          <div className="flex items-center gap-3 mb-5">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+                              <span className="text-2xl">📏</span>
+                            </div>
+                            <div>
+                              <label className="block text-base font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Measurement Units</label>
+                              <p className="text-xs text-gray-600 font-medium">Choose your preferred system</p>
+                            </div>
+                          </div>
 
                       {/* Unit Selection Cards */}
                       <div className="space-y-3">
@@ -2277,11 +2325,15 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         </button>
                       </div>
 
-                      {/* Info Box */}
-                      <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-xl">
-                        <p className="text-xs text-gray-700 font-medium">
-                          <span className="font-bold text-green-700">💡 Tip:</span> All recipes will automatically convert to your chosen system
-                        </p>
+                          {/* Info Box */}
+                          <div className="mt-4 flex items-start gap-2 p-3 bg-blue-50/50 border-l-4 border-blue-500 rounded-lg">
+                            <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                            <div className="text-xs text-blue-800">
+                              <p className="font-semibold mb-1">💡 Smart Conversion</p>
+                              <p>All recipes will automatically convert to your chosen system</p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
