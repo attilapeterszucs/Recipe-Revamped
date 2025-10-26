@@ -2165,84 +2165,116 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                             </div>
                           </div>
 
-                      {/* Quick Selection Buttons */}
-                      <div className="space-y-3">
-                        <p className="text-xs font-bold text-gray-700 uppercase tracking-wide">Popular Sizes</p>
-                        <div className="grid grid-cols-5 gap-2">
-                          {[1, 2, 4, 6, 8].map((size) => (
-                            <button
-                              key={size}
-                              onClick={() => updateSetting('defaultServingSize', size)}
-                              className={`relative py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
-                                settings.defaultServingSize === size
-                                  ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/40 transform scale-105 ring-2 ring-green-300'
-                                  : 'bg-white text-gray-700 hover:bg-green-50 hover:scale-105 border-2 border-gray-200 hover:border-green-300'
-                              }`}
-                            >
-                              <div className="text-lg font-black">{size}</div>
-                              <div className="text-[10px] font-semibold opacity-90">{size === 1 ? 'person' : 'people'}</div>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                          {/* Quick Selection Buttons */}
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold text-green-700 uppercase tracking-wide">Quick Select</span>
+                              <div className="flex-1 h-px bg-gradient-to-r from-green-200 to-transparent"></div>
+                            </div>
+                            <div className="grid grid-cols-5 gap-2">
+                              {[1, 2, 4, 6, 8].map((size) => (
+                                <button
+                                  key={size}
+                                  onClick={() => updateSetting('defaultServingSize', size)}
+                                  className={`group relative py-4 rounded-2xl text-sm font-bold transition-all duration-300 ${
+                                    settings.defaultServingSize === size
+                                      ? 'bg-gradient-to-br from-green-600 to-emerald-600 text-white shadow-xl shadow-green-500/50 scale-110 ring-4 ring-green-200'
+                                      : 'bg-white text-gray-700 hover:bg-gradient-to-br hover:from-green-50 hover:to-emerald-50 hover:scale-105 border-2 border-gray-200 hover:border-green-400 shadow-md hover:shadow-lg'
+                                  }`}
+                                >
+                                  {settings.defaultServingSize === size && (
+                                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-lg animate-in zoom-in duration-200">
+                                      <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                      </svg>
+                                    </div>
+                                  )}
+                                  <div className={`text-2xl font-black mb-1 ${settings.defaultServingSize === size ? 'text-white' : 'text-green-600 group-hover:text-emerald-600'}`}>{size}</div>
+                                  <div className={`text-[9px] font-bold uppercase tracking-wide ${settings.defaultServingSize === size ? 'text-white/90' : 'text-gray-500 group-hover:text-gray-700'}`}>
+                                    {size === 1 ? 'person' : 'people'}
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
 
-                      {/* Divider */}
-                      <div className="relative my-5">
-                        <div className="absolute inset-0 flex items-center">
-                          <div className="w-full border-t-2 border-gray-200"></div>
-                        </div>
-                        <div className="relative flex justify-center">
-                          <span className="bg-gradient-to-br from-white to-green-50/20 px-3 text-xs font-bold text-gray-500 uppercase tracking-wide">Or Custom</span>
-                        </div>
-                      </div>
-
-                      {/* Custom Input with Stepper */}
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              const newValue = Math.max(1, settings.defaultServingSize - 1);
-                              updateSetting('defaultServingSize', newValue);
-                            }}
-                            className="w-12 h-12 bg-white border-2 border-gray-300 hover:border-green-400 rounded-xl flex items-center justify-center text-gray-700 hover:text-green-600 font-black text-xl transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md"
-                          >
-                            −
-                          </button>
-                          <div className="flex-1 relative">
-                            <input
-                              type="number"
-                              min="1"
-                              max="20"
-                              value={settings.defaultServingSize}
-                              onChange={(e) => {
-                                const value = parseInt(e.target.value);
-                                const servingSize = isNaN(value) || value < 1 ? 1 : Math.min(value, 20);
-                                updateSetting('defaultServingSize', servingSize);
-                              }}
-                              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-xl font-black text-center transition-all duration-200 hover:border-green-300 shadow-sm"
-                              placeholder="Enter size"
-                            />
-                            <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                              <span className="text-gray-500 text-xs font-bold uppercase">
-                                {settings.defaultServingSize === 1 ? 'person' : 'people'}
-                              </span>
+                            {/* Current selection indicator */}
+                            <div className="flex items-center gap-2 p-3 bg-green-50/50 rounded-xl border border-green-200">
+                              <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg text-white font-black text-sm shadow-md">
+                                {settings.defaultServingSize}
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-xs font-bold text-green-900">Current Default</p>
+                                <p className="text-[10px] text-green-700">Recipes will be scaled for {settings.defaultServingSize} {settings.defaultServingSize === 1 ? 'person' : 'people'}</p>
+                              </div>
                             </div>
                           </div>
-                          <button
-                            onClick={() => {
-                              const newValue = Math.min(20, settings.defaultServingSize + 1);
-                              updateSetting('defaultServingSize', newValue);
-                            }}
-                            className="w-12 h-12 bg-gradient-to-r from-green-600 to-emerald-600 border-2 border-green-600 hover:from-green-700 hover:to-emerald-700 rounded-xl flex items-center justify-center text-white font-black text-xl transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
-                          >
-                            +
-                          </button>
-                        </div>
-                          <div className="flex items-center justify-between px-1">
-                            <span className="text-xs text-gray-500 font-medium">Min: 1</span>
-                            <span className="text-xs text-gray-500 font-medium">Max: 20</span>
+
+                          {/* Divider */}
+                          <div className="relative my-6">
+                            <div className="absolute inset-0 flex items-center">
+                              <div className="w-full border-t-2 border-green-200"></div>
+                            </div>
+                            <div className="relative flex justify-center">
+                              <span className="bg-gradient-to-br from-white to-green-50/30 px-4 py-1 rounded-full text-xs font-bold text-green-700 uppercase tracking-wider shadow-sm border border-green-200">Custom Size</span>
+                            </div>
                           </div>
-                        </div>
+
+                          {/* Custom Input with Stepper */}
+                          <div className="space-y-3">
+                            <p className="text-xs font-semibold text-gray-600 text-center">Enter any value between 1 and 20</p>
+                            <div className="flex items-center gap-3">
+                              <button
+                                onClick={() => {
+                                  const newValue = Math.max(1, settings.defaultServingSize - 1);
+                                  updateSetting('defaultServingSize', newValue);
+                                }}
+                                disabled={settings.defaultServingSize <= 1}
+                                className="group w-14 h-14 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-300 hover:border-green-500 disabled:border-gray-200 rounded-2xl flex items-center justify-center text-gray-700 hover:text-green-600 disabled:text-gray-400 disabled:cursor-not-allowed font-black text-2xl transition-all duration-300 hover:scale-110 disabled:hover:scale-100 shadow-lg hover:shadow-xl disabled:shadow-sm"
+                              >
+                                <span className="group-hover:scale-110 transition-transform duration-200">−</span>
+                              </button>
+                              <div className="flex-1 relative">
+                                <input
+                                  type="number"
+                                  min="1"
+                                  max="20"
+                                  value={settings.defaultServingSize}
+                                  onChange={(e) => {
+                                    const value = parseInt(e.target.value);
+                                    const servingSize = isNaN(value) || value < 1 ? 1 : Math.min(value, 20);
+                                    updateSetting('defaultServingSize', servingSize);
+                                  }}
+                                  className="w-full px-4 py-4 border-2 border-gray-300 rounded-2xl focus:outline-none focus:ring-4 focus:ring-green-500/30 focus:border-green-500 bg-white text-3xl font-black text-center transition-all duration-300 hover:border-green-400 shadow-lg hover:shadow-xl"
+                                  placeholder="#"
+                                />
+                                <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                  <span className="text-green-600 text-xs font-bold uppercase tracking-wide bg-green-50 px-2 py-1 rounded-lg">
+                                    {settings.defaultServingSize === 1 ? 'person' : 'people'}
+                                  </span>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  const newValue = Math.min(20, settings.defaultServingSize + 1);
+                                  updateSetting('defaultServingSize', newValue);
+                                }}
+                                disabled={settings.defaultServingSize >= 20}
+                                className="group w-14 h-14 bg-gradient-to-br from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-gray-300 disabled:to-gray-400 border-2 border-green-600 hover:border-green-700 disabled:border-gray-300 disabled:cursor-not-allowed rounded-2xl flex items-center justify-center text-white font-black text-2xl transition-all duration-300 hover:scale-110 disabled:hover:scale-100 shadow-xl hover:shadow-2xl disabled:shadow-sm"
+                              >
+                                <span className="group-hover:scale-110 transition-transform duration-200">+</span>
+                              </button>
+                            </div>
+                            <div className="flex items-center justify-center gap-6 px-2">
+                              <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-gray-400"></div>
+                                <span className="text-xs text-gray-600 font-semibold">Min: 1</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-gray-400"></div>
+                                <span className="text-xs text-gray-600 font-semibold">Max: 20</span>
+                              </div>
+                            </div>
+                          </div>
                       </div>
                     </div>
 
@@ -2262,75 +2294,131 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                             </div>
                           </div>
 
-                      {/* Unit Selection Cards */}
-                      <div className="space-y-3">
-                        <button
-                          onClick={() => updateSetting('preferredUnits', 'metric')}
-                          className={`w-full p-4 rounded-xl border-2 transition-all duration-200 text-left ${
-                            settings.preferredUnits === 'metric'
-                              ? 'bg-gradient-to-r from-green-600 to-emerald-600 border-green-600 text-white shadow-lg shadow-green-500/40 transform scale-[1.02]'
-                              : 'bg-white border-gray-200 hover:border-green-300 hover:bg-green-50 hover:scale-[1.02]'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <span className="text-2xl">🌍</span>
-                              <div>
-                                <div className={`text-base font-black ${settings.preferredUnits === 'metric' ? 'text-white' : 'text-gray-900'}`}>
-                                  Metric System
+                          {/* Unit Selection Cards */}
+                          <div className="space-y-4">
+                            {/* Metric System Card */}
+                            <button
+                              onClick={() => updateSetting('preferredUnits', 'metric')}
+                              className={`group w-full p-5 rounded-2xl border-3 transition-all duration-300 text-left relative overflow-hidden ${
+                                settings.preferredUnits === 'metric'
+                                  ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-blue-600 text-white shadow-2xl shadow-blue-500/50 scale-[1.03] ring-4 ring-blue-200'
+                                  : 'bg-white border-gray-200 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 hover:scale-[1.02] shadow-lg hover:shadow-xl'
+                              }`}
+                            >
+                              {/* Selection checkmark badge */}
+                              {settings.preferredUnits === 'metric' && (
+                                <div className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-xl animate-in zoom-in duration-300">
+                                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
                                 </div>
-                                <div className={`text-xs font-medium ${settings.preferredUnits === 'metric' ? 'text-white/90' : 'text-gray-600'}`}>
-                                  grams, ml, °C
+                              )}
+
+                              <div className="flex items-start gap-4">
+                                <div className={`flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300 ${
+                                  settings.preferredUnits === 'metric'
+                                    ? 'bg-white/20 ring-2 ring-white/30'
+                                    : 'bg-gradient-to-br from-blue-100 to-indigo-100 group-hover:scale-110'
+                                }`}>
+                                  <span className="text-3xl">🌍</span>
                                 </div>
+                                <div className="flex-1 pr-8">
+                                  <div className={`text-lg font-black mb-1 transition-colors duration-200 ${settings.preferredUnits === 'metric' ? 'text-white' : 'text-gray-900 group-hover:text-blue-900'}`}>
+                                    Metric System
+                                  </div>
+                                  <div className={`text-xs font-semibold mb-3 ${settings.preferredUnits === 'metric' ? 'text-white/90' : 'text-gray-600 group-hover:text-blue-800'}`}>
+                                    International standard measurements
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {['grams', 'ml', '°C', 'kg', 'liters'].map((unit) => (
+                                      <span
+                                        key={unit}
+                                        className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide ${
+                                          settings.preferredUnits === 'metric'
+                                            ? 'bg-white/20 text-white'
+                                            : 'bg-blue-100 text-blue-700 group-hover:bg-blue-200'
+                                        }`}
+                                      >
+                                        {unit}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* Imperial System Card */}
+                            <button
+                              onClick={() => updateSetting('preferredUnits', 'imperial')}
+                              className={`group w-full p-5 rounded-2xl border-3 transition-all duration-300 text-left relative overflow-hidden ${
+                                settings.preferredUnits === 'imperial'
+                                  ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-blue-600 text-white shadow-2xl shadow-blue-500/50 scale-[1.03] ring-4 ring-blue-200'
+                                  : 'bg-white border-gray-200 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 hover:scale-[1.02] shadow-lg hover:shadow-xl'
+                              }`}
+                            >
+                              {/* Selection checkmark badge */}
+                              {settings.preferredUnits === 'imperial' && (
+                                <div className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-xl animate-in zoom-in duration-300">
+                                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                </div>
+                              )}
+
+                              <div className="flex items-start gap-4">
+                                <div className={`flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300 ${
+                                  settings.preferredUnits === 'imperial'
+                                    ? 'bg-white/20 ring-2 ring-white/30'
+                                    : 'bg-gradient-to-br from-blue-100 to-indigo-100 group-hover:scale-110'
+                                }`}>
+                                  <span className="text-3xl">🦅</span>
+                                </div>
+                                <div className="flex-1 pr-8">
+                                  <div className={`text-lg font-black mb-1 transition-colors duration-200 ${settings.preferredUnits === 'imperial' ? 'text-white' : 'text-gray-900 group-hover:text-blue-900'}`}>
+                                    Imperial System
+                                  </div>
+                                  <div className={`text-xs font-semibold mb-3 ${settings.preferredUnits === 'imperial' ? 'text-white/90' : 'text-gray-600 group-hover:text-blue-800'}`}>
+                                    US customary measurements
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {['cups', 'oz', '°F', 'lbs', 'tbsp'].map((unit) => (
+                                      <span
+                                        key={unit}
+                                        className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide ${
+                                          settings.preferredUnits === 'imperial'
+                                            ? 'bg-white/20 text-white'
+                                            : 'bg-blue-100 text-blue-700 group-hover:bg-blue-200'
+                                        }`}
+                                      >
+                                        {unit}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+                          </div>
+
+                          {/* Info Box with Current Selection */}
+                          <div className="mt-5 space-y-3">
+                            <div className="flex items-center gap-2 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200">
+                              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl text-white shadow-lg flex-shrink-0">
+                                <span className="text-xl">{settings.preferredUnits === 'metric' ? '🌍' : '🦅'}</span>
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-xs font-bold text-blue-900">Currently Using</p>
+                                <p className="text-sm font-black text-blue-700">
+                                  {settings.preferredUnits === 'metric' ? 'Metric System' : 'Imperial System'}
+                                </p>
                               </div>
                             </div>
-                            {settings.preferredUnits === 'metric' && (
-                              <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              </div>
-                            )}
-                          </div>
-                        </button>
 
-                        <button
-                          onClick={() => updateSetting('preferredUnits', 'imperial')}
-                          className={`w-full p-4 rounded-xl border-2 transition-all duration-200 text-left ${
-                            settings.preferredUnits === 'imperial'
-                              ? 'bg-gradient-to-r from-green-600 to-emerald-600 border-green-600 text-white shadow-lg shadow-green-500/40 transform scale-[1.02]'
-                              : 'bg-white border-gray-200 hover:border-green-300 hover:bg-green-50 hover:scale-[1.02]'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <span className="text-2xl">🦅</span>
-                              <div>
-                                <div className={`text-base font-black ${settings.preferredUnits === 'imperial' ? 'text-white' : 'text-gray-900'}`}>
-                                  Imperial System
-                                </div>
-                                <div className={`text-xs font-medium ${settings.preferredUnits === 'imperial' ? 'text-white/90' : 'text-gray-600'}`}>
-                                  cups, oz, °F
-                                </div>
+                            <div className="flex items-start gap-2 p-3 bg-blue-50/50 border-l-4 border-blue-500 rounded-lg">
+                              <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                              <div className="text-xs text-blue-800">
+                                <p className="font-semibold mb-1">💡 Automatic Conversion</p>
+                                <p>All recipes will be instantly converted to {settings.preferredUnits === 'metric' ? 'metric' : 'imperial'} measurements when generated</p>
                               </div>
-                            </div>
-                            {settings.preferredUnits === 'imperial' && (
-                              <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              </div>
-                            )}
-                          </div>
-                        </button>
-                      </div>
-
-                          {/* Info Box */}
-                          <div className="mt-4 flex items-start gap-2 p-3 bg-blue-50/50 border-l-4 border-blue-500 rounded-lg">
-                            <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                            <div className="text-xs text-blue-800">
-                              <p className="font-semibold mb-1">💡 Smart Conversion</p>
-                              <p>All recipes will automatically convert to your chosen system</p>
                             </div>
                           </div>
                         </div>
