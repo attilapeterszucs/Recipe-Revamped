@@ -1152,7 +1152,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             </div>
             
             {/* Basic Information Section */}
-            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg relative">
+            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
               <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Basic Information</h4>
 
               <div className="space-y-4">
@@ -1197,32 +1197,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   </div>
                 </div>
               </div>
-
-              {/* Save Changes Button - Bottom Right */}
-              {hasUnsavedChanges && (
-                <div className="flex justify-end mt-6 animate-in slide-in-from-bottom-2 fade-in duration-300">
-                  <button
-                    onClick={handleSaveSettings}
-                    disabled={saving}
-                    className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105 transition-all duration-300"
-                  >
-                    {saving ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                        <span>Saving...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4" />
-                        <span>Save Changes</span>
-                        {saveStatus === 'saved' && (
-                          <Check className="w-4 h-4 animate-in zoom-in duration-200" />
-                        )}
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
             </div>
             
             {/* Password Change Section - Only for email/password users */}
@@ -2968,6 +2942,36 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   })}
                 </div>
               </div>
+
+              {/* Save Changes Button - Mobile */}
+              {hasUnsavedChanges && !activeSection.startsWith('admin') && (
+                <div className="relative z-10 mt-4 animate-in slide-in-from-bottom-2 fade-in duration-300">
+                  <button
+                    onClick={handleSaveSettings}
+                    disabled={saving}
+                    className="w-full group relative overflow-hidden bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold px-4 py-3.5 rounded-2xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-xl shadow-green-500/40 hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {saving ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                          <span className="text-sm">Saving...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-5 h-5" />
+                          <span className="text-sm">Save Changes</span>
+                          {saveStatus === 'saved' && (
+                            <Check className="w-5 h-5 animate-in zoom-in duration-200" />
+                          )}
+                        </>
+                      )}
+                    </span>
+                    {/* Shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -3028,6 +3032,36 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   );
                 })}
               </nav>
+
+              {/* Save Changes Button - Desktop */}
+              {hasUnsavedChanges && !activeSection.startsWith('admin') && (
+                <div className="relative z-10 mt-4 animate-in slide-in-from-bottom-2 fade-in duration-300">
+                  <button
+                    onClick={handleSaveSettings}
+                    disabled={saving}
+                    className="w-full group relative overflow-hidden bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold px-4 py-4 rounded-2xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-xl shadow-green-500/40 hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {saving ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                          <span className="text-sm">Saving...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-5 h-5" />
+                          <span className="text-sm">Save Changes</span>
+                          {saveStatus === 'saved' && (
+                            <Check className="w-5 h-5 animate-in zoom-in duration-200" />
+                          )}
+                        </>
+                      )}
+                    </span>
+                    {/* Shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
