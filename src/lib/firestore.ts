@@ -296,7 +296,7 @@ export const updateRecipe = async (
   await updateDoc(doc(db, RECIPES_COLLECTION, recipeId), updateData);
 };
 
-export const getUserRecipes = async (userId: string, maxResults = 20) => {
+export const getUserRecipes = async (userId: string, maxResults = 1000) => {
   const q = query(
     collection(db, RECIPES_COLLECTION),
     where('ownerUid', '==', userId),
@@ -306,7 +306,7 @@ export const getUserRecipes = async (userId: string, maxResults = 20) => {
 
   const querySnapshot = await getDocs(q);
   const recipes: SavedRecipe[] = [];
-  
+
   querySnapshot.forEach((doc) => {
     recipes.push({
       id: doc.id,
