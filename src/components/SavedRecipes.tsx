@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { getUserRecipes, deleteRecipe } from '../lib/firestore';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
@@ -57,6 +58,7 @@ const saveToSession = <T,>(key: string, value: T): void => {
 };
 
 export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, onViewRecipe, onRecipeCountChange, userSettings, featureAccess }) => {
+  const location = useLocation();
   const [recipes, setRecipes] = useState<SavedRecipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -250,6 +252,13 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     const timer = setTimeout(() => setIsPageLoaded(true), 100);
     return () => clearTimeout(timer);
   }, [loadRecipes]);
+
+  // Reload recipes when navigating to the recipe book page
+  useEffect(() => {
+    if (location.pathname === '/app/recipe-book') {
+      loadRecipes();
+    }
+  }, [location.pathname, loadRecipes]);
 
   // Save state to sessionStorage whenever it changes
   useEffect(() => {
