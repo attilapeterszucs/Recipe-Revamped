@@ -392,19 +392,58 @@ export const HealthGoalsManager: React.FC<HealthGoalsManagerProps> = ({
 
       {/* Empty State */}
       {personalProfile.healthGoals.length === 0 && (
-        <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-          <Target className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h4 className="text-lg font-medium text-gray-900 mb-2">No Health Goals Set</h4>
-          <p className="text-gray-600 mb-4">
-            Add health goals to get personalized recipe recommendations that align with your objectives.
-          </p>
-          <button
-            onClick={() => setShowAddModal(true)}
-            disabled={disabled}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Add Your First Goal
-          </button>
+        <div className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50/50 to-white rounded-3xl border-2 border-green-100 py-16 px-8 shadow-xl">
+          {/* Animated background blobs */}
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-green-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+            <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
+          </div>
+
+          <div className="relative z-10 text-center max-w-2xl mx-auto">
+            {/* Icon with gradient background */}
+            <div className="inline-flex items-center justify-center w-20 h-20 mb-6 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-lg shadow-green-500/30 animate-pulse">
+              <Target className="w-10 h-10 text-white" strokeWidth={2.5} />
+            </div>
+
+            {/* Heading with gradient */}
+            <h4 className="text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+              No Health Goals Set
+            </h4>
+
+            {/* Description */}
+            <p className="text-gray-700 text-lg mb-8 font-medium leading-relaxed">
+              Add health goals to get personalized recipe recommendations that align with your objectives and support your wellness journey.
+            </p>
+
+            {/* CTA Button */}
+            <button
+              onClick={() => setShowAddModal(true)}
+              disabled={disabled}
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-2xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-bold text-lg shadow-xl shadow-green-500/30 hover:shadow-2xl hover:shadow-green-500/40 hover:scale-105 transform"
+            >
+              <Plus className="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" />
+              <span>Add Your First Goal</span>
+            </button>
+
+            {/* Decorative elements */}
+            <div className="mt-8 flex items-center justify-center gap-2 text-sm text-gray-500 font-medium">
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <span>Track Progress</span>
+              </div>
+              <span className="text-gray-300">•</span>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse animation-delay-1000" />
+                <span>Get Personalized</span>
+              </div>
+              <span className="text-gray-300">•</span>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse animation-delay-2000" />
+                <span>Achieve Goals</span>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
