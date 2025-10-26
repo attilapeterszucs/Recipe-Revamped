@@ -280,24 +280,24 @@ export function ConvertPage() {
       <div className="space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="w-full">
           <div
-            className={`grid gap-4 sm:gap-6 lg:gap-8 items-start transition-all duration-1000 ease-out ${
+            className={`grid gap-4 sm:gap-6 lg:gap-8 items-start ${
               !result && !converting
                 ? 'grid-cols-1 max-w-2xl mx-auto'
                 : 'grid-cols-1 lg:grid-cols-12 max-w-full'
             }`}
             style={{
-              transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+              transition: 'max-width 2s ease-in-out, margin 2s ease-in-out',
             }}
           >
             {/* Input Section - Slides from center to left when result appears */}
             <div
-              className={`bg-white rounded-lg shadow-md p-4 sm:p-6 transition-all duration-1000 ease-out transform ${
+              className={`bg-white rounded-lg shadow-md p-4 sm:p-6 ${
                 !result && !converting
                   ? 'hover:shadow-lg'
                   : 'lg:col-span-4 hover:shadow-lg'
               }`}
               style={{
-                transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                transition: 'all 2s ease-in-out',
               }}
             >
               <RecipeInput
@@ -318,14 +318,14 @@ export function ConvertPage() {
 
             {/* Recipe Display - Appears after input panel slides to left */}
             <div
-              className={`transition-all duration-800 ease-out transform ${
+              className={`${
                 (result || converting)
-                  ? 'opacity-100 scale-100 translate-x-0 lg:col-span-8 mt-4 lg:mt-0 block'
-                  : 'opacity-0 scale-95 translate-x-full pointer-events-none hidden lg:block'
+                  ? 'opacity-100 translate-x-0 lg:col-span-8 mt-4 lg:mt-0 block'
+                  : 'opacity-0 translate-x-full pointer-events-none hidden lg:block'
               }`}
               style={{
-                transitionTimingFunction: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                transitionDelay: (result || converting) ? '1000ms' : '0ms',
+                transition: 'opacity 1s ease-in-out, transform 1s ease-in-out',
+                transitionDelay: (result || converting) ? '2s' : '0ms',
               }}
             >
               <div className={`transition-all duration-800 ease-out ${
