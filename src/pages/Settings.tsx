@@ -2914,12 +2914,19 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       <button
                         key={section.id}
                         onClick={() => changeSection(section.id)}
-                        className={`group flex items-center px-3 py-2.5 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap touch-friendly min-h-[44px] ${
+                        className={`group relative flex items-center px-3 py-2.5 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap touch-friendly min-h-[44px] ${
                           isActive
                             ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/40 transform scale-105'
                             : 'text-gray-700 bg-white/80 backdrop-blur-sm border-2 border-green-100 hover:border-green-300 hover:bg-white hover:shadow-md hover:scale-105'
                         }`}
                       >
+                        {showPremiumBadge && (
+                          <Crown className={`absolute -top-1 -left-1 w-4 h-4 transition-all duration-300 ${
+                            isActive
+                              ? 'text-yellow-300'
+                              : 'text-orange-500 group-hover:text-orange-600'
+                          }`} />
+                        )}
                         <div className={`flex items-center justify-center w-7 h-7 rounded-lg mr-2 transition-all duration-300 ${
                           isActive
                             ? 'bg-white/20'
@@ -2928,15 +2935,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                           <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-green-600'}`} />
                         </div>
                         <span className="text-xs sm:text-sm truncate">{section.label}</span>
-                        {showPremiumBadge && (
-                          <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-black ml-2 transition-all duration-300 ${
-                            isActive
-                              ? 'bg-white/20 text-white shadow-md'
-                              : 'bg-gradient-to-r from-orange-400 to-amber-400 text-white shadow-md shadow-orange-500/30 group-hover:shadow-orange-500/50 group-hover:scale-110'
-                          }`}>
-                            <Crown className="w-3 h-3" />
-                          </div>
-                        )}
                       </button>
                     );
                   })}
@@ -2994,7 +2992,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     <button
                       key={section.id}
                       onClick={() => changeSection(section.id)}
-                      className={`w-full group flex items-center px-4 py-3.5 text-sm font-bold rounded-2xl transition-all duration-300 ${!preventAnimations ? `animate-in fade-in slide-in-from-left-4` : ''} ${
+                      className={`w-full group relative flex items-center px-4 py-3.5 text-sm font-bold rounded-2xl transition-all duration-300 ${!preventAnimations ? `animate-in fade-in slide-in-from-left-4` : ''} ${
                         isActive
                           ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-xl shadow-green-500/40 transform scale-[1.02]'
                           : 'text-gray-700 bg-white/80 backdrop-blur-sm border-2 border-green-100 hover:border-green-300 hover:bg-white hover:shadow-lg hover:scale-[1.02]'
@@ -3005,6 +3003,13 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         animationFillMode: 'backwards'
                       } : {}}
                     >
+                      {showPremiumBadge && (
+                        <Crown className={`absolute -top-1.5 -left-1.5 w-5 h-5 transition-all duration-300 ${
+                          isActive
+                            ? 'text-yellow-300'
+                            : 'text-orange-500 group-hover:text-orange-600'
+                        }`} />
+                      )}
                       <div className={`flex items-center justify-center w-9 h-9 rounded-xl mr-3 transition-all duration-300 ${
                         isActive
                           ? 'bg-white/20'
@@ -3013,21 +3018,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-green-600'}`} />
                       </div>
                       <span className="flex-1 text-left">{section.label}</span>
-                      {showPremiumBadge && (
-                        <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-black transition-all duration-300 ${
-                          isActive
-                            ? 'bg-white/20 text-white shadow-lg'
-                            : 'bg-gradient-to-r from-orange-400 to-amber-400 text-white shadow-lg shadow-orange-500/30 group-hover:shadow-orange-500/50 group-hover:scale-110'
-                        }`}>
-                          <Crown className="w-3.5 h-3.5" />
-                          <span>Pro</span>
-                        </div>
-                      )}
-                      {!showPremiumBadge && (
-                        <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${
-                          isActive ? 'text-white translate-x-1' : 'text-gray-400 group-hover:translate-x-1 group-hover:text-green-600'
-                        }`} />
-                      )}
+                      <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${
+                        isActive ? 'text-white translate-x-1' : 'text-gray-400 group-hover:translate-x-1 group-hover:text-green-600'
+                      }`} />
                     </button>
                   );
                 })}
