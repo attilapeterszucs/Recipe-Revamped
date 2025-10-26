@@ -278,28 +278,18 @@ export function ConvertPage() {
       <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-green-100/30 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
 
       <div className="space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <div
-          className={`transition-all duration-1000 ease-out transform ${
-            !result && !converting
-              ? 'max-w-2xl mx-auto'
-              : 'max-w-full w-full'
-          }`}
-          style={{
-            transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-        >
+        <div className="w-full">
           <div
             className={`grid gap-4 sm:gap-6 lg:gap-8 items-start transition-all duration-1000 ease-out ${
               !result && !converting
-                ? 'grid-cols-1'
-                : 'grid-cols-1 lg:grid-cols-12'
+                ? 'grid-cols-1 max-w-2xl mx-auto'
+                : 'grid-cols-1 lg:grid-cols-12 max-w-full'
             }`}
             style={{
               transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-              transitionDelay: '50ms',
             }}
           >
-            {/* Input Section - Slides to the left when result appears */}
+            {/* Input Section - Slides from center to left when result appears */}
             <div
               className={`bg-white rounded-lg shadow-md p-4 sm:p-6 transition-all duration-1000 ease-out transform ${
                 !result && !converting
@@ -308,7 +298,6 @@ export function ConvertPage() {
               }`}
               style={{
                 transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-                transitionDelay: '100ms',
               }}
             >
               <RecipeInput
@@ -327,16 +316,16 @@ export function ConvertPage() {
               />
             </div>
 
-            {/* Recipe Display - Takes 2/3 of the space on the right */}
+            {/* Recipe Display - Appears after input panel slides to left */}
             <div
-              className={`transition-all duration-1000 ease-out transform ${
+              className={`transition-all duration-800 ease-out transform ${
                 (result || converting)
                   ? 'opacity-100 scale-100 translate-x-0 lg:col-span-8 mt-4 lg:mt-0 block'
                   : 'opacity-0 scale-95 translate-x-full pointer-events-none hidden lg:block'
               }`}
               style={{
                 transitionTimingFunction: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                transitionDelay: (result || converting) ? '300ms' : '0ms',
+                transitionDelay: (result || converting) ? '1000ms' : '0ms',
               }}
             >
               <div className={`transition-all duration-800 ease-out ${
