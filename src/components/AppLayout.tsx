@@ -298,7 +298,11 @@ export function AppLayout() {
       </header>
 
       {/* Main Content */}
-      <main className="relative px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 z-0 max-w-7xl mx-auto">
+      <main className={`relative py-4 sm:py-6 lg:py-8 z-0 ${
+        location.pathname === '/app/convert'
+          ? 'max-w-full px-2 sm:px-3 md:px-4 lg:px-6'
+          : 'max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8'
+      } mx-auto`}>
         <Outlet context={{ user, userSettings, featureAccess, showUpgradeModal: () => setShowUpgradeModal(true), updateRecipeCount: setCurrentRecipeCount }} />
       </main>
 
