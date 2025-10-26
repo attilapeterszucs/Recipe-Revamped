@@ -2932,146 +2932,220 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'data':
         return (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Data & Backup</h3>
-              <p className="text-gray-700 leading-relaxed font-medium">
-                Protect your recipes and cooking data with secure cloud backups. Restore your collection anytime and keep your culinary creations safe.
-              </p>
+            {/* Header Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/20 rounded-3xl border-2 border-blue-100 p-6 sm:p-8 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl shadow-lg shadow-blue-500/30">
+                    <Database className="w-7 h-7 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Data & Backup</h3>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed font-medium">
+                  Protect your recipes and cooking data with secure cloud backups. Restore your collection anytime and keep your culinary creations safe.
+                </p>
+              </div>
             </div>
 
             {/* Backup features restricted to paid plans */}
             {featureAccess?.canBackupRestore ? (
               <>
                 {/* Manual Backup & Recovery */}
-                <div className="bg-gradient-to-br from-white to-green-50/20 border-2 border-green-100 rounded-2xl p-5 shadow-lg">
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
-                        <Database className="w-5 h-5 text-green-600" />
+                <div className="relative overflow-hidden bg-gradient-to-br from-white via-green-50/30 to-emerald-50/20 rounded-3xl border-2 border-green-100 p-6 sm:p-8 shadow-xl">
+                  {/* Animated background blobs */}
+                  <div className="absolute inset-0 -z-10">
+                    <div className="absolute top-0 left-0 w-32 h-32 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob" />
+                    <div className="absolute bottom-0 right-0 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000" />
+                  </div>
+
+                  <div className="relative z-10">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                          <Database className="w-6 h-6 text-white" strokeWidth={2.5} />
+                        </div>
+                        <h4 className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Backup & Recovery</h4>
                       </div>
-                      <h4 className="text-base sm:text-lg font-black text-gray-900">Backup & Recovery</h4>
+                      <div className="text-sm">
+                        {(() => {
+                          const currentPlan = featureAccess?.currentPlan || 'free';
+                          const { limit, planName } = getBackupLimits(currentPlan);
+                          const isAtLimit = backups.length >= limit;
+                          return (
+                            <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl font-bold shadow-md ${isAtLimit ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white' : 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'}`}>
+                              <span className="text-lg">{backups.length}</span>
+                              <span className="opacity-75">/</span>
+                              <span className="text-lg">{limit}</span>
+                              <span className="text-xs opacity-90">({planName})</span>
+                            </span>
+                          );
+                        })()}
+                      </div>
                     </div>
-                    <div className="text-sm">
+
+                    {/* Recipe count indicator */}
+                    <div className="mb-5 p-5 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border-2 border-blue-200 shadow-md">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                            <span className="text-xl">📚</span>
+                          </div>
+                          <span className="text-sm font-bold text-gray-800">Recipes in your collection</span>
+                        </div>
+                        <span className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-xl font-black text-blue-700 text-xl shadow-md">
+                          {recipeCount}
+                          <span className="text-xs font-bold text-gray-500 uppercase">recipes</span>
+                        </span>
+                      </div>
+                      {recipeCount === 0 && (
+                        <div className="mt-3 flex items-start gap-2 p-3 bg-orange-50 border-l-4 border-orange-500 rounded-lg">
+                          <Info className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
+                          <p className="text-xs text-orange-800 font-semibold">
+                            You need at least 1 recipe to create a backup
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-4">
+                      <button
+                        onClick={handleCreateBackup}
+                        disabled={backupLoading || recipeCount === 0 || (() => {
+                          const currentPlan = featureAccess?.currentPlan || 'free';
+                          const { limit } = getBackupLimits(currentPlan);
+                          return backups.length >= limit;
+                        })()}
+                        className="group w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-2xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-bold shadow-xl shadow-green-500/40 hover:shadow-2xl hover:scale-105 relative overflow-hidden"
+                      >
+                        <Download className={`w-6 h-6 ${backupLoading ? 'animate-bounce' : 'group-hover:-translate-y-0.5 transition-transform duration-300'}`} />
+                        <span className="text-lg">{backupLoading ? 'Creating Backup...' : 'Create Manual Backup'}</span>
+                        {!backupLoading && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                        )}
+                      </button>
+
+                      {/* Show backup limit warning */}
                       {(() => {
                         const currentPlan = featureAccess?.currentPlan || 'free';
                         const { limit, planName } = getBackupLimits(currentPlan);
                         const isAtLimit = backups.length >= limit;
-                        return (
-                          <span className={`px-3 py-1.5 rounded-full font-bold ${isAtLimit ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}`}>
-                            {backups.length}/{limit} backups ({planName})
-                          </span>
-                        );
+
+                        if (isAtLimit) {
+                          return (
+                            <div className="p-5 bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-300 rounded-2xl shadow-lg">
+                              <div className="flex items-start gap-3">
+                                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center shadow-md">
+                                  <Info className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                  <p className="text-sm text-gray-800 font-bold mb-1">
+                                    ⚠️ Backup Limit Reached!
+                                  </p>
+                                  <p className="text-sm text-gray-700">
+                                    Your <span className="font-bold text-orange-700">{planName}</span> plan allows <span className="font-bold">{limit}</span> backups. Delete existing backups to create new ones.
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
                       })()}
                     </div>
-                  </div>
 
-                  {/* Recipe count indicator */}
-                  <div className="mb-4 p-4 bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-xl">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-800 font-medium">Recipes in your collection:</span>
-                      <span className="font-black text-gray-900 text-lg">{recipeCount} recipes</span>
-                    </div>
-                    {recipeCount === 0 && (
-                      <p className="text-xs text-orange-700 mt-2 font-medium">
-                        ⚠️ You need at least 1 recipe to create a backup
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-3">
-                    <button
-                      onClick={handleCreateBackup}
-                      disabled={backupLoading || recipeCount === 0 || (() => {
-                        const currentPlan = featureAccess?.currentPlan || 'free';
-                        const { limit } = getBackupLimits(currentPlan);
-                        return backups.length >= limit;
-                      })()}
-                      className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
-                    >
-                      <Download className="w-5 h-5" />
-                      {backupLoading ? 'Creating Backup...' : 'Create Manual Backup'}
-                    </button>
-
-                    {/* Show backup limit warning */}
-                    {(() => {
-                      const currentPlan = featureAccess?.currentPlan || 'free';
-                      const { limit, planName } = getBackupLimits(currentPlan);
-                      const isAtLimit = backups.length >= limit;
-
-                      if (isAtLimit) {
-                        return (
-                          <div className="p-4 bg-gradient-to-br from-orange-50 to-amber-50/50 border-2 border-orange-200 rounded-xl">
-                            <p className="text-sm text-gray-800 font-medium">
-                              <span className="font-bold text-orange-700">⚠️ Backup limit reached!</span> Your {planName} plan allows {limit} backups.
-                              Delete existing backups to create new ones.
-                            </p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    })()}
-                  </div>
-
-                  {/* Available Backups Section - Always Visible */}
-                  <div className="mt-6 pt-6 border-t-2 border-gray-200">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center shadow-md">
-                        <Clock className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <h4 className="text-base sm:text-lg font-black text-gray-900">Available Backups (90-day retention)</h4>
-                    </div>
-
-                  {backups.length === 0 ? (
-                    <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100/50 border-2 border-gray-200 rounded-xl text-center">
-                      <p className="text-sm text-gray-600 font-medium">📦 No backups available</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {backups.map((backup) => (
-                        <div key={backup.id} className="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-green-300 hover:shadow-md transition-all duration-200">
-                          <div>
-                            <p className="text-sm font-bold text-gray-900">
-                              {backup.createdAt?.toLocaleDateString()} at {backup.createdAt?.toLocaleTimeString()}
-                            </p>
-                            <p className="text-xs text-gray-600 font-medium mt-1">
-                              📚 {backup.recipes?.length || 0} recipes • ⏰ Expires: {backup.expiresAt?.toLocaleDateString()}
-                            </p>
-                          </div>
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleRestoreClick(backup)}
-                              disabled={restoringBackup === backup.id}
-                              className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-xl transition-all duration-200 ${
-                                restoringBackup === backup.id
-                                  ? 'bg-green-100 text-green-600 cursor-not-allowed'
-                                  : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105'
-                              }`}
-                            >
-                              {restoringBackup === backup.id ? (
-                                <>
-                                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-500 border-t-transparent"></div>
-                                  Restoring...
-                                </>
-                              ) : (
-                                <>
-                                  <Upload className="w-4 h-4" />
-                                  Restore
-                                </>
-                              )}
-                            </button>
-                            <button
-                              onClick={() => handleDeleteClick(backup)}
-                              disabled={restoringBackup === backup.id}
-                              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-red-700 bg-red-50 border-2 border-red-200 rounded-xl hover:bg-red-100 hover:border-red-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                              Delete
-                            </button>
-                          </div>
+                    {/* Available Backups Section - Always Visible */}
+                    <div className="mt-8 pt-8 border-t-2 border-green-200">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                          <Clock className="w-6 h-6 text-white" strokeWidth={2.5} />
                         </div>
-                      ))}
+                        <div>
+                          <h4 className="text-xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Available Backups</h4>
+                          <p className="text-xs text-gray-600 font-medium">90-day automatic retention</p>
+                        </div>
+                      </div>
+
+                      {backups.length === 0 ? (
+                        <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100/50 border-2 border-gray-300 rounded-2xl text-center">
+                          <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-200 rounded-2xl mb-4">
+                            <span className="text-3xl">📦</span>
+                          </div>
+                          <p className="text-base font-bold text-gray-700 mb-1">No backups available</p>
+                          <p className="text-sm text-gray-600">Create your first backup to protect your recipes</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {backups.map((backup) => (
+                            <div key={backup.id} className="group relative bg-white border-2 border-gray-200 rounded-2xl p-5 hover:border-blue-300 hover:shadow-xl shadow-lg transition-all duration-300">
+                              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                                      <Database className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-black text-gray-900">
+                                        {backup.createdAt?.toLocaleDateString()} at {backup.createdAt?.toLocaleTimeString()}
+                                      </p>
+                                      <div className="flex items-center gap-3 mt-1">
+                                        <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-bold">
+                                          <span className="text-base">📚</span>
+                                          {backup.recipes?.length || 0} recipes
+                                        </span>
+                                        <span className="text-gray-300">•</span>
+                                        <span className="inline-flex items-center gap-1 text-xs text-gray-600 font-medium">
+                                          <Clock className="w-3 h-3" />
+                                          Expires: {backup.expiresAt?.toLocaleDateString()}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex gap-3 w-full sm:w-auto">
+                                  <button
+                                    onClick={() => handleRestoreClick(backup)}
+                                    disabled={restoringBackup === backup.id}
+                                    className={`flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${
+                                      restoringBackup === backup.id
+                                        ? 'bg-green-100 text-green-600 cursor-not-allowed'
+                                        : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105'
+                                    }`}
+                                  >
+                                    {restoringBackup === backup.id ? (
+                                      <>
+                                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-500 border-t-transparent"></div>
+                                        Restoring...
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Upload className="w-4 h-4" />
+                                        Restore
+                                      </>
+                                    )}
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteClick(backup)}
+                                    disabled={restoringBackup === backup.id}
+                                    className="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold text-red-700 bg-white border-2 border-red-200 rounded-xl hover:bg-red-50 hover:border-red-300 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 shadow-md"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                    <span className="hidden sm:inline">Delete</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
                   </div>
                 </div>
               </>
