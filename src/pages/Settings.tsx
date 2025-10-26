@@ -2148,9 +2148,9 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-6">
                       {/* Default Serving Size */}
-                      <div className="relative overflow-hidden bg-gradient-to-br from-white to-green-50/30 rounded-2xl p-6 border-2 border-green-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                      <div className="relative overflow-hidden bg-gradient-to-br from-white to-green-50/30 rounded-3xl p-6 sm:p-8 border-2 border-green-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
                         {/* Subtle animated blob */}
                         <div className="absolute top-0 right-0 w-24 h-24 bg-green-200 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob"></div>
 
@@ -2278,8 +2278,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       </div>
                     </div>
 
-                      {/* Preferred Units */}
-                      <div className="relative overflow-hidden bg-gradient-to-br from-white to-blue-50/30 rounded-2xl p-6 border-2 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                      {/* Preferred Units / Measurement Units */}
+                      <div className="relative overflow-hidden bg-gradient-to-br from-white to-blue-50/30 rounded-3xl p-6 sm:p-8 border-2 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
                         {/* Subtle animated blob */}
                         <div className="absolute top-0 left-0 w-24 h-24 bg-blue-200 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-2000"></div>
 
