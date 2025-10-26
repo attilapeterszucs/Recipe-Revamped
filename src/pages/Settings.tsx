@@ -1001,81 +1001,101 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             </div>
 
             {/* Profile Picture Section */}
-            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
-              <label className="block text-sm sm:text-base font-black text-gray-900 mb-4">
-                Profile Picture
-              </label>
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-green-50/30 to-emerald-50/20 rounded-3xl border-2 border-green-100 p-6 sm:p-8 shadow-xl">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+              </div>
 
-              {canUploadProfilePicture ? (
-                <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                  {/* Current Profile Picture */}
-                  <div className="relative flex-shrink-0">
-                    {currentProfilePicture ? (
-                      <img
-                        src={currentProfilePicture}
-                        alt="Profile"
-                        className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-green-200 shadow-lg ring-2 ring-green-100"
-                      />
-                    ) : (
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center border-4 border-green-200 shadow-lg ring-2 ring-green-100">
-                        <span className="text-2xl sm:text-3xl font-black text-white">
-                          {getUserInitials(user)}
-                        </span>
-                      </div>
-                    )}
-
-                    {uploadingProfilePicture && (
-                      <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      </div>
-                    )}
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-lg shadow-green-500/30">
+                    <UserIcon className="w-6 h-6 text-white" strokeWidth={2.5} />
                   </div>
+                  <h4 className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    Profile Picture
+                  </h4>
+                </div>
 
-                  {/* Upload Controls */}
-                  <div className="flex-1 w-full sm:w-auto">
-                    <input
-                      type="file"
-                      id="profile-picture-upload"
-                      accept="image/jpeg,image/jpg,image/png,image/webp"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          handleProfilePictureUpload(file);
-                        }
-                        // Clear the input
-                        e.target.value = '';
-                      }}
-                      disabled={uploadingProfilePicture}
-                      className="hidden"
-                    />
+                {canUploadProfilePicture ? (
+                  <div className="flex flex-col sm:flex-row items-center gap-6">
+                    {/* Current Profile Picture - Larger */}
+                    <div className="relative flex-shrink-0">
+                      {currentProfilePicture ? (
+                        <img
+                          src={currentProfilePicture}
+                          alt="Profile"
+                          className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-green-200 shadow-2xl ring-4 ring-green-100 hover:ring-green-200 transition-all duration-300"
+                        />
+                      ) : (
+                        <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center border-4 border-green-200 shadow-2xl ring-4 ring-green-100 hover:ring-green-200 transition-all duration-300">
+                          <span className="text-4xl sm:text-5xl font-black text-white">
+                            {getUserInitials(user)}
+                          </span>
+                        </div>
+                      )}
 
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 mb-3">
-                      <label
-                        htmlFor="profile-picture-upload"
-                        className={`cursor-pointer inline-flex items-center justify-center px-4 py-3 sm:py-2 border-2 border-green-200 rounded-xl text-sm font-bold text-green-700 bg-white hover:bg-green-50 transition-all duration-200 hover:shadow-lg hover:scale-105 touch-friendly min-h-[44px] ${
-                          uploadingProfilePicture ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                      >
-                        <Upload className="w-4 h-4 mr-2" />
-                        {uploadingProfilePicture ? 'Uploading...' : 'Change Picture'}
-                      </label>
-
-                      {currentProfilePicture && !uploadingProfilePicture && (
-                        <button
-                          onClick={handleProfilePictureDelete}
-                          className="inline-flex items-center justify-center px-4 py-3 sm:py-2 border-2 border-red-200 rounded-xl text-sm font-bold text-red-700 bg-white hover:bg-red-50 transition-all duration-200 hover:shadow-lg hover:scale-105 touch-friendly min-h-[44px]"
-                        >
-                          <X className="w-4 h-4 mr-2" />
-                          Remove
-                        </button>
+                      {uploadingProfilePicture && (
+                        <div className="absolute inset-0 bg-black bg-opacity-50 rounded-3xl flex items-center justify-center backdrop-blur-sm">
+                          <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
+                        </div>
                       )}
                     </div>
 
-                    <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
-                      JPG, PNG, or WebP. Max file size 5MB.
-                    </p>
+                    {/* Upload Controls */}
+                    <div className="flex-1 w-full sm:w-auto">
+                      <input
+                        type="file"
+                        id="profile-picture-upload"
+                        accept="image/jpeg,image/jpg,image/png,image/webp"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            handleProfilePictureUpload(file);
+                          }
+                          // Clear the input
+                          e.target.value = '';
+                        }}
+                        disabled={uploadingProfilePicture}
+                        className="hidden"
+                      />
+
+                      <div className="space-y-3">
+                        <div className="flex flex-col sm:flex-row gap-3">
+                          <label
+                            htmlFor="profile-picture-upload"
+                            className={`group cursor-pointer inline-flex items-center justify-center px-5 py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 font-bold text-sm shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 hover:scale-105 touch-friendly min-h-[44px] ${
+                              uploadingProfilePicture ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                          >
+                            <Upload className="w-5 h-5 mr-2 group-hover:-translate-y-0.5 transition-transform duration-300" />
+                            <span>{uploadingProfilePicture ? 'Uploading...' : 'Upload New Picture'}</span>
+                          </label>
+
+                          {currentProfilePicture && !uploadingProfilePicture && (
+                            <button
+                              onClick={handleProfilePictureDelete}
+                              className="group inline-flex items-center justify-center px-5 py-3.5 bg-white border-2 border-red-200 text-red-700 rounded-xl hover:bg-red-50 hover:border-red-300 transition-all duration-300 font-bold text-sm shadow-lg hover:shadow-xl hover:scale-105 touch-friendly min-h-[44px]"
+                            >
+                              <X className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+                              <span>Remove Picture</span>
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="bg-green-50/50 border-l-4 border-green-500 p-3 rounded-lg">
+                          <div className="flex items-start gap-2">
+                            <Info className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                            <div className="text-xs text-green-800">
+                              <p className="font-semibold mb-1">Supported formats:</p>
+                              <p>JPG, PNG, or WebP • Max file size: 5MB</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
               ) : (
                 <div className="group relative bg-white rounded-2xl border-2 border-orange-200 hover:border-orange-300 p-6 sm:p-8 shadow-xl ring-4 ring-orange-200/50 hover:ring-orange-300/50 hover:shadow-2xl hover:shadow-orange-100 transition-all duration-500">
                   {/* Decorative Pattern Background */}
@@ -1162,49 +1182,86 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   </div>
                 </div>
               )}
+              </div>
             </div>
-            
-            {/* Basic Information Section */}
-            <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl border-2 border-green-100 p-4 sm:p-6 shadow-lg">
-              <h4 className="text-base sm:text-lg font-black text-gray-900 mb-4">Basic Information</h4>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm sm:text-base font-bold text-gray-800 mb-2">
-                    Display Name
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.displayName || ''}
-                    onChange={(e) => updateSetting('displayName', e.target.value)}
-                    placeholder="Enter your display name"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base touch-friendly min-h-[44px] transition-all duration-200 hover:border-green-300 shadow-sm"
-                  />
+            {/* Basic Information Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-blue-50/20 to-green-50/20 rounded-3xl border-2 border-green-100 p-6 sm:p-8 shadow-xl">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 left-0 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob" />
+                <div className="absolute bottom-0 right-0 w-32 h-32 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-green-500 rounded-2xl shadow-lg shadow-blue-500/30">
+                    <Mail className="w-6 h-6 text-white" strokeWidth={2.5} />
+                  </div>
+                  <h4 className="text-xl font-black bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+                    Basic Information
+                  </h4>
                 </div>
 
-                <div>
-                  <label className="block text-sm sm:text-base font-bold text-gray-800 mb-2">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="email"
-                      value={settings.email || ''}
-                      onChange={(e) => updateSetting('email', e.target.value)}
-                      disabled={user.providerData.some(provider => provider.providerId === 'google.com')}
-                      placeholder="Enter your email address"
-                      className={`w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base touch-friendly min-h-[44px] transition-all duration-200 shadow-sm ${
-                        user.providerData.some(provider => provider.providerId === 'google.com')
-                          ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
-                          : 'hover:border-green-300'
-                      }`}
-                    />
+                <div className="space-y-5">
+                  {/* Display Name Input */}
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-bold text-gray-800 mb-3">
+                      <UserIcon className="w-4 h-4 text-green-600" />
+                      <span>Display Name</span>
+                    </label>
+                    <div className="relative group">
+                      <input
+                        type="text"
+                        value={settings.displayName || ''}
+                        onChange={(e) => updateSetting('displayName', e.target.value)}
+                        placeholder="Enter your display name"
+                        className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base touch-friendly min-h-[44px] transition-all duration-200 hover:border-green-400 hover:shadow-md shadow-sm bg-white"
+                      />
+                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <div className="w-2 h-2 bg-green-500 rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity duration-200"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Email Address Input */}
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-bold text-gray-800 mb-3">
+                      <Mail className="w-4 h-4 text-blue-600" />
+                      <span>Email Address</span>
+                      {user.providerData.some(provider => provider.providerId === 'google.com') && (
+                        <span className="ml-auto inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold">
+                          <Shield className="w-3 h-3" />
+                          Google Account
+                        </span>
+                      )}
+                    </label>
+                    <div className="relative group">
+                      <input
+                        type="email"
+                        value={settings.email || ''}
+                        onChange={(e) => updateSetting('email', e.target.value)}
+                        disabled={user.providerData.some(provider => provider.providerId === 'google.com')}
+                        placeholder="Enter your email address"
+                        className={`w-full px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base touch-friendly min-h-[44px] transition-all duration-200 shadow-sm ${
+                          user.providerData.some(provider => provider.providerId === 'google.com')
+                            ? 'bg-gray-50 text-gray-500 cursor-not-allowed border-gray-200'
+                            : 'hover:border-blue-400 hover:shadow-md bg-white'
+                        }`}
+                      />
+                      {!user.providerData.some(provider => provider.providerId === 'google.com') && (
+                        <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity duration-200"></div>
+                        </div>
+                      )}
+                    </div>
                     {user.providerData.some(provider => provider.providerId === 'google.com') && (
-                      <div className="flex items-center mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <Info className="w-4 h-4 text-blue-600 mr-2 flex-shrink-0" />
-                        <p className="text-xs sm:text-sm text-blue-700">
-                          Email cannot be changed for Google accounts
-                        </p>
+                      <div className="mt-3 flex items-start gap-2 p-3 bg-blue-50/50 border-l-4 border-blue-500 rounded-lg">
+                        <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div className="text-xs text-blue-800">
+                          <p className="font-semibold mb-1">Protected by Google</p>
+                          <p>Your email address is managed by Google and cannot be changed here. Update it in your Google account settings.</p>
+                        </div>
                       </div>
                     )}
                   </div>
