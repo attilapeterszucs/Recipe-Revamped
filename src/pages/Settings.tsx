@@ -1918,143 +1918,235 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Notifications</h3>
-              <p className="text-gray-700 leading-relaxed font-medium">
-                Control how and when you receive updates from Recipe Revamped. Customize email preferences, push notifications, and marketing communications to suit your needs.
-              </p>
+            {/* Header Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-purple-50/30 to-pink-50/20 rounded-3xl border-2 border-purple-100 p-6 sm:p-8 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl shadow-lg shadow-purple-500/30">
+                    <Bell className="w-7 h-7 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Notifications</h3>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed font-medium">
+                  Control how and when you receive updates from Recipe Revamped. Customize email preferences, push notifications, and marketing communications to suit your needs.
+                </p>
+              </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-4 sm:p-5">
-              <p className="text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
-                <span className="font-bold text-blue-700">💡 Quick Tip:</span> Manage your notification preferences to stay informed without being overwhelmed. You can enable or disable specific types of communications at any time.
-              </p>
+            {/* Quick Tip Info Box */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border-2 border-blue-200 p-4 sm:p-5 shadow-lg">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                  <Info className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
+                    <span className="font-black text-blue-700">💡 Quick Tip:</span> Manage your notification preferences to stay informed without being overwhelmed. You can enable or disable specific types of communications at any time.
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-6">
-              {/* Main notification toggles */}
-              <div className="bg-gradient-to-br from-white to-green-50/20 border-2 border-green-100 rounded-2xl p-5 shadow-lg">
-                <h5 className="text-base sm:text-lg font-black text-gray-900 mb-5 flex items-center gap-2">
-                  <span className="text-2xl">📧</span> Communication Preferences
-                </h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-green-300 transition-all duration-200 hover:shadow-md">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
-                          <span className="text-xl">✉️</span>
-                        </div>
-                        <div>
-                          <h6 className="text-base font-black text-gray-900">Email Notifications</h6>
-                          <p className="text-xs text-gray-600 font-medium">Receive updates and information</p>
-                        </div>
-                      </div>
+              {/* Main notification toggles / Communication Preferences */}
+              <div className="relative overflow-hidden bg-gradient-to-br from-white via-green-50/30 to-emerald-50/20 rounded-3xl border-2 border-green-100 p-6 sm:p-8 shadow-xl">
+                {/* Animated background blobs */}
+                <div className="absolute inset-0 -z-10">
+                  <div className="absolute top-0 left-0 w-32 h-32 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob" />
+                  <div className="absolute bottom-0 right-0 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000" />
+                </div>
+
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                      <Mail className="w-6 h-6 text-white" strokeWidth={2.5} />
                     </div>
-                    <Toggle
-                      enabled={settings.emailNotifications}
-                      onChange={(enabled) => updateSetting('emailNotifications', enabled)}
-                      label=""
-                      description=""
-                      size="md"
-                    />
+                    <h5 className="text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Communication Preferences</h5>
                   </div>
 
-                  <div className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-green-300 transition-all duration-200 hover:shadow-md">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
-                          <span className="text-xl">📢</span>
-                        </div>
-                        <div>
-                          <h6 className="text-base font-black text-gray-900">Marketing Emails</h6>
-                          <p className="text-xs text-gray-600 font-medium">Toggle all marketing communications</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Email Notifications Card */}
+                    <div className="group relative bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-green-400 transition-all duration-300 hover:shadow-xl shadow-lg">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-start gap-4">
+                          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                            <Mail className="w-6 h-6 text-white" />
+                          </div>
+                          <div>
+                            <h6 className="text-base font-black text-gray-900 mb-1">Email Notifications</h6>
+                            <p className="text-xs text-gray-600 font-medium leading-relaxed">Receive important updates and information via email</p>
+                          </div>
                         </div>
                       </div>
+                      <div className="flex items-center gap-3">
+                        <Toggle
+                          enabled={settings.emailNotifications}
+                          onChange={(enabled) => updateSetting('emailNotifications', enabled)}
+                          label=""
+                          description=""
+                          size="lg"
+                        />
+                        <span className={`text-xs font-bold uppercase tracking-wide ${settings.emailNotifications ? 'text-green-600' : 'text-gray-400'}`}>
+                          {settings.emailNotifications ? 'Enabled' : 'Disabled'}
+                        </span>
+                      </div>
                     </div>
-                    <Toggle
-                      enabled={hasAnyMarketingEmails}
-                      onChange={handleMarketingEmailsToggle}
-                      label=""
-                      description=""
-                      size="md"
-                    />
+
+                    {/* Marketing Emails Card */}
+                    <div className="group relative bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-purple-400 transition-all duration-300 hover:shadow-xl shadow-lg">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-start gap-4">
+                          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                            <span className="text-2xl">📢</span>
+                          </div>
+                          <div>
+                            <h6 className="text-base font-black text-gray-900 mb-1">Marketing Emails</h6>
+                            <p className="text-xs text-gray-600 font-medium leading-relaxed">Toggle all marketing communications at once</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Toggle
+                          enabled={hasAnyMarketingEmails}
+                          onChange={handleMarketingEmailsToggle}
+                          label=""
+                          description=""
+                          size="lg"
+                        />
+                        <span className={`text-xs font-bold uppercase tracking-wide ${hasAnyMarketingEmails ? 'text-purple-600' : 'text-gray-400'}`}>
+                          {hasAnyMarketingEmails ? 'Enabled' : 'Disabled'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Marketing emails group - only show when marketing emails is enabled */}
               {hasAnyMarketingEmails && (
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-5 shadow-lg">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-md">
-                      <span className="text-xl">📬</span>
-                    </div>
-                    <h5 className="text-base sm:text-lg font-black text-gray-900">Marketing Email Types</h5>
+                <div className="relative overflow-hidden bg-gradient-to-br from-white via-purple-50/30 to-pink-50/20 rounded-3xl border-2 border-purple-100 p-6 sm:p-8 shadow-xl animate-in fade-in slide-in-from-top-2 duration-300">
+                  {/* Animated background blobs */}
+                  <div className="absolute inset-0 -z-10">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob" />
+                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000" />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-white border-2 border-green-100 rounded-xl p-4 hover:border-green-300 transition-all duration-200 hover:shadow-md">
-                      <div className="flex items-center justify-between mb-3">
-                        <div>
-                          <h6 className="text-sm font-bold text-gray-900">General Marketing</h6>
-                          <p className="text-xs text-gray-600 font-medium">Newsletters and general communications</p>
-                        </div>
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+                        <span className="text-2xl">📬</span>
                       </div>
-                      <Toggle
-                        enabled={settings.marketingEmails}
-                        onChange={(enabled) => updateSetting('marketingEmails', enabled)}
-                        label=""
-                        description=""
-                        size="sm"
-                      />
+                      <h5 className="text-xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Marketing Email Types</h5>
                     </div>
 
-                    <div className="bg-white border-2 border-green-100 rounded-xl p-4 hover:border-green-300 transition-all duration-200 hover:shadow-md">
-                      <div className="flex items-center justify-between mb-3">
-                        <div>
-                          <h6 className="text-sm font-bold text-gray-900">Product Updates</h6>
-                          <p className="text-xs text-gray-600 font-medium">New features and improvements</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      {/* General Marketing */}
+                      <div className="group bg-white border-2 border-purple-100 rounded-2xl p-5 hover:border-purple-300 transition-all duration-300 hover:shadow-xl shadow-lg">
+                        <div className="flex items-start gap-3 mb-4">
+                          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                            <span className="text-lg">📰</span>
+                          </div>
+                          <div className="flex-1">
+                            <h6 className="text-sm font-black text-gray-900 mb-1">General Marketing</h6>
+                            <p className="text-xs text-gray-600 font-medium leading-relaxed">Newsletters and general communications</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Toggle
+                            enabled={settings.marketingEmails}
+                            onChange={(enabled) => updateSetting('marketingEmails', enabled)}
+                            label=""
+                            description=""
+                            size="md"
+                          />
+                          <span className={`text-xs font-bold uppercase tracking-wide ${settings.marketingEmails ? 'text-purple-600' : 'text-gray-400'}`}>
+                            {settings.marketingEmails ? 'On' : 'Off'}
+                          </span>
                         </div>
                       </div>
-                      <Toggle
-                        enabled={settings.productUpdates}
-                        onChange={(enabled) => updateSetting('productUpdates', enabled)}
-                        label=""
-                        description=""
-                        size="sm"
-                      />
-                    </div>
 
-                    <div className="bg-white border-2 border-green-100 rounded-xl p-4 hover:border-green-300 transition-all duration-200 hover:shadow-md">
-                      <div className="flex items-center justify-between mb-3">
-                        <div>
-                          <h6 className="text-sm font-bold text-gray-900">Feature Announcements</h6>
-                          <p className="text-xs text-gray-600 font-medium">New tools and capabilities</p>
+                      {/* Product Updates */}
+                      <div className="group bg-white border-2 border-blue-100 rounded-2xl p-5 hover:border-blue-300 transition-all duration-300 hover:shadow-xl shadow-lg">
+                        <div className="flex items-start gap-3 mb-4">
+                          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                            <span className="text-lg">🚀</span>
+                          </div>
+                          <div className="flex-1">
+                            <h6 className="text-sm font-black text-gray-900 mb-1">Product Updates</h6>
+                            <p className="text-xs text-gray-600 font-medium leading-relaxed">New features and improvements</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Toggle
+                            enabled={settings.productUpdates}
+                            onChange={(enabled) => updateSetting('productUpdates', enabled)}
+                            label=""
+                            description=""
+                            size="md"
+                          />
+                          <span className={`text-xs font-bold uppercase tracking-wide ${settings.productUpdates ? 'text-blue-600' : 'text-gray-400'}`}>
+                            {settings.productUpdates ? 'On' : 'Off'}
+                          </span>
                         </div>
                       </div>
-                      <Toggle
-                        enabled={settings.featuresAnnouncements}
-                        onChange={(enabled) => updateSetting('featuresAnnouncements', enabled)}
-                        label=""
-                        description=""
-                        size="sm"
-                      />
-                    </div>
 
-                    <div className="bg-white border-2 border-green-100 rounded-xl p-4 hover:border-green-300 transition-all duration-200 hover:shadow-md">
-                      <div className="flex items-center justify-between mb-3">
-                        <div>
-                          <h6 className="text-sm font-bold text-gray-900">Promotional Offers</h6>
-                          <p className="text-xs text-gray-600 font-medium">Special deals and discounts</p>
+                      {/* Feature Announcements */}
+                      <div className="group bg-white border-2 border-green-100 rounded-2xl p-5 hover:border-green-300 transition-all duration-300 hover:shadow-xl shadow-lg">
+                        <div className="flex items-start gap-3 mb-4">
+                          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                            <span className="text-lg">✨</span>
+                          </div>
+                          <div className="flex-1">
+                            <h6 className="text-sm font-black text-gray-900 mb-1">Feature Announcements</h6>
+                            <p className="text-xs text-gray-600 font-medium leading-relaxed">New tools and capabilities</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Toggle
+                            enabled={settings.featuresAnnouncements}
+                            onChange={(enabled) => updateSetting('featuresAnnouncements', enabled)}
+                            label=""
+                            description=""
+                            size="md"
+                          />
+                          <span className={`text-xs font-bold uppercase tracking-wide ${settings.featuresAnnouncements ? 'text-green-600' : 'text-gray-400'}`}>
+                            {settings.featuresAnnouncements ? 'On' : 'Off'}
+                          </span>
                         </div>
                       </div>
-                      <Toggle
-                        enabled={settings.promotionalOffers}
-                        onChange={(enabled) => updateSetting('promotionalOffers', enabled)}
-                        label=""
-                        description=""
-                        size="sm"
-                      />
+
+                      {/* Promotional Offers */}
+                      <div className="group bg-white border-2 border-orange-100 rounded-2xl p-5 hover:border-orange-300 transition-all duration-300 hover:shadow-xl shadow-lg">
+                        <div className="flex items-start gap-3 mb-4">
+                          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                            <span className="text-lg">🎁</span>
+                          </div>
+                          <div className="flex-1">
+                            <h6 className="text-sm font-black text-gray-900 mb-1">Promotional Offers</h6>
+                            <p className="text-xs text-gray-600 font-medium leading-relaxed">Special deals and discounts</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Toggle
+                            enabled={settings.promotionalOffers}
+                            onChange={(enabled) => updateSetting('promotionalOffers', enabled)}
+                            label=""
+                            description=""
+                            size="md"
+                          />
+                          <span className={`text-xs font-bold uppercase tracking-wide ${settings.promotionalOffers ? 'text-orange-600' : 'text-gray-400'}`}>
+                            {settings.promotionalOffers ? 'On' : 'Off'}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
