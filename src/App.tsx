@@ -3,9 +3,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { initializeAppCheckService } from './lib/appCheck';
 import { logger } from './lib/logger';
 import { LandingPage } from './pages/LandingPage';
-// Import critical pages statically to prevent module federation issues
-import { RecipeApp } from './pages/RecipeApp';
-import { Settings } from './pages/Settings';
+// Import AppLayout statically as it's the main app wrapper
+import { AppLayout } from './components/AppLayout';
+
+// Lazy load app pages for better code splitting
+const ConvertPage = lazy(() => import('./pages/ConvertPage').then(module => ({ default: module.ConvertPage })));
+const RecipeBookPage = lazy(() => import('./pages/RecipeBookPage').then(module => ({ default: module.RecipeBookPage })));
+const MealPlanningPage = lazy(() => import('./pages/MealPlanningPage').then(module => ({ default: module.MealPlanningPage })));
+const SettingsPage = lazy(() => import('./pages/SettingsPage').then(module => ({ default: module.SettingsPage })));
 
 // Lazy load non-critical components for better code splitting
 const TermsOfService = lazy(() => import('./pages/TermsOfService').then(module => ({ default: module.TermsOfService })));
@@ -76,7 +81,21 @@ const AppContent: React.FC = () => {
         }>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/app" element={<RecipeApp />} />
+
+            {/* App Routes with Nested Structure */}
+            <Route path="/app" element={<AppLayout />}>
+              <Route index element={<Navigate to="/app/convert" replace />} />
+              <Route path="convert" element={<ConvertPage />} />
+              <Route path="recipe-book" element={<RecipeBookPage />} />
+              <Route path="meal-planning" element={<MealPlanningPage />} />
+
+              {/* Settings with nested routes for deep linking */}
+              <Route path="settings">
+                <Route index element={<Navigate to="/app/settings/account" replace />} />
+                <Route path=":section" element={<SettingsPage />} />
+              </Route>
+            </Route>
+
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/verify-email" element={<SimpleEmailVerification />} />

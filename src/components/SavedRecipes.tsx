@@ -1,16 +1,18 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { getUserRecipes, deleteRecipe } from '../lib/firestore';
 import type { SavedRecipe } from '../lib/validation';
 import type { UserSettings } from '../types/userSettings';
 import { useToast } from './ToastContainer';
-import { Search, Trash2, Calendar, Filter, ChefHat, RefreshCcw, Edit, Clock, Users, Image, Star, Crown, Heart, ArrowUpDown, Grid3x3, List, X } from 'lucide-react';
+import { Search, Trash2, Filter, ChefHat, RefreshCcw, ArrowUpDown, Grid3x3, List, X, Heart, Crown } from 'lucide-react';
 import { RecipeEditor } from './RecipeEditor';
 import { CustomDropdown } from './CustomDropdown';
+import { RecipeCard } from './RecipeCard';
 
 interface SavedRecipesProps {
   userId: string;
   onSelect?: (recipe: SavedRecipe) => void;
   onViewRecipe?: (recipe: SavedRecipe) => void;
+  onRecipeCountChange?: (count: number) => void;
   userSettings?: UserSettings;
   featureAccess?: {
     recipeLimit: number;
@@ -22,36 +24,7 @@ interface SavedRecipesProps {
   };
 }
 
-// Helper function to extract timing and serving info from recipe content
-const extractRecipeInfo = (content: string) => {
-  try {
-    // Try parsing as JSON first (new format)
-    const jsonData = JSON.parse(content);
-    return {
-      totalTime: jsonData.totalTime || 'N/A',
-      servings: jsonData.servings || 'N/A'
-    };
-  } catch (error) {
-    // Fall back to markdown parsing
-    const lines = content.split('\n');
-    let totalTime = 'N/A';
-    let servings = 'N/A';
-    
-    for (const line of lines) {
-      const totalTimeMatch = line.match(/\*\*Total Time:\*\*\s*(.+)/i);
-      if (totalTimeMatch) {
-        totalTime = totalTimeMatch[1].trim();
-      }
-      
-      const servingsMatch = line.match(/\*\*Servings:\*\*\s*(.+)/i);
-      if (servingsMatch) {
-        servings = servingsMatch[1].trim();
-      }
-    }
-    
-    return { totalTime, servings };
-  }
-};
+// extractRecipeInfo has been moved to RecipeCard component
 
 // SessionStorage keys for persisting state
 const STORAGE_KEY_PREFIX = 'recipeBook_';
@@ -83,9 +56,8 @@ const saveToSession = <T,>(key: string, value: T): void => {
   }
 };
 
-export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, onViewRecipe, userSettings, featureAccess }) => {
+export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, onViewRecipe, onRecipeCountChange, userSettings, featureAccess }) => {
   const [recipes, setRecipes] = useState<SavedRecipe[]>([]);
-  const [filteredRecipes, setFilteredRecipes] = useState<SavedRecipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState(() => loadFromSession(STORAGE_KEYS.searchTerm, ''));
@@ -116,14 +88,18 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
       });
 
       setRecipes(sortedRecipes);
-      setFilteredRecipes(sortedRecipes);
+
+      // Notify parent of recipe count change
+      if (onRecipeCountChange) {
+        onRecipeCountChange(sortedRecipes.length);
+      }
     } catch (err) {
       setError('Failed to load recipes');
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [userId, onRecipeCountChange]);
 
   // Trigger animation when filters are applied
   useEffect(() => {
@@ -134,8 +110,8 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     }
   }, [searchTerm, selectedFilter, selectedHealthCondition, selectedCategory]);
 
-  // Filter and sort recipes
-  useEffect(() => {
+  // Filter and sort recipes using useMemo for better performance
+  const filteredRecipes = useMemo(() => {
     let filtered = [...recipes];
 
     // Apply search filter
@@ -235,7 +211,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
       return sortOrder === 'asc' ? comparison : -comparison;
     });
 
-    setFilteredRecipes(filtered);
+    return filtered;
   }, [recipes, searchTerm, selectedFilter, selectedHealthCondition, selectedCategory, sortBy, sortOrder, featureAccess, userSettings]);
 
   // Reset to first page only when filters change (not when recipes change)
@@ -243,14 +219,21 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     setCurrentPage(1);
   }, [searchTerm, selectedFilter, selectedHealthCondition, selectedCategory, sortBy, sortOrder]);
 
-  // Get all unique dietary filters from recipes
-  const availableFilters = [...new Set(recipes.flatMap(recipe => recipe.dietaryFilters))].sort();
+  // Get all unique dietary filters from recipes - memoized
+  const availableFilters = useMemo(() =>
+    [...new Set(recipes.flatMap(recipe => recipe.dietaryFilters))].sort(),
+    [recipes]
+  );
 
-  // Pagination calculations
-  const totalPages = Math.ceil(filteredRecipes.length / recipesPerPage);
-  const startIndex = (currentPage - 1) * recipesPerPage;
-  const endIndex = startIndex + recipesPerPage;
-  const currentRecipes = filteredRecipes.slice(startIndex, endIndex);
+  // Pagination calculations - memoized
+  const { totalPages, startIndex, endIndex, currentRecipes } = useMemo(() => {
+    const totalPages = Math.ceil(filteredRecipes.length / recipesPerPage);
+    const startIndex = (currentPage - 1) * recipesPerPage;
+    const endIndex = startIndex + recipesPerPage;
+    const currentRecipes = filteredRecipes.slice(startIndex, endIndex);
+
+    return { totalPages, startIndex, endIndex, currentRecipes };
+  }, [filteredRecipes, currentPage, recipesPerPage]);
 
   // Advanced category filters (only for Chef+ plans)
   const categoryFilters = [
@@ -313,7 +296,7 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     return () => window.removeEventListener('resize', handleResize);
   }, [viewMode]);
 
-  const handlePageChange = (newPage: number) => {
+  const handlePageChange = useCallback((newPage: number) => {
     if (newPage === currentPage || isTransitioning) return;
 
     setIsTransitioning(true);
@@ -326,18 +309,27 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
         setIsTransitioning(false);
       }, 150);
     }, 150);
-  };
+  }, [currentPage, isTransitioning]);
 
-  const handleDeleteClick = (recipeId: string) => {
+  const handleDeleteClick = useCallback((recipeId: string) => {
     setShowDeleteConfirm(recipeId);
-  };
+  }, []);
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = useCallback(async () => {
     if (!showDeleteConfirm) return;
 
     try {
       await deleteRecipe(showDeleteConfirm);
-      setRecipes(prev => prev.filter(r => r.id !== showDeleteConfirm));
+      setRecipes(prev => {
+        const updated = prev.filter(r => r.id !== showDeleteConfirm);
+
+        // Notify parent of recipe count change
+        if (onRecipeCountChange) {
+          onRecipeCountChange(updated.length);
+        }
+
+        return updated;
+      });
       setShowDeleteConfirm(null);
       showSuccess('Recipe Deleted', 'The recipe has been successfully removed from your collection', 'delete');
     } catch (err) {
@@ -345,17 +337,17 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
       console.error(err);
       showError('Delete Failed', 'Could not delete the recipe. Please try again.', 'delete');
     }
-  };
+  }, [showDeleteConfirm, showSuccess, showError, onRecipeCountChange]);
 
-  const handleDeleteCancel = () => {
+  const handleDeleteCancel = useCallback(() => {
     setShowDeleteConfirm(null);
-  };
+  }, []);
 
-  const handleEditRecipe = (recipe: SavedRecipe) => {
+  const handleEditRecipe = useCallback((recipe: SavedRecipe) => {
     setEditingRecipe(recipe);
-  };
+  }, []);
 
-  const handleRecipeUpdate = (updatedRecipe: SavedRecipe) => {
+  const handleRecipeUpdate = useCallback((updatedRecipe: SavedRecipe) => {
 
     // Update the recipes array immediately
     setRecipes(prev => {
@@ -366,14 +358,14 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
     });
 
     setEditingRecipe(null);
-  };
+  }, []);
 
   // Clear all filters except search and sort
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     setSelectedFilter('');
     setSelectedHealthCondition('');
     setSelectedCategory('');
-  };
+  }, []);
 
   // Loading skeleton cards will be shown in the main UI below
   const isLoadingState = loading;
@@ -687,238 +679,20 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
               );
             })
           ) : (
-            currentRecipes.map((recipe, index) => {
-            const recipeInfo = extractRecipeInfo(recipe.convertedRecipe);
-            const staggerClass = `stagger-${(index % 8) + 1}`;
-
-            // List View Layout
-            if (viewMode === 'list') {
-              return (
-                <div
-                  key={recipe.id}
-                  className={`bg-white rounded-xl shadow-md border-2 border-gray-200 overflow-hidden group transform recipe-card-3d transition-all duration-500 ${
-                    isPageLoaded && !isTransitioning ? `animate-recipe-card-enter ${staggerClass}` : 'opacity-0'
-                  } ${filterApplied ? 'animate-filter-change' : ''}`}
-                >
-                  <div className="flex flex-col sm:flex-row sm:h-64">
-                    {/* List View Image */}
-                    <div
-                      className="relative h-48 sm:h-64 sm:w-64 flex-shrink-0 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 cursor-pointer overflow-hidden group/image"
-                      onClick={() => onViewRecipe && onViewRecipe(recipe)}
-                    >
-                      {recipe.imageUrl ? (
-                        <img
-                          src={recipe.imageUrl}
-                          alt={recipe.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover/image:scale-110"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <ChefHat className="h-16 w-16 text-white opacity-80 transition-transform duration-300 group-hover/image:scale-110 group-hover/image:rotate-12" />
-                        </div>
-                      )}
-                      {!recipe.imageUrl && (
-                        <div className="absolute top-3 right-3">
-                          <div className="bg-black/50 rounded-full p-2">
-                            <Image className="h-4 w-4 text-white" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* List View Content */}
-                    <div className="flex-1 flex flex-col">
-                      <div
-                        className="p-4 sm:p-5 cursor-pointer flex-1"
-                        onClick={() => onViewRecipe && onViewRecipe(recipe)}
-                      >
-                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">{recipe.title}</h3>
-
-                        <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-3 text-sm text-gray-600">
-                          <div className="flex items-center">
-                            <Calendar className="w-4 h-4 mr-2 text-gray-400" />
-                            <span>{recipe.createdAt?.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Clock className="w-4 h-4 mr-2 text-green-500" />
-                            <span>{recipeInfo.totalTime || 'N/A'}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Users className="w-4 h-4 mr-2 text-blue-500" />
-                            <span>{recipeInfo.servings} servings</span>
-                          </div>
-                        </div>
-
-                        {recipe.dietaryFilters.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {recipe.dietaryFilters.map(filter => (
-                              <span
-                                key={filter}
-                                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200"
-                              >
-                                {filter}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* List View Actions */}
-                      <div className="bg-gradient-to-r from-gray-50 to-slate-50 px-4 sm:px-5 py-3 sm:py-3.5 flex justify-end items-center border-t border-gray-200 gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditRecipe(recipe);
-                          }}
-                          className="inline-flex items-center justify-center min-h-[44px] px-4 py-2 text-green-700 font-semibold bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg hover:border-green-400 hover:shadow-lg transition-all duration-300 text-sm sm:hover:scale-105 touch-manipulation active:scale-95"
-                        >
-                          <Edit className="w-4 h-4 mr-2" />
-                          Edit
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteClick(recipe.id);
-                          }}
-                          className="inline-flex items-center justify-center min-h-[44px] px-4 py-2 text-white font-semibold bg-gradient-to-r from-red-600 to-red-500 border-2 border-transparent rounded-lg hover:from-red-700 hover:to-red-600 transition-all duration-300 text-sm sm:hover:scale-105 hover:shadow-lg shadow-red-500/20 touch-manipulation active:scale-95"
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-
-            // Grid View Layout (existing)
-            return (
-              <div
+            currentRecipes.map((recipe, index) => (
+              <RecipeCard
                 key={recipe.id}
-                className={`bg-white rounded-xl shadow-md border-2 border-gray-200 overflow-hidden group transform recipe-card-3d transition-all duration-500 ${
-                  isPageLoaded && !isTransitioning ? `animate-recipe-card-enter ${staggerClass}` : 'opacity-0'
-                } ${filterApplied ? 'animate-filter-change' : ''}`}
-              >
-                {/* Recipe Image with hover effect */}
-                <div
-                  className="relative h-40 sm:h-48 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 cursor-pointer overflow-hidden group/image"
-                  onClick={() => onViewRecipe && onViewRecipe(recipe)}
-                >
-                  {recipe.imageUrl ? (
-                    <img
-                      src={recipe.imageUrl}
-                      alt={recipe.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover/image:scale-110"
-                      onError={(e) => {
-                        // Fallback to default gradient background if image fails to load
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ChefHat className="h-16 w-16 text-white opacity-80 transition-transform duration-300 group-hover/image:scale-110 group-hover/image:rotate-12" />
-                    </div>
-                  )}
-                  
-                  {/* Overlay with recipe name */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4 transition-all duration-300 group-hover/image:from-black/80">
-                    <h3 className="text-sm sm:text-lg font-bold text-white truncate transition-transform duration-300 group-hover/image:translate-x-1" title={recipe.title}>
-                      {recipe.title}
-                    </h3>
-                  </div>
-                  
-                  {/* Image indicator */}
-                  {!recipe.imageUrl && (
-                    <div className="absolute top-3 right-3">
-                      <div className="bg-black/50 rounded-full p-2">
-                        <Image className="h-4 w-4 text-white" />
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Recipe Metadata */}
-                <div
-                  className="p-3 sm:p-4 cursor-pointer"
-                  onClick={() => onViewRecipe && onViewRecipe(recipe)}
-                >
-                  <div className="flex items-center justify-between mb-2.5 sm:mb-3">
-                    <div className="flex items-center text-xs sm:text-sm text-gray-500">
-                      <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
-                      <span className="hidden sm:inline">{recipe.createdAt?.toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}</span>
-                      <span className="sm:hidden">{recipe.createdAt?.toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric'
-                      })}</span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2.5 sm:mb-3 text-xs sm:text-sm text-gray-600">
-                    <div className="flex items-center">
-                      <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 text-green-500 flex-shrink-0" />
-                      <span className="truncate">{recipeInfo.totalTime || 'N/A'}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 text-blue-500 flex-shrink-0" />
-                      <span className="truncate">{recipeInfo.servings} <span className="hidden sm:inline">servings</span></span>
-                    </div>
-                  </div>
-                  
-                  {/* Dietary Filters - Enhanced badges matching landing page */}
-                  {recipe.dietaryFilters.length > 0 && (
-                    <div className="mb-2 sm:mb-3">
-                      <div className="flex flex-wrap gap-1.5 dietary-badges">
-                        {recipe.dietaryFilters.slice(0, 2).map(filter => (
-                          <span
-                            key={filter}
-                            className="inline-flex items-center px-2 sm:px-2.5 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200 transition-all duration-300 hover:border-green-400 hover:shadow-sm"
-                          >
-                            {filter.length > 8 ? filter.substring(0, 8) + '...' : filter}
-                          </span>
-                        ))}
-                        {recipe.dietaryFilters.length > 2 && (
-                          <span className="inline-flex items-center px-2 sm:px-2.5 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-gray-50 to-slate-50 text-gray-700 border border-gray-300 transition-all duration-300 hover:border-gray-400 hover:shadow-sm">
-                            +{recipe.dietaryFilters.length - 2}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Card Actions with enhanced hover effects - matching landing page */}
-                <div className="bg-gradient-to-r from-gray-50 to-slate-50 px-3 sm:px-4 py-3 sm:py-3.5 flex justify-between items-center border-t border-gray-200 gap-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditRecipe(recipe);
-                    }}
-                    className="inline-flex items-center justify-center min-h-[44px] px-3 sm:px-3.5 py-2 sm:py-2 text-green-700 font-semibold bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg hover:border-green-400 hover:shadow-lg transition-all duration-300 text-xs sm:text-sm sm:hover:scale-105 touch-manipulation active:scale-95 flex-1"
-                  >
-                    <Edit className="w-4 h-4 sm:mr-1.5" />
-                    <span className="hidden sm:inline">Edit</span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteClick(recipe.id);
-                    }}
-                    className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-3 sm:px-3.5 py-2 sm:py-2 text-white font-semibold bg-gradient-to-r from-red-600 to-red-500 border-2 border-transparent rounded-lg hover:from-red-700 hover:to-red-600 transition-all duration-300 text-xs sm:text-sm sm:hover:scale-105 hover:shadow-lg shadow-red-500/20 touch-manipulation active:scale-95"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            );
-          })
+                recipe={recipe}
+                viewMode={viewMode}
+                onViewRecipe={onViewRecipe}
+                onEdit={handleEditRecipe}
+                onDelete={handleDeleteClick}
+                isPageLoaded={isPageLoaded}
+                isTransitioning={isTransitioning}
+                filterApplied={filterApplied}
+                staggerClass={`stagger-${(index % 8) + 1}`}
+              />
+            ))
           )}
         </div>
 

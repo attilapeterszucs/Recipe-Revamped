@@ -64,6 +64,7 @@ interface SettingsProps {
   onSettingsUpdate?: (settings: UserSettings) => void;
   onShowUpgradeModal?: () => void;
   initialActiveSection?: string;
+  onSectionChange?: (sectionId: string) => void;
   featureAccess?: {
     canSetDefaultPreferences: boolean;
     canBackupRestore: boolean;
@@ -75,7 +76,7 @@ interface SettingsProps {
   };
 }
 
-export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpdate, onShowUpgradeModal, initialActiveSection, featureAccess }) => {
+export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpdate, onShowUpgradeModal, initialActiveSection, onSectionChange, featureAccess }) => {
   // Authentication guard - Settings should only be accessible when user is logged in
   if (!user) {
     logger.warn('Settings accessed without authenticated user - redirecting');
@@ -89,6 +90,14 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeSection, setActiveSection] = useState(initialActiveSection || 'profile');
+
+  // Helper function to change section and notify parent for URL routing
+  const changeSection = (sectionId: string) => {
+    setActiveSection(sectionId);
+    if (onSectionChange) {
+      onSectionChange(sectionId);
+    }
+  };
 
   // Debug logging and handle prop changes
   useEffect(() => {
@@ -202,7 +211,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   // Auto-set admin tab when entering admin mode and load backups when data section opens
   useEffect(() => {
     if (activeSection === 'admin') {
-      setActiveSection('admin-users');
+      changeSection('admin-users');
     }
     if (activeSection === 'data' && featureAccess?.canBackupRestore) {
       loadBackups();
@@ -2800,7 +2809,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             <div className="bg-gradient-to-br from-white to-red-50/20 border-2 border-red-100 rounded-2xl p-4 shadow-lg">
               <nav className="flex flex-wrap gap-3">
                 <button
-                  onClick={() => setActiveSection('admin-users')}
+                  onClick={() => changeSection('admin-users')}
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
                     (activeSection === 'admin' || activeSection === 'admin-users')
                       ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
@@ -2811,7 +2820,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   <span>User Management</span>
                 </button>
                 <button
-                  onClick={() => setActiveSection('admin-notifications')}
+                  onClick={() => changeSection('admin-notifications')}
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
                     activeSection === 'admin-notifications'
                       ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
@@ -2822,7 +2831,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   <span>Notifications</span>
                 </button>
                 <button
-                  onClick={() => setActiveSection('admin-marketing')}
+                  onClick={() => changeSection('admin-marketing')}
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
                     activeSection === 'admin-marketing'
                       ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
@@ -2833,7 +2842,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   <span>Marketing Emails</span>
                 </button>
                 <button
-                  onClick={() => setActiveSection('admin-blog')}
+                  onClick={() => changeSection('admin-blog')}
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
                     activeSection === 'admin-blog'
                       ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
@@ -2938,7 +2947,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   return (
                     <button
                       key={section.id}
-                      onClick={() => setActiveSection(section.id)}
+                      onClick={() => changeSection(section.id)}
                       className={`flex items-center px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 whitespace-nowrap touch-friendly min-h-[44px] ${
                         isActive
                           ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 transform scale-105'
@@ -2973,7 +2982,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 return (
                   <button
                     key={section.id}
-                    onClick={() => setActiveSection(section.id)}
+                    onClick={() => changeSection(section.id)}
                     className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${!preventAnimations ? `animate-in fade-in slide-in-from-left-4 ${animationDelay}` : ''} ${
                       activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'))
                         ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 transform scale-105'

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 
 interface DropdownOption {
@@ -18,7 +18,7 @@ interface CustomDropdownProps {
   openUpward?: boolean;
 }
 
-export const CustomDropdown: React.FC<CustomDropdownProps> = ({
+const CustomDropdownComponent: React.FC<CustomDropdownProps> = ({
   value,
   onChange,
   options,
@@ -156,3 +156,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
     </div>
   );
 };
+
+// Wrap with memo for performance optimization
+export const CustomDropdown = memo(CustomDropdownComponent);
+CustomDropdown.displayName = 'CustomDropdown';

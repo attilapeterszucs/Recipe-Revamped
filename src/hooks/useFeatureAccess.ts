@@ -6,7 +6,7 @@ import { UsageTracker } from '../lib/usageTracking';
 import { SubscriptionService } from '../lib/subscriptionService';
 import { logger } from '../lib/logger';
 
-interface FeatureAccess {
+export interface FeatureAccess {
   // Recipe features
   canSaveRecipes: boolean;
   recipeLimit: number;
