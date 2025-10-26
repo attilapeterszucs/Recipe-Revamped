@@ -725,21 +725,65 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                 <span className="sm:hidden">Prev</span>
               </button>
 
-              {/* Page Numbers - Show fewer on mobile */}
+              {/* Page Numbers - Professional pagination with max 5 pages shown */}
               <div className="flex items-center space-x-1 sm:space-x-1.5">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                  // Mobile: Show only current page and adjacent pages
-                  const isMobileView = window.innerWidth < 640;
-                  const showOnMobile = page === 1 ||
-                                       page === totalPages ||
-                                       (page >= currentPage - 1 && page <= currentPage + 1);
+                {(() => {
+                  const pageNumbers: (number | 'ellipsis-start' | 'ellipsis-end')[] = [];
+                  const maxPagesToShow = 5;
 
-                  // Desktop: Show current page and 2 pages around it
-                  const showOnDesktop = page === 1 ||
-                                        page === totalPages ||
-                                        (page >= currentPage - 2 && page <= currentPage + 2);
+                  if (totalPages <= maxPagesToShow + 2) {
+                    // Show all pages if total is small
+                    for (let i = 1; i <= totalPages; i++) {
+                      pageNumbers.push(i);
+                    }
+                  } else {
+                    // Always show first page
+                    pageNumbers.push(1);
 
-                  if (showOnMobile || showOnDesktop) {
+                    // Calculate the range of pages to show (up to 5 pages)
+                    let startPage = Math.max(2, currentPage - 2);
+                    let endPage = Math.min(totalPages - 1, currentPage + 2);
+
+                    // Adjust if we're near the beginning
+                    if (currentPage <= 3) {
+                      startPage = 2;
+                      endPage = Math.min(totalPages - 1, maxPagesToShow);
+                    }
+
+                    // Adjust if we're near the end
+                    if (currentPage >= totalPages - 2) {
+                      startPage = Math.max(2, totalPages - maxPagesToShow);
+                      endPage = totalPages - 1;
+                    }
+
+                    // Add ellipsis after first page if needed
+                    if (startPage > 2) {
+                      pageNumbers.push('ellipsis-start');
+                    }
+
+                    // Add the middle pages
+                    for (let i = startPage; i <= endPage; i++) {
+                      pageNumbers.push(i);
+                    }
+
+                    // Add ellipsis before last page if needed
+                    if (endPage < totalPages - 1) {
+                      pageNumbers.push('ellipsis-end');
+                    }
+
+                    // Always show last page
+                    pageNumbers.push(totalPages);
+                  }
+
+                  return pageNumbers.map((page, index) => {
+                    if (page === 'ellipsis-start' || page === 'ellipsis-end') {
+                      return (
+                        <span key={page} className="inline-flex items-center justify-center min-w-[40px] sm:min-w-[42px] px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-bold text-gray-400">
+                          •••
+                        </span>
+                      );
+                    }
+
                     return (
                       <button
                         key={page}
@@ -754,18 +798,8 @@ export const SavedRecipes: React.FC<SavedRecipesProps> = ({ userId, onSelect, on
                         {page}
                       </button>
                     );
-                  } else if (
-                    (page === currentPage - 2 && currentPage > 3) ||
-                    (page === currentPage + 2 && currentPage < totalPages - 2)
-                  ) {
-                    return (
-                      <span key={page} className="px-1 sm:px-2 py-2 text-xs sm:text-sm font-bold text-gray-400">
-                        •••
-                      </span>
-                    );
-                  }
-                  return null;
-                })}
+                  });
+                })()}
               </div>
 
               {/* Next Button */}
