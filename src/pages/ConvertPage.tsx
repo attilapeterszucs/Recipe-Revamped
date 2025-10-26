@@ -282,7 +282,7 @@ export function ConvertPage() {
           className={`transition-all duration-1000 ease-out transform ${
             !result && !converting
               ? 'max-w-2xl mx-auto'
-              : 'max-w-none'
+              : 'max-w-full w-full'
           }`}
           style={{
             transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
@@ -299,6 +299,7 @@ export function ConvertPage() {
               transitionDelay: '50ms',
             }}
           >
+            {/* Input Section - Slides to the left when result appears */}
             <div
               className={`bg-white rounded-lg shadow-md p-4 sm:p-6 transition-all duration-1000 ease-out transform ${
                 !result && !converting
@@ -326,16 +327,16 @@ export function ConvertPage() {
               />
             </div>
 
-            {/* Recipe Display */}
+            {/* Recipe Display - Takes 2/3 of the space on the right */}
             <div
-              className={`transition-all duration-1000 ease-out transform origin-left ${
+              className={`transition-all duration-1000 ease-out transform ${
                 (result || converting)
-                  ? 'opacity-100 scale-100 translate-y-0 translate-x-0 lg:col-span-8 mt-4 lg:mt-0'
-                  : 'opacity-0 scale-95 translate-y-8 translate-x-4 pointer-events-none'
+                  ? 'opacity-100 scale-100 translate-x-0 lg:col-span-8 mt-4 lg:mt-0 block'
+                  : 'opacity-0 scale-95 translate-x-full pointer-events-none hidden lg:block'
               }`}
               style={{
                 transitionTimingFunction: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                transitionDelay: (result || converting) ? '200ms' : '0ms',
+                transitionDelay: (result || converting) ? '300ms' : '0ms',
               }}
             >
               <div className={`transition-all duration-800 ease-out ${
