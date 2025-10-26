@@ -277,7 +277,7 @@ export function ConvertPage() {
       <div className="absolute top-32 right-0 w-96 h-96 bg-emerald-200/20 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
       <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-green-100/30 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
 
-      <div className="space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="space-y-4 sm:space-y-6">
         <div className="w-full">
           <div
             className={`grid gap-4 sm:gap-6 lg:gap-8 items-start ${
@@ -285,20 +285,14 @@ export function ConvertPage() {
                 ? 'grid-cols-1 max-w-2xl mx-auto'
                 : 'grid-cols-1 lg:grid-cols-12 max-w-full'
             }`}
-            style={{
-              transition: 'max-width 2s ease-in-out, margin 2s ease-in-out',
-            }}
           >
-            {/* Input Section - Slides from center to left when result appears */}
+            {/* Input Section */}
             <div
               className={`bg-white rounded-lg shadow-md p-4 sm:p-6 ${
                 !result && !converting
                   ? 'hover:shadow-lg'
                   : 'lg:col-span-4 hover:shadow-lg'
               }`}
-              style={{
-                transition: 'all 2s ease-in-out',
-              }}
             >
               <RecipeInput
                 onSubmit={handleRecipeSubmit}
@@ -316,21 +310,15 @@ export function ConvertPage() {
               />
             </div>
 
-            {/* Recipe Display - Appears after input panel slides to left */}
+            {/* Recipe Display */}
             <div
               className={`${
                 (result || converting)
-                  ? 'opacity-100 translate-x-0 lg:col-span-8 mt-4 lg:mt-0 block'
-                  : 'opacity-0 translate-x-full pointer-events-none hidden lg:block'
+                  ? 'lg:col-span-8 mt-4 lg:mt-0 block'
+                  : 'pointer-events-none hidden lg:block'
               }`}
-              style={{
-                transition: 'opacity 1s ease-in-out, transform 1s ease-in-out',
-                transitionDelay: (result || converting) ? '2s' : '0ms',
-              }}
             >
-              <div className={`transition-all duration-800 ease-out ${
-                (result || converting) ? 'blur-0' : 'blur-sm'
-              }`}>
+              <div>
                 <StructuredRecipeDisplay
                   recipeJson={result}
                   loading={converting}
