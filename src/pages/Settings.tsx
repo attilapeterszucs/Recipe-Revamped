@@ -140,6 +140,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [cancelSectionHidden, setCancelSectionHidden] = useState(false);
   const [preventAnimations, setPreventAnimations] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const { showSuccess, showError, showInfo } = useToast();
 
   // Lock body scroll when delete account modal is open
@@ -521,6 +522,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       }
       
       showSuccess('Settings Saved', 'Your preferences have been successfully updated', 'settings');
+      setHasUnsavedChanges(false);
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
       logger.error('Failed to save settings:', { error });
@@ -538,6 +540,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   ) => {
     if (!settings) return;
     setSettings(prev => prev ? { ...prev, [key]: value } : null);
+    setHasUnsavedChanges(true);
   };
 
   const handleCreateBackup = async () => {
@@ -2889,48 +2892,15 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-600 shadow-lg border-b-2 border-green-700/20 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <button
-                onClick={onBack}
-                className="mr-3 sm:mr-4 p-1.5 sm:p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-xl transition-all duration-200 touch-friendly backdrop-blur-sm"
-              >
-                <span className="text-xl sm:text-2xl font-bold">←</span>
-              </button>
-              <h1 className="text-xl sm:text-2xl font-black text-white truncate">Settings</h1>
-            </div>
-
-            <div className="flex items-center gap-2 sm:gap-3">
-              {saveStatus === 'saved' && (
-                <div className="flex items-center text-white bg-white/20 px-3 py-1.5 rounded-xl backdrop-blur-sm">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-                  <span className="text-xs sm:text-sm hidden sm:inline font-semibold">Saved!</span>
-                </div>
-              )}
-              {saveStatus === 'error' && (
-                <div className="flex items-center text-white bg-red-500/30 px-3 py-1.5 rounded-xl backdrop-blur-sm">
-                  <X className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-                  <span className="text-xs sm:text-sm hidden sm:inline font-semibold">Failed to save</span>
-                </div>
-              )}
-
-              {!activeSection.startsWith('admin') && (
-                <button
-                  onClick={handleSaveSettings}
-                  disabled={saving}
-                  className="flex items-center px-3 sm:px-4 py-2 sm:py-2.5 bg-white text-green-700 rounded-xl hover:bg-white/90 disabled:opacity-50 text-sm font-bold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 touch-friendly min-h-[40px]"
-                >
-                  <Save className="w-4 h-4 mr-1 sm:mr-2 flex-shrink-0" />
-                  <span className="hidden sm:inline">{saving ? 'Saving...' : 'Save Changes'}</span>
-                  <span className="sm:hidden truncate">{saving ? 'Saving' : 'Save'}</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
+      {/* Header - Simple Back Button */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+        <button
+          onClick={onBack}
+          className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-green-600 font-bold transition-all duration-200 rounded-xl hover:bg-white hover:shadow-md group"
+        >
+          <span className="text-2xl group-hover:-translate-x-1 transition-transform duration-200">←</span>
+          <span>Back</span>
+        </button>
       </div>
 
       {/* Content */}
@@ -3047,12 +3017,40 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
           </div>
 
           {/* Main Content */}
-          <div className="flex-1">
-            <div key={activeSection.startsWith('admin') ? 'admin' : activeSection} className={`bg-white rounded-2xl shadow-2xl border-2 border-green-100 p-4 sm:p-6 lg:p-8 ${!preventAnimations ? 'animate-in fade-in slide-in-from-right-4 duration-700 ease-out' : ''}`}>
+          <div className="flex-1 relative">
+            <div key={activeSection.startsWith('admin') ? 'admin' : activeSection} className={`p-4 sm:p-6 lg:p-8 ${!preventAnimations ? 'animate-in fade-in slide-in-from-right-4 duration-700 ease-out' : ''}`}>
               <div className="space-y-6 lg:space-y-8">
                 {renderSectionContent()}
               </div>
             </div>
+
+            {/* Floating Save Button - Only show if there are unsaved changes and not in admin section */}
+            {hasUnsavedChanges && !activeSection.startsWith('admin') && (
+              <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-4 fade-in duration-300">
+                <div className="bg-white rounded-2xl shadow-2xl border-2 border-green-100 p-2">
+                  <button
+                    onClick={handleSaveSettings}
+                    disabled={saving}
+                    className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-base font-bold shadow-xl shadow-green-500/40 hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                  >
+                    {saving ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                        <span>Saving...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-5 h-5" />
+                        <span>Save Changes</span>
+                        {saveStatus === 'saved' && (
+                          <Check className="w-5 h-5 animate-in zoom-in duration-200" />
+                        )}
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
