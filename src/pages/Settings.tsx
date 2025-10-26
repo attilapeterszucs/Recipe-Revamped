@@ -2938,9 +2938,66 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
           {/* Mobile Navigation Tabs */}
           <div className="lg:hidden">
-            <div className="flex overflow-x-auto pb-3 -mx-4 px-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-              <div className="flex gap-3 min-w-max">
-                {sections.map((section) => {
+            <div className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50/50 to-white rounded-2xl border-2 border-green-100 p-3 shadow-lg mb-4">
+              {/* Subtle animated blobs for mobile */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-green-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000" />
+              </div>
+
+              <div className="relative z-10 flex overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                <div className="flex gap-2 min-w-max">
+                  {sections.map((section) => {
+                    const Icon = section.icon;
+                    const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'));
+                    const showPremiumBadge = section.premium && !section.hasAccess;
+                    return (
+                      <button
+                        key={section.id}
+                        onClick={() => changeSection(section.id)}
+                        className={`group flex items-center px-3 py-2.5 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap touch-friendly min-h-[44px] ${
+                          isActive
+                            ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/40 transform scale-105'
+                            : 'text-gray-700 bg-white/80 backdrop-blur-sm border-2 border-green-100 hover:border-green-300 hover:bg-white hover:shadow-md hover:scale-105'
+                        }`}
+                      >
+                        <div className={`flex items-center justify-center w-7 h-7 rounded-lg mr-2 transition-all duration-300 ${
+                          isActive
+                            ? 'bg-white/20'
+                            : 'bg-green-50 group-hover:bg-green-100 border border-green-200'
+                        }`}>
+                          <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-green-600'}`} />
+                        </div>
+                        <span className="text-xs sm:text-sm truncate">{section.label}</span>
+                        {showPremiumBadge && (
+                          <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-black ml-2 transition-all duration-300 ${
+                            isActive
+                              ? 'bg-white/20 text-white shadow-md'
+                              : 'bg-gradient-to-r from-orange-400 to-amber-400 text-white shadow-md shadow-orange-500/30 group-hover:shadow-orange-500/50 group-hover:scale-110'
+                          }`}>
+                            <Crown className="w-3 h-3" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:block w-72 flex-shrink-0">
+            <div className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50/50 to-white rounded-3xl border-2 border-green-100 p-4 shadow-xl">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-green-300 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-300 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-2000" />
+                <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-blue-300 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-4000" />
+              </div>
+
+              <nav className="relative z-10 space-y-2">
+                {sections.map((section, index) => {
                   const Icon = section.icon;
                   const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'));
                   const showPremiumBadge = section.premium && !section.hasAccess;
@@ -2948,69 +3005,45 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     <button
                       key={section.id}
                       onClick={() => changeSection(section.id)}
-                      className={`flex items-center px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 whitespace-nowrap touch-friendly min-h-[44px] ${
+                      className={`w-full group flex items-center px-4 py-3.5 text-sm font-bold rounded-2xl transition-all duration-300 ${!preventAnimations ? `animate-in fade-in slide-in-from-left-4` : ''} ${
                         isActive
-                          ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 transform scale-105'
-                          : 'text-gray-700 hover:bg-white border-2 border-gray-200 bg-white/80 backdrop-blur-sm hover:shadow-lg hover:border-green-200'
+                          ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-xl shadow-green-500/40 transform scale-[1.02]'
+                          : 'text-gray-700 bg-white/80 backdrop-blur-sm border-2 border-green-100 hover:border-green-300 hover:bg-white hover:shadow-lg hover:scale-[1.02]'
                       }`}
+                      style={!preventAnimations ? {
+                        animationDuration: '600ms',
+                        animationDelay: `${index * 50}ms`,
+                        animationFillMode: 'backwards'
+                      } : {}}
                     >
-                      <Icon className="w-4 h-4 mr-2 flex-shrink-0" />
-                      <span className="text-xs sm:text-sm truncate">{section.label}</span>
+                      <div className={`flex items-center justify-center w-9 h-9 rounded-xl mr-3 transition-all duration-300 ${
+                        isActive
+                          ? 'bg-white/20'
+                          : 'bg-green-50 group-hover:bg-green-100 border border-green-200'
+                      }`}>
+                        <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-green-600'}`} />
+                      </div>
+                      <span className="flex-1 text-left">{section.label}</span>
                       {showPremiumBadge && (
-                        <div className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-bold ml-2 ${
+                        <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-black transition-all duration-300 ${
                           isActive
-                            ? 'bg-white/20 text-white'
-                            : 'bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border border-orange-300'
+                            ? 'bg-white/20 text-white shadow-lg'
+                            : 'bg-gradient-to-r from-orange-400 to-amber-400 text-white shadow-lg shadow-orange-500/30 group-hover:shadow-orange-500/50 group-hover:scale-110'
                         }`}>
-                          <Crown className="w-3 h-3" />
+                          <Crown className="w-3.5 h-3.5" />
+                          <span>Pro</span>
                         </div>
+                      )}
+                      {!showPremiumBadge && (
+                        <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${
+                          isActive ? 'text-white translate-x-1' : 'text-gray-400 group-hover:translate-x-1 group-hover:text-green-600'
+                        }`} />
                       )}
                     </button>
                   );
                 })}
-              </div>
+              </nav>
             </div>
-          </div>
-
-          {/* Desktop Sidebar */}
-          <div className="hidden lg:block w-64 flex-shrink-0">
-            <nav className="space-y-2">
-              {sections.map((section, index) => {
-                const Icon = section.icon;
-                const animationDelay = `delay-[${index * 50}ms]`;
-                const showPremiumBadge = section.premium && !section.hasAccess;
-                return (
-                  <button
-                    key={section.id}
-                    onClick={() => changeSection(section.id)}
-                    className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${!preventAnimations ? `animate-in fade-in slide-in-from-left-4 ${animationDelay}` : ''} ${
-                      activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'))
-                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 transform scale-105'
-                        : 'text-gray-700 hover:bg-white border-2 border-gray-200 bg-white/60 backdrop-blur-sm hover:shadow-lg hover:border-green-200'
-                    }`}
-                    style={!preventAnimations ? {
-                      animationDuration: '600ms',
-                      animationDelay: `${index * 50}ms`,
-                      animationFillMode: 'backwards'
-                    } : {}}
-                  >
-                    <Icon className="w-5 h-5 mr-3" />
-                    <span className="flex-1 text-left">{section.label}</span>
-                    {showPremiumBadge && (
-                      <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold mr-2 ${
-                        activeSection === section.id
-                          ? 'bg-white/20 text-white'
-                          : 'bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border border-orange-300'
-                      }`}>
-                        <Crown className="w-3 h-3" />
-                        <span>Premium</span>
-                      </div>
-                    )}
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                );
-              })}
-            </nav>
           </div>
 
           {/* Main Content */}
