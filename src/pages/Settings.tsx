@@ -977,14 +977,27 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'profile':
         const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
         const canUploadProfilePicture = featureAccess?.canUploadProfilePicture || false;
-        
+
         return (
           <div className="space-y-4 sm:space-y-6">
-            <div className={`bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 ${!preventAnimations ? 'animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out' : ''}`}>
-              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Account</h3>
-              <p className="text-gray-700 leading-relaxed font-medium">
-                Manage your account information, profile picture, and security settings. Update your personal details and control your Recipe Revamped experience.
-              </p>
+            {/* Header Section with Animated Blobs */}
+            <div className={`relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50/50 to-white rounded-3xl border-2 border-green-200 p-6 sm:p-8 shadow-xl ${!preventAnimations ? 'animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out' : ''}`}>
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-green-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+                <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="inline-flex items-center justify-center w-14 h-14 mb-4 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-lg shadow-green-500/30">
+                  <UserIcon className="w-7 h-7 text-white" strokeWidth={2.5} />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-3">Account Settings</h3>
+                <p className="text-gray-700 leading-relaxed font-medium text-base">
+                  Manage your profile, security settings, and account preferences. Keep your information up-to-date and secure.
+                </p>
+              </div>
             </div>
 
             {/* Profile Picture Section */}
@@ -1265,77 +1278,152 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             )}
             
             {/* Account Management Section */}
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 rounded-2xl border-2 border-green-200 p-4 sm:p-6 shadow-xl">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
-                  <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-                </div>
-                <div>
-                  <h4 className="text-lg sm:text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Account Management</h4>
-                  <p className="text-xs sm:text-sm text-gray-600 font-medium">Manage your subscription and account</p>
-                </div>
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-green-50/30 to-emerald-50/20 rounded-3xl border-2 border-green-200 p-6 sm:p-8 shadow-2xl">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
               </div>
 
-              <div className="space-y-4">
-                {/* Cancel Plan Button - Only show if user has an active subscription and section not hidden */}
-                {featureAccess?.currentPlan &&
-                 featureAccess.currentPlan !== 'free' &&
-                 subscription?.status === 'active' &&
-                 !cancelSectionHidden && (
-                  <div className="bg-gradient-to-br from-yellow-50 to-amber-50/50 border-2 border-yellow-300 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
-                    {/* Decorative gradient overlay */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-200/20 to-amber-200/20 rounded-full blur-2xl -mr-16 -mt-16"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-lg shadow-green-500/30">
+                    <Shield className="w-7 h-7 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h4 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Account Management</h4>
+                    <p className="text-sm text-gray-600 font-medium">Manage subscription, billing, and account status</p>
+                  </div>
+                </div>
 
-                    <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4 relative">
-                      <div className="flex items-center sm:items-start">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
-                          <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />
-                        </div>
+                <div className="space-y-4">
+                  {/* Subscription Status Card - Always show */}
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-green-100 p-5 sm:p-6 shadow-lg">
+                    <div className="flex items-start gap-4">
+                      <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl shadow-md flex-shrink-0">
+                        <CreditCard className="w-6 h-6 text-green-600" />
                       </div>
                       <div className="flex-1">
-                        <h5 className="text-base sm:text-lg font-black text-yellow-900 mb-2">
-                          Cancel Subscription
-                        </h5>
-                        <p className="text-sm text-yellow-800 mb-4 leading-relaxed font-medium">
-                          Cancel your <span className="font-bold capitalize">{featureAccess.currentPlan.replace('-', ' ')}</span> plan and return to the free plan. This will immediately cancel your subscription in both our system and Stripe.
+                        <h5 className="text-lg font-black text-gray-900 mb-2">Current Plan</h5>
+                        <div className="flex items-center gap-3 mb-3">
+                          <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-bold text-sm shadow-lg">
+                            {featureAccess?.currentPlan ? featureAccess.currentPlan.replace('-', ' ').toUpperCase() : 'FREE'}
+                          </span>
+                          {subscription?.status === 'active' && (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg font-semibold text-xs">
+                              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                              Active
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {featureAccess?.currentPlan === 'free'
+                            ? 'Enjoy basic features with our free plan. Upgrade anytime to unlock premium features!'
+                            : `You're enjoying all the benefits of the ${featureAccess?.currentPlan?.replace('-', ' ')} plan.`}
                         </p>
-                        <CancelSubscriptionButton
-                          className="w-full sm:w-auto"
-                          onCancellationComplete={() => {
-                            setCancelSectionHidden(true);
-                            refreshSubscriptionStatus();
-                          }}
-                        />
                       </div>
                     </div>
                   </div>
-                )}
 
-                {/* Delete Account Section */}
-                <div className="bg-gradient-to-br from-red-50 to-rose-50/50 border-2 border-red-300 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
-                  {/* Decorative gradient overlay */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-200/20 to-rose-200/20 rounded-full blur-2xl -mr-16 -mt-16"></div>
+                  {/* Cancel Plan Button - Only show if user has an active subscription and section not hidden */}
+                  {featureAccess?.currentPlan &&
+                   featureAccess.currentPlan !== 'free' &&
+                   subscription?.status === 'active' &&
+                   !cancelSectionHidden && (
+                    <div className="group bg-gradient-to-br from-yellow-50 to-amber-50/50 border-2 border-yellow-300 rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+                      {/* Decorative gradient overlay */}
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-200/30 to-amber-200/30 rounded-full blur-2xl -mr-16 -mt-16"></div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4 relative">
-                    <div className="flex items-center sm:items-start">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-red-100 to-rose-100 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
-                        <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+                      <div className="flex flex-col sm:flex-row sm:items-start gap-4 relative">
+                        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-xl shadow-md flex-shrink-0 ring-2 ring-yellow-200 group-hover:ring-yellow-300 transition-all duration-300">
+                          <AlertTriangle className="w-6 h-6 text-yellow-600" />
+                        </div>
+                        <div className="flex-1">
+                          <h5 className="text-lg font-black text-yellow-900 mb-2 flex items-center gap-2">
+                            Cancel Subscription
+                          </h5>
+                          <div className="space-y-3 mb-4">
+                            <p className="text-sm text-yellow-800 leading-relaxed font-medium">
+                              Downgrade from your <span className="font-bold capitalize">{featureAccess.currentPlan.replace('-', ' ')}</span> plan to the free tier.
+                            </p>
+                            <div className="bg-yellow-100/50 border-l-4 border-yellow-500 p-3 rounded-lg">
+                              <p className="text-xs text-yellow-900 font-semibold">What happens when you cancel:</p>
+                              <ul className="mt-2 space-y-1 text-xs text-yellow-800">
+                                <li className="flex items-start gap-2">
+                                  <span className="text-yellow-600 mt-0.5">•</span>
+                                  <span>You'll keep premium features until your billing period ends</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                  <span className="text-yellow-600 mt-0.5">•</span>
+                                  <span>No charges after cancellation</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                  <span className="text-yellow-600 mt-0.5">•</span>
+                                  <span>You can reactivate your subscription anytime</span>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                          <CancelSubscriptionButton
+                            className="w-full sm:w-auto"
+                            onCancellationComplete={() => {
+                              setCancelSectionHidden(true);
+                              refreshSubscriptionStatus();
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
-                    <div className="flex-1">
-                      <h5 className="text-base sm:text-lg font-black text-red-900 mb-2">
-                        Delete Account
-                      </h5>
-                      <p className="text-sm text-red-800 mb-4 leading-relaxed font-medium">
-                        Permanently delete your account and all associated data. <span className="font-bold">This action cannot be undone.</span> Any active subscription will be automatically canceled.
-                      </p>
-                      <button
-                        onClick={() => setShowDeleteAccountModal(true)}
-                        className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 transition-all duration-200 font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 hover:scale-105 touch-friendly min-h-[44px]"
-                      >
-                        <UserX className="w-4 h-4 mr-2" />
-                        Delete Account
-                      </button>
+                  )}
+
+                  {/* Delete Account Section */}
+                  <div className="group bg-gradient-to-br from-red-50 to-rose-50/50 border-2 border-red-300 rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+                    {/* Decorative gradient overlay */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-200/30 to-rose-200/30 rounded-full blur-2xl -mr-16 -mt-16"></div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-4 relative">
+                      <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-red-100 to-rose-100 rounded-xl shadow-md flex-shrink-0 ring-2 ring-red-200 group-hover:ring-red-300 transition-all duration-300">
+                        <UserX className="w-6 h-6 text-red-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h5 className="text-lg font-black text-red-900 mb-2 flex items-center gap-2">
+                          Danger Zone
+                          <span className="inline-flex px-2 py-0.5 bg-red-200 text-red-800 rounded text-xs font-bold">PERMANENT</span>
+                        </h5>
+                        <div className="space-y-3 mb-4">
+                          <p className="text-sm text-red-800 leading-relaxed font-medium">
+                            Permanently delete your account and all associated data.
+                          </p>
+                          <div className="bg-red-100/50 border-l-4 border-red-500 p-3 rounded-lg">
+                            <p className="text-xs text-red-900 font-semibold mb-2">⚠️ This action is irreversible and will:</p>
+                            <ul className="space-y-1 text-xs text-red-800">
+                              <li className="flex items-start gap-2">
+                                <span className="text-red-600 mt-0.5">•</span>
+                                <span>Delete all your saved recipes permanently</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-red-600 mt-0.5">•</span>
+                                <span>Cancel any active subscriptions immediately</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-red-600 mt-0.5">•</span>
+                                <span>Remove all personal data and preferences</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-red-600 mt-0.5">•</span>
+                                <span className="font-bold">Cannot be undone or recovered</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setShowDeleteAccountModal(true)}
+                          className="group/btn w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 transition-all duration-300 font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/50 hover:scale-105 touch-friendly min-h-[44px]"
+                        >
+                          <UserX className="w-5 h-5 group-hover/btn:animate-pulse" />
+                          <span>Delete My Account</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
