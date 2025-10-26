@@ -2891,18 +2891,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30">
-      {/* Header - Simple Back Button */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-        <button
-          onClick={onBack}
-          className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-green-600 font-bold transition-all duration-200 rounded-xl hover:bg-white hover:shadow-md group"
-        >
-          <span className="text-2xl group-hover:-translate-x-1 transition-transform duration-200">←</span>
-          <span>Back</span>
-        </button>
-      </div>
-
+    <div className="min-h-screen">
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
@@ -3018,7 +3007,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
           {/* Main Content */}
           <div className="flex-1 relative">
-            <div key={activeSection.startsWith('admin') ? 'admin' : activeSection} className={`p-4 sm:p-6 lg:p-8 ${!preventAnimations ? 'animate-in fade-in slide-in-from-right-4 duration-700 ease-out' : ''}`}>
+            <div key={activeSection.startsWith('admin') ? 'admin' : activeSection} className={`pl-4 sm:pl-6 lg:pl-8 ${!preventAnimations ? 'animate-in fade-in slide-in-from-right-4 duration-700 ease-out' : ''}`}>
               <div className="space-y-6 lg:space-y-8">
                 {renderSectionContent()}
               </div>
