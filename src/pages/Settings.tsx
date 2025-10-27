@@ -1739,21 +1739,45 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Dietary Filters</h3>
-              <p className="text-gray-700 leading-relaxed font-medium">
-                Customize your recipe experience with dietary filters that match your lifestyle. Set preferences to automatically show recipes that fit your nutritional needs and food choices.
-              </p>
+            {/* Header Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-green-50/30 to-emerald-50/20 rounded-3xl border-2 border-green-100 p-6 sm:p-8 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-lg shadow-green-500/30">
+                    <span className="text-3xl">🥗</span>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Dietary Filters</h3>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed font-medium">
+                  Customize your recipe experience with dietary filters that match your lifestyle. Set preferences to automatically show recipes that fit your nutritional needs and food choices.
+                </p>
+              </div>
             </div>
 
             {featureAccess?.canSetDefaultPreferences ? (
               <div className="space-y-8">
                 {/* Dietary Preferences Section */}
                 <div>
-                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-4 sm:p-5 mb-6">
-                    <p className="text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
-                      <span className="font-bold text-blue-700">💡 Quick Tip:</span> Select dietary preferences to automatically filter recipes. These will be applied to all recipe searches and suggestions.
-                    </p>
+                  {/* Quick Tip */}
+                  <div className="relative overflow-hidden bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border-2 border-blue-200 p-4 sm:p-5 mb-6 shadow-lg">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                        <Info className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
+                          <span className="font-black text-blue-700">💡 Quick Tip:</span> Select dietary preferences to automatically filter recipes. These will be applied to all recipe searches and suggestions.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="space-y-6">
@@ -2800,11 +2824,27 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
         return (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Health Conditions & Dietary Needs</h3>
-              <p className="text-gray-700 leading-relaxed font-medium">
-                Tell us about your health conditions so we can suggest recipes that support your specific dietary requirements and wellness goals.
-              </p>
+            {/* Header Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-red-50/30 to-pink-50/20 rounded-3xl border-2 border-red-100 p-6 sm:p-8 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-red-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl shadow-lg shadow-red-500/30">
+                    <Heart className="w-7 h-7 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">Health Conditions & Dietary Needs</h3>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed font-medium">
+                  Tell us about your health conditions so we can suggest recipes that support your specific dietary requirements and wellness goals.
+                </p>
+              </div>
             </div>
 
             {!canAccessHealthConditions && (
@@ -2887,10 +2927,18 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
             {canAccessHealthConditions && (
               <div className="space-y-8">
-                <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-4 sm:p-5 mb-6">
-                  <p className="text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
-                    <span className="font-bold text-blue-700">💡 Quick Tip:</span> Select health conditions to get personalized recipe recommendations. These will help us suggest recipes that support your specific dietary requirements and wellness goals.
-                  </p>
+                {/* Quick Tip */}
+                <div className="relative overflow-hidden bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border-2 border-blue-200 p-4 sm:p-5 shadow-lg">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                      <Info className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
+                        <span className="font-black text-blue-700">💡 Quick Tip:</span> Select health conditions to get personalized recipe recommendations. These will help us suggest recipes that support your specific dietary requirements and wellness goals.
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-6">
