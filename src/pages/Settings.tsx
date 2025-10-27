@@ -1511,12 +1511,28 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         };
 
         return (
-          <div className="space-y-6">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-4 sm:p-6 mb-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-              <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">Personal Profile & Health Goals</h3>
-              <p className="text-gray-700 leading-relaxed font-medium">
-                Set up your personal profile and health goals to get AI-powered recipe recommendations tailored specifically to your needs and objectives.
-              </p>
+          <div className="space-y-8">
+            {/* Header Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-purple-50/30 to-pink-50/20 rounded-3xl border-2 border-purple-100 p-6 sm:p-8 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl shadow-lg shadow-purple-500/30">
+                    <Activity className="w-7 h-7 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Personal Profile & Health Goals</h3>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed font-medium">
+                  Set up your personal profile and health goals to get AI-powered recipe recommendations tailored specifically to your needs and objectives.
+                </p>
+              </div>
             </div>
 
             {/* Personal Profile Editor */}
@@ -1615,25 +1631,84 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
             )}
 
             {/* AI Personalization Info */}
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-6 shadow-lg">
-              <h4 className="font-black text-blue-900 mb-3 flex items-center">
-                <Bot className="w-5 h-5 mr-2" />
-                AI Personalization
-              </h4>
-              <div className="text-blue-800 space-y-2">
-                <p className="text-sm font-medium">
-                  Your personal profile and health goals are used to:
-                </p>
-                <ul className="text-sm space-y-1 ml-4 font-medium">
-                  <li>• Adjust recipe calorie content and portions for your goals</li>
-                  <li>• Recommend ingredients that support your health objectives</li>
-                  <li>• Suggest cooking times and complexity based on your availability</li>
-                  <li>• Avoid ingredients you're allergic to or cannot consume</li>
-                  <li>• Customize meal plans for your activity level and lifestyle</li>
-                </ul>
-                <p className="text-sm mt-3 font-bold bg-gradient-to-r from-blue-700 to-cyan-700 bg-clip-text text-transparent">
-                  The more complete your profile, the better our AI can personalize your recipes!
-                </p>
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/20 rounded-3xl border-2 border-blue-100 p-6 sm:p-8 shadow-xl">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 left-0 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob" />
+                <div className="absolute bottom-0 right-0 w-32 h-32 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <Bot className="w-6 h-6 text-white" strokeWidth={2.5} />
+                  </div>
+                  <h4 className="text-xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">AI Personalization</h4>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-sm font-bold text-gray-800">
+                    Your personal profile and health goals are used to:
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="flex items-start gap-3 p-3 bg-blue-50/50 rounded-xl border border-blue-200">
+                      <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-md">
+                        <Check className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-blue-900 mb-0.5">Calorie Optimization</p>
+                        <p className="text-xs text-blue-700">Adjust recipe portions and content for your goals</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 bg-green-50/50 rounded-xl border border-green-200">
+                      <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center shadow-md">
+                        <Check className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-green-900 mb-0.5">Smart Recommendations</p>
+                        <p className="text-xs text-green-700">Ingredients that support your health objectives</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 bg-purple-50/50 rounded-xl border border-purple-200">
+                      <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-md">
+                        <Check className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-purple-900 mb-0.5">Time Management</p>
+                        <p className="text-xs text-purple-700">Cooking times based on your availability</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 bg-orange-50/50 rounded-xl border border-orange-200">
+                      <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center shadow-md">
+                        <Check className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-orange-900 mb-0.5">Allergy Protection</p>
+                        <p className="text-xs text-orange-700">Avoid ingredients you cannot consume</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border-2 border-blue-200">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                        <Info className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-blue-900 mb-1">
+                          💡 Pro Tip
+                        </p>
+                        <p className="text-sm text-blue-800 font-medium">
+                          The more complete your profile, the better our AI can personalize your recipes!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
