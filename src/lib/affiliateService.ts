@@ -36,7 +36,18 @@ export interface UserAffiliateStatus {
  */
 export const generateAffiliateCode = (userId: string, email: string): string => {
   // Create a code from first part of email + last 6 chars of userId
-  const emailPrefix = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  // Handle cases where email might be null, undefined, or empty
+  let emailPrefix = '';
+
+  if (email && email.includes('@')) {
+    emailPrefix = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  }
+
+  // If no valid email prefix, use first 6 chars of userId
+  if (!emailPrefix || emailPrefix.length === 0) {
+    emailPrefix = userId.slice(0, 6).toUpperCase();
+  }
+
   const userSuffix = userId.slice(-6).toUpperCase();
   return `${emailPrefix.slice(0, 6)}${userSuffix}`;
 };

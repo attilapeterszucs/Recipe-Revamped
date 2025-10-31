@@ -244,20 +244,41 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
 
   // Load affiliate data
   const loadAffiliateData = async () => {
-    if (!user) return;
+    if (!user) {
+      logger.warn('Cannot load affiliate data: user is null');
+      return;
+    }
+
+    if (!user.email) {
+      logger.warn('User email is missing', { userId: user.uid });
+    }
 
     setLoadingAffiliate(true);
     try {
-      // Get or create affiliate account
-      const affiliateCode = await createAffiliateAccount(user.uid, user.email || '');
+      // Get or create affiliate account - use email or fallback to userId
+      const email = user.email || '';
+      logger.info('Creating/fetching affiliate account', { userId: user.uid, hasEmail: !!user.email });
+
+      const affiliateCode = await createAffiliateAccount(user.uid, email);
+      logger.info('Affiliate code obtained', { affiliateCode });
+
+      // Get affiliate data
       const data = await getAffiliateData(user.uid);
+      logger.info('Affiliate data fetched', { hasData: !!data });
       setAffiliateData(data);
 
       // Get user's affiliate status
       const status = await getUserAffiliateStatus(user.uid);
+      logger.info('Affiliate status fetched', { hasUsedCode: status.hasUsedAffiliateCode });
       setAffiliateStatus(status);
     } catch (error) {
-      logger.error('Failed to load affiliate data:', { error });
+      logger.error('Failed to load affiliate data:', {
+        error,
+        userId: user.uid,
+        hasEmail: !!user.email,
+        errorMessage: error instanceof Error ? error.message : String(error)
+      });
+      showError('Affiliate Error', 'Failed to load affiliate data. Please check the browser console for details.');
     } finally {
       setLoadingAffiliate(false);
     }
