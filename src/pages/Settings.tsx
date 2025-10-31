@@ -1532,7 +1532,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         </div>
 
                         {/* Stats */}
-                        <div className="grid grid-cols-2 gap-3 mt-6">
+                        <div className="grid grid-cols-3 gap-3 mt-6">
                           <div className="bg-white rounded-xl p-4 border border-purple-100 shadow-sm">
                             <div className="flex items-center gap-2 mb-1">
                               <span className="text-2xl">👥</span>
@@ -1542,11 +1542,23 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                           </div>
                           <div className="bg-white rounded-xl p-4 border border-purple-100 shadow-sm">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-2xl">💰</span>
-                              <span className="text-xs font-semibold text-gray-600">Earnings</span>
+                              <span className="text-2xl">🎁</span>
+                              <span className="text-xs font-semibold text-gray-600">Days Earned</span>
                             </div>
-                            <p className="text-2xl font-black text-purple-700">${affiliateData.totalEarnings.toFixed(2)}</p>
+                            <p className="text-2xl font-black text-purple-700">{affiliateData.bonusDaysEarned}</p>
                           </div>
+                          <div className="bg-white rounded-xl p-4 border border-green-100 shadow-sm">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-2xl">⏳</span>
+                              <span className="text-xs font-semibold text-gray-600">Days Left</span>
+                            </div>
+                            <p className="text-2xl font-black text-green-700">{affiliateData.bonusDaysRemaining}</p>
+                          </div>
+                        </div>
+                        <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded-lg">
+                          <p className="text-xs text-green-800 font-semibold">
+                            💡 Each referral gives you <strong>3 days</strong> of free Master Chef plan!
+                          </p>
                         </div>
                       </div>
                     ) : (

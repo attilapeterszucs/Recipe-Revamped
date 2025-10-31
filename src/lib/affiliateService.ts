@@ -20,7 +20,8 @@ export interface AffiliateData {
   userId: string;
   affiliateCode: string;
   referralCount: number;
-  totalEarnings: number;
+  bonusDaysEarned: number; // Total days earned from referrals (3 days per referral)
+  bonusDaysRemaining: number; // Days still available to use
   createdAt: Date;
   updatedAt: Date;
 }
@@ -95,7 +96,8 @@ export const setAffiliateCode = async (
       userId,
       affiliateCode: normalizedCode,
       referralCount: 0,
-      totalEarnings: 0,
+      bonusDaysEarned: 0,
+      bonusDaysRemaining: 0,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     };
@@ -133,7 +135,8 @@ export const getAffiliateData = async (userId: string): Promise<AffiliateData | 
       userId: data.userId,
       affiliateCode: data.affiliateCode,
       referralCount: data.referralCount || 0,
-      totalEarnings: data.totalEarnings || 0,
+      bonusDaysEarned: data.bonusDaysEarned || 0,
+      bonusDaysRemaining: data.bonusDaysRemaining || 0,
       createdAt: data.createdAt?.toDate(),
       updatedAt: data.updatedAt?.toDate()
     } as AffiliateData;
@@ -214,12 +217,38 @@ export const recordAffiliateSignup = async (
       return { success: false, message: 'Cannot use your own affiliate code' };
     }
 
-    // Increment the referral count for the affiliate owner
+    // Grant bonus days to affiliate owner (3 days per referral)
     const affiliateRef = doc(db, AFFILIATES_COLLECTION, validation.userId);
     await updateDoc(affiliateRef, {
       referralCount: increment(1),
+      bonusDaysEarned: increment(3),
+      bonusDaysRemaining: increment(3),
       updatedAt: serverTimestamp()
     });
+
+    // Grant 7 days bonus to the new user who used the code
+    // Create or update their affiliate record to track their bonus days
+    const newUserAffiliateRef = doc(db, AFFILIATES_COLLECTION, newUserId);
+    const newUserAffiliateSnap = await getDoc(newUserAffiliateRef);
+
+    if (newUserAffiliateSnap.exists()) {
+      // User already has affiliate record, just add bonus days
+      await updateDoc(newUserAffiliateRef, {
+        bonusDaysRemaining: increment(7),
+        updatedAt: serverTimestamp()
+      });
+    } else {
+      // Create affiliate record with 7 bonus days (no code set yet)
+      await setDoc(newUserAffiliateRef, {
+        userId: newUserId,
+        affiliateCode: '', // Will be set when user chooses their code
+        referralCount: 0,
+        bonusDaysEarned: 0,
+        bonusDaysRemaining: 7, // 7 days for using someone's code
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+    }
 
     // Mark the new user as having used an affiliate code
     const userRef = doc(db, USERS_COLLECTION, newUserId);
@@ -232,10 +261,12 @@ export const recordAffiliateSignup = async (
     logger.info('Affiliate signup recorded', {
       newUserId,
       affiliateCode,
-      affiliateOwnerId: validation.userId
+      affiliateOwnerId: validation.userId,
+      ownerBonusDays: 3,
+      newUserBonusDays: 7
     });
 
-    return { success: true, message: 'Affiliate bonus applied!' };
+    return { success: true, message: 'Affiliate bonus applied! You received 7 days of free Master Chef plan!' };
   } catch (error) {
     logger.error('Error recording affiliate signup', { error, newUserId, affiliateCode });
     return { success: false, message: 'Failed to apply affiliate code' };
@@ -269,12 +300,37 @@ export const applyAffiliateCode = async (
       return { success: false, message: 'Cannot use your own affiliate code' };
     }
 
-    // Increment the referral count for the affiliate owner
+    // Grant bonus days to affiliate owner (3 days per referral)
     const affiliateRef = doc(db, AFFILIATES_COLLECTION, validation.userId);
     await updateDoc(affiliateRef, {
       referralCount: increment(1),
+      bonusDaysEarned: increment(3),
+      bonusDaysRemaining: increment(3),
       updatedAt: serverTimestamp()
     });
+
+    // Grant 7 days bonus to the user who applied the code
+    const userAffiliateRef = doc(db, AFFILIATES_COLLECTION, userId);
+    const userAffiliateSnap = await getDoc(userAffiliateRef);
+
+    if (userAffiliateSnap.exists()) {
+      // User already has affiliate record, just add bonus days
+      await updateDoc(userAffiliateRef, {
+        bonusDaysRemaining: increment(7),
+        updatedAt: serverTimestamp()
+      });
+    } else {
+      // Create affiliate record with 7 bonus days (no code set yet)
+      await setDoc(userAffiliateRef, {
+        userId,
+        affiliateCode: '', // Will be set when user chooses their code
+        referralCount: 0,
+        bonusDaysEarned: 0,
+        bonusDaysRemaining: 7, // 7 days for using someone's code
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+    }
 
     // Mark the user as having used an affiliate code
     const userRef = doc(db, USERS_COLLECTION, userId);
@@ -284,9 +340,15 @@ export const applyAffiliateCode = async (
       usedAffiliateDate: serverTimestamp()
     });
 
-    logger.info('Affiliate code applied', { userId, affiliateCode });
+    logger.info('Affiliate code applied', {
+      userId,
+      affiliateCode,
+      affiliateOwnerId: validation.userId,
+      ownerBonusDays: 3,
+      userBonusDays: 7
+    });
 
-    return { success: true, message: 'Affiliate code successfully applied!' };
+    return { success: true, message: 'Affiliate code successfully applied! You received 7 days of free Master Chef plan!' };
   } catch (error) {
     logger.error('Error applying affiliate code', { error, userId, affiliateCode });
     return { success: false, message: 'Failed to apply affiliate code' };
