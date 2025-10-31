@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, ArrowRight, CheckCircle, Mail, User } from 'lucide-react';
 import { signUpWithEmail, signInWithGoogle } from '../../lib/firebase';
@@ -11,6 +11,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '../ui/alert';
 import { Separator } from '../ui/separator';
 import { cn } from '../../lib/utils';
+import { recordAffiliateSignup } from '../../lib/affiliateService';
+import { logger } from '../../lib/logger';
 
 // Function to convert Firebase error codes to user-friendly messages for signup
 const getSignUpErrorMessage = (error: unknown): string => {
@@ -92,6 +94,17 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [affiliateCode, setAffiliateCode] = useState<string | null>(null);
+
+  // Extract affiliate code from URL parameter on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    if (ref) {
+      setAffiliateCode(ref);
+      logger.info('Affiliate code detected in signup URL', { code: ref });
+    }
+  }, []);
 
   const passwordRequirements = [
     { test: (p: string) => p.length >= 8, text: 'At least 8 characters' },
@@ -116,7 +129,23 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
       const validatedData = SignUpSchema.parse(formData);
       setLoading(true);
 
-      await signUpWithEmail(validatedData.email, validatedData.password, validatedData.username);
+      const userCredential = await signUpWithEmail(validatedData.email, validatedData.password, validatedData.username);
+
+      // Record affiliate signup if affiliate code is present
+      if (affiliateCode && userCredential.user) {
+        try {
+          const result = await recordAffiliateSignup(userCredential.user.uid, affiliateCode);
+          if (result.success) {
+            logger.info('Affiliate signup recorded successfully', { userId: userCredential.user.uid });
+          } else {
+            logger.warn('Failed to record affiliate signup', { reason: result.message });
+          }
+        } catch (affiliateError) {
+          // Don't block signup if affiliate recording fails
+          logger.error('Error recording affiliate signup', { error: affiliateError });
+        }
+      }
+
       setEmailSent(true);
       // Note: We do NOT call onSignUp() for email signups
       // The user must verify their email first
@@ -143,7 +172,23 @@ export const SignUp: React.FC<SignUpProps> = ({ onSignUp, onSwitchToSignIn }) =>
     try {
       setLoading(true);
       setAuthError('');
-      await signInWithGoogle();
+      const userCredential = await signInWithGoogle();
+
+      // Record affiliate signup if affiliate code is present
+      if (affiliateCode && userCredential.user) {
+        try {
+          const result = await recordAffiliateSignup(userCredential.user.uid, affiliateCode);
+          if (result.success) {
+            logger.info('Affiliate signup recorded successfully via Google', { userId: userCredential.user.uid });
+          } else {
+            logger.warn('Failed to record affiliate signup via Google', { reason: result.message });
+          }
+        } catch (affiliateError) {
+          // Don't block signup if affiliate recording fails
+          logger.error('Error recording affiliate signup via Google', { error: affiliateError });
+        }
+      }
+
       onSignUp();
     } catch (error) {
       const friendlyMessage = getSignUpErrorMessage(error);
