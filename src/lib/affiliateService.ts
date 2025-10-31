@@ -32,45 +32,68 @@ export interface UserAffiliateStatus {
 }
 
 /**
- * Generate a unique affiliate code for a user
+ * Check if an affiliate code is available (not taken by another user)
  */
-export const generateAffiliateCode = (userId: string, email: string): string => {
-  // Create a code from first part of email + last 6 chars of userId
-  // Handle cases where email might be null, undefined, or empty
-  let emailPrefix = '';
+export const isAffiliateCodeAvailable = async (affiliateCode: string): Promise<boolean> => {
+  try {
+    const normalizedCode = affiliateCode.toUpperCase().trim();
 
-  if (email && email.includes('@')) {
-    emailPrefix = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    // Query to find if code is already taken
+    const q = query(
+      collection(db, AFFILIATES_COLLECTION),
+      where('affiliateCode', '==', normalizedCode)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.empty; // True if no one has this code
+  } catch (error) {
+    logger.error('Error checking affiliate code availability', { error, affiliateCode });
+    throw new Error('Failed to check affiliate code availability');
   }
-
-  // If no valid email prefix, use first 6 chars of userId
-  if (!emailPrefix || emailPrefix.length === 0) {
-    emailPrefix = userId.slice(0, 6).toUpperCase();
-  }
-
-  const userSuffix = userId.slice(-6).toUpperCase();
-  return `${emailPrefix.slice(0, 6)}${userSuffix}`;
 };
 
 /**
- * Create affiliate account for a user
+ * Set affiliate code for a user (can only be done once)
  */
-export const createAffiliateAccount = async (userId: string, email: string): Promise<string> => {
+export const setAffiliateCode = async (
+  userId: string,
+  affiliateCode: string
+): Promise<{ success: boolean; message: string }> => {
   try {
-    const affiliateCode = generateAffiliateCode(userId, email);
+    const normalizedCode = affiliateCode.toUpperCase().trim();
 
-    // Check if affiliate code already exists
+    // Validate code format (alphanumeric, 3-20 characters)
+    if (!/^[A-Z0-9]{3,20}$/.test(normalizedCode)) {
+      return {
+        success: false,
+        message: 'Affiliate code must be 3-20 characters long and contain only letters and numbers'
+      };
+    }
+
+    // Check if user already has an affiliate code
     const affiliateRef = doc(db, AFFILIATES_COLLECTION, userId);
     const affiliateSnap = await getDoc(affiliateRef);
 
     if (affiliateSnap.exists()) {
-      return affiliateSnap.data().affiliateCode;
+      return {
+        success: false,
+        message: 'You have already set your affiliate code. It cannot be changed.'
+      };
+    }
+
+    // Check if code is available
+    const isAvailable = await isAffiliateCodeAvailable(normalizedCode);
+    if (!isAvailable) {
+      return {
+        success: false,
+        message: 'This affiliate code is already taken. Please choose a different one.'
+      };
     }
 
     // Create new affiliate record
     const affiliateData = {
       userId,
-      affiliateCode,
+      affiliateCode: normalizedCode,
       referralCount: 0,
       totalEarnings: 0,
       createdAt: serverTimestamp(),
@@ -79,11 +102,17 @@ export const createAffiliateAccount = async (userId: string, email: string): Pro
 
     await setDoc(affiliateRef, affiliateData);
 
-    logger.info('Affiliate account created', { userId, affiliateCode });
-    return affiliateCode;
+    logger.info('Affiliate code set', { userId, affiliateCode: normalizedCode });
+    return {
+      success: true,
+      message: 'Affiliate code successfully set!'
+    };
   } catch (error) {
-    logger.error('Error creating affiliate account', { error, userId });
-    throw new Error('Failed to create affiliate account');
+    logger.error('Error setting affiliate code', { error, userId, affiliateCode });
+    return {
+      success: false,
+      message: 'Failed to set affiliate code. Please try again.'
+    };
   }
 };
 

@@ -43,11 +43,12 @@ import { getUserSettings, updateUserSettings, updateUserProfile, uploadProfilePi
 import { createBackup, getUserBackups, restoreFromBackup, scheduleAutoBackup, deleteBackup } from '../lib/backup';
 import { getUserRecipes } from '../lib/firestore';
 import {
-  createAffiliateAccount,
+  setAffiliateCode,
   getAffiliateData,
   applyAffiliateCode,
   getUserAffiliateStatus,
   generateAffiliateLink,
+  isAffiliateCodeAvailable,
   type AffiliateData,
   type UserAffiliateStatus
 } from '../lib/affiliateService';
@@ -160,6 +161,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const [affiliateData, setAffiliateData] = useState<AffiliateData | null>(null);
   const [affiliateStatus, setAffiliateStatus] = useState<UserAffiliateStatus>({ hasUsedAffiliateCode: false });
   const [loadingAffiliate, setLoadingAffiliate] = useState(false);
+  const [myAffiliateCodeInput, setMyAffiliateCodeInput] = useState('');
+  const [settingAffiliateCode, setSettingAffiliateCode] = useState(false);
   const [affiliateCodeInput, setAffiliateCodeInput] = useState('');
   const [applyingAffiliateCode, setApplyingAffiliateCode] = useState(false);
 
@@ -242,32 +245,21 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     }
   }, [activeSection]);
 
-  // Load affiliate data
+  // Load affiliate data (only fetch existing, don't auto-create)
   const loadAffiliateData = async () => {
     if (!user) {
       logger.warn('Cannot load affiliate data: user is null');
       return;
     }
 
-    if (!user.email) {
-      logger.warn('User email is missing', { userId: user.uid });
-    }
-
     setLoadingAffiliate(true);
     try {
-      // Get or create affiliate account - use email or fallback to userId
-      const email = user.email || '';
-      logger.info('Creating/fetching affiliate account', { userId: user.uid, hasEmail: !!user.email });
-
-      const affiliateCode = await createAffiliateAccount(user.uid, email);
-      logger.info('Affiliate code obtained', { affiliateCode });
-
-      // Get affiliate data
+      // Get affiliate data (will be null if not set yet)
       const data = await getAffiliateData(user.uid);
       logger.info('Affiliate data fetched', { hasData: !!data });
       setAffiliateData(data);
 
-      // Get user's affiliate status
+      // Get user's affiliate status (for using others' codes)
       const status = await getUserAffiliateStatus(user.uid);
       logger.info('Affiliate status fetched', { hasUsedCode: status.hasUsedAffiliateCode });
       setAffiliateStatus(status);
@@ -275,12 +267,36 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       logger.error('Failed to load affiliate data:', {
         error,
         userId: user.uid,
-        hasEmail: !!user.email,
         errorMessage: error instanceof Error ? error.message : String(error)
       });
       showError('Affiliate Error', 'Failed to load affiliate data. Please check the browser console for details.');
     } finally {
       setLoadingAffiliate(false);
+    }
+  };
+
+  // Handle setting user's own affiliate code
+  const handleSetAffiliateCode = async () => {
+    if (!myAffiliateCodeInput.trim()) {
+      showError('Invalid Code', 'Please enter an affiliate code');
+      return;
+    }
+
+    setSettingAffiliateCode(true);
+    try {
+      const result = await setAffiliateCode(user.uid, myAffiliateCodeInput.trim());
+      if (result.success) {
+        showSuccess('Success!', result.message);
+        setMyAffiliateCodeInput('');
+        await loadAffiliateData(); // Reload to show the new code
+      } else {
+        showError('Failed', result.message);
+      }
+    } catch (error) {
+      logger.error('Failed to set affiliate code:', { error });
+      showError('Error', 'Failed to set affiliate code. Please try again.');
+    } finally {
+      setSettingAffiliateCode(false);
     }
   };
 
@@ -1534,8 +1550,50 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center py-8 text-gray-500">
-                        <p>Failed to load affiliate data</p>
+                      <div className="space-y-4">
+                        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg mb-4">
+                          <p className="text-sm text-blue-800 font-semibold">
+                            🎯 Set your unique affiliate code to start earning rewards!
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-700 mb-2">Choose Your Affiliate Code</label>
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <input
+                              type="text"
+                              value={myAffiliateCodeInput}
+                              onChange={(e) => setMyAffiliateCodeInput(e.target.value.toUpperCase())}
+                              placeholder="Enter your code (e.g., JOHN2024)"
+                              className="flex-1 px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-mono text-lg uppercase"
+                              disabled={settingAffiliateCode}
+                              maxLength={20}
+                            />
+                            <button
+                              onClick={handleSetAffiliateCode}
+                              disabled={settingAffiliateCode || !myAffiliateCodeInput.trim()}
+                              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                            >
+                              {settingAffiliateCode ? (
+                                <>
+                                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                  <span>Setting...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Check className="w-5 h-5" />
+                                  <span>Set Code</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                          <p className="text-xs text-gray-600 mt-2">
+                            ⚠️ Choose carefully! Your code can only be set once and cannot be changed later.
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Must be 3-20 characters, letters and numbers only.
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>
