@@ -1421,7 +1421,175 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 </div>
               </div>
             )}
-            
+
+            {/* Affiliate Program Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-white via-purple-50/30 to-pink-50/20 rounded-3xl border-2 border-purple-100 p-6 sm:p-8 shadow-xl">
+              {/* Animated background blobs */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl shadow-lg shadow-purple-500/30">
+                    <Gift className="w-7 h-7 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Affiliate Program</h3>
+                    <p className="text-sm text-gray-600 font-medium mt-1">Earn rewards by sharing Recipe Revamp!</p>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Your Affiliate Code Section */}
+                  <div className="bg-gradient-to-br from-purple-50 to-pink-50/50 border-2 border-purple-200 rounded-2xl p-5 sm:p-6 shadow-lg">
+                    <div className="flex items-start gap-3 mb-4">
+                      <div className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl shadow-md flex-shrink-0">
+                        <Users className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-lg font-black text-gray-900 mb-1">Your Affiliate Link</h4>
+                        <p className="text-sm text-gray-600">Share this link to earn rewards when people sign up!</p>
+                      </div>
+                    </div>
+
+                    {loadingAffiliate ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="w-8 h-8 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+                      </div>
+                    ) : affiliateData ? (
+                      <div className="space-y-4">
+                        {/* Affiliate Code Display */}
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-700 mb-2">Your Affiliate Code</label>
+                          <div className="flex gap-2">
+                            <div className="flex-1 bg-white border-2 border-purple-200 rounded-xl px-4 py-3 font-mono text-lg font-bold text-purple-700">
+                              {affiliateData.affiliateCode}
+                            </div>
+                            <button
+                              onClick={copyAffiliateCode}
+                              className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+                              title="Copy code"
+                            >
+                              <Copy className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Affiliate Link Display */}
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-700 mb-2">Your Affiliate Link</label>
+                          <div className="flex gap-2">
+                            <div className="flex-1 bg-white border-2 border-purple-200 rounded-xl px-4 py-3 text-sm text-gray-700 truncate">
+                              {generateAffiliateLink(affiliateData.affiliateCode)}
+                            </div>
+                            <button
+                              onClick={copyAffiliateLink}
+                              className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 whitespace-nowrap"
+                            >
+                              <LinkIcon className="w-5 h-5" />
+                              <span className="hidden sm:inline font-semibold">Copy Link</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="grid grid-cols-2 gap-3 mt-6">
+                          <div className="bg-white rounded-xl p-4 border border-purple-100 shadow-sm">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-2xl">👥</span>
+                              <span className="text-xs font-semibold text-gray-600">Referrals</span>
+                            </div>
+                            <p className="text-2xl font-black text-purple-700">{affiliateData.referralCount}</p>
+                          </div>
+                          <div className="bg-white rounded-xl p-4 border border-purple-100 shadow-sm">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-2xl">💰</span>
+                              <span className="text-xs font-semibold text-gray-600">Earnings</span>
+                            </div>
+                            <p className="text-2xl font-black text-purple-700">${affiliateData.totalEarnings.toFixed(2)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        <p>Failed to load affiliate data</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Use Affiliate Code Section */}
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-5 sm:p-6 shadow-lg">
+                    <div className="flex items-start gap-3 mb-4">
+                      <div className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl shadow-md flex-shrink-0">
+                        <Gift className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-lg font-black text-gray-900 mb-1">Have an Affiliate Code?</h4>
+                        <p className="text-sm text-gray-600">Enter someone's affiliate code to support them (one-time use)</p>
+                      </div>
+                    </div>
+
+                    {affiliateStatus.hasUsedAffiliateCode ? (
+                      <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
+                        <div className="flex items-start gap-3">
+                          <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm font-bold text-green-900 mb-1">Affiliate Code Applied!</p>
+                            <p className="text-xs text-green-700">
+                              You've already used affiliate code: <span className="font-mono font-bold">{affiliateStatus.usedAffiliateCode}</span>
+                            </p>
+                            {affiliateStatus.usedAffiliateDate && (
+                              <p className="text-xs text-green-600 mt-1">
+                                Applied on {affiliateStatus.usedAffiliateDate.toLocaleDateString()}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <input
+                            type="text"
+                            value={affiliateCodeInput}
+                            onChange={(e) => setAffiliateCodeInput(e.target.value.toUpperCase())}
+                            placeholder="Enter affiliate code"
+                            className="flex-1 px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono uppercase"
+                            disabled={applyingAffiliateCode}
+                          />
+                          <button
+                            onClick={handleApplyAffiliateCode}
+                            disabled={applyingAffiliateCode || !affiliateCodeInput.trim()}
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-br from-blue-500 to-cyan-500 text-white rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                          >
+                            {applyingAffiliateCode ? (
+                              <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                <span>Applying...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Check className="w-5 h-5" />
+                                <span>Apply Code</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <div className="flex items-start gap-2 p-3 bg-blue-50/50 border-l-4 border-blue-400 rounded-lg">
+                          <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                          <p className="text-xs text-blue-800">
+                            You can only use one affiliate code per account. Once applied, it cannot be changed.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Account Management Section */}
             <div className="relative overflow-hidden bg-gradient-to-br from-white via-green-50/30 to-emerald-50/20 rounded-3xl border-2 border-green-200 p-6 sm:p-8 shadow-2xl">
               {/* Animated background blobs */}
@@ -1520,174 +1688,6 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       </div>
                     </div>
                   )}
-
-                  {/* Affiliate Program Section */}
-                  <div className="relative overflow-hidden bg-gradient-to-br from-white via-purple-50/30 to-pink-50/20 rounded-3xl border-2 border-purple-100 p-6 sm:p-8 shadow-xl">
-                    {/* Animated background blobs */}
-                    <div className="absolute inset-0 -z-10">
-                      <div className="absolute top-0 right-0 w-40 h-40 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
-                      <div className="absolute bottom-0 left-0 w-40 h-40 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-                    </div>
-
-                    <div className="relative z-10">
-                      <div className="flex items-center gap-4 mb-6">
-                        <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl shadow-lg shadow-purple-500/30">
-                          <Gift className="w-7 h-7 text-white" strokeWidth={2.5} />
-                        </div>
-                        <div>
-                          <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Affiliate Program</h3>
-                          <p className="text-sm text-gray-600 font-medium mt-1">Earn rewards by sharing Recipe Revamp!</p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-6">
-                        {/* Your Affiliate Code Section */}
-                        <div className="bg-gradient-to-br from-purple-50 to-pink-50/50 border-2 border-purple-200 rounded-2xl p-5 sm:p-6 shadow-lg">
-                          <div className="flex items-start gap-3 mb-4">
-                            <div className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl shadow-md flex-shrink-0">
-                              <Users className="w-5 h-5 text-white" />
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="text-lg font-black text-gray-900 mb-1">Your Affiliate Link</h4>
-                              <p className="text-sm text-gray-600">Share this link to earn rewards when people sign up!</p>
-                            </div>
-                          </div>
-
-                          {loadingAffiliate ? (
-                            <div className="flex items-center justify-center py-8">
-                              <div className="w-8 h-8 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
-                            </div>
-                          ) : affiliateData ? (
-                            <div className="space-y-4">
-                              {/* Affiliate Code Display */}
-                              <div>
-                                <label className="block text-xs font-semibold text-gray-700 mb-2">Your Affiliate Code</label>
-                                <div className="flex gap-2">
-                                  <div className="flex-1 bg-white border-2 border-purple-200 rounded-xl px-4 py-3 font-mono text-lg font-bold text-purple-700">
-                                    {affiliateData.affiliateCode}
-                                  </div>
-                                  <button
-                                    onClick={copyAffiliateCode}
-                                    className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
-                                    title="Copy code"
-                                  >
-                                    <Copy className="w-5 h-5" />
-                                  </button>
-                                </div>
-                              </div>
-
-                              {/* Affiliate Link Display */}
-                              <div>
-                                <label className="block text-xs font-semibold text-gray-700 mb-2">Your Affiliate Link</label>
-                                <div className="flex gap-2">
-                                  <div className="flex-1 bg-white border-2 border-purple-200 rounded-xl px-4 py-3 text-sm text-gray-700 truncate">
-                                    {generateAffiliateLink(affiliateData.affiliateCode)}
-                                  </div>
-                                  <button
-                                    onClick={copyAffiliateLink}
-                                    className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 whitespace-nowrap"
-                                  >
-                                    <LinkIcon className="w-5 h-5" />
-                                    <span className="hidden sm:inline font-semibold">Copy Link</span>
-                                  </button>
-                                </div>
-                              </div>
-
-                              {/* Stats */}
-                              <div className="grid grid-cols-2 gap-3 mt-6">
-                                <div className="bg-white rounded-xl p-4 border border-purple-100 shadow-sm">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-2xl">👥</span>
-                                    <span className="text-xs font-semibold text-gray-600">Referrals</span>
-                                  </div>
-                                  <p className="text-2xl font-black text-purple-700">{affiliateData.referralCount}</p>
-                                </div>
-                                <div className="bg-white rounded-xl p-4 border border-purple-100 shadow-sm">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-2xl">💰</span>
-                                    <span className="text-xs font-semibold text-gray-600">Earnings</span>
-                                  </div>
-                                  <p className="text-2xl font-black text-purple-700">${affiliateData.totalEarnings.toFixed(2)}</p>
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="text-center py-8 text-gray-500">
-                              <p>Failed to load affiliate data</p>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Use Affiliate Code Section */}
-                        <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-5 sm:p-6 shadow-lg">
-                          <div className="flex items-start gap-3 mb-4">
-                            <div className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl shadow-md flex-shrink-0">
-                              <Gift className="w-5 h-5 text-white" />
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="text-lg font-black text-gray-900 mb-1">Have an Affiliate Code?</h4>
-                              <p className="text-sm text-gray-600">Enter someone's affiliate code to support them (one-time use)</p>
-                            </div>
-                          </div>
-
-                          {affiliateStatus.hasUsedAffiliateCode ? (
-                            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
-                              <div className="flex items-start gap-3">
-                                <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                                <div>
-                                  <p className="text-sm font-bold text-green-900 mb-1">Affiliate Code Applied!</p>
-                                  <p className="text-xs text-green-700">
-                                    You've already used affiliate code: <span className="font-mono font-bold">{affiliateStatus.usedAffiliateCode}</span>
-                                  </p>
-                                  {affiliateStatus.usedAffiliateDate && (
-                                    <p className="text-xs text-green-600 mt-1">
-                                      Applied on {affiliateStatus.usedAffiliateDate.toLocaleDateString()}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="space-y-3">
-                              <div className="flex flex-col sm:flex-row gap-2">
-                                <input
-                                  type="text"
-                                  value={affiliateCodeInput}
-                                  onChange={(e) => setAffiliateCodeInput(e.target.value.toUpperCase())}
-                                  placeholder="Enter affiliate code"
-                                  className="flex-1 px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono uppercase"
-                                  disabled={applyingAffiliateCode}
-                                />
-                                <button
-                                  onClick={handleApplyAffiliateCode}
-                                  disabled={applyingAffiliateCode || !affiliateCodeInput.trim()}
-                                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-br from-blue-500 to-cyan-500 text-white rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                                >
-                                  {applyingAffiliateCode ? (
-                                    <>
-                                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                      <span>Applying...</span>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Check className="w-5 h-5" />
-                                      <span>Apply Code</span>
-                                    </>
-                                  )}
-                                </button>
-                              </div>
-                              <div className="flex items-start gap-2 p-3 bg-blue-50/50 border-l-4 border-blue-400 rounded-lg">
-                                <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                                <p className="text-xs text-blue-800">
-                                  You can only use one affiliate code per account. Once applied, it cannot be changed.
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Delete Account Section */}
                   <div className="group bg-gradient-to-br from-red-50 to-rose-50/50 border-2 border-red-300 rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
