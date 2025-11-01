@@ -85,7 +85,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
         </div>
         <div className="hidden sm:flex items-center gap-2">
           {/* Plan Badge - Hidden on mobile, shown on larger screens */}
-          <div className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-all duration-200 ${
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-all duration-200 ${
             loading ? 'bg-gray-100 text-gray-400 border-gray-200' :
             !userSubscription || userSubscription.plan === 'free' ? 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 border-gray-300' :
             userSubscription.plan === 'chef' ? 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 border-blue-300' :
@@ -93,9 +93,10 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
             userSubscription.plan === 'enterprise' ? 'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 border-purple-300' :
             'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 border-gray-300'
           }`}>
+            {isAdmin && <Shield className="w-3 h-3 text-red-600" />}
             {loading ? 'Loading...' :
              userSubscription ?
-               (isAdmin ? `Admin • ${PLAN_COLORS[userSubscription.plan].name}` : PLAN_COLORS[userSubscription.plan].name) :
+               PLAN_COLORS[userSubscription.plan].name :
                'Free'
             }
           </div>
