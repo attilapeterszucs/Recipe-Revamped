@@ -162,6 +162,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                   userSubscription.plan === 'enterprise' ? 'bg-purple-50 text-purple-700 border-purple-200' :
                   'bg-white/90 text-gray-700 border-white/50'
                 }`}>
+                  {isAdmin && <Shield className="w-3 h-3 text-red-600" />}
                   {loading ? 'Loading...' :
                    userSubscription ?
                      PLAN_COLORS[userSubscription.plan].name :
