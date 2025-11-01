@@ -1246,10 +1246,14 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               </div>
 
               <div className="relative z-10">
-                <div className="inline-flex items-center justify-center w-14 h-14 mb-4 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-lg shadow-green-500/30">
-                  <UserIcon className="w-7 h-7 text-white" strokeWidth={2.5} />
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-lg shadow-green-500/30">
+                    <UserIcon className="w-7 h-7 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Account Settings</h3>
+                  </div>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-3">Account Settings</h3>
                 <p className="text-gray-700 leading-relaxed font-medium text-base">
                   Manage your profile, security settings, and account preferences. Keep your information up-to-date and secure.
                 </p>
