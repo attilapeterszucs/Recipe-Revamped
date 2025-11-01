@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { type User } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, User as UserIcon, Settings, LogOut, Crown, Shield, Gift, Palette, Bell } from 'lucide-react';
+import { ChevronDown, User as UserIcon, Settings, LogOut, Crown, Shield, Gift, Palette, Bell, UserCog } from 'lucide-react';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
 import { getUserInitials } from '../utils/profileUtils';
 
@@ -197,6 +197,22 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
 
             {/* Quick Links */}
             <div className="px-2 py-1">
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    navigate('/app/settings/admin-panel');
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-red-50 transition-all duration-200 rounded-lg group"
+                >
+                  <div className="bg-red-100 p-1.5 rounded-lg mr-3 group-hover:bg-red-200 transition-colors">
+                    <UserCog className="w-4 h-4 text-red-600" />
+                  </div>
+                  <span className="flex-1 text-left">Admin Panel</span>
+                  <ChevronDown className="w-3.5 h-3.5 -rotate-90 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+              )}
+
               <button
                 onClick={() => {
                   navigate('/app/settings/affiliate');
