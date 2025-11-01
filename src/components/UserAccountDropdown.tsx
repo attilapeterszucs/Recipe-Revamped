@@ -229,7 +229,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
 
               <button
                 onClick={() => {
-                  navigate('/app/settings/account');
+                  navigate('/app/settings/personal');
                   setIsOpen(false);
                 }}
                 className="flex items-center w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-green-50 transition-all duration-200 rounded-lg group"
@@ -237,7 +237,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                 <div className="bg-green-100 p-1.5 rounded-lg mr-3 group-hover:bg-green-200 transition-colors">
                   <UserIcon className="w-4 h-4 text-green-600" />
                 </div>
-                <span className="flex-1 text-left">Account Settings</span>
+                <span className="flex-1 text-left">Personal Profile & Goals</span>
                 <ChevronDown className="w-3.5 h-3.5 -rotate-90 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>
 
