@@ -27,6 +27,7 @@ export function SettingsPage() {
   const sectionMapping: Record<string, string> = {
     'account': 'profile',
     'personal': 'personal',
+    'affiliate': 'affiliate',
     'recipe-settings': 'recipe-settings',
     'dietary-filters': 'preferences',
     'health': 'health',
@@ -58,6 +59,7 @@ export function SettingsPage() {
     const urlMapping: Record<string, string> = {
       'profile': 'account',
       'personal': 'personal',
+      'affiliate': 'affiliate',
       'recipe-settings': 'recipe-settings',
       'preferences': 'dietary-filters',
       'health': 'health',
