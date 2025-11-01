@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { type User } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, User as UserIcon, Settings, LogOut, Crown, Shield, Gift, Palette, Bell, UserCog, Heart } from 'lucide-react';
+import { ChevronDown, User as UserIcon, Settings, LogOut, Crown, Shield, Gift, Palette, UserCog, Heart } from 'lucide-react';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
 import { getUserInitials } from '../utils/profileUtils';
 
@@ -266,20 +266,6 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                   <Heart className="w-4 h-4 text-rose-600" />
                 </div>
                 <span className="flex-1 text-left">Health Conditions</span>
-                <ChevronDown className="w-3.5 h-3.5 -rotate-90 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </button>
-
-              <button
-                onClick={() => {
-                  navigate('/app/settings/notifications');
-                  setIsOpen(false);
-                }}
-                className="flex items-center w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-blue-50 transition-all duration-200 rounded-lg group"
-              >
-                <div className="bg-blue-100 p-1.5 rounded-lg mr-3 group-hover:bg-blue-200 transition-colors">
-                  <Bell className="w-4 h-4 text-blue-600" />
-                </div>
-                <span className="flex-1 text-left">Notifications</span>
                 <ChevronDown className="w-3.5 h-3.5 -rotate-90 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>
             </div>
