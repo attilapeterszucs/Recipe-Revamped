@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { type User } from 'firebase/auth';
-import { ChevronDown, User as UserIcon, Settings, LogOut, Crown, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronDown, User as UserIcon, Settings, LogOut, Crown, Shield, Gift, Palette, Bell } from 'lucide-react';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
 import { getUserInitials } from '../utils/profileUtils';
 
@@ -31,6 +32,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [profileImageError, setProfileImageError] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Use the cleaner subscription status hook
   const { subscription: userSubscription, isAdmin, loading, hasPermissions, refresh } = useSubscriptionStatus(
@@ -137,9 +139,17 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-base font-black text-white truncate drop-shadow-sm">
-                  {user.displayName || 'User'}
-                </p>
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-base font-black text-white truncate drop-shadow-sm">
+                    {user.displayName || 'User'}
+                  </p>
+                  {isAdmin && (
+                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-500 border border-red-400 shadow-lg flex-shrink-0">
+                      <Shield className="w-3 h-3 text-white" />
+                      <span className="text-xs font-bold text-white">Admin</span>
+                    </div>
+                  )}
+                </div>
                 <p className="text-xs text-green-50 truncate font-semibold">
                   {user.email}
                 </p>
@@ -152,10 +162,9 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                   userSubscription.plan === 'enterprise' ? 'bg-purple-50 text-purple-700 border-purple-200' :
                   'bg-white/90 text-gray-700 border-white/50'
                 }`}>
-                  {userSubscription?.plan === 'master-chef' && <Crown className="w-3 h-3" />}
                   {loading ? 'Loading...' :
                    userSubscription ?
-                     (isAdmin ? `Admin • ${PLAN_COLORS[userSubscription.plan].name}` : PLAN_COLORS[userSubscription.plan].name) :
+                     PLAN_COLORS[userSubscription.plan].name :
                      'Free Plan'
                   }
                 </div>
@@ -165,7 +174,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
 
           {/* Menu Items */}
           <div className="py-2">
-            {!isAdmin ? (
+            {!isAdmin && (
               <button
                 data-upgrade-plan
                 onClick={() => {
@@ -184,17 +193,69 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                 </span>
                 <ChevronDown className="w-4 h-4 -rotate-90" />
               </button>
-            ) : (
-              <div className="flex items-center w-full px-5 py-3.5 text-sm bg-red-50 border-b border-red-100">
-                <div className="bg-red-500 p-1.5 rounded-lg mr-3">
-                  <Shield className="w-4 h-4 text-white" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-left font-bold text-red-900">Admin Access</div>
-                  <div className="text-xs text-red-600 font-medium">Manage plans in Settings</div>
-                </div>
-              </div>
             )}
+
+            {/* Quick Links */}
+            <div className="px-2 py-1">
+              <button
+                onClick={() => {
+                  navigate('/app/settings/affiliate');
+                  setIsOpen(false);
+                }}
+                className="flex items-center w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-purple-50 transition-all duration-200 rounded-lg group"
+              >
+                <div className="bg-purple-100 p-1.5 rounded-lg mr-3 group-hover:bg-purple-200 transition-colors">
+                  <Gift className="w-4 h-4 text-purple-600" />
+                </div>
+                <span className="flex-1 text-left">Affiliate Program</span>
+                <ChevronDown className="w-3.5 h-3.5 -rotate-90 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate('/app/settings/account');
+                  setIsOpen(false);
+                }}
+                className="flex items-center w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-green-50 transition-all duration-200 rounded-lg group"
+              >
+                <div className="bg-green-100 p-1.5 rounded-lg mr-3 group-hover:bg-green-200 transition-colors">
+                  <UserIcon className="w-4 h-4 text-green-600" />
+                </div>
+                <span className="flex-1 text-left">Account Settings</span>
+                <ChevronDown className="w-3.5 h-3.5 -rotate-90 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate('/app/settings/dietary-filters');
+                  setIsOpen(false);
+                }}
+                className="flex items-center w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-pink-50 transition-all duration-200 rounded-lg group"
+              >
+                <div className="bg-pink-100 p-1.5 rounded-lg mr-3 group-hover:bg-pink-200 transition-colors">
+                  <Palette className="w-4 h-4 text-pink-600" />
+                </div>
+                <span className="flex-1 text-left">Dietary Filters</span>
+                <ChevronDown className="w-3.5 h-3.5 -rotate-90 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate('/app/settings/notifications');
+                  setIsOpen(false);
+                }}
+                className="flex items-center w-full px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-blue-50 transition-all duration-200 rounded-lg group"
+              >
+                <div className="bg-blue-100 p-1.5 rounded-lg mr-3 group-hover:bg-blue-200 transition-colors">
+                  <Bell className="w-4 h-4 text-blue-600" />
+                </div>
+                <span className="flex-1 text-left">Notifications</span>
+                <ChevronDown className="w-3.5 h-3.5 -rotate-90 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+            </div>
+
+            {/* Horizontal Divider */}
+            <div className="border-t-2 border-gray-100 my-2"></div>
 
             <button
               onClick={() => {
@@ -206,7 +267,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
               <div className="bg-gray-100 p-1.5 rounded-lg mr-3 group-hover:bg-gray-200 transition-colors">
                 <Settings className="w-4 h-4 text-gray-600 group-hover:rotate-90 transition-all duration-200" />
               </div>
-              <span className="flex-1 text-left">Settings</span>
+              <span className="flex-1 text-left">All Settings</span>
               <ChevronDown className="w-4 h-4 -rotate-90 opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>
 

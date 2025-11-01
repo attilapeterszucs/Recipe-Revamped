@@ -3992,7 +3992,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         )}
                         <div className={`flex items-center justify-center w-7 h-7 rounded-lg mr-2 transition-all duration-300 ${
                           isActive
-                            ? 'bg-white/20'
+                            ? 'bg-white/20 border-2 border-white'
                             : 'bg-green-50 group-hover:bg-green-100 border border-green-200'
                         }`}>
                           <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-green-600'}`} />
@@ -4075,7 +4075,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       )}
                       <div className={`flex items-center justify-center w-9 h-9 rounded-xl mr-3 transition-all duration-300 ${
                         isActive
-                          ? 'bg-white/20'
+                          ? 'bg-white/20 border-2 border-white'
                           : 'bg-green-50 group-hover:bg-green-100 border border-green-200'
                       }`}>
                         <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-green-600'}`} />
