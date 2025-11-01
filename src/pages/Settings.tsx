@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { type User, updateProfile, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, signOut, getAuth } from 'firebase/auth';
 import { doc, onSnapshot, updateDoc, deleteDoc, collection, query, where, getDocs, writeBatch } from 'firebase/firestore';
@@ -166,6 +166,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   const [affiliateCodeInput, setAffiliateCodeInput] = useState('');
   const [applyingAffiliateCode, setApplyingAffiliateCode] = useState(false);
 
+  // Refs for debouncing affiliate data loads
+  const affiliateLoadTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isLoadingAffiliateRef = useRef(false);
+
   // Lock body scroll when delete account modal is open
   useBodyScrollLock(showDeleteAccountModal);
   
@@ -177,6 +181,73 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
   
   // Get subscription refresh trigger for global refreshes
   const { refreshTrigger } = useSubscriptionRefresh();
+
+  // Load affiliate data with debouncing to prevent flickering (only fetch existing, don't auto-create)
+  const loadAffiliateData = useCallback(async () => {
+    if (!user) {
+      logger.warn('Cannot load affiliate data: user is null');
+      return;
+    }
+
+    // Clear any pending timer
+    if (affiliateLoadTimerRef.current) {
+      clearTimeout(affiliateLoadTimerRef.current);
+      affiliateLoadTimerRef.current = null;
+    }
+
+    // If already loading, don't start another load
+    if (isLoadingAffiliateRef.current) {
+      logger.info('Affiliate data load already in progress - skipping duplicate call');
+      return;
+    }
+
+    isLoadingAffiliateRef.current = true;
+    setLoadingAffiliate(true);
+
+    try {
+      // Get affiliate data (will be null if not set yet)
+      const data = await getAffiliateData(user.uid);
+      logger.info('Affiliate data loaded in Settings component', {
+        hasData: !!data,
+        hasCode: data?.affiliateCode ? true : false,
+        codeValue: data?.affiliateCode || '(none)',
+        referrals: data?.referralCount || 0,
+        bonusDays: data?.bonusDaysRemaining || 0
+      });
+      setAffiliateData(data);
+
+      // Get user's affiliate status (for using others' codes)
+      const status = await getUserAffiliateStatus(user.uid);
+      logger.info('Affiliate status loaded', {
+        hasUsedCode: status.hasUsedAffiliateCode,
+        usedCode: status.usedAffiliateCode || '(none)'
+      });
+      setAffiliateStatus(status);
+    } catch (error) {
+      logger.error('Failed to load affiliate data:', {
+        error,
+        userId: user.uid,
+        errorMessage: error instanceof Error ? error.message : String(error)
+      });
+      showError('Affiliate Error', 'Failed to load affiliate data. Please check the browser console for details.');
+    } finally {
+      setLoadingAffiliate(false);
+      isLoadingAffiliateRef.current = false;
+    }
+  }, [user, showError]);
+
+  // Debounced version for real-time listeners to prevent rapid re-renders
+  const loadAffiliateDataDebounced = useCallback(() => {
+    // Clear existing timer
+    if (affiliateLoadTimerRef.current) {
+      clearTimeout(affiliateLoadTimerRef.current);
+    }
+
+    // Set new timer - wait 300ms before loading
+    affiliateLoadTimerRef.current = setTimeout(() => {
+      loadAffiliateData();
+    }, 300);
+  }, [loadAffiliateData]);
 
   useEffect(() => {
     loadUserSettings();
@@ -213,14 +284,14 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       try {
         const affiliateDocRef = doc(db, 'affiliates', user.uid);
         const unsubscribe = onSnapshot(affiliateDocRef, (docSnapshot) => {
-          logger.info('Affiliate data changed in Firestore - reloading', {
+          logger.info('Affiliate data changed in Firestore - scheduling reload', {
             exists: docSnapshot.exists(),
             userId: user.uid,
             hasCode: docSnapshot.data()?.affiliateCode || '(none)',
             bonusDays: docSnapshot.data()?.bonusDaysRemaining || 0
           });
-          // Reload affiliate data when it changes in Firestore
-          loadAffiliateData();
+          // Use debounced version to prevent rapid re-renders
+          loadAffiliateDataDebounced();
         });
 
         return unsubscribe;
@@ -237,12 +308,12 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
           if (docSnapshot.exists()) {
             const data = docSnapshot.data();
-            logger.info('User affiliate status changed - reloading', {
+            logger.info('User affiliate status changed - scheduling reload', {
               hasUsedCode: data.hasUsedAffiliateCode || false,
               usedCode: data.usedAffiliateCode || '(none)'
             });
-            // Reload affiliate status when it changes
-            loadAffiliateData();
+            // Use debounced version to prevent rapid re-renders
+            loadAffiliateDataDebounced();
           }
         });
 
@@ -275,8 +346,12 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       if (unsubscribeUserAffiliateListener) {
         unsubscribeUserAffiliateListener();
       }
+      // Clear any pending debounce timer
+      if (affiliateLoadTimerRef.current) {
+        clearTimeout(affiliateLoadTimerRef.current);
+      }
     };
-  }, [user.uid]);
+  }, [user.uid, loadAffiliateData, loadAffiliateDataDebounced]);
 
   // Refresh admin status when global subscription refresh is triggered
   useEffect(() => {
@@ -307,46 +382,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     if (activeSection === 'account') {
       loadAffiliateData();
     }
-  }, [activeSection]);
-
-  // Load affiliate data (only fetch existing, don't auto-create)
-  const loadAffiliateData = async () => {
-    if (!user) {
-      logger.warn('Cannot load affiliate data: user is null');
-      return;
-    }
-
-    setLoadingAffiliate(true);
-    try {
-      // Get affiliate data (will be null if not set yet)
-      const data = await getAffiliateData(user.uid);
-      logger.info('Affiliate data loaded in Settings component', {
-        hasData: !!data,
-        hasCode: data?.affiliateCode ? true : false,
-        codeValue: data?.affiliateCode || '(none)',
-        referrals: data?.referralCount || 0,
-        bonusDays: data?.bonusDaysRemaining || 0
-      });
-      setAffiliateData(data);
-
-      // Get user's affiliate status (for using others' codes)
-      const status = await getUserAffiliateStatus(user.uid);
-      logger.info('Affiliate status loaded', {
-        hasUsedCode: status.hasUsedAffiliateCode,
-        usedCode: status.usedAffiliateCode || '(none)'
-      });
-      setAffiliateStatus(status);
-    } catch (error) {
-      logger.error('Failed to load affiliate data:', {
-        error,
-        userId: user.uid,
-        errorMessage: error instanceof Error ? error.message : String(error)
-      });
-      showError('Affiliate Error', 'Failed to load affiliate data. Please check the browser console for details.');
-    } finally {
-      setLoadingAffiliate(false);
-    }
-  };
+  }, [activeSection, loadAffiliateData]);
 
   // Handle setting user's own affiliate code
   const handleSetAffiliateCode = async () => {
@@ -406,8 +442,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
         showSuccess('Affiliate Code Applied!', 'You received 7 days of free Master Chef plan!');
         setAffiliateCodeInput('');
 
-        // Reload affiliate status to show it's been used
-        await loadAffiliateData();
+        // Real-time listeners will automatically reload affiliate data
+        // No need to manually call loadAffiliateData() - it causes flickering
 
         // Refresh subscription to activate bonus days immediately
         if (refreshSubscriptionStatus) {
@@ -1762,7 +1798,23 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                     </div>
 
                     {affiliateStatus.hasUsedAffiliateCode ? (
-                      <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
+                      <div
+                        key="affiliate-applied"
+                        className="bg-green-50 border-2 border-green-200 rounded-xl p-4 animate-[fadeIn_0.5s_ease-in-out]"
+                        style={{ animation: 'fadeIn 0.5s ease-in-out' }}
+                      >
+                        <style>{`
+                          @keyframes fadeIn {
+                            from {
+                              opacity: 0;
+                              transform: translateY(-10px);
+                            }
+                            to {
+                              opacity: 1;
+                              transform: translateY(0);
+                            }
+                          }
+                        `}</style>
                         <div className="flex items-start gap-3">
                           <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
                           <div>
@@ -1779,7 +1831,11 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                         </div>
                       </div>
                     ) : (
-                      <div className="space-y-3">
+                      <div
+                        key="affiliate-input"
+                        className="space-y-3 animate-[fadeIn_0.5s_ease-in-out]"
+                        style={{ animation: 'fadeIn 0.5s ease-in-out' }}
+                      >
                         <div className="flex flex-col sm:flex-row gap-2">
                           <input
                             type="text"
@@ -1876,115 +1932,40 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                           )}
                         </div>
 
-                        <p className="text-sm text-gray-600 leading-relaxed">
+                        <p className="text-sm text-gray-600 leading-relaxed mb-4">
                           {featureAccess?.currentPlan === 'free'
                             ? 'Enjoy basic features with our free plan. Upgrade anytime to unlock premium features!'
                             : `You're enjoying all the benefits of the ${featureAccess?.currentPlan?.replace('-', ' ')} plan.`}
                         </p>
+
+                        {/* Cancel Subscription Button - Only show if user has an active subscription and section not hidden */}
+                        {featureAccess?.currentPlan &&
+                         featureAccess.currentPlan !== 'free' &&
+                         subscription?.status === 'active' &&
+                         !cancelSectionHidden && (
+                          <div className="pt-3 border-t border-gray-200">
+                            <CancelSubscriptionButton
+                              className="w-full sm:w-auto"
+                              onCancellationComplete={() => {
+                                setCancelSectionHidden(true);
+                                refreshSubscriptionStatus();
+                              }}
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  {/* Cancel Plan Button - Only show if user has an active subscription and section not hidden */}
-                  {featureAccess?.currentPlan &&
-                   featureAccess.currentPlan !== 'free' &&
-                   subscription?.status === 'active' &&
-                   !cancelSectionHidden && (
-                    <div className="group bg-gradient-to-br from-yellow-50 to-amber-50/50 border-2 border-yellow-300 rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
-                      {/* Decorative gradient overlay */}
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-200/30 to-amber-200/30 rounded-full blur-2xl -mr-16 -mt-16"></div>
-
-                      <div className="flex flex-col sm:flex-row sm:items-start gap-4 relative">
-                        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-xl shadow-md flex-shrink-0 ring-2 ring-yellow-200 group-hover:ring-yellow-300 transition-all duration-300">
-                          <AlertTriangle className="w-6 h-6 text-yellow-600" />
-                        </div>
-                        <div className="flex-1">
-                          <h5 className="text-lg font-black text-yellow-900 mb-2 flex items-center gap-2">
-                            Cancel Subscription
-                          </h5>
-                          <div className="space-y-3 mb-4">
-                            <p className="text-sm text-yellow-800 leading-relaxed font-medium">
-                              Downgrade from your <span className="font-bold capitalize">{featureAccess.currentPlan.replace('-', ' ')}</span> plan to the free tier.
-                            </p>
-                            <div className="bg-yellow-100/50 border-l-4 border-yellow-500 p-3 rounded-lg">
-                              <p className="text-xs text-yellow-900 font-semibold">What happens when you cancel:</p>
-                              <ul className="mt-2 space-y-1 text-xs text-yellow-800">
-                                <li className="flex items-start gap-2">
-                                  <span className="text-yellow-600 mt-0.5">•</span>
-                                  <span>You'll keep premium features until your billing period ends</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <span className="text-yellow-600 mt-0.5">•</span>
-                                  <span>No charges after cancellation</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <span className="text-yellow-600 mt-0.5">•</span>
-                                  <span>You can reactivate your subscription anytime</span>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                          <CancelSubscriptionButton
-                            className="w-full sm:w-auto"
-                            onCancellationComplete={() => {
-                              setCancelSectionHidden(true);
-                              refreshSubscriptionStatus();
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Delete Account Section */}
-                  <div className="group bg-gradient-to-br from-red-50 to-rose-50/50 border-2 border-red-300 rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
-                    {/* Decorative gradient overlay */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-200/30 to-rose-200/30 rounded-full blur-2xl -mr-16 -mt-16"></div>
-
-                    <div className="flex flex-col sm:flex-row sm:items-start gap-4 relative">
-                      <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-red-100 to-rose-100 rounded-xl shadow-md flex-shrink-0 ring-2 ring-red-200 group-hover:ring-red-300 transition-all duration-300">
-                        <UserX className="w-6 h-6 text-red-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h5 className="text-lg font-black text-red-900 mb-2 flex items-center gap-2">
-                          Danger Zone
-                          <span className="inline-flex px-2 py-0.5 bg-red-200 text-red-800 rounded text-xs font-bold">PERMANENT</span>
-                        </h5>
-                        <div className="space-y-3 mb-4">
-                          <p className="text-sm text-red-800 leading-relaxed font-medium">
-                            Permanently delete your account and all associated data.
-                          </p>
-                          <div className="bg-red-100/50 border-l-4 border-red-500 p-3 rounded-lg">
-                            <p className="text-xs text-red-900 font-semibold mb-2">⚠️ This action is irreversible and will:</p>
-                            <ul className="space-y-1 text-xs text-red-800">
-                              <li className="flex items-start gap-2">
-                                <span className="text-red-600 mt-0.5">•</span>
-                                <span>Delete all your saved recipes permanently</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-red-600 mt-0.5">•</span>
-                                <span>Cancel any active subscriptions immediately</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-red-600 mt-0.5">•</span>
-                                <span>Remove all personal data and preferences</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-red-600 mt-0.5">•</span>
-                                <span className="font-bold">Cannot be undone or recovered</span>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => setShowDeleteAccountModal(true)}
-                          className="group/btn w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 transition-all duration-300 font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/50 hover:scale-105 touch-friendly min-h-[44px]"
-                        >
-                          <UserX className="w-5 h-5 group-hover/btn:animate-pulse" />
-                          <span>Delete My Account</span>
-                        </button>
-                      </div>
-                    </div>
+                  {/* Delete Account Button - Bottom Right */}
+                  <div className="flex justify-end pt-2">
+                    <button
+                      onClick={() => setShowDeleteAccountModal(true)}
+                      className="group inline-flex items-center gap-2 px-4 py-2 text-red-600 font-semibold text-sm rounded-lg border-2 border-transparent hover:border-red-500 hover:bg-red-50 transition-all duration-300 hover:scale-105"
+                    >
+                      <UserX className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
+                      <span>Delete My Account</span>
+                    </button>
                   </div>
                 </div>
               </div>

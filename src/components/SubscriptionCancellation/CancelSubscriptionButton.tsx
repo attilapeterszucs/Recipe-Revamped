@@ -42,10 +42,10 @@ export const CancelSubscriptionButton: React.FC<CancelSubscriptionButtonProps> =
     <>
       <button
         onClick={() => setShowModal(true)}
-        className={`flex items-center justify-center px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-colors ${className}`}
+        className={`group inline-flex items-center gap-2 px-4 py-2 text-yellow-600 font-semibold text-sm rounded-lg border-2 border-transparent hover:border-yellow-500 hover:bg-yellow-50 transition-all duration-300 hover:scale-105 ${className}`}
       >
-        <AlertTriangle className="w-4 h-4 mr-2" />
-        Cancel Subscription
+        <AlertTriangle className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
+        <span>Cancel Subscription</span>
       </button>
       <CancelSubscriptionModal
         isOpen={showModal}
