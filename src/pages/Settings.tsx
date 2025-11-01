@@ -183,6 +183,11 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     loadRecipeCount();
     initializeAdminSystemIfNeeded();
 
+    // ALWAYS load affiliate data on mount (every login/refresh)
+    // This ensures the user's affiliate code is displayed correctly
+    logger.info('Settings page mounted - loading affiliate data', { userId: user.uid });
+    loadAffiliateData();
+
     // Set up real-time listener for user settings changes
     const setupSettingsListener = async () => {
       try {
@@ -203,15 +208,72 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       }
     };
 
+    // Set up real-time listener for affiliate data changes
+    const setupAffiliateListener = () => {
+      try {
+        const affiliateDocRef = doc(db, 'affiliates', user.uid);
+        const unsubscribe = onSnapshot(affiliateDocRef, (docSnapshot) => {
+          logger.info('Affiliate data changed in Firestore - reloading', {
+            exists: docSnapshot.exists(),
+            userId: user.uid,
+            hasCode: docSnapshot.data()?.affiliateCode || '(none)',
+            bonusDays: docSnapshot.data()?.bonusDaysRemaining || 0
+          });
+          // Reload affiliate data when it changes in Firestore
+          loadAffiliateData();
+        });
+
+        return unsubscribe;
+      } catch (error) {
+        logger.error('Error setting up affiliate listener:', { error });
+        return undefined;
+      }
+    };
+
+    // Set up real-time listener for user document (tracks affiliate code usage)
+    const setupUserAffiliateListener = () => {
+      try {
+        const userDocRef = doc(db, 'users', user.uid);
+        const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const data = docSnapshot.data();
+            logger.info('User affiliate status changed - reloading', {
+              hasUsedCode: data.hasUsedAffiliateCode || false,
+              usedCode: data.usedAffiliateCode || '(none)'
+            });
+            // Reload affiliate status when it changes
+            loadAffiliateData();
+          }
+        });
+
+        return unsubscribe;
+      } catch (error) {
+        logger.error('Error setting up user affiliate listener:', { error });
+        return undefined;
+      }
+    };
+
     let unsubscribeListener: (() => void) | undefined;
+    let unsubscribeAffiliateListener: (() => void) | undefined;
+    let unsubscribeUserAffiliateListener: (() => void) | undefined;
+
     setupSettingsListener().then((unsubscribe) => {
       unsubscribeListener = unsubscribe;
     });
 
-    // Cleanup listener on unmount
+    unsubscribeAffiliateListener = setupAffiliateListener();
+    unsubscribeUserAffiliateListener = setupUserAffiliateListener();
+
+    // Cleanup listeners on unmount
     return () => {
       if (unsubscribeListener) {
         unsubscribeListener();
+      }
+      if (unsubscribeAffiliateListener) {
+        unsubscribeAffiliateListener();
+      }
+      if (unsubscribeUserAffiliateListener) {
+        unsubscribeUserAffiliateListener();
       }
     };
   }, [user.uid]);
@@ -240,6 +302,8 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     if (activeSection === 'data' && featureAccess?.canBackupRestore) {
       loadBackups();
     }
+    // Load affiliate data when switching to account section
+    // (initial load is handled in the mount effect above)
     if (activeSection === 'account') {
       loadAffiliateData();
     }
@@ -256,12 +320,21 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     try {
       // Get affiliate data (will be null if not set yet)
       const data = await getAffiliateData(user.uid);
-      logger.info('Affiliate data fetched', { hasData: !!data });
+      logger.info('Affiliate data loaded in Settings component', {
+        hasData: !!data,
+        hasCode: data?.affiliateCode ? true : false,
+        codeValue: data?.affiliateCode || '(none)',
+        referrals: data?.referralCount || 0,
+        bonusDays: data?.bonusDaysRemaining || 0
+      });
       setAffiliateData(data);
 
       // Get user's affiliate status (for using others' codes)
       const status = await getUserAffiliateStatus(user.uid);
-      logger.info('Affiliate status fetched', { hasUsedCode: status.hasUsedAffiliateCode });
+      logger.info('Affiliate status loaded', {
+        hasUsedCode: status.hasUsedAffiliateCode,
+        usedCode: status.usedAffiliateCode || '(none)'
+      });
       setAffiliateStatus(status);
     } catch (error) {
       logger.error('Failed to load affiliate data:', {
@@ -286,9 +359,27 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
     try {
       const result = await setAffiliateCode(user.uid, myAffiliateCodeInput.trim());
       if (result.success) {
-        showSuccess('Success!', result.message);
+        showSuccess('Affiliate Code Set!', 'Your affiliate code has been permanently saved and cannot be changed.');
         setMyAffiliateCodeInput('');
-        await loadAffiliateData(); // Reload to show the new code
+
+        // Add a small delay to ensure Firestore write has propagated
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Force reload affiliate data to show the code immediately
+        await loadAffiliateData();
+
+        // Double-check the data was loaded
+        logger.info('Verifying affiliate data after setting code', {
+          hasAffiliateData: !!affiliateData,
+          code: affiliateData?.affiliateCode
+        });
+
+        // Refresh subscription status in case user has bonus days
+        if (refreshSubscriptionStatus) {
+          await refreshSubscriptionStatus();
+        }
+
+        logger.info('Affiliate code successfully set and UI updated', { userId: user.uid });
       } else {
         showError('Failed', result.message);
       }
@@ -312,10 +403,18 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       const result = await applyAffiliateCode(user.uid, affiliateCodeInput.trim());
 
       if (result.success) {
-        showSuccess('Success!', result.message);
+        showSuccess('Affiliate Code Applied!', 'You received 7 days of free Master Chef plan!');
         setAffiliateCodeInput('');
-        // Reload affiliate status
+
+        // Reload affiliate status to show it's been used
         await loadAffiliateData();
+
+        // Refresh subscription to activate bonus days immediately
+        if (refreshSubscriptionStatus) {
+          await refreshSubscriptionStatus();
+        }
+
+        logger.info('Affiliate code successfully applied and subscription updated', { userId: user.uid });
       } else {
         showError('Failed', result.message);
       }
@@ -1491,17 +1590,39 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       </div>
                     </div>
 
+                    {(() => {
+                      // Debug: Log current state for troubleshooting
+                      const codeValue = affiliateData?.affiliateCode?.trim() || '';
+                      const hasValidCode = codeValue.length > 0;
+
+                      console.log('[Affiliate UI Render]', {
+                        loadingAffiliate,
+                        hasAffiliateData: !!affiliateData,
+                        codeValue: codeValue || '(empty)',
+                        codeLength: codeValue.length,
+                        hasValidCode,
+                        willShowCodeDisplay: !loadingAffiliate && hasValidCode,
+                        willShowInputField: !loadingAffiliate && !hasValidCode
+                      });
+                      return null;
+                    })()}
                     {loadingAffiliate ? (
                       <div className="flex items-center justify-center py-8">
                         <div className="w-8 h-8 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
                       </div>
-                    ) : affiliateData ? (
-                      <div className="space-y-4">
-                        {/* Affiliate Code Display */}
+                    ) : affiliateData && affiliateData.affiliateCode && affiliateData.affiliateCode.trim().length > 0 ? (
+                      <div className="space-y-4" key={`has-code-${affiliateData.affiliateCode}`}>
+                        {/* Affiliate Code Display - READ ONLY */}
                         <div>
-                          <label className="block text-xs font-semibold text-gray-700 mb-2">Your Affiliate Code</label>
+                          <div className="flex items-center justify-between mb-2">
+                            <label className="block text-xs font-semibold text-gray-700">Your Affiliate Code</label>
+                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 border border-green-300 rounded-lg">
+                              <Lock className="w-3 h-3 text-green-700" />
+                              <span className="text-[10px] font-bold text-green-700 uppercase">Locked</span>
+                            </span>
+                          </div>
                           <div className="flex gap-2">
-                            <div className="flex-1 bg-white border-2 border-purple-200 rounded-xl px-4 py-3 font-mono text-lg font-bold text-purple-700">
+                            <div className="flex-1 bg-gray-50 border-2 border-purple-200 rounded-xl px-4 py-3 font-mono text-lg font-bold text-purple-700 cursor-not-allowed">
                               {affiliateData.affiliateCode}
                             </div>
                             <button
@@ -1512,6 +1633,10 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                               <Copy className="w-5 h-5" />
                             </button>
                           </div>
+                          <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                            <Info className="w-3 h-3" />
+                            This code is permanently set and cannot be changed.
+                          </p>
                         </div>
 
                         {/* Affiliate Link Display */}
@@ -1606,6 +1731,20 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                             Must be 3-20 characters, letters and numbers only.
                           </p>
                         </div>
+
+                        {/* Show bonus days if user has used someone's code but hasn't set their own yet */}
+                        {affiliateData && affiliateData.bonusDaysRemaining > 0 && (
+                          <div className="mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-xl">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-2xl">🎁</span>
+                              <h5 className="text-sm font-bold text-green-900">Your Bonus Days</h5>
+                            </div>
+                            <p className="text-2xl font-black text-green-700 mb-1">{affiliateData.bonusDaysRemaining} days left</p>
+                            <p className="text-xs text-green-700">
+                              You received bonus days from using an affiliate code!
+                            </p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1709,17 +1848,34 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                       </div>
                       <div className="flex-1">
                         <h5 className="text-lg font-black text-gray-900 mb-2">Current Plan</h5>
-                        <div className="flex items-center gap-3 mb-3">
-                          <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-bold text-sm shadow-lg">
-                            {featureAccess?.currentPlan ? featureAccess.currentPlan.replace('-', ' ').toUpperCase() : 'FREE'}
-                          </span>
-                          {subscription?.status === 'active' && (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg font-semibold text-xs">
-                              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                              Active
+                        <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+                          <div className="flex items-center gap-3">
+                            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-bold text-sm shadow-lg">
+                              {featureAccess?.currentPlan ? featureAccess.currentPlan.replace('-', ' ').toUpperCase() : 'FREE'}
                             </span>
+                            {subscription?.status === 'active' && (
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg font-semibold text-xs">
+                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                Active
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Display expiry date if available - right aligned */}
+                          {subscription?.endDate && featureAccess?.currentPlan !== 'free' && (
+                            <div className="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg">
+                              <Clock className="w-4 h-4 text-blue-600" />
+                              <span className="text-sm font-semibold text-blue-700">
+                                Expires: {new Date(subscription.endDate).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })}
+                              </span>
+                            </div>
                           )}
                         </div>
+
                         <p className="text-sm text-gray-600 leading-relaxed">
                           {featureAccess?.currentPlan === 'free'
                             ? 'Enjoy basic features with our free plan. Upgrade anytime to unlock premium features!'

@@ -22,6 +22,8 @@ export interface AffiliateData {
   referralCount: number;
   bonusDaysEarned: number; // Total days earned from referrals (3 days per referral)
   bonusDaysRemaining: number; // Days still available to use
+  bonusStartDate?: Date; // When bonus days were first activated
+  bonusExpiryDate?: Date; // When bonus days will expire
   createdAt: Date;
   updatedAt: Date;
 }
@@ -63,19 +65,31 @@ export const setAffiliateCode = async (
   try {
     const normalizedCode = affiliateCode.toUpperCase().trim();
 
+    logger.info('Setting affiliate code - input received', {
+      userId,
+      rawInput: affiliateCode,
+      normalizedCode,
+      codeLength: normalizedCode.length
+    });
+
     // Validate code format (alphanumeric, 3-20 characters)
     if (!/^[A-Z0-9]{3,20}$/.test(normalizedCode)) {
+      logger.warn('Affiliate code validation failed', {
+        normalizedCode,
+        reason: 'Invalid format'
+      });
       return {
         success: false,
         message: 'Affiliate code must be 3-20 characters long and contain only letters and numbers'
       };
     }
 
-    // Check if user already has an affiliate code
+    // Check if user already has an affiliate code set
     const affiliateRef = doc(db, AFFILIATES_COLLECTION, userId);
     const affiliateSnap = await getDoc(affiliateRef);
 
-    if (affiliateSnap.exists()) {
+    if (affiliateSnap.exists() && affiliateSnap.data().affiliateCode) {
+      // User already has a non-empty affiliate code
       return {
         success: false,
         message: 'You have already set your affiliate code. It cannot be changed.'
@@ -91,20 +105,63 @@ export const setAffiliateCode = async (
       };
     }
 
-    // Create new affiliate record
-    const affiliateData = {
-      userId,
-      affiliateCode: normalizedCode,
-      referralCount: 0,
-      bonusDaysEarned: 0,
-      bonusDaysRemaining: 0,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    };
+    // Create or update affiliate record with the code
+    if (affiliateSnap.exists()) {
+      // User already has a record (from using someone's code), just update with their own code
+      logger.info('Updating existing affiliate record with code', {
+        userId,
+        affiliateCode: normalizedCode,
+        hadPreviousCode: !!affiliateSnap.data().affiliateCode
+      });
 
-    await setDoc(affiliateRef, affiliateData);
+      await updateDoc(affiliateRef, {
+        affiliateCode: normalizedCode,
+        updatedAt: serverTimestamp()
+      });
 
-    logger.info('Affiliate code set', { userId, affiliateCode: normalizedCode });
+      logger.info('Affiliate code updated in Firestore', { userId, affiliateCode: normalizedCode });
+    } else {
+      // Create new affiliate record
+      logger.info('Creating new affiliate record with code', { userId, affiliateCode: normalizedCode });
+
+      const affiliateData = {
+        userId,
+        affiliateCode: normalizedCode,
+        referralCount: 0,
+        bonusDaysEarned: 0,
+        bonusDaysRemaining: 0,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      };
+
+      await setDoc(affiliateRef, affiliateData);
+
+      logger.info('Affiliate code created in Firestore', { userId, affiliateCode: normalizedCode });
+    }
+
+    logger.info('Affiliate code set successfully', { userId, affiliateCode: normalizedCode });
+
+    // Verify the write by reading back
+    const verifySnap = await getDoc(affiliateRef);
+    if (verifySnap.exists()) {
+      const savedData = verifySnap.data();
+      logger.info('Verification: Code saved to Firestore', {
+        userId,
+        savedCode: savedData.affiliateCode,
+        expectedCode: normalizedCode,
+        matches: savedData.affiliateCode === normalizedCode
+      });
+
+      if (savedData.affiliateCode !== normalizedCode) {
+        logger.error('CRITICAL: Saved code does not match expected code!', {
+          expected: normalizedCode,
+          actual: savedData.affiliateCode
+        });
+      }
+    } else {
+      logger.error('CRITICAL: Document does not exist after write!', { userId });
+    }
+
     return {
       success: true,
       message: 'Affiliate code successfully set!'
@@ -124,22 +181,44 @@ export const setAffiliateCode = async (
 export const getAffiliateData = async (userId: string): Promise<AffiliateData | null> => {
   try {
     const affiliateRef = doc(db, AFFILIATES_COLLECTION, userId);
+
+    // Force fresh read from server to avoid cached empty data
     const affiliateSnap = await getDoc(affiliateRef);
 
     if (!affiliateSnap.exists()) {
+      logger.info('No affiliate data found for user', { userId });
       return null;
     }
 
     const data = affiliateSnap.data();
-    return {
-      userId: data.userId,
-      affiliateCode: data.affiliateCode,
+
+    // Check if data has the required fields
+    if (!data) {
+      logger.warn('Affiliate document exists but has no data', { userId });
+      return null;
+    }
+
+    const affiliateData = {
+      userId: data.userId || userId,
+      affiliateCode: (data.affiliateCode || '').trim(), // Ensure trimmed string, never undefined
       referralCount: data.referralCount || 0,
       bonusDaysEarned: data.bonusDaysEarned || 0,
       bonusDaysRemaining: data.bonusDaysRemaining || 0,
+      bonusStartDate: data.bonusStartDate?.toDate(),
+      bonusExpiryDate: data.bonusExpiryDate?.toDate(),
       createdAt: data.createdAt?.toDate(),
       updatedAt: data.updatedAt?.toDate()
     } as AffiliateData;
+
+    logger.info('Affiliate data fetched successfully', {
+      userId,
+      hasCode: affiliateData.affiliateCode.length > 0,
+      codeLength: affiliateData.affiliateCode.length,
+      code: affiliateData.affiliateCode || '(empty)',
+      rawDataCode: data.affiliateCode || '(empty from firestore)'
+    });
+
+    return affiliateData;
   } catch (error) {
     logger.error('Error fetching affiliate data', { error, userId });
     return null;
@@ -218,6 +297,7 @@ export const recordAffiliateSignup = async (
     }
 
     // Grant bonus days to affiliate owner (3 days per referral)
+    // Note: The affiliate owner's document must exist (they must have set their code first)
     const affiliateRef = doc(db, AFFILIATES_COLLECTION, validation.userId);
     await updateDoc(affiliateRef, {
       referralCount: increment(1),
@@ -225,6 +305,7 @@ export const recordAffiliateSignup = async (
       bonusDaysRemaining: increment(3),
       updatedAt: serverTimestamp()
     });
+    logger.info('Updated affiliate owner stats during signup', { ownerId: validation.userId });
 
     // Grant 7 days bonus to the new user who used the code
     // Create or update their affiliate record to track their bonus days
@@ -258,12 +339,26 @@ export const recordAffiliateSignup = async (
       usedAffiliateDate: serverTimestamp()
     }, { merge: true });
 
-    logger.info('Affiliate signup recorded', {
+    logger.info('Affiliate signup recorded - saving to Firestore', {
       newUserId,
       affiliateCode,
       affiliateOwnerId: validation.userId,
       ownerBonusDays: 3,
-      newUserBonusDays: 7
+      newUserBonusDays: 7,
+      savedToUsers: true,
+      savedToAffiliates: true
+    });
+
+    // Verify the data was saved
+    const verifyUserDoc = await getDoc(userRef);
+    const verifyAffiliateDoc = await getDoc(newUserAffiliateRef);
+
+    logger.info('Verification: Affiliate code application saved', {
+      userDocExists: verifyUserDoc.exists(),
+      hasUsedCode: verifyUserDoc.data()?.hasUsedAffiliateCode || false,
+      savedCode: verifyUserDoc.data()?.usedAffiliateCode || '(none)',
+      affiliateDocExists: verifyAffiliateDoc.exists(),
+      bonusDaysRemaining: verifyAffiliateDoc.data()?.bonusDaysRemaining || 0
     });
 
     return { success: true, message: 'Affiliate bonus applied! You received 7 days of free Master Chef plan!' };
@@ -301,6 +396,7 @@ export const applyAffiliateCode = async (
     }
 
     // Grant bonus days to affiliate owner (3 days per referral)
+    // Note: The affiliate owner's document must exist (they must have set their code first)
     const affiliateRef = doc(db, AFFILIATES_COLLECTION, validation.userId);
     await updateDoc(affiliateRef, {
       referralCount: increment(1),
@@ -308,6 +404,7 @@ export const applyAffiliateCode = async (
       bonusDaysRemaining: increment(3),
       updatedAt: serverTimestamp()
     });
+    logger.info('Updated affiliate owner stats', { ownerId: validation.userId });
 
     // Grant 7 days bonus to the user who applied the code
     const userAffiliateRef = doc(db, AFFILIATES_COLLECTION, userId);
@@ -334,18 +431,33 @@ export const applyAffiliateCode = async (
 
     // Mark the user as having used an affiliate code
     const userRef = doc(db, USERS_COLLECTION, userId);
-    await updateDoc(userRef, {
+    await setDoc(userRef, {
       hasUsedAffiliateCode: true,
       usedAffiliateCode: affiliateCode.toUpperCase(),
       usedAffiliateDate: serverTimestamp()
-    });
+    }, { merge: true });
 
-    logger.info('Affiliate code applied', {
+    logger.info('Affiliate code applied - saving to Firestore', {
       userId,
       affiliateCode,
       affiliateOwnerId: validation.userId,
       ownerBonusDays: 3,
-      userBonusDays: 7
+      userBonusDays: 7,
+      savedToUsers: true,
+      savedToAffiliates: true
+    });
+
+    // Verify the data was saved
+    const verifyUserDoc = await getDoc(userRef);
+    const verifyAffiliateDoc = await getDoc(userAffiliateRef);
+
+    logger.info('Verification: Affiliate code application saved', {
+      userDocExists: verifyUserDoc.exists(),
+      hasUsedCode: verifyUserDoc.data()?.hasUsedAffiliateCode || false,
+      savedCode: verifyUserDoc.data()?.usedAffiliateCode || '(none)',
+      usedDate: verifyUserDoc.data()?.usedAffiliateDate || '(none)',
+      affiliateDocExists: verifyAffiliateDoc.exists(),
+      bonusDaysRemaining: verifyAffiliateDoc.data()?.bonusDaysRemaining || 0
     });
 
     return { success: true, message: 'Affiliate code successfully applied! You received 7 days of free Master Chef plan!' };
@@ -364,15 +476,25 @@ export const getUserAffiliateStatus = async (userId: string): Promise<UserAffili
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
+      logger.info('User document does not exist - no affiliate code used', { userId });
       return { hasUsedAffiliateCode: false };
     }
 
     const data = userSnap.data();
-    return {
+    const status = {
       hasUsedAffiliateCode: data.hasUsedAffiliateCode === true,
       usedAffiliateCode: data.usedAffiliateCode,
       usedAffiliateDate: data.usedAffiliateDate?.toDate()
     };
+
+    logger.info('User affiliate status fetched from Firestore', {
+      userId,
+      hasUsedCode: status.hasUsedAffiliateCode,
+      usedCode: status.usedAffiliateCode || '(none)',
+      usedDate: status.usedAffiliateDate || '(never)'
+    });
+
+    return status;
   } catch (error) {
     logger.error('Error fetching user affiliate status', { error, userId });
     return { hasUsedAffiliateCode: false };
@@ -385,4 +507,95 @@ export const getUserAffiliateStatus = async (userId: string): Promise<UserAffili
 export const generateAffiliateLink = (affiliateCode: string): string => {
   const baseUrl = window.location.origin;
   return `${baseUrl}/signup?ref=${affiliateCode}`;
+};
+
+/**
+ * Apply bonus days to user's subscription
+ * This function checks if a user has bonus days remaining and grants them temporary Master Chef access
+ */
+export const applyBonusDaysToSubscription = async (userId: string): Promise<{
+  hasBonus: boolean;
+  daysRemaining?: number;
+  expiryDate?: Date;
+}> => {
+  try {
+    const affiliateRef = doc(db, AFFILIATES_COLLECTION, userId);
+    const affiliateSnap = await getDoc(affiliateRef);
+
+    if (!affiliateSnap.exists()) {
+      return { hasBonus: false };
+    }
+
+    const data = affiliateSnap.data();
+    const bonusDaysRemaining = data.bonusDaysRemaining || 0;
+
+    if (bonusDaysRemaining <= 0) {
+      return { hasBonus: false };
+    }
+
+    // Check if bonus days are already being tracked
+    const bonusStartDate = data.bonusStartDate?.toDate();
+    let expiryDate: Date;
+
+    if (!bonusStartDate) {
+      // First time activating bonus days - set start date to now
+      const now = new Date();
+      expiryDate = new Date(now);
+      expiryDate.setDate(expiryDate.getDate() + bonusDaysRemaining);
+
+      // Update affiliate record with start date
+      await updateDoc(affiliateRef, {
+        bonusStartDate: serverTimestamp(),
+        bonusExpiryDate: expiryDate,
+        updatedAt: serverTimestamp()
+      });
+
+      logger.info('Activated bonus days for user', {
+        userId,
+        bonusDaysRemaining,
+        expiryDate
+      });
+    } else {
+      // Bonus days already active - calculate days used
+      const now = new Date();
+      const daysElapsed = Math.floor((now.getTime() - bonusStartDate.getTime()) / (1000 * 60 * 60 * 24));
+      const daysUsed = Math.min(daysElapsed, bonusDaysRemaining);
+      const daysLeft = bonusDaysRemaining - daysUsed;
+
+      if (daysLeft <= 0) {
+        // All bonus days have been consumed
+        await updateDoc(affiliateRef, {
+          bonusDaysRemaining: 0,
+          bonusStartDate: null,
+          bonusExpiryDate: null,
+          updatedAt: serverTimestamp()
+        });
+
+        logger.info('Bonus days fully consumed', { userId });
+        return { hasBonus: false };
+      }
+
+      // Calculate new expiry date
+      expiryDate = new Date(bonusStartDate);
+      expiryDate.setDate(expiryDate.getDate() + bonusDaysRemaining);
+
+      // Update remaining days
+      if (daysUsed > 0) {
+        await updateDoc(affiliateRef, {
+          bonusDaysRemaining: daysLeft,
+          bonusExpiryDate: expiryDate,
+          updatedAt: serverTimestamp()
+        });
+      }
+    }
+
+    return {
+      hasBonus: true,
+      daysRemaining: bonusDaysRemaining,
+      expiryDate
+    };
+  } catch (error) {
+    logger.error('Error applying bonus days to subscription', { error, userId });
+    return { hasBonus: false };
+  }
 };

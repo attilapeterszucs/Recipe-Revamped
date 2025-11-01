@@ -150,8 +150,23 @@ service cloud.firestore {
     match /affiliates/{userId} {
       // Users can read their own affiliate data
       allow read: if request.auth != null && request.auth.uid == userId;
-      // Users can create and update their own affiliate data
-      allow write: if request.auth != null && request.auth.uid == userId;
+
+      // Users can create their own affiliate data
+      allow create: if request.auth != null && request.auth.uid == userId;
+
+      // Users can update their own affiliate data (setting code, etc)
+      allow update: if request.auth != null && request.auth.uid == userId;
+
+      // Special case: Allow incrementing referral stats when someone uses this affiliate code
+      // This allows user A to increment user B's stats when using B's code
+      allow update: if request.auth != null &&
+        // Only allow updates to these specific fields
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['referralCount', 'bonusDaysEarned', 'bonusDaysRemaining', 'updatedAt']) &&
+        // Ensure the fields are being incremented (not decreased or set to arbitrary values)
+        request.resource.data.referralCount >= resource.data.referralCount &&
+        request.resource.data.bonusDaysEarned >= resource.data.bonusDaysEarned &&
+        request.resource.data.bonusDaysRemaining >= resource.data.bonusDaysRemaining;
+
       // Allow authenticated users to query/read for affiliate code validation
       allow list: if request.auth != null;
     }

@@ -454,12 +454,44 @@ export class SubscriptionService {
     try {
       // Import here to avoid circular dependency
       const { SubscriptionExpiryService } = await import('./subscriptionExpiryService');
+      const { applyBonusDaysToSubscription } = await import('./affiliateService');
 
       // First check if subscription has expired and handle downgrade
       await SubscriptionExpiryService.checkAndHandleExpiredSubscription(userId);
 
-      // Then get the updated subscription
-      return await this.getUserSubscription(userId, true);
+      // Get the current subscription
+      const subscription = await this.getUserSubscription(userId, true);
+
+      // Check for affiliate bonus days if user is on free plan
+      if (subscription?.plan === 'free') {
+        const bonusInfo = await applyBonusDaysToSubscription(userId);
+
+        if (bonusInfo.hasBonus && bonusInfo.expiryDate) {
+          // Grant temporary Master Chef access from bonus days
+          const bonusSubscription: Partial<UserSubscription> = {
+            plan: 'master-chef',
+            status: 'active',
+            startDate: new Date(),
+            endDate: bonusInfo.expiryDate
+          };
+
+          const success = await this.setUserSubscription(userId, bonusSubscription);
+
+          if (success) {
+            logger.info('Granted Master Chef access from affiliate bonus days', {
+              userId,
+              daysRemaining: bonusInfo.daysRemaining,
+              expiryDate: bonusInfo.expiryDate
+            });
+
+            // Return the updated subscription with bonus
+            return await this.getUserSubscription(userId, true);
+          }
+        }
+      }
+
+      // Return the subscription (either with bonus applied or original)
+      return subscription;
     } catch (error) {
       logger.error('Error getting subscription with expiry check:', { error });
       // Fallback to regular subscription check
