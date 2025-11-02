@@ -25,13 +25,15 @@ import {
   Strikethrough,
   Code,
   RemoveFormatting,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
   Link,
   Image,
   Sparkles,
-  Loader
+  Loader,
+  BookOpen,
+  TrendingUp,
+  Users,
+  BarChart3,
+  Zap,
 } from 'lucide-react';
 import { CustomDropdown } from './CustomDropdown';
 import { useToast } from './ToastContainer';
@@ -1005,140 +1007,86 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
   );
 
   return (
-    <div className="space-y-6">
-
-      {/* Search and Filters */}
-      <div className="space-y-4">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-5 shadow-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center shadow-md">
-                <FileText className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-xs text-blue-700 font-bold uppercase tracking-wide">Total Posts</p>
-                <p className="text-3xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent min-w-[50px] flex items-center justify-start">
-                  {loading ? (
-                    <Loader className="w-6 h-6 animate-spin" />
-                  ) : (
-                    posts.length
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl p-5 shadow-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center shadow-md">
-                <Eye className="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <p className="text-xs text-green-700 font-bold uppercase tracking-wide">Published</p>
-                <p className="text-3xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent min-w-[50px] flex items-center justify-start">
-                  {loading ? (
-                    <Loader className="w-6 h-6 animate-spin" />
-                  ) : (
-                    posts.filter(p => p.status === 'published').length
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-yellow-50 to-amber-50/50 border-2 border-yellow-200 rounded-2xl p-5 shadow-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-xl flex items-center justify-center shadow-md">
-                <EyeOff className="w-6 h-6 text-yellow-600" />
-              </div>
-              <div>
-                <p className="text-xs text-yellow-700 font-bold uppercase tracking-wide">Drafts</p>
-                <p className="text-3xl font-black bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent min-w-[50px] flex items-center justify-start">
-                  {loading ? (
-                    <Loader className="w-6 h-6 animate-spin" />
-                  ) : (
-                    posts.filter(p => p.status === 'draft').length
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
+    <div className="space-y-8 pb-12">
+      {/* Hero Header - Landing Page Style */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 rounded-3xl shadow-2xl">
+        {/* Animated Background Blobs */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-blob" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-300 rounded-full mix-blend-overlay filter blur-3xl animate-blob animation-delay-2000" />
         </div>
 
-        {/* Search and Filters Row */}
-        <div className="bg-gradient-to-br from-indigo-50 to-purple-50/50 p-6 rounded-2xl border-2 border-indigo-200 shadow-lg">
-          <div className="space-y-5">
-            {/* Search - Full Width */}
-            <div>
-              <label className="block text-sm font-bold text-indigo-900 mb-3 flex items-center gap-2">
-                <Search className="w-5 h-5 text-indigo-600" />
-                Search Posts
-              </label>
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-500 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Search by title, content, or tags..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 border-2 border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium bg-white shadow-sm"
-                />
+        <div className="relative px-8 py-10">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-xl">
+                <BookOpen className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-black text-white mb-1">Blog Management</h1>
+                <p className="text-white/90 text-sm font-medium">Create, edit, and publish engaging blog content</p>
+              </div>
+            </div>
+            <div className="hidden md:flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold">
+              <Sparkles className="w-4 h-4" />
+              Content Creator
+            </div>
+          </div>
+
+          {/* Stats Grid - Landing Page Style */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="group bg-white/10 backdrop-blur-sm rounded-2xl p-5 border-2 border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <FileText className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <p className="text-white/80 text-xs font-bold uppercase tracking-wide">Total Posts</p>
+                  <p className="text-3xl font-black text-white">
+                    {loading ? '...' : posts.length.toLocaleString()}
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Filters Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Category Filter */}
-              <div>
-                <label className="block text-sm font-bold text-indigo-900 mb-3">
-                  Filter by Category
-                </label>
-                <CustomDropdown
-                  value={selectedCategory}
-                  onChange={(value) => setSelectedCategory(value)}
-                  options={[
-                    { value: 'all', label: 'All Categories', icon: '📁' },
-                    ...categories.map(category => ({
-                      value: category.name,
-                      label: category.name,
-                      icon: category.color === 'blue' ? '🔵' : category.color === 'green' ? '🟢' : category.color === 'purple' ? '🟣' : category.color === 'pink' ? '🩷' : '🟠'
-                    }))
-                  ]}
-                />
+            <div className="group bg-white/10 backdrop-blur-sm rounded-2xl p-5 border-2 border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Eye className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <p className="text-white/80 text-xs font-bold uppercase tracking-wide">Published</p>
+                  <p className="text-3xl font-black text-white">
+                    {loading ? '...' : posts.filter(p => p.status === 'published').length.toLocaleString()}
+                  </p>
+                </div>
               </div>
+            </div>
 
-              {/* Status Filter */}
-              <div>
-                <label className="block text-sm font-bold text-indigo-900 mb-3">
-                  Filter by Status
-                </label>
-                <CustomDropdown
-                  value={selectedStatus}
-                  onChange={(value) => setSelectedStatus(value)}
-                  options={[
-                    { value: 'all', label: 'All Status', icon: '📋' },
-                    { value: 'published', label: 'Published', icon: '✅' },
-                    { value: 'draft', label: 'Draft', icon: '📝' }
-                  ]}
-                />
+            <div className="group bg-white/10 backdrop-blur-sm rounded-2xl p-5 border-2 border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <EyeOff className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <p className="text-white/80 text-xs font-bold uppercase tracking-wide">Drafts</p>
+                  <p className="text-3xl font-black text-white">
+                    {loading ? '...' : posts.filter(p => p.status === 'draft').length.toLocaleString()}
+                  </p>
+                </div>
               </div>
+            </div>
 
-              {/* Results Count */}
-              <div>
-                <label className="block text-sm font-bold text-indigo-900 mb-3">
-                  Results
-                </label>
-                <div className="bg-white border-2 border-indigo-300 rounded-xl px-4 text-center shadow-sm h-[46px] sm:h-[50px] flex items-center justify-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <FileText className="w-5 h-5 text-indigo-600" />
-                    <p className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent leading-none">
-                      {filteredPosts.length}
-                    </p>
-                    <p className="text-sm text-indigo-700 font-medium">
-                      {filteredPosts.length === 1 ? 'post' : 'posts'}
-                    </p>
-                  </div>
+            <div className="group bg-white/10 backdrop-blur-sm rounded-2xl p-5 border-2 border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Star className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <p className="text-white/80 text-xs font-bold uppercase tracking-wide">Featured</p>
+                  <p className="text-3xl font-black text-white">
+                    {loading ? '...' : posts.filter(p => p.featured).length.toLocaleString()}
+                  </p>
                 </div>
               </div>
             </div>
@@ -1146,22 +1094,99 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
         </div>
       </div>
 
-      {/* Posts List */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between px-2">
-          <h3 className="text-lg font-black text-gray-900">
-            Blog Posts
-            <span className="ml-2 text-sm font-medium text-gray-500">({filteredPosts.length} {filteredPosts.length === 1 ? 'post' : 'posts'})</span>
-          </h3>
-          <button
-            onClick={handleCreatePost}
-            className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            New Post
-          </button>
-        </div>
+      {/* Search and Filters */}
+      <div className="bg-white rounded-3xl border-2 border-gray-200 shadow-xl overflow-visible">
+        <div className="p-6 space-y-5">
+          {/* Search - Full Width */}
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <Search className="w-5 h-5 text-indigo-600" />
+              Search Posts
+            </label>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-500 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search by title, content, or tags..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium bg-white shadow-sm"
+              />
+            </div>
+          </div>
 
+          {/* Filters Row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Category Filter */}
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-3">
+                Filter by Category
+              </label>
+              <CustomDropdown
+                value={selectedCategory}
+                onChange={(value) => setSelectedCategory(value)}
+                options={[
+                  { value: 'all', label: 'All Categories', icon: '📁' },
+                  ...categories.map(category => ({
+                    value: category.name,
+                    label: category.name,
+                    icon: category.color === 'blue' ? '🔵' : category.color === 'green' ? '🟢' : category.color === 'purple' ? '🟣' : category.color === 'pink' ? '🩷' : '🟠'
+                  }))
+                ]}
+              />
+            </div>
+
+            {/* Status Filter */}
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-3">
+                Filter by Status
+              </label>
+              <CustomDropdown
+                value={selectedStatus}
+                onChange={(value) => setSelectedStatus(value)}
+                options={[
+                  { value: 'all', label: 'All Status', icon: '📋' },
+                  { value: 'published', label: 'Published', icon: '✅' },
+                  { value: 'draft', label: 'Draft', icon: '📝' }
+                ]}
+              />
+            </div>
+
+            {/* Results Count + Create Button */}
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-3">
+                Actions
+              </label>
+              <button
+                onClick={handleCreatePost}
+                className="w-full inline-flex items-center justify-center px-5 py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Create New Post
+              </button>
+            </div>
+          </div>
+
+          {/* Results Badge */}
+          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-xl">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-indigo-600" />
+              <span className="text-sm font-bold text-gray-900">Search Results:</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                {filteredPosts.length}
+              </span>
+              <span className="text-sm text-gray-600 font-medium">
+                {filteredPosts.length === 1 ? 'post' : 'posts'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Posts List */}
+      <div className="space-y-4">
         {loading ? (
           <div className="space-y-4">
             <BlogPostSkeleton />
@@ -1171,9 +1196,9 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
             <BlogPostSkeleton />
           </div>
         ) : filteredPosts.length === 0 ? (
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg text-center py-16 px-4">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full mb-4 shadow-md">
-              <FileText className="w-10 h-10 text-green-600" />
+          <div className="bg-white rounded-3xl border-2 border-gray-200 shadow-xl text-center py-16 px-4">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full mb-4 shadow-md">
+              <FileText className="w-10 h-10 text-indigo-600" />
             </div>
             <h3 className="text-xl font-black text-gray-900 mb-2">No blog posts found</h3>
             <p className="text-sm text-gray-600 font-medium mb-6 max-w-md mx-auto">
@@ -1195,7 +1220,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
             {filteredPosts.map((post) => (
               <div
                 key={post.id}
-                className="bg-white border-2 border-gray-200 rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:border-blue-300"
+                className="bg-white border-2 border-gray-200 rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:border-indigo-300"
               >
                 <div className="relative">
                   {/* Action Buttons - Top Right */}
@@ -1311,7 +1336,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 animate-in zoom-in-95">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-5 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-5 relative overflow-hidden">
               {/* Decorative pattern */}
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute inset-0" style={{
@@ -1345,14 +1370,14 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               {/* Title */}
               <div>
                 <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-blue-600" />
+                  <FileText className="w-5 h-5 text-indigo-600" />
                   Title *
                 </label>
                 <input
                   type="text"
                   value={postForm.title}
                   onChange={(e) => setPostForm(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium bg-white shadow-sm"
+                  className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium bg-white shadow-sm"
                   placeholder="Enter post title..."
                 />
               </div>
@@ -1360,14 +1385,14 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               {/* Excerpt */}
               <div>
                 <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <Type className="w-5 h-5 text-blue-600" />
+                  <Type className="w-5 h-5 text-indigo-600" />
                   Excerpt *
                 </label>
                 <textarea
                   value={postForm.excerpt}
                   onChange={(e) => setPostForm(prev => ({ ...prev, excerpt: e.target.value }))}
                   rows={3}
-                  className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium bg-white shadow-sm resize-none"
+                  className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium bg-white shadow-sm resize-none"
                   placeholder="Brief description of the post..."
                 />
               </div>
@@ -1375,7 +1400,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               {/* Content - Embedded Rich Text Editor */}
               <div>
                 <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <Type className="w-5 h-5 text-blue-600" />
+                  <Type className="w-5 h-5 text-indigo-600" />
                   Content * (Rich Text Editor)
                 </label>
                 <div className="border-2 border-blue-200 rounded-xl overflow-hidden bg-white shadow-lg">
@@ -1433,7 +1458,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               {/* Featured Image */}
               <div>
                 <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <Upload className="w-5 h-5 text-blue-600" />
+                  <Upload className="w-5 h-5 text-indigo-600" />
                   Featured Image
                 </label>
                 <div className="space-y-3">
@@ -1472,7 +1497,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                       value={postForm.featuredImage}
                       onChange={(e) => setPostForm(prev => ({ ...prev, featuredImage: e.target.value }))}
                       placeholder="Or paste image URL..."
-                      className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium bg-white shadow-sm"
+                      className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium bg-white shadow-sm"
                     />
                   </div>
                 </div>
@@ -1481,21 +1506,21 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
               {/* Tags */}
               <div>
                 <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <span className="text-blue-600 text-lg">#️⃣</span>
+                  <span className="text-indigo-600 text-lg">#️⃣</span>
                   Tags
                 </label>
                 <div className="space-y-3">
                   {postForm.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 p-3 bg-gradient-to-br from-blue-50 to-cyan-50/50 border-2 border-blue-200 rounded-xl">
+                    <div className="flex flex-wrap gap-2 p-3 bg-gradient-to-br from-indigo-50 to-purple-50/50 border-2 border-indigo-200 rounded-xl">
                       {postForm.tags.map(tag => (
                         <span
                           key={tag}
-                          className="inline-flex items-center px-3 py-1.5 rounded-lg text-sm bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 border border-blue-200 shadow-sm font-bold"
+                          className="inline-flex items-center px-3 py-1.5 rounded-lg text-sm bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 border border-indigo-200 shadow-sm font-bold"
                         >
                           {tag}
                           <button
                             onClick={() => removeTag(tag)}
-                            className="ml-2 text-blue-600 hover:text-blue-800 hover:scale-110 transition-transform"
+                            className="ml-2 text-indigo-600 hover:text-indigo-800 hover:scale-110 transition-transform"
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -1507,7 +1532,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
                     type="text"
                     onKeyDown={handleTagInput}
                     placeholder="Type tags and press Enter (supports: 'tag' or 'tag1, tag2')..."
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium bg-white shadow-sm"
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-medium bg-white shadow-sm"
                   />
                 </div>
               </div>
@@ -1567,7 +1592,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t-2 border-gray-100 bg-gradient-to-br from-gray-50 to-blue-50/30">
+            <div className="px-6 py-4 border-t-2 border-gray-100 bg-gradient-to-br from-gray-50 to-indigo-50/30">
               <div className="flex justify-end space-x-3">
                 <button
                   onClick={() => setShowEditor(false)}
@@ -1675,7 +1700,7 @@ export const AdminBlogManagement: React.FC<AdminBlogManagementProps> = ({
         </div>
       )}
 
-      {/* Post Preview Modal */}
+      {/* Post Preview Modal - Keep existing preview modal */}
       {showPreview && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
