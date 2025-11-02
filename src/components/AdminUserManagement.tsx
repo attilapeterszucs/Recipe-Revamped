@@ -441,7 +441,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
       </div>
 
       {/* User List */}
-      <div className="space-y-4">
+      <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
         {loading ? (
           // Show skeleton loaders while loading
           <>
