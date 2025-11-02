@@ -2753,7 +2753,12 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                             {recipes && recipes.length > 0 && (
                               recipes.map((recipe, recipeIndex) => (
                                 <div key={`${recipe.id}-${recipeIndex}`} className="relative group">
-                                  <div className="bg-white rounded-xl border-2 border-gray-200 hover:border-green-400 hover:shadow-xl transition-all duration-300 shadow-md overflow-hidden transform hover:scale-105">
+                                  <div 
+                                    className="bg-white rounded-xl border-2 border-gray-200 hover:border-green-400 hover:shadow-xl transition-all duration-300 shadow-md overflow-hidden transform hover:scale-105 cursor-move select-none"
+                                    draggable={true}
+                                    onDragStart={(e) => handleDragStartFromCalendar(e, recipe, dateStr, mealType, recipeIndex)}
+                                    onDragEnd={handleDragEnd}
+                                  >
                                     {/* Recipe Image */}
                                     <div className="relative h-16 sm:h-20 bg-gradient-to-br from-green-400 via-emerald-400 to-blue-500 overflow-hidden">
                                       {recipe.imageUrl ? (
@@ -2799,10 +2804,14 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                                         <Flame className="w-3 h-3 text-orange-500" />
                                         <span>~{Math.round(parseNutritionFromRecipe(recipe.convertedRecipe).calories)} kcal</span>
                                       </div>
-                                    </div>
+                                  </div>
 
-                                    <button
-                                      onClick={() => removeRecipeFromMeal(dateStr, mealType, recipeIndex)}
+                                  {/* Drag Handle */}
+                                  <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-all duration-200 p-1.5 rounded-full cursor-move pointer-events-none">
+                                    <GripVertical className="w-3 h-3" />
+                                  </div>
+
+                                  <button onClick={(e) => { e.stopPropagation(); removeRecipeFromMeal(dateStr, mealType, recipeIndex); }}
                                       className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-all duration-200 p-1.5 rounded-full hover:scale-110 pointer-events-auto"
                                     >
                                       <Trash2 className="w-3 h-3" />
