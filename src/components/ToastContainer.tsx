@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useContext, createContext } from 'react';
+import { createPortal } from 'react-dom';
 import { Toast, type ToastType, type ToastAction } from './Toast';
 
 interface ToastData {
@@ -73,24 +74,27 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   return (
     <ToastContext.Provider value={contextValue}>
       {children}
-      
-      {/* Toast Container - Fixed to viewport top-right */}
-      <div className="fixed top-4 right-4 z-[9999] space-y-2 max-w-sm pointer-events-none">
-        <div className="pointer-events-auto space-y-2">
-          {toasts.map(toast => (
-            <Toast
-              key={toast.id}
-              id={toast.id}
-              type={toast.type}
-              action={toast.action}
-              title={toast.title}
-              message={toast.message}
-              duration={toast.duration}
-              onDismiss={dismissToast}
-            />
-          ))}
-        </div>
-      </div>
+
+      {/* Toast Container - Rendered via Portal to document.body for proper viewport positioning */}
+      {typeof document !== 'undefined' && createPortal(
+        <div className="fixed top-4 right-4 z-[9999] space-y-2 max-w-sm pointer-events-none">
+          <div className="pointer-events-auto space-y-2">
+            {toasts.map(toast => (
+              <Toast
+                key={toast.id}
+                id={toast.id}
+                type={toast.type}
+                action={toast.action}
+                title={toast.title}
+                message={toast.message}
+                duration={toast.duration}
+                onDismiss={dismissToast}
+              />
+            ))}
+          </div>
+        </div>,
+        document.body
+      )}
     </ToastContext.Provider>
   );
 };
