@@ -1189,17 +1189,15 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
   // Print shopping list (only unchecked items)
   const printShoppingList = () => {
-    const categorizedList = getShoppingListByCategory();
+    const shoppingList = generateShoppingList();
     const uncheckedItems: ShoppingListItem[] = [];
-    
+
     // Collect all unchecked items
-    categorizedList.forEach(category => {
-      category.items.forEach(item => {
-        const itemKey = item.ingredient.toLowerCase();
-        if (!checkedItems.has(itemKey)) {
-          uncheckedItems.push(item);
-        }
-      });
+    shoppingList.forEach(item => {
+      const itemKey = item.ingredient.toLowerCase();
+      if (!checkedItems.has(itemKey)) {
+        uncheckedItems.push(item);
+      }
     });
     
     const printWindow = window.open('', '_blank');
@@ -1615,58 +1613,29 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
             ${uncheckedItems.length === 0 ?
               '<div class="empty-state"><div class="empty-state-icon">🎉</div><h2 class="empty-state-title">All Items Completed!</h2><p class="empty-state-text">Nothing left to buy for this week. Great job planning ahead!</p></div>' :
-              (() => {
-                // Group unchecked items by category
-                const categorizedUnchecked: { [key: string]: ShoppingListItem[] } = {};
-                uncheckedItems.forEach(item => {
-                  if (!categorizedUnchecked[item.category]) {
-                    categorizedUnchecked[item.category] = [];
-                  }
-                  categorizedUnchecked[item.category].push(item);
-                });
-
-                return Object.entries(categorizedUnchecked)
-                  .sort(([a], [b]) => a.localeCompare(b))
-                  .map(([categoryName, items]) => `
-                    <div class="category">
-                      <div class="category-header">
-                        <div class="category-title">${categoryName}</div>
-                        <div class="category-count">${items.length} ${items.length === 1 ? 'item' : 'items'}</div>
+              `<div class="items-container">
+                ${uncheckedItems.map(item => `
+                  <div class="item">
+                    <span class="checkbox"></span>
+                    <div class="item-content">
+                      <div class="ingredient-line">
+                        <span class="quantity">${item.quantity}</span>
+                        <span class="ingredient-name">${item.ingredient}</span>
                       </div>
-                      <div class="items-container">
-                        ${items.map(item => `
-                          <div class="item">
-                            <span class="checkbox"></span>
-                            <div class="item-content">
-                              <div class="ingredient-line">
-                                <span class="quantity">${item.quantity}</span>
-                                <span class="ingredient-name">${item.ingredient}</span>
-                              </div>
-                              <div class="recipes">
-                                <span class="recipes-label">For:</span>
-                                ${item.recipes.map(recipe => `<span class="recipe-tag">${recipe}</span>`).join(' ')}
-                              </div>
-                            </div>
-                          </div>
-                        `).join('')}
+                      <div class="recipes">
+                        <span class="recipes-label">For:</span>
+                        ${item.recipes.map(recipe => `<span class="recipe-tag">${recipe}</span>`).join(' ')}
                       </div>
                     </div>
-                  `).join('');
-              })()
+                  </div>
+                `).join('')}
+              </div>`
             }
 
             ${uncheckedItems.length > 0 ? `
               <div class="summary-section">
                 <div class="summary-title">📊 Shopping Summary</div>
                 <div class="summary-grid">
-                  <div class="summary-item">
-                    <div class="summary-label">Categories</div>
-                    <div class="summary-value">${Object.keys((() => {
-                      const cats: { [key: string]: boolean } = {};
-                      uncheckedItems.forEach(item => { cats[item.category] = true; });
-                      return cats;
-                    })()).length}</div>
-                  </div>
                   <div class="summary-item">
                     <div class="summary-label">Items to Buy</div>
                     <div class="summary-value">${uncheckedItems.length}</div>
@@ -3182,8 +3151,8 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
             {/* Content */}
             <div className="max-h-[70vh] overflow-y-auto p-6 bg-gradient-to-br from-gray-50 to-green-50/30">
               {(() => {
-                const categorizedList = getShoppingListByCategory();
-                return categorizedList.length === 0 ? (
+                const shoppingList = generateShoppingList();
+                return shoppingList.length === 0 ? (
                   <div className="text-center py-12">
                     <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
                       <ShoppingCart className="w-10 h-10 text-gray-400" />
@@ -3193,79 +3162,61 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {categorizedList.map((category, categoryIndex) => (
-                      <div
-                        key={category.name}
-                        className="space-y-3 animate-in slide-in-from-bottom duration-300"
-                        style={{ animationDelay: `${categoryIndex * 50}ms` }}
-                      >
-                        {/* Category header with gradient badge */}
-                        <div className="flex items-center justify-between">
-                          <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-bold shadow-lg ${category.color}`}>
-                            {category.name}
-                            <span className="ml-2 bg-white/40 px-2 py-0.5 rounded-full text-xs font-black">
-                              {category.items.length}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Category items */}
-                        <div className="space-y-2">
-                          {category.items.map((item, index) => {
-                            const itemKey = item.ingredient.toLowerCase();
-                            const isChecked = checkedItems.has(itemKey);
-                            return (
-                              <div
-                                key={`${category.name}-${index}`}
-                                onClick={() => toggleItemChecked(itemKey)}
-                                className={`flex items-start p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
-                                  isChecked
-                                    ? 'bg-gray-100 border-gray-200 opacity-60'
-                                    : 'bg-white border-green-100 hover:border-green-300 hover:shadow-md hover:scale-[1.01]'
-                                }`}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={(e) => {
-                                    e.stopPropagation();
-                                    toggleItemChecked(itemKey);
-                                  }}
-                                  className="mt-1 mr-4 h-5 w-5 flex-shrink-0 text-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-0 border-2 rounded cursor-pointer transition-all appearance-none bg-white outline-none"
-                                  style={{
-                                    backgroundColor: isChecked ? '#10b981' : 'white',
-                                    borderColor: isChecked ? '#10b981' : '#9ca3af',
-                                    backgroundImage: isChecked ? 'url("data:image/svg+xml,%3csvg viewBox=\'0 0 16 16\' fill=\'white\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cpath d=\'M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z\'/%3e%3c/svg%3e")' : 'none',
-                                    backgroundSize: '100% 100%',
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat'
-                                  }}
-                                />
-                                <div className="flex-1">
-                                  <div className={`font-semibold text-base leading-relaxed ${
-                                    isChecked ? 'text-gray-500 line-through' : 'text-gray-900'
-                                  }`}>
-                                    <span className="text-green-600 font-black">{item.quantity}</span>{' '}
-                                    <span>{item.ingredient}</span>
-                                  </div>
-                                  <div className="text-sm text-gray-600 mt-1.5 flex items-center">
-                                    <span className="font-medium text-gray-500">For:</span>
-                                    <span className="ml-1.5 text-gray-700">{item.recipes.join(', ')}</span>
-                                  </div>
-                                </div>
+                    {/* All items in a flat list */}
+                    <div className="space-y-2">
+                      {shoppingList.map((item, index) => {
+                        const itemKey = item.ingredient.toLowerCase();
+                        const isChecked = checkedItems.has(itemKey);
+                        return (
+                          <div
+                            key={`item-${index}`}
+                            onClick={() => toggleItemChecked(itemKey)}
+                            className={`flex items-start p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
+                              isChecked
+                                ? 'bg-gray-100 border-gray-200 opacity-60'
+                                : 'bg-white border-green-100 hover:border-green-300 hover:shadow-md hover:scale-[1.01]'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                toggleItemChecked(itemKey);
+                              }}
+                              className="mt-1 mr-4 h-5 w-5 flex-shrink-0 text-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-0 border-2 rounded cursor-pointer transition-all appearance-none bg-white outline-none"
+                              style={{
+                                backgroundColor: isChecked ? '#10b981' : 'white',
+                                borderColor: isChecked ? '#10b981' : '#9ca3af',
+                                backgroundImage: isChecked ? 'url("data:image/svg+xml,%3csvg viewBox=\'0 0 16 16\' fill=\'white\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cpath d=\'M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z\'/%3e%3c/svg%3e")' : 'none',
+                                backgroundSize: '100% 100%',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat'
+                              }}
+                            />
+                            <div className="flex-1">
+                              <div className={`font-semibold text-base leading-relaxed ${
+                                isChecked ? 'text-gray-500 line-through' : 'text-gray-900'
+                              }`}>
+                                <span className="text-green-600 font-black">{item.quantity}</span>{' '}
+                                <span>{item.ingredient}</span>
                               </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ))}
+                              <div className="text-sm text-gray-600 mt-1.5 flex items-center">
+                                <span className="font-medium text-gray-500">For:</span>
+                                <span className="ml-1.5 text-gray-700">{item.recipes.join(', ')}</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
 
                     {/* Shopping List Stats */}
                     <div className="mt-6 pt-6 border-t-2 border-gray-200">
                       <div className="grid grid-cols-3 gap-4">
                         <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border-2 border-blue-200 shadow-sm">
                           <div className="text-2xl font-black text-blue-600">
-                            {categorizedList.reduce((sum, cat) => sum + cat.items.length, 0)}
+                            {shoppingList.length}
                           </div>
                           <div className="text-xs font-semibold text-blue-700 mt-1">Total Items</div>
                         </div>
@@ -3277,7 +3228,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                         </div>
                         <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border-2 border-orange-200 shadow-sm">
                           <div className="text-2xl font-black text-orange-600">
-                            {categorizedList.reduce((sum, cat) => sum + cat.items.length, 0) - checkedItems.size}
+                            {shoppingList.length - checkedItems.size}
                           </div>
                           <div className="text-xs font-semibold text-orange-700 mt-1">Remaining</div>
                         </div>
