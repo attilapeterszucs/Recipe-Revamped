@@ -21,6 +21,7 @@ Allow: /contact
 Allow: /blog
 Allow: /blog/*
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 
 # Authentication pages (user acquisition)
@@ -121,6 +122,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -135,6 +137,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -149,6 +152,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -163,6 +167,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -177,6 +182,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -191,6 +197,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -205,6 +212,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -219,6 +227,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -233,6 +242,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -247,6 +257,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -261,6 +272,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Allow: /blog
 Allow: /blog/*
@@ -279,6 +291,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Disallow: /app
 Disallow: /signin
@@ -289,6 +302,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Disallow: /app
 Disallow: /signin
@@ -300,6 +314,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Disallow: /app
 Disallow: /signin
@@ -311,6 +326,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Disallow: /app
 Disallow: /signin
@@ -321,6 +337,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Disallow: /app
 Disallow: /signin
@@ -331,6 +348,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Disallow: /app
 Disallow: /signin
@@ -341,6 +359,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Disallow: /app
 Disallow: /signin
@@ -356,6 +375,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Disallow: /app
 Disallow: /signin
@@ -368,6 +388,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Disallow: /app
 Disallow: /signin
@@ -380,6 +401,7 @@ Allow: /
 Allow: /about
 Allow: /contact
 Allow: /careers
+Allow: /affiliate-program
 Allow: /partnerships
 Disallow: /app
 Disallow: /signin

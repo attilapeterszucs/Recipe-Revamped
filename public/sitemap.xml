@@ -80,16 +80,29 @@
     </image:image>
   </url>
 
+  <!-- Affiliate Program - Rewards and Referral -->
+  <url>
+    <loc>https://reciperevamped.com/affiliate-program</loc>
+    <lastmod>2025-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <image:image>
+      <image:loc>https://reciperevamped.com/images/affiliate-rewards.jpg</image:loc>
+      <image:title>Affiliate Program - Earn Rewards with Recipe Revamped</image:title>
+      <image:caption>Join our affiliate program and earn 3 days of Master Chef plan for every referral. New users get 7 days free!</image:caption>
+    </image:image>
+  </url>
+
   <!-- Partnerships - Business Development -->
   <url>
     <loc>https://reciperevamped.com/partnerships</loc>
-    <lastmod>2025-10-24</lastmod>
+    <lastmod>2025-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://reciperevamped.com/images/partnerships-collab.jpg</image:loc>
       <image:title>Partnerships - Collaborate with Recipe Revamped</image:title>
-      <image:caption>Partner with Recipe Revamped for influencer programs, business integrations, and affiliate opportunities</image:caption>
+      <image:caption>Partner with Recipe Revamped for influencer programs and business integrations</image:caption>
     </image:image>
   </url>
 
