@@ -74,20 +74,22 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
     <ToastContext.Provider value={contextValue}>
       {children}
       
-      {/* Toast Container */}
-      <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm w-full">
-        {toasts.map(toast => (
-          <Toast
-            key={toast.id}
-            id={toast.id}
-            type={toast.type}
-            action={toast.action}
-            title={toast.title}
-            message={toast.message}
-            duration={toast.duration}
-            onDismiss={dismissToast}
-          />
-        ))}
+      {/* Toast Container - Fixed to viewport top-right */}
+      <div className="fixed top-4 right-4 z-[9999] space-y-2 max-w-sm pointer-events-none">
+        <div className="pointer-events-auto space-y-2">
+          {toasts.map(toast => (
+            <Toast
+              key={toast.id}
+              id={toast.id}
+              type={toast.type}
+              action={toast.action}
+              title={toast.title}
+              message={toast.message}
+              duration={toast.duration}
+              onDismiss={dismissToast}
+            />
+          ))}
+        </div>
       </div>
     </ToastContext.Provider>
   );
