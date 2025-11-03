@@ -198,18 +198,22 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       snacks: 5
     };
 
+    // Check limits before adding
+    const currentDay = mealPlan[dateStr] || {};
+    const currentMeals = currentDay[mealType as keyof typeof currentDay] as SavedRecipe[] || [];
+    const limit = mealLimits[mealType] || 1;
+
+    if (currentMeals.length >= limit) {
+      const mealName = mealType.charAt(0).toUpperCase() + mealType.slice(1);
+      showError(`${mealName} Limit Reached`, `You can only add up to ${limit} ${mealType} per day`);
+      return; // Exit early without adding
+    }
+
+    // Add recipe if limit not reached
     setMealPlan(prev => {
       const currentDay = prev[dateStr] || {};
       const currentMeals = currentDay[mealType as keyof typeof currentDay] as SavedRecipe[] || [];
-      
-      // Check limits
-      const limit = mealLimits[mealType] || 1;
-      if (currentMeals.length >= limit) {
-        const mealName = mealType.charAt(0).toUpperCase() + mealType.slice(1);
-        showError(`${mealName} Limit Reached`, `You can only add up to ${limit} ${mealType} per day`);
-        return prev;
-      }
-      
+
       return {
         ...prev,
         [dateStr]: {
@@ -218,6 +222,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
         }
       };
     });
+
     setShowRecipeSelector(null);
     setHasUnsavedChanges(true);
     showSuccess('Recipe Added', `${recipe.title} added to ${mealType}`);
