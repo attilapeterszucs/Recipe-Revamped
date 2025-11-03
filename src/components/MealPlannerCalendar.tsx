@@ -317,17 +317,46 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
   // Helper function to combine quantities intelligently
   const combineQuantities = (existingQty: string, newQty: string): string => {
+    // Normalize unit names to standard forms
+    const normalizeUnit = (unit: string): string => {
+      const unitMap: { [key: string]: string } = {
+        'tablespoon': 'tbsp',
+        'tablespoons': 'tbsp',
+        'teaspoon': 'tsp',
+        'teaspoons': 'tsp',
+        'gram': 'g',
+        'grams': 'g',
+        'kilogram': 'kg',
+        'kilograms': 'kg',
+        'milliliter': 'ml',
+        'milliliters': 'ml',
+        'liter': 'l',
+        'liters': 'l',
+        'ounce': 'oz',
+        'ounces': 'oz',
+        'pound': 'lb',
+        'pounds': 'lb',
+        'cup': 'cup',
+        'cups': 'cup',
+        'piece': 'piece',
+        'pieces': 'piece'
+      };
+
+      const lowerUnit = unit.toLowerCase().trim();
+      return unitMap[lowerUnit] || lowerUnit;
+    };
+
     // Try to parse and combine numeric quantities
     const parseQuantity = (qty: string) => {
       const match = qty.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);
-      return match ? { amount: parseFloat(match[1]), unit: match[2].trim() } : null;
+      return match ? { amount: parseFloat(match[1]), unit: normalizeUnit(match[2]) } : null;
     };
 
     const existing = parseQuantity(existingQty);
     const newQ = parseQuantity(newQty);
 
-    // If both have the same unit, combine them
-    if (existing && newQ && existing.unit.toLowerCase() === newQ.unit.toLowerCase()) {
+    // If both have the same normalized unit, combine them
+    if (existing && newQ && existing.unit === newQ.unit) {
       const total = existing.amount + newQ.amount;
       return `${total % 1 === 0 ? Math.round(total) : total.toFixed(1)} ${existing.unit}`;
     }
@@ -346,6 +375,46 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
       .replace(/,.*$/g, '') // Remove everything after comma (e.g., "mushrooms, sliced" -> "mushrooms")
       .replace(/\s+/g, ' ')
       .trim();
+
+    // Fix common spelling variations and typos
+    const spellingCorrections: { [key: string]: string } = {
+      'resemary': 'rosemary',
+      'rosemery': 'rosemary',
+      'rosmary': 'rosemary',
+      'cinammon': 'cinnamon',
+      'cinamon': 'cinnamon',
+      'tumeric': 'turmeric',
+      'tumric': 'turmeric',
+      'parsely': 'parsley',
+      'corriander': 'coriander',
+      'cinlantro': 'cilantro',
+      'bellpepper': 'bell pepper',
+      'bell peppers': 'bell pepper',
+      'zuchini': 'zucchini',
+      'zuccini': 'zucchini',
+      'brocolli': 'broccoli',
+      'brocoli': 'broccoli',
+      'cauliflower': 'cauliflower',
+      'califlower': 'cauliflower',
+      'mozarella': 'mozzarella',
+      'mozzerella': 'mozzarella',
+      'parmesean': 'parmesan',
+      'parmesian': 'parmesan',
+      'jalapengo': 'jalapeno',
+      'jalapino': 'jalapeno',
+      'avacado': 'avocado',
+      'advocado': 'avocado',
+      'bannana': 'banana',
+      'tomatoe': 'tomato',
+      'potatoe': 'potato'
+    };
+
+    // Apply spelling corrections
+    for (const [typo, correct] of Object.entries(spellingCorrections)) {
+      if (cleaned.includes(typo)) {
+        cleaned = cleaned.replace(typo, correct);
+      }
+    }
 
     // Normalize plural to singular for common patterns
     const pluralMap: { [key: string]: string } = {
