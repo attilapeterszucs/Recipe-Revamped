@@ -84,12 +84,6 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
           )}
         </div>
         <div className="hidden sm:flex items-center gap-2">
-          {/* Admin Shield Icon */}
-          {isAdmin && (
-            <div className="flex items-center justify-center w-6 h-6 rounded-md bg-red-500 shadow-sm">
-              <Shield className="w-3.5 h-3.5 text-white" />
-            </div>
-          )}
           {/* Plan Badge - Hidden on mobile, shown on larger screens */}
           <div className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-all duration-200 ${
             loading ? 'bg-gray-100 text-gray-400 border-gray-200' :
@@ -105,6 +99,12 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                'Free'
             }
           </div>
+          {/* Admin Shield Icon */}
+          {isAdmin && (
+            <div className="flex items-center justify-center w-6 h-6 rounded-md bg-red-500 shadow-sm">
+              <Shield className="w-3.5 h-3.5 text-white" />
+            </div>
+          )}
           <ChevronDown
             className={`w-4 h-4 text-gray-600 transition-all duration-200 ${
               isOpen ? 'rotate-180 text-green-600' : ''
