@@ -336,6 +336,76 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
     return `${existingQty} + ${newQty}`;
   };
 
+  // Helper function to normalize ingredient names (handle singular/plural, variations)
+  const normalizeIngredientName = (name: string): string => {
+    const normalized = name.toLowerCase().trim();
+
+    // Remove common descriptors and preparation methods
+    let cleaned = normalized
+      .replace(/\b(fresh|chopped|diced|sliced|minced|finely|roughly|organic|free-range|raw|cooked|dried|frozen|canned|whole|ground|crushed|grated|shredded|peeled|deveined|boneless|skinless)\b/gi, '')
+      .replace(/,.*$/g, '') // Remove everything after comma (e.g., "mushrooms, sliced" -> "mushrooms")
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // Normalize plural to singular for common patterns
+    const pluralMap: { [key: string]: string } = {
+      'tomatoes': 'tomato',
+      'potatoes': 'potato',
+      'onions': 'onion',
+      'mushrooms': 'mushroom',
+      'peppers': 'pepper',
+      'carrots': 'carrot',
+      'apples': 'apple',
+      'bananas': 'banana',
+      'berries': 'berry',
+      'eggs': 'egg',
+      'olives': 'olive',
+      'avocados': 'avocado',
+      'cucumbers': 'cucumber',
+      'lemons': 'lemon',
+      'limes': 'lime',
+      'oranges': 'orange',
+      'peaches': 'peach',
+      'strawberries': 'strawberry',
+      'blueberries': 'blueberry',
+      'raspberries': 'raspberry',
+      'chickpeas': 'chickpea',
+      'beans': 'bean',
+      'peas': 'pea',
+      'shrimp': 'shrimp', // already singular
+      'cloves': 'clove',
+      'leaves': 'leaf',
+      'sprigs': 'sprig'
+    };
+
+    // Check exact matches first
+    if (pluralMap[cleaned]) {
+      return pluralMap[cleaned];
+    }
+
+    // General plural to singular conversion for words ending in 's'
+    // but avoid words that naturally end in 's'
+    const naturalSWords = ['glass', 'grass', 'bass', 'lass', 'mass', 'pass', 'class'];
+    if (cleaned.endsWith('s') && !naturalSWords.includes(cleaned) && cleaned.length > 3) {
+      // Check if it's likely a plural
+      if (cleaned.endsWith('ies')) {
+        // cherries -> cherry
+        return cleaned.slice(0, -3) + 'y';
+      } else if (cleaned.endsWith('ves')) {
+        // leaves -> leaf (already in map, but as backup)
+        return cleaned.slice(0, -3) + 'f';
+      } else if (cleaned.endsWith('es') && !cleaned.endsWith('oes')) {
+        // tomatoes would be handled by map, but others like dishes -> dish
+        return cleaned.slice(0, -2);
+      } else {
+        // Most common: remove trailing 's'
+        return cleaned.slice(0, -1);
+      }
+    }
+
+    return cleaned;
+  };
+
   // Helper function to process recipe ingredients
   const processRecipeIngredients = (recipe: SavedRecipe, ingredients: { [key: string]: ShoppingListItem }) => {
     let ingredientList: string[] = [];
@@ -354,9 +424,9 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
       for (const line of lines) {
         const trimmedLine = line.trim();
-        
+
         // Check for ingredients section start
-        if (trimmedLine.match(/^##?\s*Ingredients?/i) || 
+        if (trimmedLine.match(/^##?\s*Ingredients?/i) ||
             trimmedLine.match(/^\*\*Ingredients?\*\*/i)) {
           inIngredientsSection = true;
           continue;
@@ -364,7 +434,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
 
         // Check for next section (end of ingredients)
         if (inIngredientsSection && (
-            trimmedLine.match(/^##?\s*[A-Za-z]/i) || 
+            trimmedLine.match(/^##?\s*[A-Za-z]/i) ||
             trimmedLine.match(/^\*\*[A-Za-z].*\*\*/i))) {
           break;
         }
@@ -379,50 +449,49 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
     // Process the ingredients list
     ingredientList.forEach(ingredient => {
       if (!ingredient || ingredient.trim() === '') return;
-      
+
       // Extract quantity and ingredient name more carefully
       // Look for patterns like "200g salmon" or "2 cups flour" or "1 large onion"
       const quantityMatch = ingredient.match(/^(\d+(?:\.\d+)?\s*(?:g|kg|ml|l|cups?|tbsp|tsp|oz|lbs?|pieces?|large|medium|small)?)\s+(.+)$/i);
-      
+
       if (quantityMatch) {
         const quantity = quantityMatch[1].trim();
-        const name = quantityMatch[2].toLowerCase().trim();
-        const displayName = quantityMatch[2].trim();
-        
-        // Create a cleaner key for grouping (remove descriptors like "fresh", "chopped")
-        const cleanName = name
-          .replace(/\b(fresh|chopped|diced|sliced|minced|finely|roughly|organic|free-range)\b/gi, '')
-          .replace(/\s+/g, ' ')
-          .trim();
-        
-        if (ingredients[cleanName]) {
-          if (!ingredients[cleanName].recipes.includes(recipe.title)) {
-            ingredients[cleanName].recipes.push(recipe.title);
-            ingredients[cleanName].quantity = combineQuantities(ingredients[cleanName].quantity, quantity);
+        const fullName = quantityMatch[2].trim();
+
+        // Normalize the ingredient name for grouping
+        const normalizedKey = normalizeIngredientName(fullName);
+
+        if (ingredients[normalizedKey]) {
+          // Ingredient already exists - combine quantities
+          ingredients[normalizedKey].quantity = combineQuantities(ingredients[normalizedKey].quantity, quantity);
+          // Add recipe to list if not already there
+          if (!ingredients[normalizedKey].recipes.includes(recipe.title)) {
+            ingredients[normalizedKey].recipes.push(recipe.title);
           }
         } else {
-          ingredients[cleanName] = {
-            ingredient: displayName,
+          // New ingredient - create entry
+          ingredients[normalizedKey] = {
+            ingredient: fullName.split(',')[0].trim(), // Use first part before comma as display name
             quantity,
             recipes: [recipe.title],
-            category: categorizeIngredient(displayName),
-            isChecked: checkedItems.has(cleanName)
+            category: categorizeIngredient(fullName),
+            isChecked: checkedItems.has(normalizedKey)
           };
         }
       } else {
         // Handle ingredients without clear quantities
-        const name = ingredient.toLowerCase().trim();
-        if (ingredients[name]) {
-          if (!ingredients[name].recipes.includes(recipe.title)) {
-            ingredients[name].recipes.push(recipe.title);
+        const normalizedKey = normalizeIngredientName(ingredient);
+        if (ingredients[normalizedKey]) {
+          if (!ingredients[normalizedKey].recipes.includes(recipe.title)) {
+            ingredients[normalizedKey].recipes.push(recipe.title);
           }
         } else {
-          ingredients[name] = {
+          ingredients[normalizedKey] = {
             ingredient: ingredient,
             quantity: 'as needed',
             recipes: [recipe.title],
             category: categorizeIngredient(ingredient),
-            isChecked: checkedItems.has(name)
+            isChecked: checkedItems.has(normalizedKey)
           };
         }
       }
