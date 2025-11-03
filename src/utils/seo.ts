@@ -166,6 +166,21 @@ export const SEO_CONFIGS: Record<string, SEOConfig> = {
     }
   },
 
+  affiliateProgram: {
+    title: 'Affiliate Program - Earn Rewards | Recipe Revamped',
+    description: 'Join Recipe Revamped\'s affiliate program. Earn 3 days of Master Chef plan for every referral. New users get 7 days free when using your code!',
+    keywords: 'recipe revamped affiliate program, recipe converter referral, earn rewards, affiliate marketing, recipe app rewards, referral program, master chef plan, free premium access',
+    canonical: 'https://reciperevamped.com/affiliate-program',
+    ogType: 'website',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'Recipe Revamped Affiliate Program',
+      description: 'Earn rewards by sharing Recipe Revamped. Get 3 days of Master Chef plan for each referral, and your referrals get 7 days free.',
+      url: 'https://reciperevamped.com/affiliate-program'
+    }
+  },
+
   'verify-email': {
     title: 'Verify Your Email - Recipe Revamped',
     description: 'Verify your email address to complete your Recipe Revamped account setup.',

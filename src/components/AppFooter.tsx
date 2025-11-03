@@ -55,6 +55,11 @@ export const AppFooter: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/affiliate-program" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+                  Affiliate Program
+                </Link>
+              </li>
+              <li>
                 <Link to="/partnerships" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
                   Partnerships
                 </Link>

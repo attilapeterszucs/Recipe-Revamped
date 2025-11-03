@@ -20,6 +20,7 @@ const AboutUs = lazy(() => import('./pages/AboutUs').then(module => ({ default: 
 const Blog = lazy(() => import('./pages/Blog').then(module => ({ default: module.Blog })));
 const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
 const Careers = lazy(() => import('./pages/Careers').then(module => ({ default: module.Careers })));
+const AffiliateProgram = lazy(() => import('./pages/AffiliateProgram').then(module => ({ default: module.AffiliateProgram })));
 const Partnerships = lazy(() => import('./pages/Partnerships').then(module => ({ default: module.Partnerships })));
 const Unsubscribe = lazy(() => import('./pages/Unsubscribe').then(module => ({ default: module.Unsubscribe })));
 const SignInPage = lazy(() => import('./pages/SignInPage').then(module => ({ default: module.SignInPage })));
@@ -118,6 +119,7 @@ const AppContent: React.FC = () => {
             <Route path="/blog/:blogId" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/affiliate-program" element={<AffiliateProgram />} />
             <Route path="/partnerships" element={<Partnerships />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="*" element={<NotFound />} />

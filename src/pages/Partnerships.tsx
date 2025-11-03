@@ -131,60 +131,6 @@ export const Partnerships: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Affiliate Partnerships */}
-          <div className="bg-white rounded-2xl border-2 border-purple-200 p-8 lg:p-12 shadow-lg transition-all duration-300 hover:shadow-xl">
-            <div className="flex flex-col lg:flex-row items-start gap-8">
-              <div className="flex-shrink-0">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center shadow-lg">
-                  <TrendingUp className="w-10 h-10 text-purple-600" />
-                </div>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-2xl font-black text-gray-900 mb-4">Affiliate & Referral Programs</h3>
-                <p className="text-gray-700 mb-6 leading-relaxed">
-                  Earn commissions by recommending Recipe Revamped to your audience. Our affiliate program is designed
-                  to reward partners who help us reach people who can benefit from personalized recipe adaptation.
-                </p>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl p-4 border border-purple-200">
-                    <h4 className="font-bold text-gray-900 mb-2">What You Get</h4>
-                    <ul className="space-y-2 text-sm text-gray-700">
-                      <li className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-purple-600 rounded-full"></div>
-                        Competitive commission rates
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-purple-600 rounded-full"></div>
-                        Marketing materials and assets
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-purple-600 rounded-full"></div>
-                        Dedicated partner support
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl p-4 border border-purple-200">
-                    <h4 className="font-bold text-gray-900 mb-2">Ideal For</h4>
-                    <ul className="space-y-2 text-sm text-gray-700">
-                      <li className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-purple-600 rounded-full"></div>
-                        Content creators
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-purple-600 rounded-full"></div>
-                        Food & health websites
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-purple-600 rounded-full"></div>
-                        Community leaders
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* CTA Section */}
