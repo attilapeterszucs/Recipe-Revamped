@@ -162,7 +162,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
 
   if (!isOpen) return null;
 
-  const paidPlans = Object.entries(SUBSCRIPTION_PLANS).filter(([id]) => id !== 'free' && id !== 'enterprise');
+  const allPlans = Object.entries(SUBSCRIPTION_PLANS).filter(([id]) => id !== 'enterprise');
 
   return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4">
@@ -215,7 +215,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
         {/* Plans Grid */}
         <div className="px-6 pb-6">
           <div className="grid md:grid-cols-3 gap-6">
-            {paidPlans.map(([planId, planDetails]) => {
+            {allPlans.map(([planId, planDetails]) => {
               const plan = planId as SubscriptionPlan;
               const isSelected = selectedPlan === plan;
               const priceInfo = localizedPrices[plan];
@@ -252,7 +252,16 @@ export const PricingModal: React.FC<PricingModalProps> = ({
 
                     {/* Pricing */}
                     <div className="mb-4">
-                      {locationLoading ? (
+                      {plan === 'free' ? (
+                        <div>
+                          <div className="text-3xl font-bold text-gray-900">
+                            Free
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            Forever
+                          </div>
+                        </div>
+                      ) : locationLoading ? (
                         <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
                       ) : currentPrice ? (
                         <div>
@@ -282,15 +291,19 @@ export const PricingModal: React.FC<PricingModalProps> = ({
 
                     {/* Subscribe Button */}
                     <button
-                      onClick={() => handleSubscribe(plan, billingPeriod)}
-                      disabled={portalLoading}
+                      onClick={() => plan === 'free' ? onClose() : handleSubscribe(plan, billingPeriod)}
+                      disabled={portalLoading || plan === 'free'}
                       className={`w-full py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 ${
-                        isPopular
+                        plan === 'free'
+                          ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                          : isPopular
                           ? 'bg-blue-600 text-white hover:bg-blue-700'
                           : 'bg-gray-900 text-white hover:bg-gray-800'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
-                      {portalLoading ? (
+                      {plan === 'free' ? (
+                        <span>Current Plan</span>
+                      ) : portalLoading ? (
                         <span>Loading...</span>
                       ) : hasActiveSubscription ? (
                         <>
