@@ -165,31 +165,33 @@ export const PricingModal: React.FC<PricingModalProps> = ({
   const allPlans = Object.entries(SUBSCRIPTION_PLANS).filter(([id]) => id !== 'enterprise');
 
   return createPortal(
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+      <div className="bg-gradient-to-b from-white to-gray-50 rounded-3xl max-w-7xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center">
+        <div className="sticky top-0 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200 p-8 flex justify-between items-center rounded-t-3xl">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Choose Your Plan</h2>
-            <p className="text-gray-600 mt-1">Upgrade to unlock advanced features</p>
+            <h2 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              Choose Your Plan
+            </h2>
+            <p className="text-gray-700 mt-2 font-medium">Unlock the full power of Recipe Revamped</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-white/80 rounded-full transition-all duration-200 hover:scale-110"
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6 text-gray-700" />
           </button>
         </div>
 
         {/* Billing Period Toggle */}
-        <div className="px-6 py-4">
+        <div className="px-8 py-6">
           <div className="flex items-center justify-center">
-            <div className="bg-gray-100 p-1 rounded-lg flex">
+            <div className="bg-gradient-to-r from-gray-100 to-gray-200 p-1.5 rounded-xl flex shadow-inner">
               <button
                 onClick={() => setBillingPeriod('monthly')}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                className={`px-6 py-3 text-sm font-bold rounded-lg transition-all duration-300 ${
                   billingPeriod === 'monthly'
-                    ? 'bg-white text-blue-600 shadow-sm'
+                    ? 'bg-white text-green-600 shadow-lg transform scale-105'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
@@ -197,14 +199,14 @@ export const PricingModal: React.FC<PricingModalProps> = ({
               </button>
               <button
                 onClick={() => setBillingPeriod('yearly')}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                className={`px-6 py-3 text-sm font-bold rounded-lg transition-all duration-300 ${
                   billingPeriod === 'yearly'
-                    ? 'bg-white text-blue-600 shadow-sm'
+                    ? 'bg-white text-green-600 shadow-lg transform scale-105'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
                 Yearly
-                <span className="ml-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                <span className="ml-2 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 text-xs px-2.5 py-1 rounded-full font-black border border-green-300">
                   Save 20%
                 </span>
               </button>
@@ -213,8 +215,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({
         </div>
 
         {/* Plans Grid */}
-        <div className="px-6 pb-6">
-          <div className="grid md:grid-cols-3 gap-6">
+        <div className="px-8 pb-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {allPlans.map(([planId, planDetails]) => {
               const plan = planId as SubscriptionPlan;
               const isSelected = selectedPlan === plan;
@@ -225,17 +227,19 @@ export const PricingModal: React.FC<PricingModalProps> = ({
               return (
                 <div
                   key={plan}
-                  className={`relative rounded-xl border-2 p-6 ${
-                    isSelected
-                      ? getPlanBorderColor(plan)
-                      : 'border-gray-200'
-                  } ${isPopular ? 'ring-2 ring-blue-500 ring-opacity-50' : ''}`}
+                  className={`relative rounded-2xl border-2 p-6 bg-white shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-105 ${
+                    plan === 'free' ? 'border-gray-200' :
+                    isPopular
+                      ? 'border-green-400 ring-4 ring-green-300 hover:ring-green-400 transform scale-105 bg-gradient-to-b from-green-50 via-emerald-50 to-white'
+                      : 'border-gray-200 hover:border-green-300'
+                  }`}
                   onClick={() => setSelectedPlan(plan)}
                 >
                   {/* Popular Badge */}
                   {isPopular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-blue-600 text-white px-3 py-1 text-sm font-medium rounded-full">
+                      <span className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-xl border-2 border-white flex items-center gap-1">
+                        <Crown className="w-3 h-3" />
                         Most Popular
                       </span>
                     </div>
@@ -251,38 +255,41 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                     </h3>
 
                     {/* Pricing */}
-                    <div className="mb-4">
+                    <div className="mb-6">
                       {plan === 'free' ? (
                         <div>
-                          <div className="text-3xl font-bold text-gray-900">
+                          <div className="text-4xl font-black text-gray-900">
                             Free
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-xs font-semibold text-gray-500 mt-1">
                             Forever
                           </div>
                         </div>
                       ) : locationLoading ? (
-                        <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-12 bg-gray-200 rounded animate-pulse"></div>
                       ) : currentPrice ? (
                         <div>
-                          <div className="text-3xl font-bold text-gray-900">
+                          <div className={`text-4xl font-black ${isPopular ? 'text-green-600' : 'text-gray-900'}`}>
                             {currentPrice.formatted}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-xs font-semibold text-gray-500 mt-1">
                             per {billingPeriod === 'yearly' ? 'year' : 'month'}
                           </div>
                           {billingPeriod === 'yearly' && priceInfo.savings && (
-                            <div className="text-sm text-green-600 font-medium mt-1">
-                              Save {currentPrice.currencySymbol}{priceInfo.savings.amount} per year
+                            <div className="mt-3 animate-fade-in">
+                              <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
+                                <Check className="w-3 h-3" />
+                                Save {currentPrice.currencySymbol}{priceInfo.savings.amount} ({priceInfo.savings.percentage}%)
+                              </div>
                             </div>
                           )}
                         </div>
                       ) : (
                         <div>
-                          <div className="text-3xl font-bold text-gray-900">
+                          <div className="text-4xl font-black text-gray-900">
                             ${planDetails.basePrice}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-xs font-semibold text-gray-500 mt-1">
                             per {billingPeriod === 'yearly' ? 'year' : 'month'}
                           </div>
                         </div>
@@ -293,13 +300,13 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                     <button
                       onClick={() => plan === 'free' ? onClose() : handleSubscribe(plan, billingPeriod)}
                       disabled={portalLoading || plan === 'free'}
-                      className={`w-full py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 ${
+                      className={`w-full py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center space-x-2 ${
                         plan === 'free'
                           ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
                           : isPopular
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg shadow-green-500/30'
                           : 'bg-gray-900 text-white hover:bg-gray-800'
-                      } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      } disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
                     >
                       {plan === 'free' ? (
                         <span>Current Plan</span>
@@ -311,22 +318,22 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                           <ExternalLink className="w-4 h-4" />
                         </>
                       ) : (
-                        <span>Start {planDetails.name} Plan</span>
+                        <span>{isPopular ? 'Get Started' : `Upgrade to ${planDetails.name}`}</span>
                       )}
                     </button>
                   </div>
 
                   {/* Features List */}
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {planDetails.features.map((feature, index) => (
                       <div key={index} className="flex items-start">
                         {feature.includes('✗') ? (
-                          <X className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                          <X className="h-4 w-4 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
                         ) : (
-                          <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                          <Check className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
                         )}
                         <span className={`text-sm ${
-                          feature.includes('✗') ? 'text-gray-500 line-through' : 'text-gray-700'
+                          feature.includes('✗') ? 'text-gray-500 line-through' : 'text-gray-700 font-medium'
                         }`}>
                           {feature.replace('✗ ', '')}
                         </span>
@@ -340,9 +347,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({
 
           {/* Footer */}
           <div className="mt-8 text-center text-sm text-gray-600">
-            <p>All plans include a 14-day free trial. Cancel anytime.</p>
-            <p className="mt-2">
-              Questions? <a href="/contact" className="text-blue-600 hover:underline">Contact us</a>
+            <p className="font-medium">
+              Questions? <a href="/contact" className="text-green-600 hover:text-green-700 font-bold hover:underline">Contact us</a>
             </p>
           </div>
         </div>
