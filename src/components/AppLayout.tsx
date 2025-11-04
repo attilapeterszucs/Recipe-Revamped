@@ -10,6 +10,7 @@ import type { Notification } from '../types/notifications';
 import { AppFooter } from './AppFooter';
 import { ReactivationModal } from './ReactivationModal';
 import { PaymentSuccessPopup } from './PaymentSuccessPopup';
+import { PricingModal } from './PricingModal';
 import { usePaymentSuccess } from '../hooks/usePaymentSuccess';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import { getUserSettings } from '../lib/userSettings';
@@ -321,6 +322,13 @@ export function AppLayout() {
       <PaymentSuccessPopup
         isOpen={showSuccessPopup}
         onClose={closeSuccessPopup}
+      />
+
+      {/* Pricing/Upgrade Modal */}
+      <PricingModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        source="app-layout"
       />
 
       {/* Reactivation Modal */}

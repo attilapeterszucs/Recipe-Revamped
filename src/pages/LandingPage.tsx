@@ -957,10 +957,17 @@ export const LandingPage: React.FC = () => {
                   </ul>
                 </CardContent>
                 <CardFooter className="p-0">
-                  <Button asChild className="w-full py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30">
-                    <Link to="/signin">
-                      Upgrade Now
-                    </Link>
+                  <Button
+                    onClick={() => {
+                      if (window.showUpgradeModal) {
+                        window.showUpgradeModal('chef', 'landing-page-chef-plan');
+                      } else {
+                        window.location.href = '/signin';
+                      }
+                    }}
+                    className="w-full py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/30"
+                  >
+                    Upgrade Now
                   </Button>
                 </CardFooter>
               </Card>
@@ -1029,10 +1036,17 @@ export const LandingPage: React.FC = () => {
                   </ul>
                 </CardContent>
                 <CardFooter className="p-0">
-                  <Button asChild className="w-full py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-gray-900 text-white hover:bg-gray-800">
-                    <Link to="/signin">
-                      Upgrade Now
-                    </Link>
+                  <Button
+                    onClick={() => {
+                      if (window.showUpgradeModal) {
+                        window.showUpgradeModal('master-chef', 'landing-page-master-chef-plan');
+                      } else {
+                        window.location.href = '/signin';
+                      }
+                    }}
+                    className="w-full py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-gray-900 text-white hover:bg-gray-800"
+                  >
+                    Upgrade Now
                   </Button>
                 </CardFooter>
               </Card>
