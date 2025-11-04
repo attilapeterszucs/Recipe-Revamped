@@ -39,6 +39,7 @@ export function SettingsPage() {
     'admin-notifications': 'admin-notifications',
     'admin-marketing': 'admin-marketing',
     'admin-blog': 'admin-blog',
+    'admin-jobs': 'admin-jobs',
   };
 
   const urlSection = params.section;
@@ -70,6 +71,7 @@ export function SettingsPage() {
       'admin-notifications': 'admin-notifications',
       'admin-marketing': 'admin-marketing',
       'admin-blog': 'admin-blog',
+      'admin-jobs': 'admin-jobs',
     };
 
     const urlSection = urlMapping[sectionId] || 'account';

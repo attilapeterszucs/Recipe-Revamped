@@ -1,15 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Briefcase, Users, Rocket, Heart, Coffee, Globe, Zap, Target, Shield, MapPin, Clock, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { Briefcase, Users, Rocket, Heart, Coffee, Globe, Zap, Target, Shield, MapPin, Clock, ArrowRight, ChevronDown, ChevronUp, Building } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { SEOHead } from '../components/SEOHead';
+import { getActiveJobPostings } from '../lib/jobPostingService';
+import type { JobPosting } from '../types/jobPosting';
 
 export const Careers: React.FC = () => {
   const [openJobId, setOpenJobId] = useState<string | null>(null);
+  const [jobs, setJobs] = useState<JobPosting[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  // Load job postings from Firestore
+  useEffect(() => {
+    const loadJobs = async () => {
+      try {
+        setLoading(true);
+        const activeJobs = await getActiveJobPostings();
+        setJobs(activeJobs);
+      } catch (error) {
+        console.error('Error loading job postings:', error);
+        setJobs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadJobs();
   }, []);
 
   const toggleJob = (jobId: string) => {
@@ -119,152 +141,131 @@ export const Careers: React.FC = () => {
           </div>
         </div>
 
-        {/* Current Openings */}
+        {/* Current Openings - Loaded from Firestore */}
         <div className="mb-12">
           <h2 className="text-3xl font-black text-gray-900 mb-10 text-center">Current Job Openings</h2>
 
-          {/* Cyber Security Internship */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-green-300 overflow-hidden">
-            {/* Collapsed Header - Always Visible */}
-            <div
-              className="p-6 lg:p-8 cursor-pointer"
-              onClick={() => toggleJob('cyber-security')}
-            >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-start gap-4 flex-1">
-                  <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <Shield className="w-7 h-7 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold mb-2">
-                      INTERNSHIP
-                    </div>
-                    <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-2">Cyber Security Professional</h3>
-                    <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
-                        <span>Remote</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        <span>Part-time / Full-time</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Briefcase className="w-4 h-4" />
-                        <span>Internship</span>
-                      </div>
-                    </div>
-                  </div>
+          {loading ? (
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-2xl border-2 border-gray-200 p-6 shadow-lg animate-pulse">
+                  <div className="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
                 </div>
-                <div className="flex-shrink-0">
-                  {openJobId === 'cyber-security' ? (
-                    <ChevronUp className="w-6 h-6 text-gray-600" />
-                  ) : (
-                    <ChevronDown className="w-6 h-6 text-gray-600" />
+              ))}
+            </div>
+          ) : jobs.length === 0 ? (
+            <div className="text-center text-gray-600 py-12">
+              <p className="text-lg">No open positions at the moment. Check back soon!</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {jobs.map((job) => (
+                <div
+                  key={job.id}
+                  className="bg-white rounded-2xl border-2 border-gray-200 p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:border-green-300"
+                >
+                  {/* Job Header - Always Visible */}
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => toggleJob(job.id!)}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <h3 className="text-xl font-black text-gray-900 mb-2">{job.title}</h3>
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+                          <div className="flex items-center gap-1">
+                            <Briefcase className="w-4 h-4 text-green-600" />
+                            <span className="font-semibold">{job.type}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4 text-green-600" />
+                            <span className="font-semibold">{job.location}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Building className="w-4 h-4 text-green-600" />
+                            <span className="font-semibold">{job.workType}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4 text-gray-500" />
+                            <span>Posted {new Date(job.postedDate).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button className="ml-4 p-2 hover:bg-green-50 rounded-lg transition-colors">
+                        {openJobId === job.id ? (
+                          <ChevronUp className="w-5 h-5 text-green-600" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5 text-gray-600" />
+                        )}
+                      </button>
+                    </div>
+
+                    <p className="text-gray-700 font-medium">{job.description}</p>
+                  </div>
+
+                  {/* Job Details - Expanded */}
+                  {openJobId === job.id && (
+                    <div className="mt-6 pt-6 border-t-2 border-gray-200 animate-in fade-in slide-in-from-top-2 duration-300">
+                      {/* Responsibilities */}
+                      {job.responsibilities.length > 0 && (
+                        <div className="mb-6">
+                          <h4 className="text-lg font-black text-gray-900 mb-3">Responsibilities</h4>
+                          <ul className="space-y-2">
+                            {job.responsibilities.map((item, index) => (
+                              <li key={index} className="flex items-start gap-2 text-gray-700">
+                                <ArrowRight className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Requirements */}
+                      <div className="mb-6">
+                        <h4 className="text-lg font-black text-gray-900 mb-3">Requirements</h4>
+                        <ul className="space-y-2">
+                          {job.requirements.map((item, index) => (
+                            <li key={index} className="flex items-start gap-2 text-gray-700">
+                              <ArrowRight className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Nice to Have */}
+                      {job.niceToHave.length > 0 && (
+                        <div className="mb-6">
+                          <h4 className="text-lg font-black text-gray-900 mb-3">Nice to Have</h4>
+                          <ul className="space-y-2">
+                            {job.niceToHave.map((item, index) => (
+                              <li key={index} className="flex items-start gap-2 text-gray-700">
+                                <ArrowRight className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Apply Button */}
+                      <div className="mt-6">
+                        <Link
+                          to="/contact?subject=Job%20Application"
+                          className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105"
+                        >
+                          Apply Now
+                        </Link>
+                      </div>
+                    </div>
                   )}
                 </div>
-              </div>
+              ))}
             </div>
-
-            {/* Expanded Content */}
-            {openJobId === 'cyber-security' && (
-              <div className="px-6 lg:px-8 pb-8 border-t-2 border-gray-100">
-                <div className="pt-6 space-y-6">
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-2">About the Role</h4>
-                    <p className="text-gray-700 leading-relaxed">
-                      We're looking for a talented Cyber Security intern to help us strengthen our security posture.
-                      You'll work directly with our development team to identify vulnerabilities and ensure our platform
-                      is secure for our users.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-3">What You'll Do</h4>
-                    <ul className="space-y-2">
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-red-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Perform comprehensive penetration testing on our web application and infrastructure</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-red-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Conduct security assessments of our database, backend APIs, and frontend code</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-red-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Identify and document security vulnerabilities with detailed reports</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-red-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Work with developers to recommend and implement security improvements</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-red-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Test authentication, authorization, and data protection mechanisms</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-3">What We're Looking For</h4>
-                    <ul className="space-y-2">
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Knowledge of web application security (OWASP Top 10)</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Experience with penetration testing tools and methodologies</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Understanding of database security, API security, and frontend vulnerabilities</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Strong analytical and problem-solving skills</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Excellent communication skills for reporting findings</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">Currently pursuing or recently completed a degree in Computer Science, Cyber Security, or related field</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-2">Nice to Have</h4>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium">Security Certifications (CEH, OSCP, etc.)</span>
-                      <span className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium">Bug Bounty Experience</span>
-                      <span className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium">Burp Suite</span>
-                      <span className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium">Metasploit</span>
-                      <span className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium">Nmap</span>
-                      <span className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium">Python/Bash scripting</span>
-                    </div>
-                  </div>
-
-                  {/* Apply Button */}
-                  <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                    <Link
-                      to="/contact"
-                      className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-red-500/30 transition-all duration-300 hover:scale-105"
-                    >
-                      Apply for This Position
-                      <ArrowRight className="w-5 h-5" />
-                    </Link>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Shield className="w-4 h-4 text-red-600" />
-                      <span>Help us build a secure platform for millions of users</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
         {/* General Application CTA */}

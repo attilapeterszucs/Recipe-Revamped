@@ -37,7 +37,8 @@ import {
   Copy,
   Link as LinkIcon,
   Gift,
-  Users
+  Users,
+  Briefcase
 } from 'lucide-react';
 import { getUserSettings, updateUserSettings, updateUserProfile, uploadProfilePicture, deleteProfilePicture } from '../lib/userSettings';
 import { createBackup, getUserBackups, restoreFromBackup, scheduleAutoBackup, deleteBackup } from '../lib/backup';
@@ -64,6 +65,7 @@ import { HealthGoalsManager } from '../components/HealthGoalsManager';
 import { AdminNotificationCreator } from '../components/AdminNotificationCreator';
 import { AdminUserManagement } from '../components/AdminUserManagement';
 import { AdminBlogManagement } from '../components/AdminBlogManagement';
+import { AdminJobManagement } from '../components/AdminJobManagement';
 import { MarketingEmailCampaign } from '../components/MarketingEmailCampaign';
 import { checkAdminAccess, initializeAdminSystem } from '../utils/adminUtils';
 import { useSubscriptionRefresh } from '../contexts/SubscriptionContext';
@@ -3846,6 +3848,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
       case 'admin-notifications':
       case 'admin-marketing':
       case 'admin-blog':
+      case 'admin-jobs':
         if (!isUserAdmin) {
           return (
             <div className="text-center text-gray-500">
@@ -3918,6 +3921,17 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                   <FileText className="w-4 h-4" />
                   <span>Blog Management</span>
                 </button>
+                <button
+                  onClick={() => changeSection('admin-jobs')}
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
+                    activeSection === 'admin-jobs'
+                      ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30 transform scale-105'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:scale-105 hover:shadow-md'
+                  }`}
+                >
+                  <Briefcase className="w-4 h-4" />
+                  <span>Job Management</span>
+                </button>
               </nav>
             </div>
 
@@ -3934,6 +3948,12 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               ) : activeSection === 'admin-blog' ? (
                 <AdminBlogManagement
                   key="admin-blog"
+                  adminUserId={user.uid}
+                  adminEmail={user.email || ''}
+                />
+              ) : activeSection === 'admin-jobs' ? (
+                <AdminJobManagement
+                  key="admin-jobs"
                   adminUserId={user.uid}
                   adminEmail={user.email || ''}
                 />
@@ -3971,7 +3991,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
                 <div className="flex gap-2 min-w-max">
                   {sections.map((section) => {
                     const Icon = section.icon;
-                    const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'));
+                    const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog' || activeSection === 'admin-jobs'));
                     const showPremiumBadge = section.premium && !section.hasAccess;
                     return (
                       <button
@@ -4049,7 +4069,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, onBack, onSettingsUpda
               <nav className="relative z-10 space-y-2">
                 {sections.map((section, index) => {
                   const Icon = section.icon;
-                  const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog'));
+                  const isActive = activeSection === section.id || (section.id === 'admin' && (activeSection === 'admin-users' || activeSection === 'admin-notifications' || activeSection === 'admin-marketing' || activeSection === 'admin-blog' || activeSection === 'admin-jobs'));
                   const showPremiumBadge = section.premium && !section.hasAccess;
                   return (
                     <button
