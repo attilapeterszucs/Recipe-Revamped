@@ -184,7 +184,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
         </div>
 
         {/* Billing Period Toggle */}
-        <div className="px-8 py-6">
+        <div className="px-8 py-8">
           <div className="flex items-center justify-center">
             <div className="bg-gradient-to-r from-gray-100 to-gray-200 p-1.5 rounded-xl flex shadow-inner">
               <button
@@ -227,7 +227,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
               return (
                 <div
                   key={plan}
-                  className={`relative rounded-2xl border-2 p-6 bg-white shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-105 ${
+                  className={`relative rounded-2xl border-2 p-6 bg-white shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-105 flex flex-col ${
                     plan === 'free' ? 'border-gray-200' :
                     isPopular
                       ? 'border-green-400 ring-4 ring-green-300 hover:ring-green-400 transform scale-105 bg-gradient-to-b from-green-50 via-emerald-50 to-white'
@@ -254,8 +254,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                       {planDetails.name}
                     </h3>
 
-                    {/* Pricing */}
-                    <div className="mb-6">
+                    {/* Pricing - Fixed height container */}
+                    <div className="h-32 flex flex-col items-center justify-start mb-6">
                       {plan === 'free' ? (
                         <div>
                           <div className="text-4xl font-black text-gray-900">
@@ -266,7 +266,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                           </div>
                         </div>
                       ) : locationLoading ? (
-                        <div className="h-12 bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-12 bg-gray-200 rounded animate-pulse w-32"></div>
                       ) : currentPrice ? (
                         <div>
                           <div className={`text-4xl font-black ${isPopular ? 'text-green-600' : 'text-gray-900'}`}>
@@ -275,14 +275,17 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                           <div className="text-xs font-semibold text-gray-500 mt-1">
                             per {billingPeriod === 'yearly' ? 'year' : 'month'}
                           </div>
-                          {billingPeriod === 'yearly' && priceInfo.savings && (
-                            <div className="mt-3 animate-fade-in">
-                              <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
-                                <Check className="w-3 h-3" />
-                                Save {currentPrice.currencySymbol}{priceInfo.savings.amount} ({priceInfo.savings.percentage}%)
+                          {/* Fixed space for savings badge */}
+                          <div className="h-10 mt-3 flex items-center justify-center">
+                            {billingPeriod === 'yearly' && priceInfo.savings && (
+                              <div className="animate-fade-in">
+                                <div className="inline-flex items-center gap-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
+                                  <Check className="w-3 h-3" />
+                                  Save {currentPrice.currencySymbol}{priceInfo.savings.amount} ({priceInfo.savings.percentage}%)
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </div>
                       ) : (
                         <div>
@@ -295,36 +298,10 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                         </div>
                       )}
                     </div>
-
-                    {/* Subscribe Button */}
-                    <button
-                      onClick={() => plan === 'free' ? onClose() : handleSubscribe(plan, billingPeriod)}
-                      disabled={portalLoading || plan === 'free'}
-                      className={`w-full py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center space-x-2 ${
-                        plan === 'free'
-                          ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                          : isPopular
-                          ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg shadow-green-500/30'
-                          : 'bg-gray-900 text-white hover:bg-gray-800'
-                      } disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
-                    >
-                      {plan === 'free' ? (
-                        <span>Current Plan</span>
-                      ) : portalLoading ? (
-                        <span>Loading...</span>
-                      ) : hasActiveSubscription ? (
-                        <>
-                          <span>Manage Plan</span>
-                          <ExternalLink className="w-4 h-4" />
-                        </>
-                      ) : (
-                        <span>{isPopular ? 'Get Started' : `Upgrade to ${planDetails.name}`}</span>
-                      )}
-                    </button>
                   </div>
 
-                  {/* Features List */}
-                  <div className="space-y-2.5">
+                  {/* Features List - Grows to fill space */}
+                  <div className="space-y-2.5 flex-grow mb-6">
                     {planDetails.features.map((feature, index) => (
                       <div key={index} className="flex items-start">
                         {feature.includes('✗') ? (
@@ -340,6 +317,32 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                       </div>
                     ))}
                   </div>
+
+                  {/* Subscribe Button - Always at bottom */}
+                  <button
+                    onClick={() => plan === 'free' ? onClose() : handleSubscribe(plan, billingPeriod)}
+                    disabled={portalLoading || plan === 'free'}
+                    className={`w-full py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center space-x-2 ${
+                      plan === 'free'
+                        ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                        : isPopular
+                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg shadow-green-500/30'
+                        : 'bg-gray-900 text-white hover:bg-gray-800'
+                    } disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
+                  >
+                    {plan === 'free' ? (
+                      <span>Current Plan</span>
+                    ) : portalLoading ? (
+                      <span>Loading...</span>
+                    ) : hasActiveSubscription ? (
+                      <>
+                        <span>Manage Plan</span>
+                        <ExternalLink className="w-4 h-4" />
+                      </>
+                    ) : (
+                      <span>{isPopular ? 'Get Started' : `Upgrade to ${planDetails.name}`}</span>
+                    )}
+                  </button>
                 </div>
               );
             })}
