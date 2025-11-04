@@ -1,14 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Briefcase, Users, Rocket, Heart, Coffee, Globe, Zap, Target, Shield, MapPin, Clock, ArrowRight } from 'lucide-react';
+import { Briefcase, Users, Rocket, Heart, Coffee, Globe, Zap, Target, Shield, MapPin, Clock, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { AuthAwareNavigation } from '../components/AuthAwareNavigation';
 import { SEOHead } from '../components/SEOHead';
 
 export const Careers: React.FC = () => {
+  const [openJobId, setOpenJobId] = useState<string | null>(null);
+
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const toggleJob = (jobId: string) => {
+    setOpenJobId(openJobId === jobId ? null : jobId);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50/30 via-emerald-50/20 to-white">
@@ -118,20 +124,23 @@ export const Careers: React.FC = () => {
           <h2 className="text-3xl font-black text-gray-900 mb-10 text-center">Current Job Openings</h2>
 
           {/* Cyber Security Internship */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-green-300">
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-              <div className="flex-1">
-                {/* Position Header */}
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <Shield className="w-8 h-8 text-white" />
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-green-300 overflow-hidden">
+            {/* Collapsed Header - Always Visible */}
+            <div
+              className="p-6 lg:p-8 cursor-pointer"
+              onClick={() => toggleJob('cyber-security')}
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-start gap-4 flex-1">
+                  <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Shield className="w-7 h-7 text-white" />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold mb-2">
                       INTERNSHIP
                     </div>
-                    <h3 className="text-2xl font-black text-gray-900 mb-2">Cyber Security Professional</h3>
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                    <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-2">Cyber Security Professional</h3>
+                    <div className="flex flex-wrap gap-3 text-sm text-gray-600">
                       <div className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
                         <span>Remote</span>
@@ -147,9 +156,20 @@ export const Careers: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                <div className="flex-shrink-0">
+                  {openJobId === 'cyber-security' ? (
+                    <ChevronUp className="w-6 h-6 text-gray-600" />
+                  ) : (
+                    <ChevronDown className="w-6 h-6 text-gray-600" />
+                  )}
+                </div>
+              </div>
+            </div>
 
-                {/* Job Description */}
-                <div className="space-y-4 mb-6">
+            {/* Expanded Content */}
+            {openJobId === 'cyber-security' && (
+              <div className="px-6 lg:px-8 pb-8 border-t-2 border-gray-100">
+                <div className="pt-6 space-y-6">
                   <div>
                     <h4 className="font-bold text-gray-900 mb-2">About the Role</h4>
                     <p className="text-gray-700 leading-relaxed">
@@ -226,24 +246,24 @@ export const Careers: React.FC = () => {
                       <span className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium">Python/Bash scripting</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Apply Button */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t-2 border-gray-200">
-                  <Link
-                    to="/contact"
-                    className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-red-500/30 transition-all duration-300 hover:scale-105"
-                  >
-                    Apply for This Position
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Shield className="w-4 h-4 text-red-600" />
-                    <span>Help us build a secure platform for millions of users</span>
+                  {/* Apply Button */}
+                  <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                    <Link
+                      to="/contact"
+                      className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-red-500/30 transition-all duration-300 hover:scale-105"
+                    >
+                      Apply for This Position
+                      <ArrowRight className="w-5 h-5" />
+                    </Link>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Shield className="w-4 h-4 text-red-600" />
+                      <span>Help us build a secure platform for millions of users</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
