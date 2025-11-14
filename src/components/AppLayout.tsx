@@ -210,7 +210,6 @@ export function AppLayout() {
                   onShowSaved={() => navigate('/app/recipe-book')}
                   onShowSettings={() => navigate('/app/settings')}
                   onSignOut={handleSignOut}
-                  onShowUpgradeModal={() => setShowUpgradeModal(true)}
                 />
 
                 {/* Mobile Menu Button */}

@@ -20,9 +20,9 @@ export const PricingPage: React.FC = () => {
   // Check if user has an existing subscription
   const hasActiveSubscription = subscription && subscription.plan !== 'free' && subscription.status === 'active';
 
-  // Scroll to top when component mounts
+  // Scroll to top when component mounts or route changes
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const handleBillingToggle = (checked: boolean) => {

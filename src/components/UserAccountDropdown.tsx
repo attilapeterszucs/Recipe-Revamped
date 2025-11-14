@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { type User } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ChevronDown, User as UserIcon, Settings, LogOut, Crown, Shield, Gift, Palette, UserCog, Heart } from 'lucide-react';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
 import { getUserInitials } from '../utils/profileUtils';
@@ -11,7 +11,6 @@ interface UserAccountDropdownProps {
   onShowSaved: () => void;
   onShowSettings: () => void;
   onSignOut: () => void;
-  onShowUpgradeModal?: () => void;
 }
 
 const PLAN_COLORS = {
@@ -26,8 +25,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
   profilePictureUrl,
   onShowSaved,
   onShowSettings,
-  onSignOut,
-  onShowUpgradeModal
+  onSignOut
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [profileImageError, setProfileImageError] = useState(false);
@@ -181,14 +179,10 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
           {/* Menu Items */}
           <div className="py-2">
             {!isAdmin && (
-              <button
+              <Link
+                to="/app/pricing"
                 data-upgrade-plan
-                onClick={() => {
-                  if (onShowUpgradeModal) {
-                    onShowUpgradeModal();
-                  }
-                  setIsOpen(false);
-                }}
+                onClick={() => setIsOpen(false)}
                 className="flex items-center w-full px-5 py-3.5 text-sm font-bold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 hover:from-green-100 hover:to-emerald-100 transition-all duration-200 group border-b border-green-100"
               >
                 <div className="bg-green-600 p-1.5 rounded-lg mr-3 group-hover:scale-110 transition-transform duration-200">
@@ -198,7 +192,7 @@ export const UserAccountDropdown: React.FC<UserAccountDropdownProps> = ({
                   {userSubscription?.plan === 'chef' ? 'Upgrade to Master Chef' : 'Upgrade Plan'}
                 </span>
                 <ChevronDown className="w-4 h-4 -rotate-90" />
-              </button>
+              </Link>
             )}
 
             {/* Quick Links */}
