@@ -10,13 +10,12 @@ interface AppOutletContext {
   user: User;
   userSettings: UserSettings | null;
   featureAccess: FeatureAccess;
-  showUpgradeModal: () => void;
   updateRecipeCount: (count: number) => void;
 }
 
 export function SettingsPage() {
   // Get shared state from AppLayout via Outlet context
-  const { user, userSettings: initialUserSettings, featureAccess, showUpgradeModal } = useOutletContext<AppOutletContext>();
+  const { user, userSettings: initialUserSettings, featureAccess } = useOutletContext<AppOutletContext>();
 
   const navigate = useNavigate();
   const params = useParams();
@@ -83,7 +82,6 @@ export function SettingsPage() {
       user={user}
       onBack={handleBack}
       onSettingsUpdate={handleSettingsUpdate}
-      onShowUpgradeModal={showUpgradeModal}
       initialActiveSection={mappedSection || 'profile'}
       onSectionChange={handleSectionChange}
       featureAccess={{

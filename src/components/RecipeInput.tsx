@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { RecipeSchema } from '../lib/validation';
 import { z } from 'zod';
 import { Shuffle, Wand2, Search, ChevronLeft, ChevronRight, Filter, Trash2, Utensils, Crown, Check, Upload, FileText } from 'lucide-react';
@@ -1189,10 +1190,9 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
 
           {/* Enhanced CTA Button */}
           <div className="relative">
-            <button
-              type="button"
+            <Link
+              to="/app/pricing"
               className="w-full inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transform hover:scale-105 text-sm sm:text-base group relative overflow-hidden"
-              onClick={() => onShowUpgradeModal && onShowUpgradeModal()}
               aria-label="Upgrade to access all premium filters"
             >
               <Crown className="w-5 h-5 group-hover:animate-pulse" />
@@ -1203,7 +1203,7 @@ export const RecipeInput: React.FC<RecipeInputProps> = ({ onSubmit, onSurpriseMe
 
               {/* Shine effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-700" />
-            </button>
+            </Link>
 
             {currentPlan !== 'chef' && (
               <p className="text-xs text-gray-700 mt-3 text-center font-semibold">

@@ -18,13 +18,12 @@ interface AppOutletContext {
   user: User;
   userSettings: UserSettings | null;
   featureAccess: FeatureAccess;
-  showUpgradeModal: () => void;
   updateRecipeCount: (count: number) => void;
 }
 
 export function ConvertPage() {
   // Get shared state from AppLayout via Outlet context
-  const { user, userSettings, featureAccess, showUpgradeModal } = useOutletContext<AppOutletContext>();
+  const { user, userSettings, featureAccess } = useOutletContext<AppOutletContext>();
 
   const [converting, setConverting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -306,7 +305,6 @@ export function ConvertPage() {
                   used: featureAccess.conversionsUsedToday,
                   limit: featureAccess.conversionLimit
                 }}
-                onShowUpgradeModal={showUpgradeModal}
               />
             </div>
 

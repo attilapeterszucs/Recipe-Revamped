@@ -10,7 +10,6 @@ import type { Notification } from '../types/notifications';
 import { AppFooter } from './AppFooter';
 import { ReactivationModal } from './ReactivationModal';
 import { PaymentSuccessPopup } from './PaymentSuccessPopup';
-import { PricingModal } from './PricingModal';
 import { usePaymentSuccess } from '../hooks/usePaymentSuccess';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import { getUserSettings } from '../lib/userSettings';
@@ -26,7 +25,6 @@ export function AppLayout() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [currentRecipeCount, setCurrentRecipeCount] = useState(0);
   const { showError } = useToast();
 
@@ -304,7 +302,7 @@ export function AppLayout() {
           ? 'max-w-full px-2 sm:px-3 md:px-4 lg:px-6'
           : 'max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8'
       } mx-auto`}>
-        <Outlet context={{ user, userSettings, featureAccess, showUpgradeModal: () => setShowUpgradeModal(true), updateRecipeCount: setCurrentRecipeCount }} />
+        <Outlet context={{ user, userSettings, featureAccess, updateRecipeCount: setCurrentRecipeCount }} />
       </main>
 
       {/* Footer */}
@@ -322,13 +320,6 @@ export function AppLayout() {
       <PaymentSuccessPopup
         isOpen={showSuccessPopup}
         onClose={closeSuccessPopup}
-      />
-
-      {/* Pricing/Upgrade Modal */}
-      <PricingModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        source="app-layout"
       />
 
       {/* Reactivation Modal */}

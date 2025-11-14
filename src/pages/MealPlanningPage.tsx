@@ -1,4 +1,4 @@
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, Link } from 'react-router-dom';
 import { Calendar } from 'lucide-react';
 import type { User } from 'firebase/auth';
 import { MealPlannerCalendar } from '../components/MealPlannerCalendar';
@@ -10,13 +10,12 @@ interface AppOutletContext {
   user: User;
   userSettings: UserSettings | null;
   featureAccess: FeatureAccess;
-  showUpgradeModal: () => void;
   updateRecipeCount: (count: number) => void;
 }
 
 export function MealPlanningPage() {
   // Get shared state from AppLayout via Outlet context
-  const { user, userSettings, featureAccess, showUpgradeModal } = useOutletContext<AppOutletContext>();
+  const { user, userSettings, featureAccess } = useOutletContext<AppOutletContext>();
 
   return (
     <>
@@ -26,7 +25,6 @@ export function MealPlanningPage() {
           userSettings={userSettings || undefined}
           canUseNutritionAnalysis={featureAccess.canUseNutritionAnalysis}
           featureAccess={featureAccess}
-          onShowUpgradeModal={showUpgradeModal}
         />
       ) : (
         <div className="bg-orange-50 border border-orange-200 rounded-lg p-8 text-center">
@@ -43,12 +41,12 @@ export function MealPlanningPage() {
             <p>✓ Automatic shopping list generation</p>
             <p>✓ Nutritional planning overview</p>
           </div>
-          <button
-            onClick={showUpgradeModal}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          <Link
+            to="/app/pricing"
+            className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Upgrade to Chef Plan
-          </button>
+          </Link>
         </div>
       )}
     </>

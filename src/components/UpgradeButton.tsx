@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Star, ArrowRight, Zap } from 'lucide-react';
 import type { SubscriptionPlan } from '../types/subscription';
 
@@ -21,15 +22,6 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
   className = '',
   source = 'upgrade-button'
 }) => {
-  const handleUpgrade = () => {
-    if (window.showUpgradeModal) {
-      window.showUpgradeModal(targetPlan, source);
-    } else {
-      // Fallback - redirect to pricing page or show alert
-      console.warn('Upgrade modal not available');
-      alert('Upgrade feature is loading. Please try again in a moment.');
-    }
-  };
 
   // Size classes
   const sizeClasses = {
@@ -58,9 +50,10 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
   );
 
   return (
-    <button
-      onClick={handleUpgrade}
+    <Link
+      to="/app/pricing"
       data-upgrade-plan={targetPlan}
+      data-source={source}
       className={`
         ${widthClass}
         ${sizeClasses[size]}
@@ -70,12 +63,11 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
         transition-all duration-200
         transform hover:scale-105
         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-        disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
         ${className}
       `}
     >
       {defaultContent}
-    </button>
+    </Link>
   );
 };
 

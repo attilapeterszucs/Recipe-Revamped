@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import DOMPurify from 'dompurify';
 import { Calendar, Plus, Trash2, ShoppingCart, Printer, ChevronLeft, ChevronRight, X, GripVertical, Save, RefreshCcw, Search, ChefHat, Heart, Zap, Target, TrendingUp, Activity, Flame, Apple, Sparkles, ArrowUpDown, Filter, Utensils, AlertTriangle, Info, CheckCircle, Crown, Check } from 'lucide-react';
@@ -25,7 +26,6 @@ interface MealPlannerCalendarProps {
     canUseNutritionAnalysis: boolean;
     canGenerateWeeklyMenu: boolean;
   };
-  onShowUpgradeModal?: () => void;
 }
 
 interface ShoppingListItem {
@@ -44,7 +44,7 @@ interface ShoppingListCategory {
 
 // Nutrition data is now parsed from actual recipes
 
-export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId, userSettings, canUseNutritionAnalysis = false, featureAccess, onShowUpgradeModal }) => {
+export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId, userSettings, canUseNutritionAnalysis = false, featureAccess }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [mealPlan, setMealPlan] = useState<MealPlan>({});
   const [recipes, setRecipes] = useState<SavedRecipe[]>([]);
@@ -2023,10 +2023,10 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
               </div>
 
               {/* CTA Button */}
-              <button
+              <Link
+                to="/app/pricing"
                 data-upgrade-plan
-                onClick={() => onShowUpgradeModal?.()}
-                className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
+                className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden inline-block"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   <Crown className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
@@ -2034,7 +2034,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                 </span>
                 {/* Shine effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -2482,10 +2482,10 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
               </div>
 
               {/* CTA Button */}
-              <button
+              <Link
+                to="/app/pricing"
                 data-upgrade-plan
-                onClick={() => onShowUpgradeModal?.()}
-                className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden"
+                className="group/btn relative bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3.5 rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 text-sm touch-friendly min-h-[44px] w-full sm:w-auto shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105 overflow-hidden inline-block"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   <Crown className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
@@ -2493,7 +2493,7 @@ export const MealPlannerCalendar: React.FC<MealPlannerCalendarProps> = ({ userId
                 </span>
                 {/* Shine effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
-              </button>
+              </Link>
             </div>
           </div>
         </div>

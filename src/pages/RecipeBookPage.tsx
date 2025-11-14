@@ -13,7 +13,6 @@ interface AppOutletContext {
   user: User;
   userSettings: UserSettings | null;
   featureAccess: FeatureAccess;
-  showUpgradeModal: () => void;
   updateRecipeCount: (count: number) => void;
 }
 
