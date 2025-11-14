@@ -11,6 +11,7 @@ const ConvertPage = lazy(() => import('./pages/ConvertPage').then(module => ({ d
 const RecipeBookPage = lazy(() => import('./pages/RecipeBookPage').then(module => ({ default: module.RecipeBookPage })));
 const MealPlanningPage = lazy(() => import('./pages/MealPlanningPage').then(module => ({ default: module.MealPlanningPage })));
 const SettingsPage = lazy(() => import('./pages/SettingsPage').then(module => ({ default: module.SettingsPage })));
+const PricingPage = lazy(() => import('./pages/PricingPage').then(module => ({ default: module.PricingPage })));
 
 // Lazy load non-critical components for better code splitting
 const TermsOfService = lazy(() => import('./pages/TermsOfService').then(module => ({ default: module.TermsOfService })));
@@ -89,6 +90,7 @@ const AppContent: React.FC = () => {
               <Route path="convert" element={<ConvertPage />} />
               <Route path="recipe-book" element={<RecipeBookPage />} />
               <Route path="meal-planning" element={<MealPlanningPage />} />
+              <Route path="pricing" element={<PricingPage />} />
 
               {/* Settings with nested routes for deep linking */}
               <Route path="settings">
