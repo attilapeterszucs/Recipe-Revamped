@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Check, Star, X, Zap, Crown, ExternalLink } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
@@ -14,16 +14,22 @@ export const PricingPage: React.FC = () => {
   const { user } = useAuth();
   const { subscription } = useSubscriptionStatus();
   const { createPortalSession, loading: portalLoading } = useStripeCheckout();
+  const location = useLocation();
   const [isYearly, setIsYearly] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Check if user has an existing subscription
   const hasActiveSubscription = subscription && subscription.plan !== 'free' && subscription.status === 'active';
 
-  // Scroll to top when component mounts or route changes
+  // Scroll to top whenever the pricing page is accessed
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+    // Use instant scroll for immediate and reliable behavior
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    // Also scroll the document element and body for maximum compatibility
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location.pathname]); // Re-run whenever the route changes
 
   const handleBillingToggle = (checked: boolean) => {
     setIsTransitioning(true);
