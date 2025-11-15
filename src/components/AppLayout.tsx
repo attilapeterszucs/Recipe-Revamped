@@ -175,7 +175,7 @@ export function AppLayout() {
                         'Upgrade Required',
                         'Meal planning calendar is available for Chef plan and higher. Upgrade to access this feature!'
                       );
-                      setShowUpgradeModal(true);
+                      navigate('/app/pricing');
                       return;
                     }
                     navigate('/app/meal-planning');
@@ -266,7 +266,7 @@ export function AppLayout() {
                       'Upgrade Required',
                       'Meal planning calendar is available for Chef plan and higher. Upgrade to access this feature!'
                     );
-                    setShowUpgradeModal(true);
+                    navigate('/app/pricing');
                     setShowMobileMenu(false);
                     return;
                   }
