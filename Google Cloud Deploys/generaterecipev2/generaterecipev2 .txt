@@ -1,0 +1,688 @@
+const { onRequest } = require("firebase-functions/v2/https");
+  const admin = require("firebase-admin");
+
+  // Initialize Firebase Admin only once
+  if (!admin.apps.length) {
+    admin.initializeApp();
+  }
+
+  // Helper functions for profile context processing
+  function calculateBMI(height, weight, heightUnit, weightUnit) {
+    if (!height || !weight) return null;
+
+    let heightInMeters = height;
+    let weightInKg = weight;
+
+    // Convert height to meters
+    if (heightUnit === 'ft_in') {
+      heightInMeters = height * 0.3048;
+    } else {
+      heightInMeters = height / 100; // cm to meters
+    }
+
+    // Convert weight to kg
+    if (weightUnit === 'lbs') {
+      weightInKg = weight * 0.453592;
+    }
+
+    return weightInKg / (heightInMeters * heightInMeters);
+  }
+
+  function calculateDailyCalories(profile) {
+    if (!profile.age || !profile.weight || !profile.height) return null;
+
+    let weightInKg = profile.weight;
+    let heightInCm = profile.height;
+
+    // Convert units if needed
+    if (profile.weightUnit === 'lbs') {
+      weightInKg = profile.weight * 0.453592;
+    }
+    if (profile.heightUnit === 'ft_in') {
+      heightInCm = profile.height * 30.48;
+    }
+
+    // BMR calculation using Mifflin-St Jeor Equation
+    let bmr;
+    if (profile.gender === 'male') {
+      bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * profile.age + 5;
+    } else if (profile.gender === 'female') {
+      bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * profile.age - 161;
+    } else {
+      bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * profile.age - 78;
+    }
+
+    // Activity level multipliers
+    const activityMultipliers = {
+      sedentary: 1.2,
+      lightly_active: 1.375,
+      moderately_active: 1.55,
+      very_active: 1.725,
+      extremely_active: 1.9
+    };
+
+    const multiplier = activityMultipliers[profile.activityLevel] || 1.55;
+    let dailyCalories = Math.round(bmr * multiplier);
+
+    // Adjust for health goals
+    const activeGoals = profile.healthGoals?.filter(goal => goal.isActive) || [];
+    const weightLossGoals = activeGoals.filter(goal => goal.type === 'weight_loss');
+    const weightGainGoals = activeGoals.filter(goal => goal.type === 'weight_gain');
+    const muscleGainGoals = activeGoals.filter(goal => goal.type === 'muscle_gain');
+
+    if (weightLossGoals.length > 0) {
+      dailyCalories -= 300; // Moderate deficit
+    } else if (weightGainGoals.length > 0 || muscleGainGoals.length > 0) {
+      dailyCalories += 300; // Moderate surplus
+    }
+
+    return dailyCalories;
+  }
+
+  function buildGoalSpecificPrompts(activeGoals) {
+    if (!activeGoals || activeGoals.length === 0) return [];
+
+    return activeGoals.map(goal => {
+      let prompt = `${goal.title}: ${goal.description}`;
+
+      // Add specific guidance based on goal type
+      switch (goal.type) {
+        case 'weight_loss':
+          prompt += ' - Focus on lower calorie, high protein, high fiber recipes for satiety';
+          if (goal.targetValue && goal.currentValue) {
+            const remaining = goal.currentValue - goal.targetValue;
+            prompt += ` (${remaining.toFixed(1)}${goal.unit || 'kg'} to go)`;
+          }
+          break;
+        case 'weight_gain':
+          prompt += ' - Emphasize calorie-dense, nutritious recipes with healthy fats';
+          if (goal.targetValue && goal.currentValue) {
+            const remaining = goal.targetValue - goal.currentValue;
+            prompt += ` (${remaining.toFixed(1)}${goal.unit || 'kg'} to gain)`;
+          }
+          break;
+        case 'muscle_gain':
+          prompt += ' - Prioritize high protein content (25-30g per serving), include complex carbs for recovery';
+          break;
+        case 'performance':
+          prompt += ' - Optimize for energy, recovery, and performance enhancement';
+          break;
+        case 'lifestyle':
+          prompt += ' - Support sustainable dietary lifestyle changes';
+          break;
+        default:
+          prompt += ' - Customize recipe to support this specific health objective';
+      }
+
+      // Add target date urgency if applicable
+      if (goal.targetDate) {
+        const daysUntilTarget = Math.ceil((new Date(goal.targetDate) - new Date()) / (1000 * 60 * 60 * 24));
+        if (daysUntilTarget > 0 && daysUntilTarget <= 90) {
+          prompt += ` (Target: ${daysUntilTarget} days remaining)`;
+        }
+      }
+
+      // Add priority emphasis
+      if (goal.priority === 'high') {
+        prompt = `🎯 HIGH PRIORITY: ${prompt}`;
+      }
+
+      return prompt;
+    });
+  }
+
+  function buildPersonalizedPrompt(profileContext, goalPrompts) {
+    let prompt = "";
+
+    if (profileContext) {
+      // Demographics and physical info
+      if (profileContext.demographics?.age) {
+        prompt += `\nUSER PROFILE: ${profileContext.demographics.age} year old`;
+        if (profileContext.demographics.gender && profileContext.demographics.gender !== 'prefer_not_to_say') {
+          prompt += ` ${profileContext.demographics.gender}`;
+        }
+        if (profileContext.demographics.activityLevel) {
+          prompt += ` with ${profileContext.demographics.activityLevel.replace('_', ' ')} lifestyle`;
+        }
+      }
+
+      // Physical metrics with BMI
+      if (profileContext.physicalMetrics) {
+        const metrics = profileContext.physicalMetrics;
+        if (metrics.height && metrics.weight) {
+          prompt += `\nPHYSICAL: ${metrics.height}${metrics.heightUnit === 'ft_in' ? 'ft' : 'cm'},
+  ${metrics.weight}${metrics.weightUnit || 'kg'}`;
+        }
+
+        if (metrics.bmi) {
+          const bmi = metrics.bmi;
+          let bmiCategory = "";
+          let bmiGuidance = "";
+
+          if (bmi < 18.5) {
+            bmiCategory = "underweight";
+            bmiGuidance = "Focus on nutrient-dense, calorie-rich recipes";
+          } else if (bmi < 25) {
+            bmiCategory = "normal weight";
+            bmiGuidance = "Maintain balanced nutrition";
+          } else if (bmi < 30) {
+            bmiCategory = "overweight";
+            bmiGuidance = "Emphasize portion control and nutrient density";
+          } else {
+            bmiCategory = "obese";
+            bmiGuidance = "Prioritize low-calorie, high-satiety recipes";
+          }
+
+          prompt += `\nBMI: ${bmi.toFixed(1)} (${bmiCategory}) - ${bmiGuidance}`;
+        }
+      }
+
+      // Nutritional targets with precision
+      if (profileContext.nutritionalTargets) {
+        const targets = profileContext.nutritionalTargets;
+        if (targets.dailyCalories) {
+          const mealCalories = Math.round(targets.dailyCalories / 3);
+          prompt += `\nTARGET DAILY CALORIES: ${targets.dailyCalories} kcal`;
+          prompt += `\nRECIPE TARGET: ${mealCalories} calories per serving (1/3 of daily target)`;
+
+          if (targets.proteinTarget) {
+            const mealProtein = Math.round(targets.proteinTarget / 3);
+            prompt += `\nPROTEIN TARGET: ${mealProtein}g per serving (${targets.proteinTarget}g daily)`;
+          }
+
+          if (targets.fatTarget && targets.carbTarget) {
+            prompt += `\nMACRO TARGETS: ${targets.carbTarget}g carbs, ${targets.fatTarget}g fat daily`;
+          }
+        }
+      }
+
+      // Health information with enhanced safety protocols
+      if (profileContext.healthInformation) {
+        const health = profileContext.healthInformation;
+
+        if (health.allergies && health.allergies.length > 0) {
+          prompt += `\n🚨 CRITICAL ALLERGIES - ABSOLUTE AVOIDANCE REQUIRED: ${health.allergies.join(', ')}`;
+          prompt += `\n⚠️ CHECK ALL INGREDIENTS INCLUDING HIDDEN SOURCES, CROSS-CONTAMINATION RISKS`;
+        }
+
+        if (health.medicalConditions && health.medicalConditions.length > 0) {
+          prompt += `\nMEDICAL CONDITIONS: ${health.medicalConditions.join(', ')}`;
+
+          // Enhanced medical condition guidelines
+          const conditions = health.medicalConditions.map(c => c.toLowerCase());
+
+          if (conditions.some(c => c.includes('diabetes') || c.includes('diabetic'))) {
+            prompt += `\n- DIABETES: Low glycemic index ingredients, complex carbs, fiber-rich, portion-controlled`;
+          }
+          if (conditions.some(c => c.includes('hypertension') || c.includes('high blood pressure'))) {
+            prompt += `\n- HYPERTENSION: Sodium under 400mg per serving, potassium-rich ingredients, DASH-style`;
+          }
+          if (conditions.some(c => c.includes('heart') || c.includes('cardiovascular'))) {
+            prompt += `\n- HEART HEALTH: Omega-3 rich, low saturated fat, high fiber, antioxidant-rich`;
+          }
+          if (conditions.some(c => c.includes('kidney') || c.includes('renal'))) {
+            prompt += `\n- KIDNEY HEALTH: Moderate protein, low sodium, limited potassium and phosphorus`;
+          }
+          if (conditions.some(c => c.includes('celiac') || c.includes('gluten'))) {
+            prompt += `\n- CELIAC/GLUTEN SENSITIVITY: Strictly gluten-free, check all ingredients`;
+          }
+          if (conditions.some(c => c.includes('ibs') || c.includes('digestive'))) {
+            prompt += `\n- DIGESTIVE HEALTH: Low FODMAP considerations, gentle on stomach`;
+          }
+        }
+
+        if (health.medications && health.medications.length > 0) {
+          prompt += `\nMEDICATIONS: Consider food-drug interactions, timing considerations`;
+          // Note: Specific medication interactions would require medical database integration
+        }
+      }
+
+      // Enhanced lifestyle preferences
+      if (profileContext.lifestylePreferences) {
+        const lifestyle = profileContext.lifestylePreferences;
+
+        if (lifestyle.cookingSkillLevel) {
+          prompt += `\nCOOKING SKILL: ${lifestyle.cookingSkillLevel}`;
+
+          switch (lifestyle.cookingSkillLevel) {
+            case 'beginner':
+              prompt += ` - Simple techniques, minimal equipment, clear step-by-step instructions, common
+  ingredients`;
+              break;
+            case 'intermediate':
+              prompt += ` - Moderate complexity, some specialized techniques, helpful tips and tricks`;
+              break;
+            case 'advanced':
+              prompt += ` - Complex techniques welcome, sophisticated flavors, specialized equipment OK`;
+              break;
+            case 'professional':
+              prompt += ` - Professional-level techniques, advanced equipment, chef-quality results expected`;
+              break;
+          }
+        }
+
+        if (lifestyle.timeAvailableForCooking) {
+          prompt += `\nTIME CONSTRAINT: ${lifestyle.timeAvailableForCooking.replace('_', ' ')}`;
+
+          switch (lifestyle.timeAvailableForCooking) {
+            case 'under_15_min':
+              prompt += ` - URGENT: Maximum 15 minutes total, minimal prep, quick cooking methods only`;
+              break;
+            case '15_30_min':
+              prompt += ` - Keep total time 15-30 minutes, one-pot/sheet-pan meals preferred`;
+              break;
+            case '30_60_min':
+              prompt += ` - 30-60 minutes acceptable, moderate complexity OK`;
+              break;
+            case 'over_60_min':
+              prompt += ` - Extended cooking time acceptable, slow cooking/braising welcome`;
+              break;
+          }
+        }
+
+        if (lifestyle.budgetPreference) {
+          prompt += `\nBUDGET: ${lifestyle.budgetPreference.replace('_', ' ')}`;
+
+          switch (lifestyle.budgetPreference) {
+            case 'budget_friendly':
+              prompt += ` - Prioritize affordable ingredients, suggest substitutions, minimize waste`;
+              break;
+            case 'moderate':
+              prompt += ` - Balance cost and quality, occasional premium ingredients OK`;
+              break;
+            case 'premium':
+              prompt += ` - High-quality, artisanal, organic ingredients encouraged`;
+              break;
+          }
+        }
+      }
+    }
+
+    // Enhanced health goals integration
+    if (goalPrompts && goalPrompts.length > 0) {
+      prompt += `\n\nACTIVE HEALTH GOALS (HIGH PRIORITY):`;
+      goalPrompts.forEach(goalPrompt => {
+        prompt += `\n• ${goalPrompt}`;
+      });
+      prompt += `\nRECIPE MUST DIRECTLY SUPPORT THESE GOALS`;
+    }
+
+    return prompt;
+  }
+
+  // Enhanced user data retrieval from Firestore
+  async function retrieveUserProfile(userId) {
+    try {
+      const userDoc = await admin.firestore().collection('userSettings').doc(userId).get();
+
+      if (!userDoc.exists) {
+        return null;
+      }
+
+      const userData = userDoc.data();
+      const personalProfile = userData.personalProfile;
+
+      if (!personalProfile) {
+        return null;
+      }
+
+      // Extract and structure the profile data
+      const profileData = {
+        demographics: {
+          age: personalProfile.age,
+          gender: personalProfile.gender,
+          activityLevel: personalProfile.activityLevel
+        },
+        physicalMetrics: {
+          height: personalProfile.height,
+          weight: personalProfile.weight,
+          heightUnit: personalProfile.heightUnit || 'cm',
+          weightUnit: personalProfile.weightUnit || 'kg'
+        },
+        healthInformation: {
+          allergies: personalProfile.allergies || [],
+          medicalConditions: personalProfile.medicalConditions || [],
+          medications: personalProfile.medications || []
+        },
+        lifestylePreferences: {
+          cookingSkillLevel: personalProfile.cookingSkillLevel || 'intermediate',
+          timeAvailableForCooking: personalProfile.timeAvailableForCooking || '30_60_min',
+          budgetPreference: personalProfile.budgetPreference || 'moderate'
+        },
+        healthGoals: personalProfile.healthGoals || []
+      };
+
+      // Filter active health goals
+      const activeGoals = profileData.healthGoals.filter(goal => goal.isActive);
+
+      return {
+        ...profileData,
+        activeHealthGoals: activeGoals
+      };
+
+    } catch (error) {
+      console.error('Error retrieving user profile:', error);
+      return null;
+    }
+  }
+
+  // Recipe conversion function using native fetch (Gen2)
+  const generateRecipeV2 = onRequest(
+    {
+      timeoutSeconds: 60,
+      memory: "512MiB",
+    },
+    async (request, response) => {
+      // Set CORS headers
+      const allowedOrigins = [
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'https://reciperevamped.web.app',
+        'https://reciperevamped.firebaseapp.com',
+        'https://reciperevamped.com'
+      ];
+
+      const origin = request.headers.origin;
+      if (allowedOrigins.includes(origin)) {
+        response.set("Access-Control-Allow-Origin", origin);
+      }
+      response.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+      response.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+      if (request.method === "OPTIONS") {
+        response.status(204).send("");
+        return;
+      }
+
+      try {
+        // Verify authentication
+        const authHeader = request.headers.authorization;
+        if (!authHeader?.startsWith("Bearer ")) {
+          response.status(401).json({ error: "Unauthorized: Missing or invalid authorization header" });
+          return;
+        }
+
+        const idToken = authHeader.split("Bearer ")[1];
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const userId = decodedToken.uid;
+
+        if (request.method !== "POST") {
+          response.status(405).json({ error: "Method not allowed" });
+          return;
+        }
+
+        const {
+          originalRecipe,
+          filters,
+          userSettings,
+          mode = "convert",
+          mustUseIngredients,
+          avoidIngredients,
+          profileContext,
+          goalPrompts
+        } = request.body;
+
+        // Basic validation
+        if (!originalRecipe || typeof originalRecipe !== "string" || originalRecipe.length === 0) {
+          response.status(400).json({ error: "Original recipe is required" });
+          return;
+        }
+
+        if (!filters || !Array.isArray(filters) || filters.length === 0) {
+          response.status(400).json({ error: "At least one dietary filter is required" });
+          return;
+        }
+
+        // Get API key from environment
+        const openaiKey = process.env.OPENAI_API_KEY;
+        if (!openaiKey || openaiKey.includes('your_') || openaiKey.includes('placeholder')) {
+          response.status(500).json({ error: "OpenAI API key not configured" });
+          return;
+        }
+
+        // Retrieve comprehensive user profile from Firestore
+        let enhancedProfileContext = profileContext;
+        let enhancedGoalPrompts = goalPrompts;
+
+        // If profile context is not provided or incomplete, fetch from Firestore
+        if (!profileContext || !profileContext.healthInformation) {
+          const firestoreProfile = await retrieveUserProfile(userId);
+          if (firestoreProfile) {
+            enhancedProfileContext = firestoreProfile;
+            // Generate goal-specific prompts from active goals
+            enhancedGoalPrompts = buildGoalSpecificPrompts(firestoreProfile.activeHealthGoals);
+          }
+        }
+
+        // Enhanced profile processing with comprehensive calculations
+        if (enhancedProfileContext) {
+          // Calculate BMI if not provided
+          if (enhancedProfileContext.physicalMetrics &&
+              !enhancedProfileContext.physicalMetrics.bmi &&
+              enhancedProfileContext.physicalMetrics.height &&
+              enhancedProfileContext.physicalMetrics.weight) {
+            enhancedProfileContext.physicalMetrics.bmi = calculateBMI(
+              enhancedProfileContext.physicalMetrics.height,
+              enhancedProfileContext.physicalMetrics.weight,
+              enhancedProfileContext.physicalMetrics.heightUnit,
+              enhancedProfileContext.physicalMetrics.weightUnit
+            );
+          }
+
+          // Calculate comprehensive nutritional targets
+          if (!enhancedProfileContext.nutritionalTargets &&
+              enhancedProfileContext.demographics &&
+              enhancedProfileContext.physicalMetrics) {
+            const dailyCalories = calculateDailyCalories({
+              ...enhancedProfileContext.demographics,
+              ...enhancedProfileContext.physicalMetrics,
+              healthGoals: enhancedProfileContext.activeHealthGoals || []
+            });
+
+            if (dailyCalories) {
+              const weightInKg = enhancedProfileContext.physicalMetrics.weightUnit === 'lbs'
+                ? enhancedProfileContext.physicalMetrics.weight * 0.453592
+                : enhancedProfileContext.physicalMetrics.weight;
+
+              // Enhanced protein calculation based on goals and activity
+              let proteinMultiplier = 1.2; // Base protein needs
+              const activeGoals = enhancedProfileContext.activeHealthGoals || [];
+
+              if (activeGoals.some(goal => goal.type === 'muscle_gain')) {
+                proteinMultiplier = 2.0; // Higher protein for muscle building
+              } else if (activeGoals.some(goal => goal.type === 'weight_loss')) {
+                proteinMultiplier = 1.6; // Moderate increase for weight loss
+              } else if (enhancedProfileContext.demographics.activityLevel === 'very_active' ||
+                         enhancedProfileContext.demographics.activityLevel === 'extremely_active') {
+                proteinMultiplier = 1.8; // Higher for very active individuals
+              }
+
+              enhancedProfileContext.nutritionalTargets = {
+                dailyCalories,
+                proteinTarget: Math.round(weightInKg * proteinMultiplier),
+                fatTarget: Math.round((dailyCalories * 0.25) / 9),
+                carbTarget: Math.round((dailyCalories - (Math.round(weightInKg * proteinMultiplier) * 4) -
+                  (Math.round((dailyCalories * 0.25) / 9) * 9)) / 4),
+                fiberTarget: Math.round(dailyCalories / 100), // Rough fiber estimate
+                sodiumTarget: 2300 // Daily sodium limit in mg
+              };
+            }
+          }
+        }
+
+        // Generate enhanced system prompt
+        const servingSize = userSettings?.defaultServingSize || 4;
+        const unitSystem = userSettings?.preferredUnits || "metric";
+        const healthConditions = userSettings?.healthConditions || [];
+        const unitInstructions = unitSystem === "metric"
+          ? "Use metric measurements exclusively (grams, milliliters, liters, Celsius)"
+          : "Use imperial measurements exclusively (cups, tablespoons, teaspoons, ounces, pounds, Fahrenheit)";
+
+        // Build comprehensive requirements
+        let requirementsText = `DIETARY FILTERS: ${filters.join(", ")}`;
+
+        // Legacy health conditions support
+        if (healthConditions.length > 0) {
+          requirementsText += `\nLEGACY HEALTH CONDITIONS: ${healthConditions.join(", ")} - MANDATORY: The recipe
+  MUST be suitable for ALL these conditions`;
+        }
+
+        // Enhanced ingredient constraints
+        if (mustUseIngredients && mustUseIngredients.length > 0) {
+          requirementsText += `\nREQUIRED INGREDIENTS: ${mustUseIngredients.join(", ")} - These ingredients MUST be
+  included`;
+        }
+
+        if (avoidIngredients && avoidIngredients.length > 0) {
+          requirementsText += `\nFORBIDDEN INGREDIENTS: ${avoidIngredients.join(", ")} - These ingredients are
+  ABSOLUTELY PROHIBITED`;
+        }
+
+        // Build comprehensive personalized context
+        const personalizedPrompt = buildPersonalizedPrompt(enhancedProfileContext, enhancedGoalPrompts);
+
+        const systemPrompt = `You are a professional chef, nutritionist, and health expert. Transform the provided
+  recipe according to these comprehensive requirements:
+
+  ${requirementsText}
+  SERVING SIZE: ${servingSize} people
+  MEASUREMENTS: ${unitInstructions}
+  ${personalizedPrompt}
+
+  ABSOLUTE COMPLIANCE REQUIRED: The recipe MUST strictly adhere to ALL dietary filters, health conditions,
+  allergies, medical conditions, and personal health goals listed above. No exceptions or substitutions that violate
+   these requirements.
+
+  SAFETY CRITICAL: Pay special attention to allergies and medical conditions - these are life-safety requirements.
+
+  PERSONALIZATION PRIORITY: The recipe should be specifically tailored to support the user's health goals,
+  lifestyle, and personal circumstances.
+
+  CRITICAL: Return ONLY a valid JSON object matching this exact schema:
+  {
+    "recipeName": "string (creative, descriptive name that reflects personalization)",
+    "prepTime": "string (e.g., '15 minutes')",
+    "cookTime": "string (e.g., '30 minutes')",
+    "totalTime": "string (e.g., '45 minutes')",
+    "servings": ${servingSize},
+    "dietaryRequirements": "string (comma-separated list of dietary compliance)",
+    "healthConditions": ${healthConditions.length > 0 ? JSON.stringify(healthConditions) : '[]'},
+    "ingredients": ["array of ingredients with precise quantities in ${unitSystem} units"],
+    "instructions": ["array of detailed step-by-step cooking instructions tailored to skill level"],
+    "nutrition": {
+      "calories": number,
+      "protein": number,
+      "carbohydrates": number,
+      "fat": number,
+      "fiber": number,
+      "sodium": number
+    },
+    "tips": ["array of 2-3 professional cooking tips specific to user's skill level and goals"],
+    "profileMatchExplanation": "string (detailed explanation of how this recipe specifically supports the user's
+  health goals, medical conditions, lifestyle preferences, and personal requirements)"
+  }
+
+  Return ONLY valid JSON, no markdown, no explanations.`;
+
+        let userMessage;
+        if (mode === "convert") {
+          userMessage = `Transform this recipe to comply with ALL the dietary requirements, health conditions,
+  medical needs, and personal profile requirements:\n\n${originalRecipe}`;
+        } else if (mode === "create") {
+          userMessage = `Create a new recipe using this as inspiration while ensuring complete compliance with ALL
+  dietary requirements, health conditions, medical needs, and personal profile requirements: ${originalRecipe}`;
+        } else {
+          userMessage = `Create a surprise recipe that incorporates elements from: ${originalRecipe}, while strictly
+   adhering to ALL dietary requirements, health conditions, medical needs, and personal profile requirements`;
+        }
+
+        // Call OpenAI API with enhanced prompting
+        const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${openaiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userMessage }
+            ],
+            max_tokens: 3000, // Increased for more detailed responses
+            temperature: 0.7,
+          }),
+        });
+
+        if (!openaiResponse.ok) {
+          const errorData = await openaiResponse.json().catch(() => ({}));
+          console.error("OpenAI API error:", errorData);
+          response.status(500).json({ error: "AI service error" });
+          return;
+        }
+
+        const completion = await openaiResponse.json();
+        const aiResponse = completion.choices[0]?.message?.content;
+
+        if (!aiResponse) {
+          throw new Error("No response from OpenAI");
+        }
+
+        // Parse JSON response
+        let recipeData;
+        try {
+          recipeData = JSON.parse(aiResponse.trim());
+        } catch (parseError) {
+          const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            recipeData = JSON.parse(jsonMatch[0]);
+          } else {
+            throw new Error("Invalid JSON response from AI");
+          }
+        }
+
+        // Enhanced logging for monitoring and analytics
+        console.log("Enhanced personalized recipe conversion completed", {
+          userId,
+          mode,
+          filters,
+          healthConditions,
+          hasProfile: !!enhancedProfileContext,
+          hasGoals: !!(enhancedGoalPrompts && enhancedGoalPrompts.length > 0),
+          activeGoalsCount: enhancedProfileContext?.activeHealthGoals?.length || 0,
+          allergies: enhancedProfileContext?.healthInformation?.allergies || [],
+          medicalConditions: enhancedProfileContext?.healthInformation?.medicalConditions || [],
+          cookingSkill: enhancedProfileContext?.lifestylePreferences?.cookingSkillLevel,
+          timeConstraint: enhancedProfileContext?.lifestylePreferences?.timeAvailableForCooking,
+          budget: enhancedProfileContext?.lifestylePreferences?.budgetPreference,
+          bmi: enhancedProfileContext?.physicalMetrics?.bmi,
+          dailyCalorieTarget: enhancedProfileContext?.nutritionalTargets?.dailyCalories,
+          tokensUsed: completion.usage?.total_tokens || 0,
+        });
+
+        response.status(200).json({
+          success: true,
+          data: recipeData,
+          tokensUsed: completion.usage?.total_tokens || 0,
+        });
+
+      } catch (error) {
+        console.error("Enhanced recipe conversion error:", error);
+
+        if (error.message?.includes("API key")) {
+          response.status(500).json({ error: "AI service configuration error" });
+        } else if (error.message?.includes("quota")) {
+          response.status(429).json({ error: "AI service quota exceeded. Please try again later." });
+        } else if (error.message?.includes("Invalid JSON")) {
+          response.status(500).json({ error: "AI response parsing error" });
+        } else if (error.message?.includes("Firestore")) {
+          response.status(500).json({ error: "User profile retrieval error" });
+        } else {
+          response.status(500).json({ error: "Recipe conversion failed" });
+        }
+      }
+    }
+  );
+
+  // Export the function
+  exports.generateRecipeV2 = generateRecipeV2;

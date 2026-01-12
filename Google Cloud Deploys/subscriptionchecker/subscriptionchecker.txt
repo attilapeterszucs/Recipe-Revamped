@@ -1,0 +1,384 @@
+const { onRequest } = require("firebase-functions/v2/https");
+const admin = require("firebase-admin");
+
+// Initialize Firebase Admin only once
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
+const db = admin.firestore();
+
+// ============================================================================
+// SUBSCRIPTION CHECKER SERVICE
+// ============================================================================
+
+/**
+ * Subscription Checker Cloud Function
+ * Handles all subscription-related queries and checks
+ * Bypasses Firestore security rules by using Firebase Admin SDK
+ */
+const subscriptionCheckerV2 = onRequest(
+  {
+    timeoutSeconds: 30,
+    memory: "256MiB",
+  },
+  async (request, response) => {
+    const startTime = Date.now();
+
+    try {
+      // CORS headers
+      const allowedOrigins = [
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'http://127.0.0.1:5173',
+        'http://127.0.0.1:3000',
+        'https://reciperevamped.web.app',
+        'https://reciperevamped.firebaseapp.com',
+        'https://reciperevamped.com',
+        'https://www.reciperevamped.com'
+      ];
+
+      const origin = request.headers.origin;
+      if (allowedOrigins.includes(origin)) {
+        response.set("Access-Control-Allow-Origin", origin);
+      }
+      response.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+      response.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      response.set("Access-Control-Allow-Credentials", "true");
+
+      // Handle preflight requests
+      if (request.method === "OPTIONS") {
+        response.status(204).send("");
+        return;
+      }
+
+      // Verify authentication
+      const authHeader = request.headers.authorization;
+      if (!authHeader?.startsWith("Bearer ")) {
+        response.status(401).json({ error: "Unauthorized: Missing or invalid authorization header" });
+        return;
+      }
+
+      const idToken = authHeader.split("Bearer ")[1];
+      let decodedToken;
+      try {
+        decodedToken = await admin.auth().verifyIdToken(idToken);
+      } catch (authError) {
+        console.error('[AUTH_ERROR]', authError);
+        response.status(401).json({ error: "Unauthorized: Invalid token" });
+        return;
+      }
+
+      const userId = decodedToken.uid;
+      const userEmail = decodedToken.email;
+
+      console.log(`[SUBSCRIPTION_CHECK] User: ${userId}, Email: ${userEmail}`);
+
+      // Route to appropriate handler based on path
+      if (request.path === '/get-subscription' || request.url.includes('/get-subscription')) {
+        await getSubscriptionHandler(request, response, userId, userEmail);
+        return;
+      }
+
+      if (request.path === '/check-expired' || request.url.includes('/check-expired')) {
+        await checkExpiredSubscriptionHandler(request, response, userId, userEmail);
+        return;
+      }
+
+      if (request.path === '/sync-subscription' || request.url.includes('/sync-subscription')) {
+        await syncSubscriptionHandler(request, response, userId, userEmail);
+        return;
+      }
+
+      // Health check endpoint
+      if (request.path === '/health' || request.url.includes('/health')) {
+        const processingTime = Date.now() - startTime;
+        response.status(200).json({
+          status: 'healthy',
+          service: 'subscription-checker-v2',
+          timestamp: new Date().toISOString(),
+          processing_time: processingTime
+        });
+        return;
+      }
+
+      // Default: get subscription (backward compatibility)
+      await getSubscriptionHandler(request, response, userId, userEmail);
+
+    } catch (error) {
+      const processingTime = Date.now() - startTime;
+      console.error('[CRITICAL] Subscription checker error:', error);
+
+      response.status(500).json({
+        error: 'Subscription check failed',
+        message: error.message,
+        processing_time: processingTime
+      });
+    }
+  }
+);
+
+// ============================================================================
+// GET SUBSCRIPTION HANDLER
+// ============================================================================
+
+async function getSubscriptionHandler(req, res, userId, userEmail) {
+  const startTime = Date.now();
+
+  try {
+    console.log(`[GET_SUBSCRIPTION] Fetching subscription for user: ${userId}`);
+
+    // Query subscriptions collection using userId
+    const subscriptionRef = db.collection('subscriptions').doc(userId);
+    const subscriptionDoc = await subscriptionRef.get();
+
+    if (!subscriptionDoc.exists) {
+      console.log(`[GET_SUBSCRIPTION] No subscription found for user: ${userId}, defaulting to free`);
+
+      // Return default free subscription
+      const defaultSubscription = {
+        userId,
+        plan: 'free',
+        status: 'active',
+        startDate: admin.firestore.FieldValue.serverTimestamp(),
+        endDate: null,
+        autoRenewal: false,
+        source: 'default'
+      };
+
+      const processingTime = Date.now() - startTime;
+      res.status(200).json({
+        success: true,
+        subscription: defaultSubscription,
+        processing_time: processingTime
+      });
+      return;
+    }
+
+    const subscriptionData = subscriptionDoc.data();
+    console.log(`[GET_SUBSCRIPTION] Found subscription - Plan: ${subscriptionData.plan}, Status: ${subscriptionData.status}`);
+
+    // Convert Firestore timestamps to ISO strings for JSON serialization
+    const subscription = {
+      ...subscriptionData,
+      startDate: subscriptionData.startDate?.toDate?.()?.toISOString() || subscriptionData.startDate,
+      endDate: subscriptionData.endDate?.toDate?.()?.toISOString() || subscriptionData.endDate,
+      createdAt: subscriptionData.createdAt?.toDate?.()?.toISOString() || subscriptionData.createdAt,
+      updatedAt: subscriptionData.updatedAt?.toDate?.()?.toISOString() || subscriptionData.updatedAt,
+      cancelledAt: subscriptionData.cancelledAt?.toDate?.()?.toISOString() || subscriptionData.cancelledAt,
+      willDowngradeAt: subscriptionData.willDowngradeAt?.toDate?.()?.toISOString() || subscriptionData.willDowngradeAt,
+      downgradedAt: subscriptionData.downgradedAt?.toDate?.()?.toISOString() || subscriptionData.downgradedAt,
+      lastPaymentDate: subscriptionData.lastPaymentDate?.toDate?.()?.toISOString() || subscriptionData.lastPaymentDate,
+    };
+
+    const processingTime = Date.now() - startTime;
+    res.status(200).json({
+      success: true,
+      subscription,
+      processing_time: processingTime
+    });
+
+  } catch (error) {
+    const processingTime = Date.now() - startTime;
+    console.error('[ERROR] Get subscription failed:', error);
+
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get subscription',
+      message: error.message,
+      processing_time: processingTime
+    });
+  }
+}
+
+// ============================================================================
+// CHECK EXPIRED SUBSCRIPTION HANDLER
+// ============================================================================
+
+async function checkExpiredSubscriptionHandler(req, res, userId, userEmail) {
+  const startTime = Date.now();
+
+  try {
+    console.log(`[CHECK_EXPIRED] Checking expired subscription for user: ${userId}`);
+
+    // Get user's subscription
+    const subscriptionRef = db.collection('subscriptions').doc(userId);
+    const subscriptionDoc = await subscriptionRef.get();
+
+    if (!subscriptionDoc.exists) {
+      console.log(`[CHECK_EXPIRED] No subscription found for user: ${userId}`);
+      const processingTime = Date.now() - startTime;
+      res.status(200).json({
+        success: true,
+        expired: false,
+        needsUpdate: false,
+        processing_time: processingTime
+      });
+      return;
+    }
+
+    const subscriptionData = subscriptionDoc.data();
+    const now = new Date();
+    const endDate = subscriptionData.endDate?.toDate?.() || null;
+    const status = subscriptionData.status;
+
+    console.log(`[CHECK_EXPIRED] Subscription status: ${status}, endDate: ${endDate?.toISOString()}`);
+
+    // Check if subscription is cancelled and past end date
+    const isExpired = status === 'cancelled' && endDate && endDate <= now;
+    const needsDowngrade = isExpired && subscriptionData.plan !== 'free';
+
+    if (needsDowngrade) {
+      console.log(`[CHECK_EXPIRED] ⏰ Downgrading expired subscription to free for user: ${userId}`);
+
+      // Downgrade to free plan
+      await subscriptionRef.update({
+        plan: 'free',
+        status: 'active',
+        downgradedAt: admin.firestore.FieldValue.serverTimestamp(),
+        previousPlan: subscriptionData.plan,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        stripeSubscriptionId: null,
+        stripeCustomerId: subscriptionData.stripeCustomerId || null, // Preserve for records
+        autoRenewal: false
+      });
+
+      console.log(`[CHECK_EXPIRED] ✅ Successfully downgraded user ${userId} to free plan`);
+
+      const processingTime = Date.now() - startTime;
+      res.status(200).json({
+        success: true,
+        expired: true,
+        needsUpdate: true,
+        updated: true,
+        newPlan: 'free',
+        previousPlan: subscriptionData.plan,
+        processing_time: processingTime
+      });
+      return;
+    }
+
+    const processingTime = Date.now() - startTime;
+    res.status(200).json({
+      success: true,
+      expired: isExpired,
+      needsUpdate: false,
+      currentPlan: subscriptionData.plan,
+      processing_time: processingTime
+    });
+
+  } catch (error) {
+    const processingTime = Date.now() - startTime;
+    console.error('[ERROR] Check expired subscription failed:', error);
+
+    res.status(500).json({
+      success: false,
+      error: 'Failed to check expired subscription',
+      message: error.message,
+      processing_time: processingTime
+    });
+  }
+}
+
+// ============================================================================
+// SYNC SUBSCRIPTION HANDLER
+// ============================================================================
+
+async function syncSubscriptionHandler(req, res, userId, userEmail) {
+  const startTime = Date.now();
+
+  try {
+    console.log(`[SYNC_SUBSCRIPTION] Force sync for user: ${userId}`);
+
+    // First check if subscription is expired
+    const subscriptionRef = db.collection('subscriptions').doc(userId);
+    const subscriptionDoc = await subscriptionRef.get();
+
+    if (!subscriptionDoc.exists) {
+      console.log(`[SYNC_SUBSCRIPTION] No subscription found, returning default free`);
+      const processingTime = Date.now() - startTime;
+      res.status(200).json({
+        success: true,
+        subscription: {
+          userId,
+          plan: 'free',
+          status: 'active',
+          source: 'default'
+        },
+        synced: false,
+        processing_time: processingTime
+      });
+      return;
+    }
+
+    const subscriptionData = subscriptionDoc.data();
+    const now = new Date();
+    const endDate = subscriptionData.endDate?.toDate?.() || null;
+    const status = subscriptionData.status;
+
+    // Check and update if expired
+    const isExpired = status === 'cancelled' && endDate && endDate <= now;
+    if (isExpired && subscriptionData.plan !== 'free') {
+      console.log(`[SYNC_SUBSCRIPTION] Detected expired subscription, downgrading to free`);
+
+      await subscriptionRef.update({
+        plan: 'free',
+        status: 'active',
+        downgradedAt: admin.firestore.FieldValue.serverTimestamp(),
+        previousPlan: subscriptionData.plan,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        stripeSubscriptionId: null,
+        autoRenewal: false
+      });
+
+      // Fetch updated subscription
+      const updatedDoc = await subscriptionRef.get();
+      const updatedData = updatedDoc.data();
+
+      const processingTime = Date.now() - startTime;
+      res.status(200).json({
+        success: true,
+        subscription: {
+          ...updatedData,
+          startDate: updatedData.startDate?.toDate?.()?.toISOString(),
+          endDate: updatedData.endDate?.toDate?.()?.toISOString(),
+          updatedAt: updatedData.updatedAt?.toDate?.()?.toISOString(),
+        },
+        synced: true,
+        downgraded: true,
+        processing_time: processingTime
+      });
+      return;
+    }
+
+    // Return current subscription
+    console.log(`[SYNC_SUBSCRIPTION] Subscription is up-to-date`);
+    const processingTime = Date.now() - startTime;
+    res.status(200).json({
+      success: true,
+      subscription: {
+        ...subscriptionData,
+        startDate: subscriptionData.startDate?.toDate?.()?.toISOString(),
+        endDate: subscriptionData.endDate?.toDate?.()?.toISOString(),
+        updatedAt: subscriptionData.updatedAt?.toDate?.()?.toISOString(),
+      },
+      synced: true,
+      downgraded: false,
+      processing_time: processingTime
+    });
+
+  } catch (error) {
+    const processingTime = Date.now() - startTime;
+    console.error('[ERROR] Sync subscription failed:', error);
+
+    res.status(500).json({
+      success: false,
+      error: 'Failed to sync subscription',
+      message: error.message,
+      processing_time: processingTime
+    });
+  }
+}
+
+// Export the function
+exports.subscriptionCheckerV2 = subscriptionCheckerV2;

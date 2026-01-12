@@ -1,0 +1,128 @@
+const { onRequest } = require("firebase-functions/v2/https");
+  const admin = require("firebase-admin");
+
+  if (!admin.apps.length) {
+    admin.initializeApp();
+  }
+
+  const searchImagesV2 = onRequest(
+    {
+      timeoutSeconds: 30,
+      memory: "256MiB",
+    },
+    async (request, response) => {
+      const allowedOrigins = [
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'https://reciperevamped.web.app',
+        'https://reciperevamped.com',
+        'https://reciperevamped.firebaseapp.com'
+      ];
+
+      const origin = request.headers.origin;
+      if (allowedOrigins.includes(origin)) {
+        response.set("Access-Control-Allow-Origin", origin);
+      }
+      response.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+      response.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+      if (request.method === "OPTIONS") {
+        response.status(204).send("");
+        return;
+      }
+
+      try {
+        const authHeader = request.headers.authorization;
+        if (!authHeader?.startsWith("Bearer ")) {
+          response.status(401).json({ error: "Unauthorized" });
+          return;
+        }
+
+        const idToken = authHeader.split("Bearer ")[1];
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const userId = decodedToken.uid;
+
+        if (request.method !== "POST") {
+          response.status(405).json({ error: "Method not allowed" });
+          return;
+        }
+
+        const { keywords, usedImages = [] } = request.body;
+
+        if (!keywords || !Array.isArray(keywords) || keywords.length === 0) {
+          response.status(400).json({ error: "Keywords array is required" });
+          return;
+        }
+
+        const pexelsKey = process.env.PEXELS_API_KEY;
+        if (!pexelsKey) {
+          response.status(500).json({ error: "Pexels API key not configured" });
+          return;
+        }
+
+        const searchQueries = [
+          `${keywords[0]} ${keywords[1] || ''} food recipe`.trim(),
+          `${keywords[0]} dish meal`.trim(),
+          `${keywords[0]} cooking cuisine`.trim()
+        ].filter(query => query.length > 5);
+
+        for (const searchQuery of searchQueries) {
+          const pexelsResponse = await fetch(
+            `https://api.pexels.com/v1/search?query=${encodeURIComponent(searchQuery)}&per_page=20&page=1&orientatio
+  n=landscape`,
+            {
+              headers: {
+                'Authorization': pexelsKey,
+              },
+            }
+          );
+
+          if (!pexelsResponse.ok) {
+            continue;
+          }
+
+          const data = await pexelsResponse.json();
+
+          if (data.photos && data.photos.length > 0) {
+            const availablePhotos = data.photos.filter((photo) =>
+              !usedImages.includes(photo.src.medium)
+            );
+
+            if (availablePhotos.length > 0) {
+              const selectedPhoto = availablePhotos[0];
+
+              console.log("Image search completed", {
+                userId,
+                query: searchQuery,
+                imageSelected: selectedPhoto.id,
+              });
+
+              response.status(200).json({
+                success: true,
+                imageUrl: selectedPhoto.src.medium,
+                photographer: selectedPhoto.photographer,
+                alt: selectedPhoto.alt
+              });
+              return;
+            }
+          }
+        }
+
+        response.status(200).json({
+          success: false,
+          message: "No suitable images found"
+        });
+
+      } catch (error) {
+        console.error("Image search error:", error);
+
+        if (error.message?.includes("quota")) {
+          response.status(429).json({ error: "Image search quota exceeded" });
+        } else {
+          response.status(500).json({ error: "Image search failed" });
+        }
+      }
+    }
+  );
+
+  exports.searchImagesV2 = searchImagesV2;
