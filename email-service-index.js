@@ -18,7 +18,7 @@ const SMTP_CONFIG = {
   secure: false, // Use STARTTLS
   auth: {
     user: process.env.SMTP_USER || 'noreply@reciperevamped.com',
-    pass: process.env.SMTP_PASS || 'zrjnzhigyitswwlw'
+    pass: process.env.SMTP_PASS || 'pass'
   },
   tls: {
     rejectUnauthorized: false
